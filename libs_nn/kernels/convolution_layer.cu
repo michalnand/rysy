@@ -90,6 +90,7 @@ void cuda_convolution_forward_kernel(   float *output,
       if (kernel_size == 1)
       {
         sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        input_idx+= input_geometry.w - kernel_size;
       }
 
       if (kernel_size == 3)
@@ -564,6 +565,7 @@ void cuda_convolution_back_kernel(  float *error,
       if (kernel_size == 1)
       {
         atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        error_back_idx+= width - kernel_size;
       }
 
       if (kernel_size == 3)
