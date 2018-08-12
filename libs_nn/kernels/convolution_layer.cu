@@ -35,7 +35,6 @@ void cpu_convolution_forward_kernel(   float *output,
                 filter_idx++;
               }
 
-        //  unsigned int output_idx = (filter*input_geometry.h + y)*input_geometry.w + x;
           unsigned int output_idx = (filter*input_geometry.h + y + k_half)*input_geometry.w + x + k_half;
           sum+= bias[filter];
           output[output_idx] = sum;
@@ -73,6 +72,7 @@ void cuda_convolution_forward_kernel(   float *output,
 
     float sum = 0.0;
 
+    /*
     for (unsigned int ch = 0; ch < input_geometry.d; ch++)
       for (unsigned int ky = 0; ky < kernel_size; ky++)
         for (unsigned int kx = 0; kx < kernel_size; kx++)
@@ -81,6 +81,74 @@ void cuda_convolution_forward_kernel(   float *output,
           sum+= w[filter_idx]*input[input_idx];
           filter_idx++;
         }
+    */
+
+    for (unsigned int ch = 0; ch < input_geometry.d; ch++)
+    {
+      unsigned int input_idx = (ch*input_geometry.h + y)*input_geometry.w + x;
+
+      if (kernel_size == 1)
+      {
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+      }
+
+      if (kernel_size == 3)
+      {
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        input_idx+= input_geometry.w - kernel_size;
+
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        input_idx+= input_geometry.w - kernel_size;
+
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        input_idx+= input_geometry.w - kernel_size;
+      }
+
+      if (kernel_size == 5)
+      {
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        input_idx+= input_geometry.w - kernel_size;
+
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        input_idx+= input_geometry.w - kernel_size;
+
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        input_idx+= input_geometry.w - kernel_size;
+
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        input_idx+= input_geometry.w - kernel_size;
+
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        sum+= w[filter_idx]*input[input_idx]; filter_idx++; input_idx++;
+        input_idx+= input_geometry.w - kernel_size;
+      }
+
+    }
 
 
     unsigned int output_idx = (filter*input_geometry.h + y + k_half)*input_geometry.w + x + k_half;
@@ -146,16 +214,6 @@ void convolution_layer_forward(   Tensor &output, Tensor &input,
                             break;
 
                 case 5:  cuda_convolution_forward_kernel<5><<<grid, block>>>( output.v,
-                                                                              input.v,
-                                                                              w.v,
-                                                                              bias.v,
-
-                                                                              output_geometry,
-                                                                              input_geometry,
-                                                                              kernel_geometry);
-                            break;
-
-                case 7:  cuda_convolution_forward_kernel<7><<<grid, block>>>( output.v,
                                                                               input.v,
                                                                               w.v,
                                                                               bias.v,
@@ -449,7 +507,7 @@ void cpu_convolution_back_kernel( float *error,
           error_back_idx++;
         }
 
-        error_back_idx+= width;
+        error_back_idx+= width - kernel_size;
       }
     }
   }
@@ -489,6 +547,7 @@ void cuda_convolution_back_kernel(  float *error,
       unsigned int error_back_idx = (ch*height + y)*width + x;
 
 
+      /*
       for (unsigned int ky = 0; ky < kernel_size; ky++)
       {
         for (unsigned int kx = 0; kx < kernel_size; kx++)
@@ -499,7 +558,68 @@ void cuda_convolution_back_kernel(  float *error,
           error_back_idx++;
         }
 
-        error_back_idx+= width;
+        error_back_idx+= width - kernel_size !!!!!!!!!!!;
+      }
+      */
+      if (kernel_size == 1)
+      {
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+      }
+
+      if (kernel_size == 3)
+      {
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        error_back_idx+= width - kernel_size;
+
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        error_back_idx+= width - kernel_size;
+
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        error_back_idx+= width - kernel_size;
+      }
+
+      if (kernel_size == 5)
+      {
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        error_back_idx+= width - kernel_size;
+
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        error_back_idx+= width - kernel_size;
+
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        error_back_idx+= width - kernel_size;
+
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        error_back_idx+= width - kernel_size;
+
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        error_back_idx+= width - kernel_size;
       }
     }
   }

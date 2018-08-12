@@ -1,0 +1,38 @@
+==12339== NVPROF is profiling process 12339, command: ./speed_test.elf
+==12339== Profiling application: ./speed_test.elf
+==12339== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   38.99%  240.46ms       500  480.93us  123.97us  3.0245ms  void cuda_convolution_back_kernel<unsigned int=3>(float*, float*, float*, unsigned int, unsigned int, unsigned int, unsigned int)
+                   34.19%  210.86ms       500  421.71us  134.43us  3.2591ms  cuda_convolution_layer_weights_gradient(float*, float*, float*, sGeometry, sGeometry, sGeometry)
+                   15.34%  94.577ms       500  189.15us  25.761us  2.0608ms  void cuda_convolution_forward_kernel<unsigned int=3>(float*, float*, float*, float*, sGeometry, sGeometry, sGeometry)
+                    4.13%  25.443ms       600  42.405us  4.0960us  124.61us  cuda_w_update_kernel(float*, float*, unsigned int, float*, float*, float, float, float, float)
+                    2.07%  12.781ms       500  25.562us  10.752us  64.192us  cuda_convolution_learn_bias_kernel(float*, float*, sGeometry, float, unsigned int)
+                    1.51%  9.2845ms      1822  5.0950us     992ns  20.704us  [CUDA memset]
+                    1.15%  7.1071ms       100  71.071us  68.513us  73.057us  cuda_fc_forward_kernel(float*, float*, float*, unsigned int, unsigned int, unsigned int, unsigned int)
+                    0.37%  2.2961ms       500  4.5920us  2.2720us  8.9600us  cuda_relu_forward_kernel(float*, float*, unsigned int)
+                    0.35%  2.1884ms       100  21.883us  20.640us  25.792us  cuda_fc_layer_weights_gradient(float*, float*, float*, unsigned int, unsigned int)
+                    0.34%  2.0791ms       500  4.1580us  2.1120us  13.920us  cuda_relu_backward_kernel(float*, float*, float*, unsigned int)
+                    0.30%  1.8587ms       100  18.587us  17.600us  26.496us  cuda_fc_layer_back_kernel(float*, float*, float*, unsigned int, unsigned int)
+                    0.28%  1.7315ms       200  8.6570us  7.8400us  10.817us  cuda_max_pooling_backward_kernel(float*, float*, float*, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)
+                    0.27%  1.6915ms       112  15.102us  2.5280us  107.01us  cuda_tensor_random_kernel(float*, unsigned int, float, unsigned int)
+                    0.20%  1.2123ms       200  6.0610us  4.9600us  9.6320us  cuda_max_pooling_forward_kernel(float*, float*, float*, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)
+                    0.17%  1.0784ms       600  1.7970us  1.4080us  8.2880us  cuda_tensor_regularization_l1_kernel(float*, float, unsigned int)
+                    0.11%  681.61us       400  1.7040us  1.1840us  7.3600us  [CUDA memcpy DtoD]
+                    0.05%  334.05us       200  1.6700us  1.0880us  7.0400us  [CUDA memcpy HtoD]
+                    0.05%  329.54us       100  3.2950us  3.1040us  4.0000us  cuda_dropout_backward_kernel(float*, float*, float*, unsigned int)
+                    0.04%  260.42us       100  2.6040us  2.4640us  3.3610us  cuda_tensor_sub_kernel(float*, float*, unsigned int)
+                    0.04%  225.86us       100  2.2580us  1.8240us  5.2800us  cuda_dropout_forward_kernel(float*, float*, float*, float, unsigned int)
+                    0.03%  207.17us       100  2.0710us  1.8560us  4.9280us  cuda_fc_layer_back_bias_kernel(float*, float*, float, unsigned int)
+      API calls:   71.21%  1.03316s      5412  190.90us  7.0240us  8.5170ms  cudaDeviceSynchronize
+                   13.81%  200.42ms      5412  37.033us  24.376us  1.4193ms  cudaLaunch
+                   12.31%  178.62ms        66  2.7064ms  8.8280us  176.32ms  cudaMalloc
+                    1.04%  15.022ms       600  25.036us  7.9960us  2.2659ms  cudaMemcpy
+                    0.96%  13.858ms      1822  7.6060us  3.1310us  406.09us  cudaMemset
+                    0.41%  6.0126ms     30148     199ns     125ns  404.18us  cudaSetupArgument
+                    0.11%  1.6293ms      5412     301ns     210ns  3.2100us  cudaConfigureCall
+                    0.11%  1.5503ms        66  23.488us  4.0880us  259.94us  cudaFree
+                    0.04%  525.84us        94  5.5940us     462ns  219.33us  cuDeviceGetAttribute
+                    0.00%  72.323us         1  72.323us  72.323us  72.323us  cuDeviceTotalMem
+                    0.00%  60.928us         1  60.928us  60.928us  60.928us  cuDeviceGetName
+                    0.00%  3.0100us         3  1.0030us     444ns  1.7610us  cuDeviceGetCount
+                    0.00%  2.1990us         2  1.0990us     511ns  1.6880us  cuDeviceGet

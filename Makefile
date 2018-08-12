@@ -8,7 +8,8 @@ all:
 	cd deployment && make -j4
 	cd examples/classification_test && make -j4
 	cd examples/rl && make -j4
- 
+	cd examples/speed_test && make -j4
+
 
 
 clean:
@@ -20,3 +21,4 @@ clean:
 	cd deployment && make clean
 	cd examples/classification_test && make clean
 	cd examples/rl && make clean
+	cd examples/speed_test && make clean
