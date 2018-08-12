@@ -1,0 +1,33 @@
+#ifndef _DATASET_MAGNETOMETER_
+#define _DATASET_MAGNETOMETER_
+
+#include "dataset_interface.h"
+#include "filter.h"
+
+class DatasetMagnetometer: public DatasetInterface
+{
+  private:
+    std::vector<sDatasetItem> stream;
+    std::vector<Filter*> filters_lp, filters_hp;
+  public:
+    DatasetMagnetometer(std::string file_name, float testing_ratio = 0.2);
+    ~DatasetMagnetometer();
+
+    void save_events_plotting(std::string file_name);
+
+  private:
+    void car_type_dataset(float testing_ratio);
+
+    struct sDatasetItem parse_line(std::string line);
+
+
+    std::vector<float> parse_input(std::string str);
+    std::vector<float> parse_output(std::string str);
+
+    void load_stream(std::string file_name);
+    struct sDatasetItem make_item(unsigned int offset);
+    void add(struct sDatasetItem result, float testing_ratio);
+
+};
+
+#endif

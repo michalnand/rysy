@@ -1,0 +1,231 @@
+#include "dataset_magnetometer.h"
+#include "math_.h"
+
+#include <algorithm>
+#include <sstream>
+#include <fstream>
+#include <log.h>
+#include <vpu.h>
+
+DatasetMagnetometer::DatasetMagnetometer(std::string file_name, float testing_ratio)
+                     :DatasetInterface()
+{
+  load_stream(file_name);
+  printf("stream loading done\n");
+
+  car_type_dataset(testing_ratio);
+
+  printf("magnetometer dataset done\n");
+  printf("training count %u\n", (unsigned int)training.size());
+  printf("testing count %u\n", (unsigned int)testing.size());
+}
+
+
+DatasetMagnetometer::~DatasetMagnetometer()
+{
+
+}
+
+void DatasetMagnetometer::car_type_dataset(float testing_ratio)
+{
+  channels = 3;
+  width = 200;
+  height = 1;
+
+
+
+  for (unsigned int ptr = 0; ptr < stream.size() - width*2;)
+  {
+    sDatasetItem item = stream[ptr];
+    unsigned int id = vpu.argmax(&item.output[0], item.output.size());
+
+    sDatasetItem result;
+    if (id != 4)  //check if car presents
+    {
+      result = make_item(ptr);
+      add(result, testing_ratio);
+
+      ptr+= width;
+    }
+    else
+      ptr++;
+  }
+
+}
+
+struct sDatasetItem DatasetMagnetometer::parse_line(std::string line)
+{
+  struct sDatasetItem result;
+
+  result.input = parse_input(line);
+  result.output = parse_output(line);
+
+  return result;
+}
+
+std::vector<float> DatasetMagnetometer::parse_input(std::string str)
+{
+  std::vector<float> result;
+
+  std::replace( str.begin(), str.end(), ',', ' ');
+
+  std::stringstream stream(str);
+
+
+//  while(stream)
+  for (unsigned int i = 0; i < 3; i++)
+  {
+    float value;
+    stream >> value;
+
+    result.push_back(value);
+  }
+
+  return result;
+}
+
+std::vector<float> DatasetMagnetometer::parse_output(std::string str)
+{
+  std::vector<float> result;
+
+  float k = 1.0;
+
+  for (unsigned int i = 0; i < 5; i++)
+    result.push_back(-k);
+
+  if (std::string::npos != str.find("MALE AUTO"))
+    result[0] = k;
+  else
+  if (std::string::npos != str.find("VELKE AUTO"))
+    result[1] = k;
+  else
+  if (std::string::npos != str.find("DODAVKA"))
+    result[2] = k;
+  else
+  if (std::string::npos != str.find("KAMION"))
+    result[3] = k;
+  else
+    result[4] = k;
+
+  return result;
+}
+
+void DatasetMagnetometer::save_events_plotting(std::string file_name)
+{
+  Log log(file_name);
+
+
+
+  for (unsigned int j = 0; j < 20; j++)
+  {
+    struct sDatasetItem item = get_random_training();
+
+    for (unsigned int i = 0; i < item.input.size(); i+= channels)
+    {
+      std::vector<float> tmp;
+
+      tmp.push_back(item.input[i + 0]);
+      tmp.push_back(item.input[i + 1]);
+      tmp.push_back(item.input[i + 2]);
+
+      float output = vpu.argmax(&item.output[0], item.output.size());
+
+      tmp.push_back(output);
+
+      log.add_vector(tmp);
+    }
+
+    /*
+    std::vector<float> tmp;
+    for (unsigned int i = 0; i < (item.input.size() + 1); i++)
+      tmp.push_back(0.0);
+
+    for (unsigned int i = 0; i < 100; i++)
+    {
+      log.add_vector(tmp);
+    }
+    */
+  }
+}
+
+void DatasetMagnetometer::load_stream(std::string file_name)
+{
+  channels = 3;
+
+  for (unsigned int i = 0; i < channels; i++)
+    filters_lp.push_back(new FilterLP(0.01));
+
+  for (unsigned int i = 0; i < channels; i++)
+    filters_hp.push_back(new FilterHP(0.1));
+
+  std::ifstream file(file_name);
+  std::string line;
+
+  std::vector<float> input_filtered_lp;
+  std::vector<float> input_filtered;
+  input_filtered_lp.resize(channels);
+  input_filtered.resize(channels);
+
+
+  while (std::getline(file, line))
+  {
+    struct sDatasetItem item;
+
+    std::vector<float> raw_input = parse_input(line);
+    std::vector<float> raw_output = parse_output(line);
+
+    for (unsigned int i = 0; i < channels; i++)
+      input_filtered_lp[i] = (*filters_lp[i])(raw_input[i]);
+
+    for (unsigned int i = 0; i < channels; i++)
+      input_filtered[i] = (*filters_hp[i])(input_filtered_lp[i]);
+
+    for (unsigned int i = 0; i < channels; i++)
+      input_filtered[i] = math.constrain(input_filtered[i], -2.0, 2.0);
+
+
+    for (unsigned int i = 0; i < channels; i++)
+      item.input.push_back(input_filtered[i]);
+
+    item.output = raw_output;
+
+    stream.push_back(item);
+  }
+}
+
+
+
+struct sDatasetItem DatasetMagnetometer::make_item(unsigned int offset)
+{
+  struct sDatasetItem  result;
+
+  for (unsigned int i = 0; i < 2; i++)
+    result.output.push_back(-1.0);
+
+  for (unsigned int j = 0; j < width; j++)
+  {
+    for (unsigned int i = 0; i < channels; i++)
+      result.input.push_back(stream[offset + j].input[i]);
+  }
+
+  unsigned int id = vpu.argmax(&stream[offset].output[0], stream[offset].output.size());
+
+
+
+  if (id == 0)
+    result.output[0] = 1.0;
+  else
+    result.output[1] = 1.0;
+
+
+
+  return result;
+}
+
+void DatasetMagnetometer::add(struct sDatasetItem result, float testing_ratio)
+{
+    if (math.abs(math.rnd()) < testing_ratio)
+      testing.push_back(result);
+    else
+      training.push_back(result);
+}

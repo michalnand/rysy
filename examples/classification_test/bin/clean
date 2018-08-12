@@ -1,0 +1,32 @@
+cd mnist_0
+./clean
+cd ..
+
+cd mnist_1
+./clean
+cd ..
+
+cd mnist_2
+./clean
+cd ..
+
+cd mnist_3
+./clean
+cd ..
+
+
+cd cifar_10_0
+./clean
+cd ..
+
+cd cifar_10_1
+./clean
+cd ..
+
+cd cifar_10_2
+./clean
+cd ..
+
+cd cifar_10_3
+./clean
+cd ..

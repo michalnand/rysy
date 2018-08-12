@@ -1,0 +1,3 @@
+apt-get install -f git make clang g++ libjsoncpp-dev cimg-dev freeglut3-dev nvidia-cuda-toolkit nvidia-utils-390 nvidia-profiler
+# apt-get install -f gcc-arm-none-eabi gcc-avr gtkterm dfu-util avrdude
+# apt-get install -f synaptic gnuplot vlc rar

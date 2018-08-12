@@ -1,0 +1,17 @@
+RYSY -> machine learning lightweight library
+
+supports dense comvolutional neural networks,
+embedded 8bit int deployment and reinforcement learning
+
+
+
+How to compile :
+
+1, install all packages from install_script
+
+2, in file libs_nn/network_config.h uncomment NETWORK_USE_CUDA if you have NVIDIA GPU
+
+3, if you wish to compile examples dont forget to set path to rysy lib in Makefile
+   default is : LIBS_PATH=$(HOME)/rysy
+
+4, type Make
