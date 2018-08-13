@@ -31,8 +31,8 @@ int main()
       ClassificationExperiment experiment(dataset, config_dir);
       experiment.run();
     }
-  }
-  
+  } 
+
 
   {
     DatasetMnist dataset ( "/home/michal/dataset/mnist/train-images.idx3-ubyte",
