@@ -16,7 +16,7 @@
         {
           "init_weight_range" : 0.0,
           "learning_rate"     : 0.001,
-          "lambda"            : 0.000001,
+          "lambda"            : 0.000005,
           "dropout"           : 0.2,
           "noise"             : 0.05,
 

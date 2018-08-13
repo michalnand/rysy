@@ -11,7 +11,7 @@
 int main()
 {
   srand(time(NULL));
-  /*
+
   {
     DatasetCIFAR10 dataset ( "/home/michal/dataset/cifar_10/data_batch_1.bin",
                              "/home/michal/dataset/cifar_10/data_batch_2.bin",
@@ -32,8 +32,7 @@ int main()
       experiment.run();
     }
   }
-  */
-
+  
 
   {
     DatasetMnist dataset ( "/home/michal/dataset/mnist/train-images.idx3-ubyte",

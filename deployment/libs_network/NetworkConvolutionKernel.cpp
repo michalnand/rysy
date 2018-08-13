@@ -1,5 +1,6 @@
 #include "NetworkConvolutionKernel.h"
 #include "NetworkConfig.h"
+#include "NetworkConvolutionKernelMultithread.h"
 
 template<const unsigned int kernel_size>
 void t_network_convolution_kernel(  nn_layer_t *output,
@@ -121,47 +122,63 @@ void network_convolution_kernel(  nn_layer_t *output,
                                   sLayerGeometry kernel_geometry)
 {
   unsigned int kernel_size = kernel_geometry.w;
+  #ifdef MULTI_THREADS_SUPPORT
 
-  switch (kernel_size)
-  {
-    case 1:
-            t_network_convolution_kernel<1>(  output,
-                                              input,
-                                              w,
-                                              bias,
-                                              w_range,
-                                              bias_range,
-                                              input_geometry.w,
-                                              input_geometry.h,
-                                              input_geometry.d,
-                                              kernel_geometry.d);
-                                              break;
-    case 3:
-            t_network_convolution_kernel<3>(  output,
-                                              input,
-                                              w,
-                                              bias,
-                                              w_range,
-                                              bias_range,
-                                              input_geometry.w,
-                                              input_geometry.h,
-                                              input_geometry.d,
-                                              kernel_geometry.d);
-                                              break;
+    network_convolution_kernel_multithread.run( output,
+                                                input,
+                                                w,
+                                                bias,
+                                                w_range,
+                                                bias_range,
+                                                input_geometry.w,
+                                                input_geometry.h,
+                                                input_geometry.d,
+                                                kernel_geometry.d,
+                                                kernel_size);
 
-   case 5:
-           t_network_convolution_kernel<5>(  output,
-                                             input,
-                                             w,
-                                             bias,
-                                             w_range,
-                                             bias_range,
-                                             input_geometry.w,
-                                             input_geometry.h,
-                                             input_geometry.d,
-                                             kernel_geometry.d);
-                                             break;
-   }
+  #else
+
+    switch (kernel_size)
+    {
+      case 1:
+              t_network_convolution_kernel<1>(  output,
+                                                input,
+                                                w,
+                                                bias,
+                                                w_range,
+                                                bias_range,
+                                                input_geometry.w,
+                                                input_geometry.h,
+                                                input_geometry.d,
+                                                kernel_geometry.d);
+                                                break;
+      case 3:
+              t_network_convolution_kernel<3>(  output,
+                                                input,
+                                                w,
+                                                bias,
+                                                w_range,
+                                                bias_range,
+                                                input_geometry.w,
+                                                input_geometry.h,
+                                                input_geometry.d,
+                                                kernel_geometry.d);
+                                                break;
+
+     case 5:
+             t_network_convolution_kernel<5>(  output,
+                                               input,
+                                               w,
+                                               bias,
+                                               w_range,
+                                               bias_range,
+                                               input_geometry.w,
+                                               input_geometry.h,
+                                               input_geometry.d,
+                                               kernel_geometry.d);
+                                               break;
+     }
+  #endif
 }
 
 

@@ -17,12 +17,12 @@
         {
           "init_weight_range" : 0.0,
           "learning_rate"     : 0.001,
-          "lambda"            : 0.000001,
+          "lambda"            : 0.000005,
           "dropout"           : 0.2,
           "noise"             : 0.05,
 
           "minibatch_size"    : 32
-        }, 
+        },
 
         "layers"         :
         [
@@ -42,25 +42,11 @@
 
           {
             "type"      : "convolution",
-            "geometry"  : [5, 5, 16]
-          },
-          {
-            "type"      : "relu"
-          },
-
-          {
-            "type"      : "max_pooling",
-            "geometry"  : [2, 2, 1]
-          },
-
-          {
-            "type"      : "convolution",
             "geometry"  : [5, 5, 32]
           },
           {
             "type"      : "relu"
           },
-
 
           {
             "type"      : "dropout"

@@ -9,6 +9,8 @@
 
 #include <dataset_mnist.h>
 
+#include <timer.h>
+
 std::vector<nn_layer_t> float_to_nn_t(std::vector<float> input)
 {
   std::vector<nn_layer_t> result(input.size());
@@ -37,6 +39,27 @@ unsigned int argmax(std::vector<float> output)
 }
 
 
+void speed_test(NeuralNetwork &nn, DatasetInterface &dataset)
+{
+  unsigned int iterations_count = 1000;
+  timer.start();
+
+
+  for (unsigned int i = 0; i < iterations_count; i++)
+  {
+    sDatasetItem item = dataset.get_random_testing();
+    auto input = float_to_nn_t(item.input);
+
+    nn.set_input(&input[0]);
+
+    nn.forward();
+  }
+
+  timer.stop();
+
+  printf("somputing time per iteration %f [ms]\n", timer.get_duration()*1.0/iterations_count);
+}
+
 int main()
 {
   srand(time(NULL));
@@ -50,6 +73,8 @@ int main()
 
   dataset.export_h_testing("dataset.h", 100);
 
+
+
   {
     //MyNetCNN nn;
     MyNetDCNN nn;
@@ -57,6 +82,7 @@ int main()
     std::cout << "input size   " << nn.input_size() << "\n";
     std::cout << "output size  " << nn.output_size() << "\n";
 
+    speed_test(nn, dataset);
 
     unsigned int good   = 0;
     unsigned int wrong  = 0;

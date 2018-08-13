@@ -4,6 +4,7 @@ LIBS_PATH=$(HOME)/rysy
 
 
 INC+= -I.
+INC+= -I$(LIBS_PATH)/libs_common
 INC+= -I../libs_network
 INC+= -I$(LIBS_PATH)/libs_dataset
 

@@ -8,7 +8,7 @@
 
     "network_architecture" :
     {
-        "network_log_file_name" : "mnist_5/network.log",
+        "network_log_file_name" : "mnist_3/network.log",
 
         "input_geometry"     : [28, 28, 1],
         "output_geometry"    : [1, 1, 10],
@@ -17,7 +17,7 @@
         {
           "init_weight_range" : 0.0,
           "learning_rate"     : 0.001,
-          "lambda"            : 0.000001,
+          "lambda"            : 0.000005,
           "dropout"           : 0.2,
           "noise"             : 0.05,
 
@@ -34,32 +34,62 @@
           {
             "type"      : "relu"
           },
+          {
+            "type"      : "max_pooling",
+            "geometry"  : [2, 2, 1]
+          },
+
 
           {
-            "type"      : "convolution",
+            "type"      : "dense convolution",
+            "geometry"  : [3, 3, 16]
+          }, 
+          {
+            "type"      : "relu"
+          },
+          {
+            "type"      : "dense convolution",
             "geometry"  : [3, 3, 16]
           },
           {
             "type"      : "relu"
           },
 
+
           {
-            "type"      : "convolution",
+            "type"      : "max_pooling",
+            "geometry"  : [2, 2, 1]
+          },
+
+
+          {
+            "type"      : "dense convolution",
             "geometry"  : [3, 3, 16]
           },
           {
             "type"      : "relu"
           },
-
-
           {
-            "type"      : "convolution",
-            "geometry"  : [3, 3, 32]
+            "type"      : "dense convolution",
+            "geometry"  : [3, 3, 16]
           },
           {
             "type"      : "relu"
           },
-
+          {
+            "type"      : "dense convolution",
+            "geometry"  : [3, 3, 16]
+          },
+          {
+            "type"      : "relu"
+          },
+          {
+            "type"      : "dense convolution",
+            "geometry"  : [3, 3, 16]
+          },
+          {
+            "type"      : "relu"
+          },
 
           {
             "type"      : "dropout"

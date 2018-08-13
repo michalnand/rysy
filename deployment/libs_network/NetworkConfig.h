@@ -4,10 +4,7 @@
 #include <stdint.h>
 
 //#define ARM_CORTEX_M4_M7
-
-//#define THREADS_COUNT_4
-//#define THREADS_COUNT_8
-//#define THREADS_COUNT_16
+#define MULTI_THREADS_SUPPORT 
 
 struct sLayerGeometry
 {
