@@ -333,6 +333,12 @@ void CNN::train(std::vector<float> &required_output, std::vector<float> &input)
   train(nn_required_output, nn_input);
 }
 
+void CNN::train_single_output(float required_output, unsigned int output_idx, std::vector<float> &input)
+{
+  nn_input.set_from_host(input);
+  train_single_output(required_output, output_idx, nn_input);
+}
+
 void CNN::forward(Tensor &output, Tensor &input)
 {
   for (unsigned int i = 0; i < layers.size(); i++)
@@ -369,8 +375,41 @@ void CNN::train(Tensor &required_output, Tensor &input)
 
   unsigned int last_idx = layers.size()-1;
 
+
   layer_memory[last_idx]->error.copy(required_output);
   layer_memory[last_idx]->error.sub(nn_output);
+
+  bool update_weights = false;
+  minibatch_counter++;
+
+  if (minibatch_counter >= hyperparameters.minibatch_size)
+  {
+    update_weights = true;
+    minibatch_counter = 0;
+  }
+
+  for (int i = last_idx; i>= 0; i--)
+  {
+    if (i == 0)
+      layers[i]->backward(input_layer_memory, *layer_memory[i], update_weights);
+    else
+      layers[i]->backward(*layer_memory[i-1], *layer_memory[i], update_weights);
+  }
+}
+
+
+void CNN::train_single_output(float required_output, unsigned int output_idx, Tensor &input)
+{
+
+  forward_training(nn_output, input);
+
+  unsigned int last_idx = layers.size()-1;
+
+  float error = required_output - nn_output.get(0, 0, output_idx);
+
+  layer_memory[last_idx]->error.clear();
+  layer_memory[last_idx]->error.set(0, 0, output_idx, error);
+
 
   bool update_weights = false;
   minibatch_counter++;
