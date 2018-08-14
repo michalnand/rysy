@@ -547,7 +547,6 @@ void cuda_convolution_back_kernel(  float *error,
 
       unsigned int error_back_idx = (ch*height + y)*width + x;
 
-
       /*
       for (unsigned int ky = 0; ky < kernel_size; ky++)
       {
@@ -559,70 +558,72 @@ void cuda_convolution_back_kernel(  float *error,
           error_back_idx++;
         }
 
-        error_back_idx+= width - kernel_size !!!!!!!!!!!;
+        error_back_idx+= width - kernel_size;
       }
       */
+
       if (kernel_size == 1)
       {
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
         error_back_idx+= width - kernel_size;
       }
 
       if (kernel_size == 3)
       {
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
         error_back_idx+= width - kernel_size;
 
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
         error_back_idx+= width - kernel_size;
 
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
         error_back_idx+= width - kernel_size;
       }
 
       if (kernel_size == 5)
       {
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
         error_back_idx+= width - kernel_size;
 
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
         error_back_idx+= width - kernel_size;
 
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
         error_back_idx+= width - kernel_size;
 
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
         error_back_idx+= width - kernel_size;
 
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
         error_back_idx+= width - kernel_size;
       }
+
     }
   }
 }

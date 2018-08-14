@@ -13,6 +13,23 @@ int main()
   srand(time(NULL));
 
   {
+    DatasetMnist dataset ( "/home/michal/dataset/mnist/train-images.idx3-ubyte",
+                           "/home/michal/dataset/mnist/train-labels.idx1-ubyte",
+                           "/home/michal/dataset/mnist/t10k-images.idx3-ubyte",
+                           "/home/michal/dataset/mnist/t10k-labels.idx1-ubyte",
+                          0);
+
+    JsonConfig parameters("experiments_mnist.json");
+
+    for (unsigned int i = 0; i < parameters.result["experiments"].size(); i++)
+    {
+      std::string config_dir = parameters.result["experiments"][i].asString();
+      ClassificationExperiment experiment(dataset, config_dir);
+      experiment.run();
+    }
+  }
+
+  {
     DatasetCIFAR10 dataset ( "/home/michal/dataset/cifar_10/data_batch_1.bin",
                              "/home/michal/dataset/cifar_10/data_batch_2.bin",
                              "/home/michal/dataset/cifar_10/data_batch_3.bin",
@@ -31,25 +48,9 @@ int main()
       ClassificationExperiment experiment(dataset, config_dir);
       experiment.run();
     }
-  } 
-
-
-  {
-    DatasetMnist dataset ( "/home/michal/dataset/mnist/train-images.idx3-ubyte",
-                           "/home/michal/dataset/mnist/train-labels.idx1-ubyte",
-                           "/home/michal/dataset/mnist/t10k-images.idx3-ubyte",
-                           "/home/michal/dataset/mnist/t10k-labels.idx1-ubyte",
-                          0);
-
-    JsonConfig parameters("experiments_mnist.json");
-
-    for (unsigned int i = 0; i < parameters.result["experiments"].size(); i++)
-    {
-      std::string config_dir = parameters.result["experiments"][i].asString();
-      ClassificationExperiment experiment(dataset, config_dir);
-      experiment.run();
-    }
   }
+
+
 
   printf("program done\n");
 

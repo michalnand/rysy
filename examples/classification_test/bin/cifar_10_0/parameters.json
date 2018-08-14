@@ -11,7 +11,7 @@
 
         "input_geometry"     : [32, 32, 3],
         "output_geometry"    : [1, 1, 10],
-
+ 
         "hyperparameters" :
         {
           "init_weight_range" : 0.0,

@@ -27,15 +27,42 @@
         [
 
           {
+            "type"      : "convolution",
+            "geometry"  : [3, 3, 8]
+          },
+          {
+            "type"      : "relu"
+          },
+          {
+            "type"      : "max_pooling",
+            "geometry"  : [2, 2, 1]
+          },
+
+
+          {
             "type"      : "dense convolution",
-            "geometry"  : [5, 5, 8]
+            "geometry"  : [3, 3, 8]
           },
           {
             "type"      : "relu"
           },
           {
             "type"      : "dense convolution",
-            "geometry"  : [5, 5, 8]
+            "geometry"  : [3, 3, 8]
+          },
+          {
+            "type"      : "relu"
+          },
+          {
+            "type"      : "dense convolution",
+            "geometry"  : [3, 3, 8]
+          },
+          {
+            "type"      : "relu"
+          },
+          {
+            "type"      : "dense convolution",
+            "geometry"  : [3, 3, 8]
           },
           {
             "type"      : "relu"
@@ -45,54 +72,13 @@
             "type"      : "max_pooling",
             "geometry"  : [2, 2, 1]
           },
-
-
-          {
-            "type"      : "dense convolution",
-            "geometry"  : [5, 5, 8]
-          },
-          {
-            "type"      : "relu"
-          },
-          {
-            "type"      : "dense convolution",
-            "geometry"  : [5, 5, 8]
-          },
-          {
-            "type"      : "relu"
-          },
-          {
-            "type"      : "dense convolution",
-            "geometry"  : [5, 5, 8]
-          },
-          {
-            "type"      : "relu"
-          },
-          {
-            "type"      : "dense convolution",
-            "geometry"  : [5, 5, 8]
-          },
-          {
-            "type"      : "relu"
-          },
-
-          {
-            "type"      : "max_pooling",
-            "geometry"  : [2, 2, 1]
-          },
-
-
 
           {
             "type"      : "convolution",
-            "geometry"  : [5, 5, 64]
+            "geometry"  : [3, 3, 64]
           },
           {
             "type"      : "relu"
-          },
-          {
-            "type"      : "max_pooling",
-            "geometry"  : [2, 2, 1]
           },
 
           {
