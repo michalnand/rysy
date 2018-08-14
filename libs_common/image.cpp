@@ -151,7 +151,10 @@ std::vector<float> Image::as_vector(bool grayscale)
   {
     for (unsigned int j = 0; j < pixels.size(); j++)
       for (unsigned int i = 0; i < pixels[j].size(); i++)
-        result.push_back((pixels[j][i].b[0] + pixels[j][i].b[1] + pixels[j][i].b[2])/3.0);
+      {
+        float v = (pixels[j][i].b[0] + pixels[j][i].b[1] + pixels[j][i].b[2])/3.0;
+        result.push_back(v);
+      }
   }
   else
   {

@@ -5,6 +5,8 @@
 
 #include <dataset_mnist.h>
 #include <dataset_cifar_10.h>
+#include <dataset_images.h>
+
 #include <classification_experiment.h>
 
 
@@ -30,6 +32,8 @@ int main()
     }
   }
 */
+
+/*
   {
     DatasetCIFAR10 dataset ( "/home/michal/dataset/cifar_10/data_batch_1.bin",
                              "/home/michal/dataset/cifar_10/data_batch_2.bin",
@@ -50,7 +54,15 @@ int main()
       experiment.run();
     }
   }
+*/
 
+  DatasetImages dataset("holes/dataset_parameters.json");
+
+
+  printf("dataset loading done\n");
+
+  ClassificationExperiment experiment(dataset, "holes/");
+  experiment.run();
 
 
   printf("program done\n");

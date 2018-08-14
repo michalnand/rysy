@@ -273,3 +273,22 @@ unsigned int DatasetInterface::argmax(std::vector<float> &v)
 
   return result;
 }
+
+
+void DatasetInterface::shuffle()
+{
+  shuffle(training);
+  shuffle(testing);
+}
+
+void DatasetInterface::shuffle(std::vector<sDatasetItem> &items)
+{
+  for (unsigned int i = 0; i < items.size(); i++)
+  {
+    unsigned int idx = rand()%items.size();
+
+    sDatasetItem tmp  = items[i];
+    items[i]          = items[idx];
+    items[idx]        = tmp;
+  }
+}

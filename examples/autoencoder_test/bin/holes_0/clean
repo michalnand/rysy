@@ -1,0 +1,16 @@
+rm experiment.log
+rm network.log
+rm training_progress.log
+
+cd export_reconstructed_examples
+rm *.png
+cd ..
+
+cd export_required_examples
+rm *.png
+cd ..
+
+
+cd trained
+rm *
+cd ..

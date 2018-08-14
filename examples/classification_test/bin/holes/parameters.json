@@ -1,27 +1,24 @@
 {
     "epoch_count"               : 10,
     "sub_epoch_size"            : 5,
-
+    "compare_top_5"             : false,
 
     "epoch_learning_rate_decay" : 8,
     "learning_rate_decay"       : 0.25,
 
-    "export_required_examples_path" : "mnist_0/export_required_examples/",
-    "export_reconstructed_examples_path" : "mnist_0/export_reconstructed_examples/",
-
     "network_architecture" :
     {
-        "network_log_file_name" : "mnist_0/network.log",
+        "network_log_file_name" : "holes/network.log",
 
-        "input_geometry"     : [28, 28, 1],
-        "output_geometry"    : [1, 1, 10],
+        "input_geometry"     : [66, 66, 1],
+        "output_geometry"    : [1, 1, 2],
 
         "hyperparameters" :
         {
           "init_weight_range" : 0.0,
           "learning_rate"     : 0.0002,
-          "lambda"            : 0.0000001,
-          "dropout"           : 0.05,
+          "lambda"            : 0.0000005,
+          "dropout"           : 0.2,
           "noise"             : 0.05,
 
           "minibatch_size"    : 32
@@ -38,11 +35,6 @@
             "type"      : "relu"
           },
           {
-            "type"      : "max_pooling",
-            "geometry"  : [2, 2, 1]
-          },
-
-          {
             "type"      : "convolution",
             "geometry"  : [3, 3, 16]
           },
@@ -54,9 +46,30 @@
             "geometry"  : [2, 2, 1]
           },
 
+
           {
             "type"      : "convolution",
-            "geometry"  : [3, 3, 4]
+            "geometry"  : [3, 3, 16]
+          },
+          {
+            "type"      : "relu"
+          },
+          {
+            "type"      : "convolution",
+            "geometry"  : [3, 3, 16]
+          },
+          {
+            "type"      : "relu"
+          },
+          {
+            "type"      : "max_pooling",
+            "geometry"  : [3, 3, 1]
+          },
+
+
+          {
+            "type"      : "convolution",
+            "geometry"  : [3, 3, 32]
           },
           {
             "type"      : "relu"
@@ -67,34 +80,8 @@
           },
 
           {
-            "type"      : "unpooling",
-            "geometry"  : [2, 2, 1]
-          },
-          {
-            "type"      : "convolution",
-            "geometry"  : [3, 3, 16]
-          },
-          {
-            "type"      : "relu"
-          },
-
-
-          {
-            "type"      : "unpooling",
-            "geometry"  : [2, 2, 1]
-          },
-          {
-            "type"      : "convolution",
-            "geometry"  : [3, 3, 16]
-          },
-          {
-            "type"      : "relu"
-          },
-          {
-            "type"      : "convolution",
-            "geometry"  : [3, 3, 1]
+            "type"      : "output"
           }
-
 
         ]
     }

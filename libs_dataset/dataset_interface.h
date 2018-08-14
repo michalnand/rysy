@@ -57,9 +57,14 @@ class DatasetInterface
 
     void export_h_testing(std::string file_name, unsigned int count);
 
+    void shuffle();
+
   protected:
     float rnd();
     unsigned int argmax(std::vector<float> &v);
+
+    void shuffle(std::vector<sDatasetItem> &items);
+
 
 
 };
