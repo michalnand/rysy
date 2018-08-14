@@ -1,22 +1,23 @@
 {
-    "epoch_count"          : 20,
-    "compare_top_5"        : false,
+    "epoch_count"               : 10,
+    "sub_epoch_size"            : 5,
+    "compare_top_5"             : false,
 
-    "epoch_learning_rate_decay" : 15,
+    "epoch_learning_rate_decay" : 8,
     "learning_rate_decay"       : 0.25,
 
     "network_architecture" :
     {
-        "network_log_file_name" : "cifar_10_0/network.log",
+        "network_log_file_name" : "mnist_1/network.log",
 
-        "input_geometry"     : [32, 32, 3],
+        "input_geometry"     : [28, 28, 1],
         "output_geometry"    : [1, 1, 10],
 
         "hyperparameters" :
         {
           "init_weight_range" : 0.0,
           "learning_rate"     : 0.001,
-          "lambda"            : 0.000001,
+          "lambda"            : 0.000005,
           "dropout"           : 0.2,
           "noise"             : 0.05,
 
@@ -28,7 +29,7 @@
 
           {
             "type"      : "convolution",
-            "geometry"  : [5, 5, 32]
+            "geometry"  : [3, 3, 8]
           },
           {
             "type"      : "relu"
@@ -37,30 +38,41 @@
             "type"      : "max_pooling",
             "geometry"  : [2, 2, 1]
           },
+
+
+          {
+            "type"      : "dense convolution",
+            "geometry"  : [3, 3, 8]
+          },
+          {
+            "type"      : "relu"
+          },
+          {
+            "type"      : "dense convolution",
+            "geometry"  : [3, 3, 8]
+          },
+          {
+            "type"      : "relu"
+          },
+          {
+            "type"      : "dense convolution",
+            "geometry"  : [3, 3, 8]
+          },
+          {
+            "type"      : "relu"
+          },
+          {
+            "type"      : "max_pooling",
+            "geometry"  : [2, 2, 1]
+          },
+
 
           {
             "type"      : "convolution",
-            "geometry"  : [5, 5, 32]
+            "geometry"  : [3, 3, 32]
           },
           {
             "type"      : "relu"
-          },
-          {
-            "type"      : "max_pooling",
-            "geometry"  : [2, 2, 1]
-          },
-
-
-          {
-            "type"      : "convolution",
-            "geometry"  : [5, 5, 64]
-          },
-          {
-            "type"      : "relu"
-          },
-          {
-            "type"      : "max_pooling",
-            "geometry"  : [2, 2, 1]
           },
 
           {

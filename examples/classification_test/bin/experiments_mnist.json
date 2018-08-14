@@ -1,7 +1,6 @@
 {
   "experiments" :
   [
-    "mnist_0/",
     "mnist_1/"
   ]
 }
