@@ -25,14 +25,15 @@ DatasetSTL10::DatasetSTL10(unsigned int padding)
   load_training();
   load_testing();
 
+/*
   unsigned int required_size = 4*width*height*channels;
   unsigned int max_mem   = get_mem_availible()/1000;  //max_mem in MB
-  if (max_mem > 8000)
-   max_mem = 8000;
+  if (max_mem < 4096)
+   max_mem = 4096;
   unsigned int max_count = max_mem/(required_size*0.000001);
 
   load_unlabeled(max_count);
-
+*/
   printf("STL loading done %lu %lu %lu\n", training.size(), testing.size(), unlabeled.size());
 }
 

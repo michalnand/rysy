@@ -15,6 +15,9 @@ struct sDatasetItem
 class DatasetInterface
 {
   public:
+    std::vector<unsigned int> histogram;
+    unsigned int histogram_max_count;
+
     std::vector<sDatasetItem> unlabeled, training, testing;
 
   protected:
@@ -59,12 +62,19 @@ class DatasetInterface
 
     void shuffle();
 
+    void compute_histogram();
+    void balance_dataset(float max_growth = 0.1);
+    void print_histogram();
+
   protected:
     float rnd();
     unsigned int argmax(std::vector<float> &v);
 
     void shuffle(std::vector<sDatasetItem> &items);
 
+    void normalise(std::vector<float> &v, float min = 0.0, float max = 1.0);
+
+    bool is_zero(std::vector<int> &v);
 
 
 };

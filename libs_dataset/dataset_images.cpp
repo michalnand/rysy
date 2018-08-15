@@ -11,6 +11,8 @@ DatasetImages::DatasetImages(std::string json_config_file_name)
   width     = json.result["width"].asInt();
   height    = json.result["height"].asInt();
 
+  max_items_per_folder = json.result["max_items_per_folder"].asInt();
+
   if (grayscale)
     channels  = 1;
   else
@@ -44,6 +46,8 @@ void DatasetImages::load_dir(std::vector<sDatasetItem> &items, std::string path,
 {
   printf("loading directory %s\n", path.c_str());
 
+  int items_count = 0;
+
   for (auto & p : std::experimental::filesystem::directory_iterator(path))
    {
      std::string image_file_name;
@@ -64,7 +68,16 @@ void DatasetImages::load_dir(std::vector<sDatasetItem> &items, std::string path,
 
        item.output[class_id] = 1.0;
 
+       normalise(item.input, 0.0, 1.0);
+
        items.push_back(item);
+
+       items_count++;
+       if (max_items_per_folder != -1)
+       {
+         if (items_count > max_items_per_folder)
+          return;
+        }
      }
    }
 }

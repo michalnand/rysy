@@ -16,6 +16,8 @@ class AutoencoderExperiment
     sGeometry input_geometry;
     sGeometry output_geometry;
 
+    bool use_unlabeled;
+
   protected:
     float rms_testing_average;
     float rms_testing_min    ;

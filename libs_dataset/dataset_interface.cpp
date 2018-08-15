@@ -292,3 +292,99 @@ void DatasetInterface::shuffle(std::vector<sDatasetItem> &items)
     items[idx]        = tmp;
   }
 }
+
+void DatasetInterface::normalise(std::vector<float> &v, float min, float max)
+{
+  float v_max = v[0];
+  float v_min = v[0];
+
+  for (unsigned int i = 0; i < v.size(); i++)
+  {
+    if (v[i] > v_max)
+      v_max = v[i];
+    if (v[i] < v_min)
+      v_min = v[i];
+  }
+
+  float k = 0.0;
+  float q = 0.0;
+  if (v_max > v_min)
+  {
+    k = (max - min)/(v_max - v_min);
+    q = max - k*v_max;
+  }
+
+  for (unsigned int i = 0; i < v.size(); i++)
+    v[i] = k*v[i] + q;
+}
+
+void DatasetInterface::compute_histogram()
+{
+  histogram.resize(get_output_size());
+
+  for (unsigned int i = 0; i < histogram.size(); i ++)
+    histogram[i] = 0;
+
+  for (unsigned int i = 0; i < training.size(); i ++)
+  {
+    unsigned int class_idx = argmax(training[i].output);
+    histogram[class_idx]++;
+  }
+
+  unsigned int histogram_max_idx   = 0;
+  for (unsigned int i = 0; i < histogram.size(); i++)
+    if (histogram[i] > histogram[histogram_max_idx])
+      histogram_max_idx = i;
+
+  histogram_max_count = histogram[histogram_max_idx];
+}
+
+void DatasetInterface::print_histogram()
+{
+  printf("\nhistogram : ");
+  for (unsigned int i = 0; i < histogram.size(); i++)
+    printf("%u ", histogram[i]);
+  printf("\n");
+}
+
+void DatasetInterface::balance_dataset(float max_growth)
+{
+  shuffle();
+  compute_histogram();
+
+  std::vector<int> required_add_count(histogram.size());
+  for (unsigned int i = 0; i < required_add_count.size(); i++)
+    required_add_count[i] = histogram_max_count - histogram[i];
+
+  unsigned int max_dataset_size = training.size()*(1.0 + max_growth);
+
+  while ((is_zero(required_add_count) == false) && (training.size() < max_dataset_size))
+  {
+    unsigned int dataset_size = training.size();
+    unsigned int size_tmp = dataset_size;
+    for (unsigned int i = 0; i < dataset_size; i++)
+    {
+      unsigned int class_idx = argmax(training[i].output);
+      if (required_add_count[class_idx] > 0)
+      {
+        required_add_count[class_idx]--;
+        size_tmp++;
+        training.push_back(training[i]);
+
+        if (size_tmp > max_dataset_size)
+          break;
+      }
+    }
+  }
+
+  compute_histogram();
+}
+
+bool DatasetInterface::is_zero(std::vector<int> &v)
+{
+  for (unsigned int i = 0; i < v.size(); i++)
+    if (v[i] != 0)
+      return false;
+
+  return true;
+}

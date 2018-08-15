@@ -9,7 +9,8 @@ class DatasetImages: public DatasetInterface
 {
   private:
     bool grayscale;
-    
+    int max_items_per_folder;
+
   public:
     DatasetImages(std::string json_config_file_name);
     ~DatasetImages();

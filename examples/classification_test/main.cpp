@@ -14,13 +14,16 @@ int main()
 {
   srand(time(NULL));
 
-/*
+
   {
     DatasetMnist dataset ( "/home/michal/dataset/mnist/train-images.idx3-ubyte",
                            "/home/michal/dataset/mnist/train-labels.idx1-ubyte",
                            "/home/michal/dataset/mnist/t10k-images.idx3-ubyte",
                            "/home/michal/dataset/mnist/t10k-labels.idx1-ubyte",
                           0);
+
+    dataset.balance_dataset(2.0);
+
 
     JsonConfig parameters("experiments_mnist.json");
 
@@ -31,7 +34,7 @@ int main()
       experiment.run();
     }
   }
-*/
+
 
 /*
   {
@@ -55,15 +58,6 @@ int main()
     }
   }
 */
-
-  DatasetImages dataset("holes/dataset_parameters.json");
-
-
-  printf("dataset loading done\n");
-
-  ClassificationExperiment experiment(dataset, "holes/");
-  experiment.run();
-
 
   printf("program done\n");
 
