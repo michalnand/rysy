@@ -337,6 +337,13 @@ void DatasetInterface::compute_histogram()
       histogram_max_idx = i;
 
   histogram_max_count = histogram[histogram_max_idx];
+
+  unsigned long int average = 0;
+
+  for (unsigned int i = 0; i < histogram.size(); i++)
+    average+= histogram[i];
+
+  histogram_average_count = average / histogram.size();
 }
 
 void DatasetInterface::print_histogram()
@@ -347,18 +354,28 @@ void DatasetInterface::print_histogram()
   printf("\n");
 }
 
-void DatasetInterface::balance_dataset(float max_growth)
+void DatasetInterface::balance(float max_growth, bool use_average)
 {
   shuffle();
   compute_histogram();
+  //print_histogram();
 
   std::vector<int> required_add_count(histogram.size());
-  for (unsigned int i = 0; i < required_add_count.size(); i++)
-    required_add_count[i] = histogram_max_count - histogram[i];
+
+  if (use_average)
+  {
+    for (unsigned int i = 0; i < required_add_count.size(); i++)
+      required_add_count[i] = histogram_average_count - histogram[i];
+  }
+  else
+  {
+    for (unsigned int i = 0; i < required_add_count.size(); i++)
+      required_add_count[i] = histogram_max_count - histogram[i];
+  }
 
   unsigned int max_dataset_size = training.size()*(1.0 + max_growth);
 
-  while ((is_zero(required_add_count) == false) && (training.size() < max_dataset_size))
+  while ((is_negative(required_add_count) == false) && (training.size() < max_dataset_size))
   {
     unsigned int dataset_size = training.size();
     unsigned int size_tmp = dataset_size;
@@ -378,12 +395,13 @@ void DatasetInterface::balance_dataset(float max_growth)
   }
 
   compute_histogram();
+  // print_histogram();
 }
 
-bool DatasetInterface::is_zero(std::vector<int> &v)
+bool DatasetInterface::is_negative(std::vector<int> &v)
 {
   for (unsigned int i = 0; i < v.size(); i++)
-    if (v[i] != 0)
+    if (v[i] > 0)
       return false;
 
   return true;

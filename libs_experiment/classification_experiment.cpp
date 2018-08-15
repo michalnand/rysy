@@ -51,7 +51,7 @@ void ClassificationExperiment::run()
   compare_training_top5.set_classes_count(dataset->get_output_size());
   compare_training_top5.set_top_n_count(5);
 
-  experiment_log << "training\n";
+
 
   float best_sucess = 0;
   unsigned int epoch_count = parameters.result["epoch_count"].asInt();
@@ -77,6 +77,20 @@ void ClassificationExperiment::run()
 
 
   bool output_valid = true;
+
+
+  experiment_log << "training size    : " << dataset->get_training_size() << "\n";
+  experiment_log << "testing size     : " << dataset->get_testing_size()  << "\n";
+  experiment_log << "epoch count      : " << epoch_count  << "\n";
+  experiment_log << "sub epoch size   : " << sub_epoch_size  << "\n";
+  experiment_log << "\n";
+  experiment_log << "epoch_learning_rate_decay   : " << epoch_learning_rate_decay  << "\n";
+  experiment_log << "learning_rate_decay         : " << learning_rate_decay  << "\n";
+
+
+  experiment_log << "\n";
+  experiment_log << "training\n";
+
 
   for (unsigned int epoch = 0; epoch < epoch_count; epoch++)
   {
@@ -262,7 +276,7 @@ bool ClassificationExperiment::is_valid(std::vector<float> &v)
   for (unsigned int i = 0; i < v.size(); i++)
     if (isnan(v[i]))
       return false;
- 
+
   for (unsigned int i = 0; i < v.size(); i++)
     if (isinf(v[i]))
       return false;

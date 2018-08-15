@@ -22,9 +22,6 @@ int main()
                            "/home/michal/dataset/mnist/t10k-labels.idx1-ubyte",
                           0);
 
-    dataset.balance_dataset(2.0);
-
-
     JsonConfig parameters("experiments_mnist.json");
 
     for (unsigned int i = 0; i < parameters.result["experiments"].size(); i++)

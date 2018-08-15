@@ -16,7 +16,7 @@ class DatasetInterface
 {
   public:
     std::vector<unsigned int> histogram;
-    unsigned int histogram_max_count;
+    unsigned int histogram_max_count, histogram_average_count;
 
     std::vector<sDatasetItem> unlabeled, training, testing;
 
@@ -63,7 +63,7 @@ class DatasetInterface
     void shuffle();
 
     void compute_histogram();
-    void balance_dataset(float max_growth = 0.1);
+    void balance(float max_growth = 0.1, bool use_average = false);
     void print_histogram();
 
   protected:
@@ -74,7 +74,7 @@ class DatasetInterface
 
     void normalise(std::vector<float> &v, float min = 0.0, float max = 1.0);
 
-    bool is_zero(std::vector<int> &v);
+    bool is_negative(std::vector<int> &v);
 
 
 };
