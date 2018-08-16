@@ -23,13 +23,14 @@ Polygon::Polygon(Json::Value &json_polygon)
     Point tmp;
 
     if (json_polygon[i].size() > 0)
-      tmp.set_x(json_polygon[i][0].asFloat());
+      tmp.set_x(json_polygon[i][0].asInt());
 
     if (json_polygon[i].size() > 1)
-      tmp.set_y(json_polygon[i][1].asFloat());
+      tmp.set_y(json_polygon[i][1].asInt());
 
     if (json_polygon[i].size() > 2)
-      tmp.set_z(json_polygon[i][2].asFloat());
+      tmp.set_z(json_polygon[i][2].asInt());
+
 
     points.push_back(tmp);
   }

@@ -59,7 +59,7 @@ class CSLabels
       return m_height;
     }
 
-    void print(bool print_polygons);
+    void print(bool print_polygons = false);
 
   protected:
     void copy(CSLabels& other);

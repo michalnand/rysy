@@ -1,0 +1,26 @@
+
+Neurónové siete v embedded svete
+
+Arm Cortex M deep learning
+
+Narastajúce požiadavky na inteligentné embedded zariadenia si postupne
+vyžadujú použitie neurónových sieti.
+
+Príklady : TODO
+
+V embedded zariadeniach sa stretneme so značne obmedzenými prostriedkami :
+najmä rýchlosť procesora a pamäť.
+To si vyžaduje určité úpravy implementácie neurónovej siete aby bol jej beh možný
+aj na takomto HW.
+
+obsah prednášky :
+
+1, dôvody pre použitie NN v embedded
+2, úvodu do konvolučné siete a dense konvolučné siete
+3, príklad hlbokej siete na rozpoznávanie (architektúra siete, tréning siete a testovanie)
+4, popis použitého harvéru (STM cortex M7 Discovery)
+5, prevod váh siete vhodných pre embedded HW (32bit float to 8bit int)
+6, implementačné detaily pre zrýchlenie behu siete (C++ templates, pipeline, ARM SIMD inštrukcie)
+7, odkazy na zaujímave projekty s embedded NN :
+    https://www.youtube.com/watch?v=t6-5qrLHtLE
+    https://www.youtube.com/watch?v=xXKnUeN1VgI

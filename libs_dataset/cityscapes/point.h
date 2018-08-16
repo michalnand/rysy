@@ -46,6 +46,9 @@ class Point
     void set_y(point_t y);
     void set_z(point_t z);
 
+    void set(point_t x, point_t y = 0, point_t z = 0);
+
+
   public:
     void print();
 

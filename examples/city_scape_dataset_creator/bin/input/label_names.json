@@ -1,0 +1,166 @@
+{
+		"labels" :
+		[
+			{
+    		"string": "flat",
+				"number": 0
+			},
+			{
+				"string": "road",
+				"number": 0
+			},
+			{
+				"string": "sidewalk",
+				"number": 0
+			},
+			{
+				"string": "parking",
+				"number": 0
+			},
+			{
+				"string": "rail track",
+				"number": 0
+			},
+
+
+
+
+			{
+				"string": "human",
+				"number": 1
+			},
+			{
+				"string": "rail track",
+				"number": 1
+			},
+			{
+				"string": "person",
+				"number": 1
+			},
+			{
+				"string": "rider",
+				"number": 1
+			},
+
+
+			{
+				"string": "vehicle",
+				"number": 2
+			},
+			{
+				"string": "car",
+				"number": 2
+			},
+			{
+				"string": "truck",
+				"number": 2
+			},
+			{
+				"string": "bus",
+				"number": 2
+			},
+			{
+				"string": "on rails",
+				"number": 2
+			},
+			{
+				"string": "motorcycle",
+				"number": 2
+			},
+			{
+				"string": "caravan",
+				"number": 2
+			},
+			{
+				"string": "trailer",
+				"number": 2
+			},
+
+
+			{
+				"string": "construction",
+				"number": 3
+			},
+			{
+				"string": "building",
+				"number": 3
+			},
+			{
+				"string": "wall",
+				"number": 3
+			},
+			{
+				"string": "guard rail",
+				"number": 3
+			},
+			{
+				"string": "bridge",
+				"number": 3
+			},
+			{
+				"string": "tunnel",
+				"number": 3
+			},
+
+
+			{
+				"string": "object",
+				"number": 4
+			},
+			{
+				"string": "pole",
+				"number": 4
+			},
+			{
+				"string": "pole group",
+				"number": 4
+			},
+			{
+				"string": "traffic sign",
+				"number": 4
+			},
+			{
+				"string": "traffic light",
+				"number": 4
+			},
+
+
+			{
+				"string": "nature",
+				"number": 5
+			},
+			{
+				"string": "vegetation",
+				"number": 5
+			},
+			{
+				"string": "terrain",
+				"number": 5
+			},
+
+
+			{
+				"string": "sky",
+				"number": 6
+			},
+
+
+			{
+				"string": "void",
+				"number": 7
+			},
+			{
+				"string": "ground",
+				"number": 7
+			},
+			{
+				"string": "dynamic",
+				"number": 7
+			},
+			{
+				"string": "static",
+				"number": 7
+			}
+
+		]
+}

@@ -69,14 +69,16 @@ Point& Point::operator= (const Point& other)
 
 void Point::copy(Point& other)
 {
-  (void)other;
-  //TODO copy other to this
+  m_x = other.m_x;
+  m_y = other.m_y;
+  m_z = other.m_z;
 }
 
 void Point::copy(const Point& other)
 {
-  (void)other;
-  //TODO copy other to this
+  m_x = other.m_x;
+  m_y = other.m_y;
+  m_z = other.m_z;
 }
 
 point_t Point::x()
@@ -107,6 +109,13 @@ void Point::set_y(point_t y)
 
 void Point::set_z(point_t z)
 {
+  m_z = z;
+}
+
+void Point::set(point_t x, point_t y, point_t z)
+{
+  m_x = x;
+  m_y = y;
   m_z = z;
 }
 
@@ -169,6 +178,10 @@ Point& Point::operator- (const Point& other)
 point_t Point::operator* (Point& other)
 {
   point_t result = 0;
+  result+= m_x*other.m_x;
+  result+= m_y*other.m_y;
+  result+= m_z*other.m_z;
+
   return result;
 }
 
