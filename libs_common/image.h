@@ -49,6 +49,8 @@ class Image
     void add_row(float *row);
 
     float compare(class Image &image);
+
+    void normalise();
 };
 
 #endif

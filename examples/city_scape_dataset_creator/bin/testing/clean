@@ -1,0 +1,31 @@
+cd 0
+rm *.png -f
+cd ..
+
+cd 1
+rm *.png -f
+cd ..
+
+cd 2
+rm *.png -f
+cd ..
+
+cd 3
+rm *.png -f
+cd ..
+
+cd 4
+rm *.png -f
+cd ..
+
+cd 5
+rm *.png -f
+cd ..
+
+cd 6
+rm *.png -f
+cd ..
+
+cd 7
+rm *.png -f
+cd ..

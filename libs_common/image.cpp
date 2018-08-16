@@ -272,7 +272,7 @@ void Image::add_row(float *row)
 
   current_row = (current_row+1)%pixels.size();
 }
-
+ 
 float Image::compare(class Image &image)
 {
   float result = 0.0;
@@ -289,4 +289,9 @@ float Image::compare(class Image &image)
 
   result = sqrt(result/(pixels.size()*pixels[0].size()*channels));
   return result;
+}
+
+void Image::normalise()
+{
+  c_img->normalize(0.0, 1.0);
 }
