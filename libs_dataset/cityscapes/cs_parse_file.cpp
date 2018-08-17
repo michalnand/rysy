@@ -30,103 +30,67 @@ CSParseFile::~CSParseFile()
 
 void CSParseFile::process_all(unsigned int image_step)
 {
-  Image input_image(input_file_name_prefix + "leftImg8bit.png");
-  Image output_image(output_image_size, output_image_size);
+  std::string input_image_file_name = input_file_name_prefix + "leftImg8bit.png";
+  cimg_library::CImg<float> input_image(input_image_file_name.c_str());
+
+  cimg_library::CImg<float> output_image(output_image_size, output_image_size, 1, 3, 0);
+
+  std::vector<float> pixel(3);
 
   std::string output_file_name;
 
-
-  float max_value = input_image.pixels[0][0].b[0];
-  float min_value = max_value;
-
-  for (unsigned int y = 0; y < (unsigned int)labels.height(); y++)
-  for (unsigned int x = 0; x < (unsigned int)labels.width(); x++)
-  for (unsigned int ch = 0; ch < 3; ch++)
-  {
-    if (input_image.pixels[y][x].b[ch] > max_value)
-      max_value = input_image.pixels[y][x].b[ch];
-    if (input_image.pixels[y][x].b[ch] < min_value)
-      min_value = input_image.pixels[y][x].b[ch];
-  }
-
-  float k = 0.0;
-  float q = 0.0;
-
-  if (max_value > min_value)
-  {
-    k = (1.0 - 0.0)/(max_value - min_value);
-    q = 1.0 - k*max_value;
-  }
-
-
   unsigned int id = 0;
+
+  input_image.normalize(0, 255);
+
   for (unsigned int y = (output_image_size/2); y < (labels.height() - (output_image_size/2)); y+= image_step)
     for (unsigned int x = (output_image_size/2); x < (labels.width() - (output_image_size/2)); x+= image_step)
+  {
+    auto class_name = labels.get_label(x, y, 0);
+    int class_id = cs_to_class_id.get(class_name);
+
+    if (class_id != -1)
     {
-      auto class_name = labels.get_label(x, y, 0);
-      int class_id = cs_to_class_id.get(class_name);
-
-      if (class_id != -1)
+      for (unsigned int ky = 0; ky < output_image_size; ky++)
+      for (unsigned int kx = 0; kx < output_image_size; kx++)
       {
-        for (unsigned int ky = 0; ky < output_image_size; ky++)
-        for (unsigned int kx = 0; kx < output_image_size; kx++)
-        for (unsigned int ch = 0; ch < 3; ch++)
-        {
-          output_image.pixels[ky][kx].b[ch] = k*input_image.pixels[y + ky - output_image_size/2][x + kx - output_image_size/2].b[ch] + q;
-        }
+        int y_ = y + ky - output_image_size/2;
+        int x_ = x + kx - output_image_size/2;
 
-        output_file_name = ouput_images_dir + std::to_string(class_id) + "/" + ouput_images_prefix + std::to_string(id) + ".png";
-        output_image.normalise();
-        output_image.save(output_file_name);
+        pixel[0] = *(input_image.data(x_, y_, 0, 0));
+        pixel[1] = *(input_image.data(x_, y_, 0, 1));
+        pixel[2] = *(input_image.data(x_, y_, 0, 2));
 
-        id++;
+        output_image.draw_point(kx, ky, &pixel[0]);
       }
+
+
+      output_file_name = ouput_images_dir + std::to_string(class_id) + "/" + ouput_images_prefix + std::to_string(id) + ".png";
+      // std::cout << "saving to " << ouput_images_dir << "\n\n\n";
+      output_image.save(output_file_name.c_str());
+
+      id++;
     }
+  }
+
 }
 
 
 
 void CSParseFile::process_random(unsigned int count)
 {
-  Image input_image(input_file_name_prefix + "leftImg8bit.png");
-  Image output_image(output_image_size, output_image_size);
+  std::string input_image_file_name = input_file_name_prefix + "leftImg8bit.png";
+  cimg_library::CImg<float> input_image(input_image_file_name.c_str());
+
+  cimg_library::CImg<float> output_image(output_image_size, output_image_size, 1, 3, 0);
+
+  std::vector<float> pixel(3);
 
   std::string output_file_name;
 
-
-  std::vector<float> max_value = input_image.pixels[0][0];
-  std::vector<float> min_value = max_value;
-
-  for (unsigned int y = 0; y < (unsigned int)labels.height(); y++)
-  for (unsigned int x = 0; x < (unsigned int)labels.width(); x++)
-  for (unsigned int ch = 0; ch < 3; ch++)
-  {
-    if (input_image.pixels[y][x].b[ch] > max_value)
-      max_value[ch] = input_image.pixels[y][x].b[ch];
-    if (input_image.pixels[y][x].b[ch] < min_value)
-      min_value[ch] = input_image.pixels[y][x].b[ch];
-  }
-
-  std::vector<float> k(max_value.size());
-  std::vector<float> q(max_value.size());
-
-  for (unsigned int i = 0; i < max_value.size(); i++)
-  {
-    if (max_value[i] > min_value[i])
-    {
-      k[i] = (1.0 - 0.0)/(max_value[i] - min_value[i]);
-      q[i] = 1.0 - k[i]*max_value[i];
-    }
-    else
-    {
-      k[i] = 0.0;
-      q[i] = 0.0;
-    }
-  }
-
   unsigned int id = 0;
 
-
+  input_image.normalize(0, 255);
 
   while (id < count)
   {
@@ -140,16 +104,22 @@ void CSParseFile::process_random(unsigned int count)
     {
       for (unsigned int ky = 0; ky < output_image_size; ky++)
       for (unsigned int kx = 0; kx < output_image_size; kx++)
-      for (unsigned int ch = 0; ch < 3; ch++)
       {
-        output_image.pixels[ky][kx].b[ch] = k[ch]*input_image.pixels[y + ky - output_image_size/2][x + kx - output_image_size/2].b[ch] + q[ch];
+        int y_ = y + ky - output_image_size/2;
+        int x_ = x + kx - output_image_size/2;
+
+        pixel[0] = *(input_image.data(x_, y_, 0, 0));
+        pixel[1] = *(input_image.data(x_, y_, 0, 1));
+        pixel[2] = *(input_image.data(x_, y_, 0, 2));
+
+        output_image.draw_point(kx, ky, &pixel[0]);
       }
+
 
       output_file_name = ouput_images_dir + std::to_string(class_id) + "/" + ouput_images_prefix + std::to_string(id) + ".png";
       // std::cout << "saving to " << ouput_images_dir << "\n\n\n";
-      output_image.normalise();
-      output_image.save(output_file_name);
 
+      output_image.save(output_file_name.c_str());
       id++;
     }
   }

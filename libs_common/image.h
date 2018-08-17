@@ -17,6 +17,8 @@ class Image
     cimg_library::CImgDisplay *image_display;
 
     unsigned int current_row;
+    bool m_normalise;
+
   public:
     std::vector<std::vector<struct sPixel>> pixels;
     unsigned int width, height;
@@ -25,10 +27,10 @@ class Image
 
   public:
     //load image from file
-    Image(std::string file_name, bool grayscale = false);
+    Image(std::string file_name, bool grayscale = false, bool normalise = false);
 
     //create empty image
-    Image(unsigned int width, unsigned int height);
+    Image(unsigned int width, unsigned int height, bool normalise = false);
     ~Image();
 
     void save(std::string file_name);

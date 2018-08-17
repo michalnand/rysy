@@ -1,10 +1,12 @@
 #include "image.h"
 #include <stdio.h>
 
-Image::Image(std::string file_name, bool grayscale)
+Image::Image(std::string file_name, bool grayscale, bool normalise)
 {
   this->height = 0;
   this->width = 0;
+  this->m_normalise = normalise;
+
   c_img = new cimg_library::CImg<float>(file_name.c_str());
 
   if (c_img == nullptr)
@@ -17,7 +19,8 @@ Image::Image(std::string file_name, bool grayscale)
   //  printf("Image %s [%u %u]\n", file_name.c_str(), (unsigned int)c_img->height(), (unsigned int)c_img->width());
   }
 
-  c_img->normalize(0.0, 1.0); //normalise values into <-1, 1> interval
+  if (m_normalise)
+    c_img->normalize(0.0, 1.0); //normalise values into <0, 1> interval
 
   for (unsigned int j = 0; j < (unsigned int)c_img->height(); j++)
   {
@@ -62,8 +65,10 @@ Image::Image(std::string file_name, bool grayscale)
   current_row = 0;
 }
 
-Image::Image(unsigned int width, unsigned int height)
+Image::Image(unsigned int width, unsigned int height, bool normalise)
 {
+  m_normalise = normalise;
+  
   std::vector<struct sPixel> row;
 
   struct sPixel pixel;
@@ -116,7 +121,9 @@ void Image::save(std::string file_name)
       c_img->draw_point(i, j, &pixels[j][i].b[0]);
     }
 
-  c_img->normalize(0, 255);
+  if (m_normalise)
+    c_img->normalize(0, 255);
+
   c_img->save(file_name.c_str());
 }
 
@@ -272,7 +279,7 @@ void Image::add_row(float *row)
 
   current_row = (current_row+1)%pixels.size();
 }
- 
+
 float Image::compare(class Image &image)
 {
   float result = 0.0;

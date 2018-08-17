@@ -15,6 +15,7 @@ int main()
   srand(time(NULL));
 
 
+
   {
     DatasetMnist dataset ( "/home/michal/dataset/mnist/train-images.idx3-ubyte",
                            "/home/michal/dataset/mnist/train-labels.idx1-ubyte",
@@ -31,7 +32,6 @@ int main()
       experiment.run();
     }
   }
-
 
 /*
   {

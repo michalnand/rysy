@@ -1,6 +1,6 @@
 #include "dataset_images.h"
 #include <experimental/filesystem>
-#include <image.h>
+#include <image_load.h>
 
 DatasetImages::DatasetImages(std::string json_config_file_name)
 {
@@ -53,22 +53,22 @@ void DatasetImages::load_dir(std::vector<sDatasetItem> &items, std::string path,
      std::string image_file_name;
      image_file_name = p.path();
 
+  //   printf("loading file %s\n", image_file_name.c_str());
+
 
      if (std::experimental::filesystem::path(image_file_name).extension() == ".png")
      {
-       Image image(image_file_name);
+       ImageLoad image(image_file_name, grayscale, true);
 
        sDatasetItem item;
 
-       item.input = image.as_vector(grayscale);
+       item.input = image.get();
 
        item.output.resize(classes_count);
        for (unsigned int i = 0; i < item.output.size(); i++)
           item.output[i] = 0.0;
 
        item.output[class_id] = 1.0;
-
-       normalise(item.input, 0.0, 1.0);
 
        items.push_back(item);
 
