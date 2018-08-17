@@ -94,26 +94,34 @@ void CSParseFile::process_random(unsigned int count)
   std::string output_file_name;
 
 
-  float max_value = input_image.pixels[0][0].b[0];
-  float min_value = max_value;
+  std::vector<float> max_value = input_image.pixels[0][0];
+  std::vector<float> min_value = max_value;
 
   for (unsigned int y = 0; y < (unsigned int)labels.height(); y++)
   for (unsigned int x = 0; x < (unsigned int)labels.width(); x++)
   for (unsigned int ch = 0; ch < 3; ch++)
   {
     if (input_image.pixels[y][x].b[ch] > max_value)
-      max_value = input_image.pixels[y][x].b[ch];
+      max_value[ch] = input_image.pixels[y][x].b[ch];
     if (input_image.pixels[y][x].b[ch] < min_value)
-      min_value = input_image.pixels[y][x].b[ch];
+      min_value[ch] = input_image.pixels[y][x].b[ch];
   }
 
-  float k = 0.0;
-  float q = 0.0;
+  std::vector<float> k(max_value.size());
+  std::vector<float> q(max_value.size());
 
-  if (max_value > min_value)
+  for (unsigned int i = 0; i < max_value.size(); i++)
   {
-    k = (1.0 - 0.0)/(max_value - min_value);
-    q = 1.0 - k*max_value;
+    if (max_value[i] > min_value[i])
+    {
+      k[i] = (1.0 - 0.0)/(max_value[i] - min_value[i]);
+      q[i] = 1.0 - k[i]*max_value[i];
+    }
+    else
+    {
+      k[i] = 0.0;
+      q[i] = 0.0;
+    }
   }
 
   unsigned int id = 0;
@@ -134,7 +142,7 @@ void CSParseFile::process_random(unsigned int count)
       for (unsigned int kx = 0; kx < output_image_size; kx++)
       for (unsigned int ch = 0; ch < 3; ch++)
       {
-        output_image.pixels[ky][kx].b[ch] = k*input_image.pixels[y + ky - output_image_size/2][x + kx - output_image_size/2].b[ch] + q;
+        output_image.pixels[ky][kx].b[ch] = k[ch]*input_image.pixels[y + ky - output_image_size/2][x + kx - output_image_size/2].b[ch] + q[ch];
       }
 
       output_file_name = ouput_images_dir + std::to_string(class_id) + "/" + ouput_images_prefix + std::to_string(id) + ".png";
