@@ -28,19 +28,7 @@
 
           {
             "type"      : "convolution",
-            "geometry"  : [5, 5, 32]
-          },
-          {
-            "type"      : "relu"
-          },
-          {
-            "type"      : "max_pooling",
-            "geometry"  : [2, 2, 1]
-          },
-
-          {
-            "type"      : "convolution",
-            "geometry"  : [5, 5, 32]
+            "geometry"  : [3, 3, 16]
           },
           {
             "type"      : "relu"
@@ -51,16 +39,73 @@
           },
 
 
+
           {
-            "type"      : "convolution",
-            "geometry"  : [5, 5, 64]
+            "type"      : "dense convolution",
+            "geometry"  : [3, 3, 8]
           },
           {
             "type"      : "relu"
           },
           {
+            "type"      : "dense convolution",
+            "geometry"  : [3, 3, 8]
+          },
+          {
+            "type"      : "relu"
+          },
+          {
+            "type"      : "dense convolution",
+            "geometry"  : [3, 3, 8]
+          },
+          {
+            "type"      : "relu"
+          },
+          {
+            "type"      : "dense convolution",
+            "geometry"  : [3, 3, 8]
+          },
+          {
+            "type"      : "relu"
+          },
+
+
+
+          {
             "type"      : "max_pooling",
             "geometry"  : [2, 2, 1]
+          },
+
+
+
+
+          {
+            "type"      : "dense convolution",
+            "geometry"  : [3, 3, 16]
+          },
+          {
+            "type"      : "relu"
+          },
+          {
+            "type"      : "dense convolution",
+            "geometry"  : [3, 3, 16]
+          },
+          {
+            "type"      : "relu"
+          },
+          {
+            "type"      : "dense convolution",
+            "geometry"  : [3, 3, 16]
+          },
+          {
+            "type"      : "relu"
+          },
+          {
+            "type"      : "dense convolution",
+            "geometry"  : [3, 3, 16]
+          },
+          {
+            "type"      : "relu"
           },
 
           {

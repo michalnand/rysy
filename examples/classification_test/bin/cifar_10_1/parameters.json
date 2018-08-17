@@ -28,41 +28,15 @@
 
           {
             "type"      : "convolution",
-            "geometry"  : [3, 3, 8]
+            "geometry"  : [3, 3, 32]
           },
           {
             "type"      : "relu"
-          },
-          {
-            "type"      : "max_pooling",
-            "geometry"  : [2, 2, 1]
           },
 
-
           {
-            "type"      : "dense convolution",
-            "geometry"  : [3, 3, 8]
-          },
-          {
-            "type"      : "relu"
-          },
-          {
-            "type"      : "dense convolution",
-            "geometry"  : [3, 3, 8]
-          },
-          {
-            "type"      : "relu"
-          },
-          {
-            "type"      : "dense convolution",
-            "geometry"  : [3, 3, 8]
-          },
-          {
-            "type"      : "relu"
-          },
-          {
-            "type"      : "dense convolution",
-            "geometry"  : [3, 3, 8]
+            "type"      : "convolution",
+            "geometry"  : [3, 3, 32]
           },
           {
             "type"      : "relu"
@@ -72,6 +46,30 @@
             "type"      : "max_pooling",
             "geometry"  : [2, 2, 1]
           },
+
+
+
+          {
+            "type"      : "convolution",
+            "geometry"  : [3, 3, 32]
+          },
+          {
+            "type"      : "relu"
+          },
+          {
+            "type"      : "convolution",
+            "geometry"  : [3, 3, 32]
+          },
+          {
+            "type"      : "relu"
+          },
+
+
+          {
+            "type"      : "max_pooling",
+            "geometry"  : [2, 2, 1]
+          },
+
 
           {
             "type"      : "convolution",
@@ -80,6 +78,7 @@
           {
             "type"      : "relu"
           },
+
 
           {
             "type"      : "dropout"
