@@ -1,0 +1,52 @@
+{
+  "output_image_size" : 64,
+  "image_step"        : 16,
+  "images_count"      : 5,
+  "random_mode"       : true,
+
+  "output_dir"        : "/home/michal/dataset/city_scapes/testing/",
+
+  "input_dirs_images" :
+  [
+    "/home/michal/dataset/city_scapes/original/leftImg8bit_trainvaltest/leftImg8bit/train/aachen/",
+    "/home/michal/dataset/city_scapes/original/leftImg8bit_trainvaltest/leftImg8bit/train/bochum/",
+    "/home/michal/dataset/city_scapes/original/leftImg8bit_trainvaltest/leftImg8bit/train/bremen/",
+    "/home/michal/dataset/city_scapes/original/leftImg8bit_trainvaltest/leftImg8bit/train/cologne/",
+    "/home/michal/dataset/city_scapes/original/leftImg8bit_trainvaltest/leftImg8bit/train/darmstadt/",
+    "/home/michal/dataset/city_scapes/original/leftImg8bit_trainvaltest/leftImg8bit/train/dusseldorf/",
+    "/home/michal/dataset/city_scapes/original/leftImg8bit_trainvaltest/leftImg8bit/train/erfurt/",
+    "/home/michal/dataset/city_scapes/original/leftImg8bit_trainvaltest/leftImg8bit/train/hamburg/",
+    "/home/michal/dataset/city_scapes/original/leftImg8bit_trainvaltest/leftImg8bit/train/hanover/",
+    "/home/michal/dataset/city_scapes/original/leftImg8bit_trainvaltest/leftImg8bit/train/jena/",
+    "/home/michal/dataset/city_scapes/original/leftImg8bit_trainvaltest/leftImg8bit/train/krefeld/",
+    "/home/michal/dataset/city_scapes/original/leftImg8bit_trainvaltest/leftImg8bit/train/monchengladbach/",
+    "/home/michal/dataset/city_scapes/original/leftImg8bit_trainvaltest/leftImg8bit/train/strasbourg/",
+    "/home/michal/dataset/city_scapes/original/leftImg8bit_trainvaltest/leftImg8bit/train/stuttgart/",
+    "/home/michal/dataset/city_scapes/original/leftImg8bit_trainvaltest/leftImg8bit/train/tubingen/",
+    "/home/michal/dataset/city_scapes/original/leftImg8bit_trainvaltest/leftImg8bit/train/ulm/",
+    "/home/michal/dataset/city_scapes/original/leftImg8bit_trainvaltest/leftImg8bit/train/weimar/",
+    "/home/michal/dataset/city_scapes/original/leftImg8bit_trainvaltest/leftImg8bit/train/zurich/"
+  ],
+
+  "input_dirs_labels" :
+  [
+    "/home/michal/dataset/city_scapes/original/gtCoarse/gtCoarse/train/aachen/",
+    "/home/michal/dataset/city_scapes/original/gtCoarse/gtCoarse/train/bochum/",
+    "/home/michal/dataset/city_scapes/original/gtCoarse/gtCoarse/train/bremen/",
+    "/home/michal/dataset/city_scapes/original/gtCoarse/gtCoarse/train/cologne/",
+    "/home/michal/dataset/city_scapes/original/gtCoarse/gtCoarse/train/darmstadt/",
+    "/home/michal/dataset/city_scapes/original/gtCoarse/gtCoarse/train/dusseldorf/",
+    "/home/michal/dataset/city_scapes/original/gtCoarse/gtCoarse/train/erfurt/",
+    "/home/michal/dataset/city_scapes/original/gtCoarse/gtCoarse/train/hamburg/",
+    "/home/michal/dataset/city_scapes/original/gtCoarse/gtCoarse/train/hanover/",
+    "/home/michal/dataset/city_scapes/original/gtCoarse/gtCoarse/train/jena/",
+    "/home/michal/dataset/city_scapes/original/gtCoarse/gtCoarse/train/krefeld/",
+    "/home/michal/dataset/city_scapes/original/gtCoarse/gtCoarse/train/monchengladbach/",
+    "/home/michal/dataset/city_scapes/original/gtCoarse/gtCoarse/train/strasbourg/",
+    "/home/michal/dataset/city_scapes/original/gtCoarse/gtCoarse/train/stuttgart/",
+    "/home/michal/dataset/city_scapes/original/gtCoarse/gtCoarse/train/tubingen/",
+    "/home/michal/dataset/city_scapes/original/gtCoarse/gtCoarse/train/ulm/",
+    "/home/michal/dataset/city_scapes/original/gtCoarse/gtCoarse/train/weimar/",
+    "/home/michal/dataset/city_scapes/original/gtCoarse/gtCoarse/train/zurich/"
+  ]
+}

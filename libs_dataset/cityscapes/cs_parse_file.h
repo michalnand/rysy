@@ -9,6 +9,7 @@ class CSParseFile
 {
   private:
     std::string input_file_name_prefix;
+    std::string input_labels_file_name_prefix;
     std::string ouput_images_dir;
     std::string ouput_images_prefix;
     unsigned int output_image_size;
@@ -19,6 +20,7 @@ class CSParseFile
 
   public:
     CSParseFile(  std::string input_file_name_prefix,
+                  std::string input_labels_file_name_prefix,
                   std::string ouput_images_dir,
                   std::string ouput_images_prefix,
                   unsigned int output_image_size = 32);
