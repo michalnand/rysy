@@ -148,7 +148,7 @@ void cuda_tensor_regularization_l1_kernel(float *v, float lambda, unsigned int s
 void cuda_tensor_regularization_l1(float *result, float lambda, unsigned int size)
 {
   unsigned int block_size;
-  
+
   if (size >= 256)
     block_size = 256;
   else
@@ -158,6 +158,36 @@ void cuda_tensor_regularization_l1(float *result, float lambda, unsigned int siz
   dim3 grid((block_size + block.x - 1)/block.x);
 
   cuda_tensor_regularization_l1_kernel<<<grid, block>>>(result, lambda, size);
+  cudaDeviceSynchronize();
+}
+
+
+
+
+__global__
+void cuda_tensor_regularization_l2_kernel(float *v, float lambda, unsigned int size)
+{
+  unsigned int idx = threadIdx.x + blockIdx.x*blockDim.x;
+
+  if (idx < size)
+  {
+    v[idx]-= lambda*v[idx];
+  }
+}
+
+void cuda_tensor_regularization_l2(float *result, float lambda, unsigned int size)
+{
+  unsigned int block_size;
+
+  if (size >= 256)
+    block_size = 256;
+  else 
+    block_size = 16;
+
+  dim3 block(block_size);
+  dim3 grid((block_size + block.x - 1)/block.x);
+
+  cuda_tensor_regularization_l2_kernel<<<grid, block>>>(result, lambda, size);
   cudaDeviceSynchronize();
 }
 

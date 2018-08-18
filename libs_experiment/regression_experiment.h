@@ -40,7 +40,7 @@ class RegressionExperiment
     sRegressionTestResult result, best_result;
 
     unsigned int init_networks_try_count, epoch_count, epoch_without_improvement;
-    float learning_rate, lambda, learning_rate_decay;
+    float learning_rate, lambda1, lambda2, learning_rate_decay;
 
     float error_best;
 

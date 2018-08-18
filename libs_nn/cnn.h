@@ -45,16 +45,22 @@ class CNN
     void unset_training_mode();
 
     void set_learning_rate(float learning_rate);
-    void set_lambda(float lambda);
+    void set_lambda1(float lambda);
+    void set_lambda2(float lambda);
 
     float get_learning_rate()
     {
       return hyperparameters.learning_rate;
     }
 
-    float get_lambda()
+    float get_lambda1()
     {
-      return hyperparameters.lambda;
+      return hyperparameters.lambda1;
+    }
+
+    float get_lambda2()
+    {
+      return hyperparameters.lambda2;
     }
 
     void save(std::string file_name_prefix);

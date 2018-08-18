@@ -102,7 +102,8 @@ void CNN::init(Json::Value &json_config, sGeometry input_geometry_, sGeometry ou
 
   hyperparameters.init_weight_range = json_config["hyperparameters"]["init_weight_range"].asFloat();
   hyperparameters.learning_rate     = json_config["hyperparameters"]["learning_rate"].asFloat();
-  hyperparameters.lambda            = json_config["hyperparameters"]["lambda"].asFloat();
+  hyperparameters.lambda1            = json_config["hyperparameters"]["lambda1"].asFloat();
+  hyperparameters.lambda2            = json_config["hyperparameters"]["lambda2"].asFloat();
   hyperparameters.dropout           = json_config["hyperparameters"]["dropout"].asFloat();
   hyperparameters.noise             = json_config["hyperparameters"]["noise"].asFloat();
 
@@ -156,7 +157,8 @@ void CNN::init(Json::Value &json_config, sGeometry input_geometry_, sGeometry ou
 
 
   network_log << "learning_rate " << hyperparameters.learning_rate << "\n";
-  network_log << "lambda " << hyperparameters.lambda << "\n";
+  network_log << "lambda1 " << hyperparameters.lambda1 << "\n";
+  network_log << "lambda2 " << hyperparameters.lambda2 << "\n";
   network_log << "dropout " << hyperparameters.dropout << "\n";
   network_log << "noise " << hyperparameters.noise << "\n";
   network_log << "minibatch size " << hyperparameters.minibatch_size << "\n";
@@ -465,11 +467,18 @@ void CNN::set_learning_rate(float learning_rate)
     layers[i]->set_learning_rate(hyperparameters.learning_rate);
 }
 
-void CNN::set_lambda(float lambda)
+void CNN::set_lambda1(float lambda)
 {
-  hyperparameters.lambda = lambda;
+  hyperparameters.lambda1 = lambda;
   for (unsigned int i = 0; i < layers.size(); i++)
-    layers[i]->set_learning_rate(hyperparameters.lambda);
+    layers[i]->set_lambda1(hyperparameters.lambda1);
+}
+
+void CNN::set_lambda2(float lambda)
+{
+  hyperparameters.lambda2 = lambda;
+  for (unsigned int i = 0; i < layers.size(); i++)
+    layers[i]->set_lambda1(hyperparameters.lambda2);
 }
 
 void CNN::save(std::string file_name_prefix)
@@ -480,7 +489,8 @@ void CNN::save(std::string file_name_prefix)
 
   json_parameters["hyperparameters"]["init_weight_range"] = hyperparameters.init_weight_range;
   json_parameters["hyperparameters"]["learning_rate"]     = hyperparameters.learning_rate;
-  json_parameters["hyperparameters"]["lambda"]            = hyperparameters.lambda;
+  json_parameters["hyperparameters"]["lambda1"]            = hyperparameters.lambda1;
+  json_parameters["hyperparameters"]["lambda2"]            = hyperparameters.lambda2;
   json_parameters["hyperparameters"]["dropout"]           = hyperparameters.dropout;
   json_parameters["hyperparameters"]["noise"]             = hyperparameters.noise;
   json_parameters["hyperparameters"]["minibatch_size"]    = hyperparameters.minibatch_size;

@@ -173,10 +173,16 @@ void Layer::set_learning_rate(float learning_rate)
   hyperparameters.learning_rate = learning_rate;
 }
 
-void Layer::set_lambda(float lambda)
+void Layer::set_lambda1(float lambda)
 {
-  hyperparameters.lambda = lambda;
+  hyperparameters.lambda1 = lambda;
 }
+
+void Layer::set_lambda2(float lambda)
+{
+  hyperparameters.lambda2 = lambda;
+}
+
 
 void Layer::forward(Tensor &output, Tensor &input)
 {

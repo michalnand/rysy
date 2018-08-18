@@ -58,6 +58,7 @@ class Tensor
 
   public:
     void regularization_l1(float lambda);
+    void regularization_l2(float lambda);
 
   public:
     void  set(unsigned int x, unsigned y, unsigned z, float value);

@@ -227,6 +227,18 @@ void Tensor::regularization_l1(float lambda)
   #endif
 }
 
+void Tensor::regularization_l2(float lambda)
+{
+  #ifdef NETWORK_USE_CUDA
+    cuda_tensor_regularization_l2(v, lambda, size());
+  #else
+    for (unsigned int i = 0; i < size(); i++)
+    {
+      v[i]-= lambda*v[i];
+    }
+  #endif
+}
+
 
 void  Tensor::set(unsigned int x, unsigned y, unsigned z, float value)
 {

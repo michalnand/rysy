@@ -49,7 +49,8 @@ void RegressionExperiment::init()
   learning_rate_decay       = parameters["learning_rate_decay"].asFloat();
 
   learning_rate       = parameters["network_architecture"]["hyperparameters"]["learning_rate"].asFloat();
-  lambda              = parameters["network_architecture"]["hyperparameters"]["lambda"].asFloat();
+  lambda1              = parameters["network_architecture"]["hyperparameters"]["lambda1"].asFloat();
+  lambda2              = parameters["network_architecture"]["hyperparameters"]["lambda2"].asFloat();
 
   experiment_log << "\n";
   experiment_log << "parameters :\n";
@@ -260,7 +261,8 @@ int RegressionExperiment::search_initial_net()
 CNN* RegressionExperiment::load_saved_net(std::string best_net_file_name)
 {
   learning_rate*= learning_rate_decay;
-  lambda*= learning_rate_decay;
+  lambda1*= learning_rate_decay;
+  lambda2*= learning_rate_decay;
 
   if (result.output_valid != true)
     experiment_log << "NaN error, loading best network, and setting learning rate = " << learning_rate << "\n";
@@ -273,7 +275,8 @@ CNN* RegressionExperiment::load_saved_net(std::string best_net_file_name)
 
   CNN *nn = new CNN(best_net_file_name + "cnn_config.json", input_geometry, output_geometry);
   nn->set_learning_rate(learning_rate);
-  nn->set_lambda(lambda);
+  nn->set_lambda1(lambda1);
+  nn->set_lambda2(lambda2);
 
   epoch_without_improvement = 0;
 

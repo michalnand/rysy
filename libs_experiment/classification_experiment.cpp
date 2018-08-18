@@ -64,7 +64,8 @@ void ClassificationExperiment::run()
 
 
   float learning_rate = nn.get_learning_rate();
-  float lambda        = nn.get_lambda();
+  float lambda1        = nn.get_lambda1();
+  float lambda2        = nn.get_lambda2();
 
   Timer timer;
 
@@ -160,10 +161,12 @@ void ClassificationExperiment::run()
       if (((epoch+1)%epoch_learning_rate_decay) == 0)
       {
         learning_rate*= learning_rate_decay;
-        lambda*= learning_rate_decay;
+        lambda1*= learning_rate_decay;
+        lambda2*= learning_rate_decay;
 
         nn.set_learning_rate(learning_rate);
-        nn.set_lambda(lambda);
+        nn.set_lambda1(lambda1);
+        nn.set_lambda2(lambda2);
 
         experiment_log << "setting learning rate to " << learning_rate << "\n";
       }

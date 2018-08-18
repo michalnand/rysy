@@ -110,5 +110,6 @@ void w_update(Tensor &w, Tensor &w_grad, Tensor &m, Tensor &v,
 
   #endif
 
-  w.regularization_l1(hyperparameters.lambda);
+  w.regularization_l1(hyperparameters.lambda1);
+  w.regularization_l2(hyperparameters.lambda2);
 }

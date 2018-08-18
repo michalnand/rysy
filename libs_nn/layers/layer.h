@@ -75,7 +75,8 @@ class Layer
 
 
     void set_learning_rate(float learning_rate);
-    void set_lambda(float lambda);
+    void set_lambda1(float lambda);
+    void set_lambda2(float lambda);
 
     float get_flops()
     {

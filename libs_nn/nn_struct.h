@@ -11,7 +11,8 @@ struct sHyperparameters
 {
   float init_weight_range;
   float learning_rate;
-  float lambda;
+  float lambda1;
+  float lambda2;
   float dropout;
   float noise;
 

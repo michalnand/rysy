@@ -15,6 +15,7 @@ void cuda_tensor_set_element(float *result, float value, unsigned int idx);
 float cuda_tensor_get_element(float *src_ptr, unsigned int idx);
 
 void cuda_tensor_regularization_l1(float *result, float lambda, unsigned int size);
+void cuda_tensor_regularization_l2(float *result, float lambda, unsigned int size);
 
 
 void cuda_rms(float *result, float *va, float *vb, unsigned int size);
