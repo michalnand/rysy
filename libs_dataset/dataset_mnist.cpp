@@ -11,8 +11,10 @@ DatasetMnist::DatasetMnist( std::string training_data_file_name, std::string tra
   height    = 28 + 2*padding;
   channels  = 1;
 
-  load_dataset(&training, training_data_file_name, training_labels_file_name);
-  load_dataset(&testing, testing_data_file_name, testing_labels_file_name);
+  load_dataset(training_data_file_name, training_labels_file_name, false);
+  load_dataset(testing_data_file_name, testing_labels_file_name, true);
+
+  print();
 }
 
 DatasetMnist::~DatasetMnist()
@@ -21,7 +23,7 @@ DatasetMnist::~DatasetMnist()
 }
 
 
-int DatasetMnist::load_dataset(std::vector<struct sDatasetItem> *result, std::string data_file_name, std::string labels_file_name)
+int DatasetMnist::load_dataset(std::string data_file_name, std::string labels_file_name, bool testing)
 {
   unsigned int i, j;
 
@@ -103,20 +105,22 @@ int DatasetMnist::load_dataset(std::vector<struct sDatasetItem> *result, std::st
 
     for (i = 0; i < 10; i++)
       item.output[i] = 0.0;
- 
+
     unsigned char b = 0;
     int read_res = fread(&b, 1, sizeof(unsigned char), f_labels);
     (void)read_res;
     item.output[b] =  1.0;
 
-    result->push_back(item);
+
+    if (testing)
+      add_testing(item);
+    else
+      add_training(item);
   }
 
 
   fclose(f_data);
   fclose(f_labels);
-
-  printf("MNIST loading done %u [%u %u %u]\n", items_count, width, height, channels);
 
   return 0;
 }

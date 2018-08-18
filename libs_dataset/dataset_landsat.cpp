@@ -9,8 +9,10 @@ DatasetLANDSAT::DatasetLANDSAT(std::string training_data_file_name, std::string 
   width     = 3 + 2*padding;
   height    = 3 + 2*padding;
 
-  load_dataset(&training, training_data_file_name, padding);
-  load_dataset(&testing, testing_data_file_name, padding);
+  load_dataset(training_data_file_name, padding, false);
+  load_dataset(testing_data_file_name, padding, true);
+
+  print();
 }
 
 DatasetLANDSAT::~DatasetLANDSAT()
@@ -19,7 +21,7 @@ DatasetLANDSAT::~DatasetLANDSAT()
 }
 
 
-int DatasetLANDSAT::load_dataset(std::vector<struct sDatasetItem> *result, std::string data_file_name, unsigned int padding)
+int DatasetLANDSAT::load_dataset(std::string data_file_name, unsigned int padding, bool testing)
 {
   FILE *f_data;
   f_data = fopen(data_file_name.c_str(),"r");
@@ -72,25 +74,14 @@ int DatasetLANDSAT::load_dataset(std::vector<struct sDatasetItem> *result, std::
     if (label < item.output.size())
       item.output[label] = 1.0;
 
-    result->push_back(item);
-
-    /*
-    for (unsigned int i = 0; i < item.input.size(); i++)
-      printf("%6.3f ", item.input[i]);
-
-    printf(" : ");
-
-    for (unsigned int i = 0; i < item.output.size(); i++)
-      printf("%6.3f ", item.output[i]);
-    printf("\n");
-    */
+    if (testing)
+      add_testing(item);
+    else
+      add_training(item);
   }
 
   (void)res;
   fclose(f_data);
-
-  printf("LANDSAT loading done count %u\n", (unsigned int)result->size());
-
 
   return 0;
 }

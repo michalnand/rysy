@@ -7,7 +7,7 @@ class DatasetMnistTiny: public DatasetInterface
 {
   private:
     int padding;
-    
+
   public:
     DatasetMnistTiny(std::string training_data_file_name, std::string testing_data_file_name,
                      int padding = 0
@@ -16,7 +16,7 @@ class DatasetMnistTiny: public DatasetInterface
     ~DatasetMnistTiny();
 
   private:
-    int load_dataset(std::vector<struct sDatasetItem> *result, std::string data_file_name);
+    int load_dataset(std::string data_file_name, bool testing);
 };
 
 #endif

@@ -18,15 +18,10 @@ DatasetImages::DatasetImages(std::string json_config_file_name)
   else
     channels  = 3;
 
+  load(json.result["training"], json.result["classes count"].asInt(), false);
+  load(json.result["testing"], json.result["classes count"].asInt(), true);
 
-  load(training, json.result["training"], json.result["classes count"].asInt());
-  load(testing, json.result["testing"], json.result["classes count"].asInt());
-
-  shuffle();
-
-  printf("training loaded %u\n", (unsigned int)training.size());
-  printf("testing  loaded %u\n", (unsigned int)testing.size());
-
+  print();
 }
 
 DatasetImages::~DatasetImages()
@@ -36,13 +31,13 @@ DatasetImages::~DatasetImages()
 
 
 
-void DatasetImages::load(std::vector<sDatasetItem> &items, Json::Value parameters, unsigned int classes_count)
+void DatasetImages::load(Json::Value parameters, unsigned int classes_count, bool testing)
 {
   for (unsigned int j = 0; j < parameters.size(); j++)
-    load_dir(items, parameters[j]["path"].asString(), parameters[j]["class"].asInt(), classes_count);
+    load_dir(parameters[j]["path"].asString(), parameters[j]["class"].asInt(), classes_count, testing);
 }
 
-void DatasetImages::load_dir(std::vector<sDatasetItem> &items, std::string path, unsigned int class_id, unsigned int classes_count)
+void DatasetImages::load_dir(std::string path, unsigned int class_id, unsigned int classes_count, bool testing)
 {
   printf("loading directory %s\n", path.c_str());
 
@@ -52,9 +47,6 @@ void DatasetImages::load_dir(std::vector<sDatasetItem> &items, std::string path,
    {
      std::string image_file_name;
      image_file_name = p.path();
-
-  //   printf("loading file %s\n", image_file_name.c_str());
-
 
      if (std::experimental::filesystem::path(image_file_name).extension() == ".png")
      {
@@ -70,7 +62,10 @@ void DatasetImages::load_dir(std::vector<sDatasetItem> &items, std::string path,
 
        item.output[class_id] = 1.0;
 
-       items.push_back(item);
+       if (testing)
+        add_testing(item);
+       else
+        add_training(item);
 
        items_count++;
        if (max_items_per_folder != -1)

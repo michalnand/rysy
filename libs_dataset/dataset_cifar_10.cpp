@@ -18,15 +18,15 @@ DatasetCIFAR10::DatasetCIFAR10( std::string training_batch_1_file_name,
   channels  = 3;
 
 
-  load(training, training_batch_1_file_name);
+  load(training_batch_1_file_name, false);
+  load(training_batch_2_file_name, false);
+  load(training_batch_3_file_name, false);
+  load(training_batch_4_file_name, false);
+  load(training_batch_5_file_name, false);
 
-  load(training, training_batch_2_file_name);
-  load(training, training_batch_3_file_name);
-  load(training, training_batch_4_file_name);
-  load(training, training_batch_5_file_name);
+  load( testing_batch_file_name, true);
 
-  load(testing, testing_batch_file_name);
-  printf("cifar loading done %lu %lu\n", training.size(), testing.size());
+  print();
 }
 
 DatasetCIFAR10::~DatasetCIFAR10()
@@ -36,7 +36,7 @@ DatasetCIFAR10::~DatasetCIFAR10()
 
 
 
-void DatasetCIFAR10::load(std::vector<sDatasetItem> &result, std::string file_name)
+void DatasetCIFAR10::load(std::string file_name, bool testing)
 {
   unsigned int raw_width    = 32;
   unsigned int raw_height   = 32;
@@ -87,8 +87,12 @@ void DatasetCIFAR10::load(std::vector<sDatasetItem> &result, std::string file_na
     if (label < output_size)
     {
       item.output[label] = 1.0;
-      result.push_back(item);
-    }
+
+      if (testing)
+        add_testing(item);
+      else
+        add_training(item);
+    } 
   }
 
   fclose(f);

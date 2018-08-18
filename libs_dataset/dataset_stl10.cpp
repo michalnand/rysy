@@ -34,7 +34,7 @@ DatasetSTL10::DatasetSTL10(unsigned int padding)
 
   load_unlabeled(max_count);
 */
-  printf("STL loading done %lu %lu %lu\n", training.size(), testing.size(), unlabeled.size());
+  print();
 }
 
 DatasetSTL10::~DatasetSTL10()
@@ -55,7 +55,8 @@ void DatasetSTL10::load_unlabeled(unsigned int count)
   {
     sDatasetItem item;
     item.input = load_input(f);
-    unlabeled.push_back(item);
+
+    add_unlabeled(item);
 
     if ((i%1000) == 0)
       printf("loading unlabeled dataset %u/%u %6.2f %%\n", i, count, i*100.0/count);
@@ -77,7 +78,9 @@ void DatasetSTL10::load_training()
     sDatasetItem item;
     item.input = load_input(fx);
     item.output = load_output(fy);
-    training.push_back(item);
+
+    add_training(item);
+
     count++;
     if (count >= 5000)
       break;
@@ -100,7 +103,10 @@ void DatasetSTL10::load_testing()
     sDatasetItem item;
     item.input = load_input(fx);
     item.output = load_output(fy);
-    testing.push_back(item);
+
+    add_testing(item);
+
+
     count++;
     if (count >= 8000)
       break;

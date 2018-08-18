@@ -17,8 +17,8 @@ class DatasetImages: public DatasetInterface
 
 
   private:
-    void load(std::vector<sDatasetItem> &items, Json::Value parameters, unsigned int classes_count);
-    void load_dir(std::vector<sDatasetItem> &items, std::string path, unsigned int class_id, unsigned int classes_count);
+    void load(Json::Value parameters, unsigned int classes_count, bool testing);
+    void load_dir(std::string path, unsigned int class_id, unsigned int classes_count, bool testing);
 
 
 };

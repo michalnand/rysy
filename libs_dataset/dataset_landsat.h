@@ -7,13 +7,11 @@ class DatasetLANDSAT: public DatasetInterface
 {
   public:
     DatasetLANDSAT(std::string training_data_file_name, std::string testing_data_file_name, unsigned int padding);
-
     ~DatasetLANDSAT();
 
-    void print(unsigned int idx);
 
   private:
-    int load_dataset(std::vector<sDatasetItem> *result, std::string data_file_name, unsigned int padding);
+    int load_dataset(std::string data_file_name, unsigned int padding, bool testing);
 };
 
 #endif

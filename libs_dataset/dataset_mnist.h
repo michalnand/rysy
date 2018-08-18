@@ -16,7 +16,7 @@ class DatasetMnist: public DatasetInterface
     ~DatasetMnist();
 
   private:
-    int load_dataset(std::vector<struct sDatasetItem> *result, std::string data_file_name, std::string labels_file_name);
+    int load_dataset(std::string data_file_name, std::string labels_file_name, bool testing);
 
     unsigned int read_unsigned_int(FILE *f);
 };

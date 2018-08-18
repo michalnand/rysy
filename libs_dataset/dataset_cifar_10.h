@@ -19,7 +19,7 @@ class DatasetCIFAR10: public DatasetInterface
 
   private:
 
-    void load(std::vector<sDatasetItem> &result, std::string file_name);
+    void load(std::string file_name, bool testing);
 };
 
 #endif

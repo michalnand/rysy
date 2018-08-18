@@ -12,8 +12,10 @@ DatasetMnistTiny::DatasetMnistTiny( std::string training_data_file_name,
   width     = 9 + 2*padding;
   height    = 9 + 2*padding;
 
-  load_dataset(&training, training_data_file_name);
-  load_dataset(&testing, testing_data_file_name);
+  load_dataset(training_data_file_name, false);
+  load_dataset(testing_data_file_name, true);
+  
+  print();
 }
 
 DatasetMnistTiny::~DatasetMnistTiny()
@@ -22,7 +24,7 @@ DatasetMnistTiny::~DatasetMnistTiny()
 }
 
 
-int DatasetMnistTiny::load_dataset(std::vector<struct sDatasetItem> *result, std::string data_file_name)
+int DatasetMnistTiny::load_dataset(std::string data_file_name, bool testing)
 {
   unsigned int original_width  = 9;
   unsigned int original_height = 9;
@@ -36,7 +38,6 @@ int DatasetMnistTiny::load_dataset(std::vector<struct sDatasetItem> *result, std
   item.output.resize(10);
 
 
-
   FILE *f_data;
   f_data = fopen(data_file_name.c_str(),"r");
 
@@ -48,11 +49,9 @@ int DatasetMnistTiny::load_dataset(std::vector<struct sDatasetItem> *result, std
 
   int res;
 
-
-
   while (!feof(f_data))
   {
-      float tmp = 0.0;
+    float tmp = 0.0;
 
     for (unsigned int j = 0; j < (original_width*original_height); j++)
     {
@@ -82,14 +81,14 @@ int DatasetMnistTiny::load_dataset(std::vector<struct sDatasetItem> *result, std
         item.output[j] = 0.0;
     }
 
-    result->push_back(item);
+    if (testing)
+      add_testing(item);
+    else
+      add_training(item);
   }
 
   (void)res;
   fclose(f_data);
-
-  printf("MNIST loading done count %u\n", (unsigned int)result->size());
-
 
   return 0;
 }

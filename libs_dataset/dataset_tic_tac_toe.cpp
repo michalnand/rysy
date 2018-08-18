@@ -9,7 +9,7 @@ DatasetTicTacToe::DatasetTicTacToe(std::string data_file_name, float testing_rat
 
   load_dataset(data_file_name, testing_ratio, padding);
 
-  printf("dataset size %u %u\n", training.size(), testing.size());
+  print();
 }
 
 
@@ -74,9 +74,9 @@ int DatasetTicTacToe::load_dataset(std::string data_file_name, float testing_rat
       }
 
       if (p < testing_ratio)
-        testing.push_back(item);
+        add_testing(item);
       else
-        training.push_back(item);
+        add_training(item);
     }
   }
 

@@ -24,7 +24,8 @@ DatasetStack::DatasetStack( unsigned int width,
 
   for (unsigned int i = 0; i < training_count; i++)
   {
-    training.push_back(create_item());
+    sDatasetItem item = create_item();
+    add_training(item);
   }
 
   for (unsigned int i = 0; i < testing_count; i++)
@@ -35,7 +36,8 @@ DatasetStack::DatasetStack( unsigned int width,
 
     //testing.push_back(create_item(&item_image_file_name));
 
-    testing.push_back(create_item());
+    sDatasetItem item = create_item();
+    add_testing(item);
   }
 
   for (unsigned int i = 0; i < unlabeled_count; i++)
@@ -43,14 +45,11 @@ DatasetStack::DatasetStack( unsigned int width,
     auto tmp = create_item();
     for (unsigned int k = 0; k < tmp.output.size(); k++)
       tmp.output[k] = 0.0;
-    unlabeled.push_back(tmp);
+
+    add_unlabeled(tmp);
   }
 
-/*
-  save("dataset/training", training);
-  save("dataset/testing", testing);
-  save("dataset/unlabeled", unlabeled);
-*/
+  print();
 }
 
 DatasetStack::~DatasetStack()

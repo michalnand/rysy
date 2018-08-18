@@ -14,33 +14,20 @@ struct sDatasetItem
 
 class DatasetInterface
 {
-  public:
-    std::vector<unsigned int> histogram;
-    unsigned int histogram_max_count, histogram_average_count;
-
-    std::vector<sDatasetItem> unlabeled, training, testing;
-
   protected:
-    unsigned int width;
-    unsigned int height;
-    unsigned int channels;
+    std::vector<std::vector<sDatasetItem>> training;
+    std::vector<sDatasetItem> unlabeled, testing;
+
+    unsigned int training_size, output_size;
+    unsigned int width, height, channels;
 
   public:
     DatasetInterface();
     virtual ~DatasetInterface();
 
-    virtual unsigned int get_training_size();
-    virtual unsigned int get_testing_size();
-    virtual unsigned int get_unlabeled_size();
+    void print();
 
-    unsigned int get_input_size();
-    virtual unsigned int get_output_size();
-
-    unsigned int get_width();
-    unsigned int get_height();
-    unsigned int get_channels();
-
-    virtual sDatasetItem get_training(unsigned int idx);
+  public:
     virtual sDatasetItem get_random_training();
 
     virtual sDatasetItem get_testing(unsigned int idx);
@@ -49,35 +36,58 @@ class DatasetInterface
     virtual sDatasetItem get_unlabeled(unsigned int idx);
     virtual sDatasetItem get_random_unlabeled();
 
-    virtual sDatasetItem get_random_training(float noise);
-    virtual sDatasetItem get_random_unlabeled(float noise);
+  public:
+    virtual unsigned int get_training_size()
+    {
+      return training_size;
+    }
 
-    void print_training_item(unsigned int idx);
-    void print_testing_item(unsigned int idx);
+    virtual unsigned int get_testing_size()
+    {
+      return testing.size();
+    }
 
+    virtual unsigned int get_unlabeled_size()
+    {
+      return unlabeled.size();
+    }
 
-    unsigned int compare_biggest(unsigned int idx, char *output);
+    virtual unsigned int get_input_size()
+    {
+      return width*height*channels;
+    }
 
-    void export_h_testing(std::string file_name, unsigned int count);
+    virtual unsigned int get_output_size()
+    {
+      return output_size;
+    }
 
-    void shuffle();
+    unsigned int get_width()
+    {
+      return width;
+    }
 
-    void compute_histogram();
-    void balance(float max_growth = 0.1, bool use_average = false);
-    void print_histogram();
+    unsigned int get_height()
+    {
+      return height;
+    }
+
+    unsigned int get_channels()
+    {
+      return channels;
+    }
 
   protected:
-    float rnd();
+    void add_training(sDatasetItem &item);
+    void add_testing(sDatasetItem &item);
+    void add_unlabeled(sDatasetItem &item);
+
     unsigned int argmax(std::vector<float> &v);
 
-    void shuffle(std::vector<sDatasetItem> &items);
-
-    void normalise(std::vector<float> &v, float min = 0.0, float max = 1.0);
-
-    bool is_negative(std::vector<int> &v);
-
+  public:
+    void print_testing_item(unsigned int idx);
+    void export_h_testing(std::string file_name, unsigned int count);
 
 };
-
 
 #endif

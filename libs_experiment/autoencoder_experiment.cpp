@@ -33,15 +33,15 @@ void AutoencoderExperiment::run()
 
   output_geometry = input_geometry;
 
-  if (dataset->unlabeled.size() > 0)
+  if (dataset->get_unlabeled_size() > 0)
     use_unlabeled = true;
   else
     use_unlabeled = false;
 
   if (use_unlabeled)
-    experiment_log << "using UNLABELED for training with count " << dataset->unlabeled.size() << "\n";
+    experiment_log << "using UNLABELED for training with count " << dataset->get_unlabeled_size() << "\n";
   else
-    experiment_log << "using TRAINING for training with count " << dataset->training.size() << "\n";
+    experiment_log << "using TRAINING for training with count " << dataset->get_training_size() << "\n";
 
 
   CNN nn(parameters.result["network_architecture"], input_geometry, output_geometry);
@@ -162,7 +162,7 @@ void AutoencoderExperiment::train_iterations(CNN &nn, unsigned int iterations)
       item = dataset->get_random_unlabeled();
     else
       item = dataset->get_random_training();
-      
+
     nn.train(item.input, item.input);
   }
 
