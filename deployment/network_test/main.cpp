@@ -1,12 +1,7 @@
-//#include "MyNetCNN/MyNetCNN.h"
-#include "MyNetDCNN/MyNetDCNN.h"
-
-#include <NetMaxPoolingLayer.h>
+#include "MyNet/MyNet.h"
 
 #include <iostream>
-
 #include <vector>
-
 #include <dataset_mnist.h>
 
 #include <timer.h>
@@ -76,8 +71,7 @@ int main()
 
 
   {
-    //MyNetCNN nn;
-    MyNetDCNN nn;
+    MyNet nn;
 
     std::cout << "input size   " << nn.input_size() << "\n";
     std::cout << "output size  " << nn.output_size() << "\n";

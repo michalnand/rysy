@@ -5,11 +5,11 @@
 #include <NetworkConfig.h>
 
 
-#define layer_9_type "relu"
+#define layer_9_type "max_pooling"
 
-sLayerGeometry layer_9_input_geometry = {7, 7, 32};
+sLayerGeometry layer_9_input_geometry = {14, 14, 32};
 sLayerGeometry layer_9_output_geometry = {7, 7, 32};
-sLayerGeometry layer_9_kernel_geometry = {7, 7, 32};
+sLayerGeometry layer_9_kernel_geometry = {2, 2, 1};
 
 
 
