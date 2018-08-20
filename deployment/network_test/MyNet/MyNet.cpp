@@ -13,6 +13,8 @@
 #include "layer_10.h"
 #include "layer_11.h"
 #include "layer_12.h"
+#include "layer_13.h"
+#include "layer_14.h"
 
 
 MyNet::MyNet()
@@ -35,12 +37,14 @@ MyNet::MyNet()
 		layers[6] = new NetReluLayer(layer_6_kernel_geometry,layer_6_input_geometry,layer_6_output_geometry);
 		layers[7] = new NetDenseConvolutionLayer(layer_7_kernel_geometry,layer_7_input_geometry,layer_7_output_geometry,layer_7_weights,layer_7_bias,layer_7_weights_range,layer_7_bias_range);
 		layers[8] = new NetReluLayer(layer_8_kernel_geometry,layer_8_input_geometry,layer_8_output_geometry);
-		layers[9] = new NetMaxPoolingLayer(layer_9_kernel_geometry,layer_9_input_geometry,layer_9_output_geometry);
-		layers[10] = new NetConvolutionLayer(layer_10_kernel_geometry,layer_10_input_geometry,layer_10_output_geometry,layer_10_weights,layer_10_bias,layer_10_weights_range,layer_10_bias_range);
-		layers[11] = new NetReluLayer(layer_11_kernel_geometry,layer_11_input_geometry,layer_11_output_geometry);
-		layers[12] = new NetFcLayer(layer_12_kernel_geometry,layer_12_input_geometry,layer_12_output_geometry,layer_12_weights,layer_12_bias,layer_12_weights_range,layer_12_bias_range);
+		layers[9] = new NetDenseConvolutionLayer(layer_9_kernel_geometry,layer_9_input_geometry,layer_9_output_geometry,layer_9_weights,layer_9_bias,layer_9_weights_range,layer_9_bias_range);
+		layers[10] = new NetReluLayer(layer_10_kernel_geometry,layer_10_input_geometry,layer_10_output_geometry);
+		layers[11] = new NetMaxPoolingLayer(layer_11_kernel_geometry,layer_11_input_geometry,layer_11_output_geometry);
+		layers[12] = new NetConvolutionLayer(layer_12_kernel_geometry,layer_12_input_geometry,layer_12_output_geometry,layer_12_weights,layer_12_bias,layer_12_weights_range,layer_12_bias_range);
+		layers[13] = new NetReluLayer(layer_13_kernel_geometry,layer_13_input_geometry,layer_13_output_geometry);
+		layers[14] = new NetFcLayer(layer_14_kernel_geometry,layer_14_input_geometry,layer_14_output_geometry,layer_14_weights,layer_14_bias,layer_14_weights_range,layer_14_bias_range);
 
-		layers_count = 13;
+		layers_count = 15;
 		allocate_buffer();
 }
 

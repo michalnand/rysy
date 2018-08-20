@@ -3,7 +3,8 @@
 	{
 		"dropout" : 0.20000000298023224,
 		"init_weight_range" : 0,
-		"lambda" : 1.249999968422344e-06,
+		"lambda1" : 1.249999968422344e-06,
+		"lambda2" : 0.00025000001187436283,
 		"learning_rate" : 0.00025000001187436283,
 		"minibatch_size" : 32,
 		"noise" : 0.05000000074505806
@@ -85,34 +86,48 @@
 		{
 			"geometry" : 
 			[
+				3,
+				3,
+				8
+			],
+			"type" : "dense convolution",
+			"weights_file_name" : "mnist_1/trained/layer_9"
+		},
+		{
+			"type" : "relu",
+			"weights_file_name" : "mnist_1/trained/layer_10"
+		},
+		{
+			"geometry" : 
+			[
 				2,
 				2,
 				1
 			],
 			"type" : "max_pooling",
-			"weights_file_name" : "mnist_1/trained/layer_9"
+			"weights_file_name" : "mnist_1/trained/layer_11"
 		},
 		{
 			"geometry" : 
 			[
 				3,
 				3,
-				32
+				48
 			],
 			"type" : "convolution",
-			"weights_file_name" : "mnist_1/trained/layer_10"
-		},
-		{
-			"type" : "relu",
-			"weights_file_name" : "mnist_1/trained/layer_11"
-		},
-		{
-			"type" : "dropout",
 			"weights_file_name" : "mnist_1/trained/layer_12"
 		},
 		{
-			"type" : "output",
+			"type" : "relu",
 			"weights_file_name" : "mnist_1/trained/layer_13"
+		},
+		{
+			"type" : "dropout",
+			"weights_file_name" : "mnist_1/trained/layer_14"
+		},
+		{
+			"type" : "output",
+			"weights_file_name" : "mnist_1/trained/layer_15"
 		}
 	],
 	"network_log_file_name" : "mnist_1/network.log",

@@ -3,7 +3,8 @@ network init start
 hyperparameters
 init_weight_range 0.000000 ,xavier
 learning_rate 0.001000
-lambda 0.000005
+lambda1 0.000005
+lambda2 0.001000
 dropout 0.200000
 noise 0.050000
 minibatch size 32
@@ -17,15 +18,17 @@ minibatch size 32
                 RELU  [   14    14    24] [    1     1     1] [   14    14    24] [         0          0][      9408]
    DENSE CONVOLUTION  [   14    14    24] [    3     3     8] [   14    14    32] [      1728          8][    340256]
                 RELU  [   14    14    32] [    1     1     1] [   14    14    32] [         0          0][     12544]
-         MAX POOLING  [   14    14    32] [    2     2     1] [    7     7    32] [         0          0][     12544]
-         CONVOLUTION  [    7     7    32] [    3     3    32] [    7     7    32] [      9216         32][    453152]
-                RELU  [    7     7    32] [    1     1     1] [    7     7    32] [         0          0][      3136]
-             DROPOUT  [    7     7    32] [    1     1     1] [    7     7    32] [         0          0][      3136]
-                  FC  [    7     7    32] [    1     1    10] [    1     1    10] [     15680         10][     31380]
+   DENSE CONVOLUTION  [   14    14    32] [    3     3     8] [   14    14    40] [      2304          8][    453152]
+                RELU  [   14    14    40] [    1     1     1] [   14    14    40] [         0          0][     15680]
+         MAX POOLING  [   14    14    40] [    2     2     1] [    7     7    40] [         0          0][     15680]
+         CONVOLUTION  [    7     7    40] [    3     3    48] [    7     7    48] [     17280         48][    849072]
+                RELU  [    7     7    48] [    1     1     1] [    7     7    48] [         0          0][      4704]
+             DROPOUT  [    7     7    48] [    1     1     1] [    7     7    48] [         0          0][      4704]
+                  FC  [    7     7    48] [    1     1    10] [    1     1    10] [     23520         10][     47060]
 
 input_geometry  [28 28 1]
 output_geometry [1 1 10]
-network flops operations 1301460 FLOPS, 0.001301 GFLOPS
+network flops operations 2188164 FLOPS, 0.002188 GFLOPS
 init DONE
 
 network destructor done

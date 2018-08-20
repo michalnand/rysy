@@ -12,23 +12,23 @@ sLayerGeometry layer_0_output_geometry = {28, 28, 8};
 sLayerGeometry layer_0_kernel_geometry = {3, 3, 8};
 
 #define layer_0_weights_size ((unsigned int)72) //array size
-#define layer_0_weights_range ((nn_t)383) //multiply neuron result with range/1024
+#define layer_0_weights_range ((nn_t)330) //multiply neuron result with range/1024
 
 const nn_weight_t layer_0_weights[]={
-0, -22, 0, 0, -23, 0, 0, -24, 0, -70, -15, -79, 0, 43, 37, 0, 
-82, 30, 11, 51, -14, 54, 54, -78, 86, -38, -112, 39, -12, -4, 78, -53, 
--88, 48, 60, 73, -127, -61, 86, 15, 73, 43, 56, 11, -30, 86, 82, -65, 
--12, 92, 50, -8, 41, 29, 76, 84, 91, -7, -35, -26, -73, -67, -44, -46, 
-55, 25, -35, 28, 107, -52, -88, 4, };
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+-90, 95, -27, 55, -79, -32, 103, 90, 34, -41, -32, 20, 12, -96, 78, 14, 
+-73, 54, 83, 5, 31, 40, 83, 50, -3, 19, 34, -66, -84, -87, 1, 60, 
+-38, 36, 84, 36, 86, 31, -84, -127, -42, -41, 50, 15, 98, 74, 49, -37, 
+-116, -8, 64, -2, -63, 72, 55, 19, };
 
 
 
 
 #define layer_0_bias_size ((unsigned int)8) //array size
-#define layer_0_bias_range ((nn_t)9) //multiply neuron result with range/1024
+#define layer_0_bias_range ((nn_t)79) //multiply neuron result with range/1024
 
 const nn_weight_t layer_0_bias[]={
-0, 0, -127, 11, -124, -10, -10, -1, };
+-18, -15, 3, -127, -1, 2, 34, 35, };
 
 
 #endif
