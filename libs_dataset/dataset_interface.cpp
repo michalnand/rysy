@@ -18,7 +18,7 @@ DatasetInterface::DatasetInterface()
 DatasetInterface::~DatasetInterface()
 {
 
-} 
+}
 
 void DatasetInterface::print()
 {

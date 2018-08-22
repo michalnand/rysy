@@ -18,8 +18,13 @@ DatasetImages::DatasetImages(std::string json_config_file_name)
   else
     channels  = 3;
 
-  load(json.result["training"], json.result["classes count"].asInt(), false);
-  load(json.result["testing"], json.result["classes count"].asInt(), true);
+  unsigned int classes_count = json.result["classes count"].asInt();
+  training.resize(classes_count);
+
+
+
+  load(json.result["training"], classes_count, false);
+  load(json.result["testing"], classes_count, true);
 
   print();
 }
@@ -50,17 +55,20 @@ void DatasetImages::load_dir(std::string path, unsigned int class_id, unsigned i
 
      if (std::experimental::filesystem::path(image_file_name).extension() == ".png")
      {
+       // printf(">>>> %s \n", image_file_name.c_str());
        ImageLoad image(image_file_name, grayscale, true);
 
        sDatasetItem item;
 
        item.input = image.get();
 
+
        item.output.resize(classes_count);
        for (unsigned int i = 0; i < item.output.size(); i++)
           item.output[i] = 0.0;
 
        item.output[class_id] = 1.0;
+
 
        if (testing)
         add_testing(item);
