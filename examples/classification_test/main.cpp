@@ -9,11 +9,11 @@
 
 #include <classification_experiment.h>
 
+#include <svg.h>
 
 int main()
 {
   srand(time(NULL));
-
 
   {
     DatasetMnist dataset ( "/home/michal/dataset/mnist/train-images.idx3-ubyte",
