@@ -52,6 +52,8 @@ class SVG
                    int size,
                    bool vertical
                  );
+
+    void add_image_link(int x, int y, int width, int height, std::string file_name);
 };
 
 #endif

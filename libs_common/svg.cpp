@@ -140,3 +140,13 @@ void SVG::add_text( int x, int y,
 
   svg+= "</text>\n";
 }
+
+void SVG::add_image_link(int x, int y, int width, int height, std::string file_name)
+{
+	svg+= "<image ";
+	svg+= "x=\"" + std::to_string(x) + "\" ";
+	svg+= "y=\"" + std::to_string(y) + "\" ";
+	svg+= "width=\"" + std::to_string(width) + "\" ";
+	svg+= "height=\"" + std::to_string(height) + "\" ";
+	svg+= "xlink:href=\"" + file_name + "\" />\n";
+}
