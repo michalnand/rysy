@@ -274,6 +274,26 @@ Layer* CNN::create_layer(Json::Value &parameters, sHyperparameters hyperparamete
     result = new FCLayer(layer_input_geometry, layer_kernel_geometry, hyperparameters);
   }
 
+
+  if ((type == "convolution output")||(type == "convolution_output"))
+  {
+    if (parameters["geometry"] != Json::Value::null)
+    {
+      layer_kernel_geometry.w = parameters["geometry"][0].asInt();
+      layer_kernel_geometry.h = parameters["geometry"][1].asInt();
+      layer_kernel_geometry.d = parameters["geometry"][2].asInt();
+    }
+    else
+    {
+      layer_kernel_geometry.w = layer_input_geometry.w;
+      layer_kernel_geometry.h = layer_input_geometry.h;
+      layer_kernel_geometry.d = output_geometry.d;
+    }
+
+
+    result = new ConvolutionLayer(layer_input_geometry, layer_kernel_geometry, hyperparameters);
+  }
+
   if (type == "dropout")
   {
     layer_kernel_geometry.w = parameters["geometry"][0].asInt();

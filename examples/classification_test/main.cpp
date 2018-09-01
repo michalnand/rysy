@@ -9,12 +9,12 @@
 
 #include <classification_experiment.h>
 
-#include <svg.h>
 
 int main()
 {
   srand(time(NULL));
 
+  /*
   {
     DatasetMnist dataset ( "/home/michal/dataset/mnist/train-images.idx3-ubyte",
                            "/home/michal/dataset/mnist/train-labels.idx1-ubyte",
@@ -31,29 +31,20 @@ int main()
       experiment.run();
     }
   }
+  */
 
-/*
-  {
-    DatasetCIFAR10 dataset ( "/home/michal/dataset/cifar_10/data_batch_1.bin",
-                             "/home/michal/dataset/cifar_10/data_batch_2.bin",
-                             "/home/michal/dataset/cifar_10/data_batch_3.bin",
-                             "/home/michal/dataset/cifar_10/data_batch_4.bin",
-                             "/home/michal/dataset/cifar_10/data_batch_5.bin",
 
-                             "/home/michal/dataset/cifar_10/test_batch.bin",
-                             0);
+  DatasetMnist dataset ( "/home/michal/dataset/mnist/train-images.idx3-ubyte",
+                         "/home/michal/dataset/mnist/train-labels.idx1-ubyte",
+                         "/home/michal/dataset/mnist/t10k-images.idx3-ubyte",
+                         "/home/michal/dataset/mnist/t10k-labels.idx1-ubyte",
+                        0);
 
-   printf("dataset loading done\n");
-    JsonConfig parameters("experiments_cifar.json");
 
-    for (unsigned int i = 0; i < parameters.result["experiments"].size(); i++)
-    {
-      std::string config_dir = parameters.result["experiments"][i].asString();
-      ClassificationExperiment experiment(dataset, config_dir);
-      experiment.run();
-    }
-  }
-*/
+
+  ClassificationExperiment experiment(dataset, "kernel_test/");
+  experiment.run();
+
 
   printf("program done\n");
 
