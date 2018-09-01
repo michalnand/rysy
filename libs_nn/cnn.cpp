@@ -100,18 +100,41 @@ void CNN::init(Json::Value &json_config, sGeometry input_geometry_, sGeometry ou
 
   network_log << "network init start\n";
 
-  hyperparameters.init_weight_range = json_config["hyperparameters"]["init_weight_range"].asFloat();
-  hyperparameters.learning_rate     = json_config["hyperparameters"]["learning_rate"].asFloat();
-  hyperparameters.lambda1            = json_config["hyperparameters"]["lambda1"].asFloat();
-  hyperparameters.lambda2            = json_config["hyperparameters"]["lambda2"].asFloat();
-  hyperparameters.dropout           = json_config["hyperparameters"]["dropout"].asFloat();
-  hyperparameters.noise             = json_config["hyperparameters"]["noise"].asFloat();
+
+  if (json_config["hyperparameters"]["init_weight_range"] != Json::Value::null)
+    hyperparameters.init_weight_range = json_config["hyperparameters"]["init_weight_range"].asFloat();
+  else
+    hyperparameters.init_weight_range = 0.0;
+
+  if (json_config["hyperparameters"]["learning_rate"] != Json::Value::null)
+    hyperparameters.learning_rate     = json_config["hyperparameters"]["learning_rate"].asFloat();
+  else
+    hyperparameters.learning_rate = 0.001;
+
+  if (json_config["hyperparameters"]["lambda1"] != Json::Value::null)
+    hyperparameters.lambda1            = json_config["hyperparameters"]["lambda1"].asFloat();
+  else
+    hyperparameters.lambda1 = 0.0;
+
+  if (json_config["hyperparameters"]["lambda2"] != Json::Value::null)
+    hyperparameters.lambda2            = json_config["hyperparameters"]["lambda2"].asFloat();
+  else
+    hyperparameters.lambda2 = 0.0;
+
+  if (json_config["hyperparameters"]["dropout"] != Json::Value::null)
+    hyperparameters.dropout            = json_config["hyperparameters"]["dropout"].asFloat();
+  else
+    hyperparameters.dropout = 0.0;
 
   hyperparameters.beta1   = 0.9;
   hyperparameters.beta2   = 0.999;
   hyperparameters.epsilon = 0.00000001;
 
-  hyperparameters.minibatch_size             = json_config["hyperparameters"]["minibatch_size"].asInt();
+
+  if (json_config["hyperparameters"]["minibatch_size"] != Json::Value::null)
+    hyperparameters.minibatch_size  = json_config["hyperparameters"]["minibatch_size"].asInt();
+  else
+    hyperparameters.minibatch_size  = 32;
 
 
   if ((input_geometry_.w == 0) ||
@@ -160,7 +183,6 @@ void CNN::init(Json::Value &json_config, sGeometry input_geometry_, sGeometry ou
   network_log << "lambda1 " << hyperparameters.lambda1 << "\n";
   network_log << "lambda2 " << hyperparameters.lambda2 << "\n";
   network_log << "dropout " << hyperparameters.dropout << "\n";
-  network_log << "noise " << hyperparameters.noise << "\n";
   network_log << "minibatch size " << hyperparameters.minibatch_size << "\n";
 
   network_log << "\n";
@@ -512,7 +534,6 @@ void CNN::save(std::string file_name_prefix)
   json_parameters["hyperparameters"]["lambda1"]            = hyperparameters.lambda1;
   json_parameters["hyperparameters"]["lambda2"]            = hyperparameters.lambda2;
   json_parameters["hyperparameters"]["dropout"]           = hyperparameters.dropout;
-  json_parameters["hyperparameters"]["noise"]             = hyperparameters.noise;
   json_parameters["hyperparameters"]["minibatch_size"]    = hyperparameters.minibatch_size;
 
 

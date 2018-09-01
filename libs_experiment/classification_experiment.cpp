@@ -52,32 +52,40 @@ void ClassificationExperiment::run()
   compare_training_top5.set_top_n_count(5);
 
 
-
   float best_sucess = 0;
   unsigned int epoch_count = parameters.result["epoch_count"].asInt();
 
-  unsigned int epoch_learning_rate_decay = parameters.result["epoch_learning_rate_decay"].asInt();
-  float learning_rate_decay = parameters.result["learning_rate_decay"].asFloat();
+  unsigned int sub_epoch_size = 1;
+  if (parameters.result["sub_epoch_size"] != Json::Value::null)
+    sub_epoch_size = parameters.result["sub_epoch_size"].asInt();
 
-  if (epoch_learning_rate_decay == 0)
-    epoch_learning_rate_decay = epoch_count+1;
+  bool compare_top_5 = false;
+  if (parameters.result["compare_top_5"] != Json::Value::null)
+    compare_top_5 = parameters.result["compare_top_5"].asBool();
+
+  unsigned int epoch_learning_rate_decay = epoch_count;
+  if (parameters.result["epoch_learning_rate_decay"] != Json::Value::null)
+    epoch_learning_rate_decay = parameters.result["epoch_learning_rate_decay"].asInt();
+
+  float learning_rate_decay = 1.0;
+  if (parameters.result["learning_rate_decay"] != Json::Value::null)
+    learning_rate_decay = parameters.result["learning_rate_decay"].asFloat();
 
 
-  float learning_rate = nn.get_learning_rate();
+
+
+
+
+  unsigned int sub_epoch_iterations = dataset->get_training_size()/sub_epoch_size;
+  bool output_valid = true;
+
+
+  float learning_rate  = nn.get_learning_rate();
   float lambda1        = nn.get_lambda1();
   float lambda2        = nn.get_lambda2();
 
   Timer timer;
 
-  unsigned int sub_epoch_size =  parameters.result["sub_epoch_size"].asInt();
-
-  if (sub_epoch_size == 0)
-    sub_epoch_size = 5;
-
-  unsigned int sub_epoch_iterations = dataset->get_training_size()/sub_epoch_size;
-
-
-  bool output_valid = true;
 
 
   experiment_log << "training size    : " << dataset->get_training_size() << "\n";
@@ -120,7 +128,7 @@ void ClassificationExperiment::run()
         training_progress_log << " " << compare_testing_top5.get_success() << " " << compare_training_top5.get_success() << " \n";
 
         float success = 0.0;
-        if (parameters.result["compare_top_5"].asBool())
+        if (compare_top_5)
           success = compare_testing_top5.get_success();
         else
           success = compare_testing.get_success();

@@ -1,11 +1,11 @@
 #include "timer.h"
 
-#include <sys/time.h>
-#include <stdio.h>
-#include <unistd.h>
+
+#include <thread>
+#include <chrono>
+#include <ratio>
 
 class Timer timer;
-
 
 Timer::Timer()
 {
@@ -21,15 +21,10 @@ Timer::~Timer()
 
 double Timer::get_time()
 {
-  struct timeval time;
 
-  double res;
+  double now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
-  gettimeofday(&time, NULL);
-
-  res = (time.tv_sec*1000.0 + time.tv_usec/1000.0);
-
-  return res;
+  return now;
 }
 
 double Timer::get_duration()
@@ -47,7 +42,7 @@ void Timer::stop()
   time_stop = get_time();
 }
 
-void Timer::sleep_ms(unsigned int ms)
+void Timer::sleep_ms(unsigned int ms_time)
 {
-  usleep(ms*1000);
+  std::this_thread::sleep_for(std::chrono::milliseconds(ms_time));
 }

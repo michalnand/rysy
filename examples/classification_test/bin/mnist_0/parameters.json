@@ -20,7 +20,6 @@
           "lambda1"           : 0.00005,
           "lambda2"           : 0.1,
           "dropout"           : 0.2,
-          "noise"             : 0.05,
 
           "minibatch_size"    : 32
         },

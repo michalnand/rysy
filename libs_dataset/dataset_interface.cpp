@@ -5,6 +5,8 @@
 
 DatasetInterface::DatasetInterface()
 {
+  srand(time(NULL));
+
   width     = 0;
   height    = 0;
   channels  = 0;

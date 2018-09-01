@@ -16,7 +16,13 @@ class Timer
     void start();
     void stop();
 
-    void sleep_ms(unsigned int ms);
+    void sleep_ms(unsigned int ms_time);
+
+    void delay_ms(unsigned int ms_time)
+    {
+      sleep_ms(ms_time);
+    }
+
 };
 
 
