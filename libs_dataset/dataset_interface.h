@@ -88,6 +88,10 @@ class DatasetInterface
     void print_testing_item(unsigned int idx);
     void export_h_testing(std::string file_name, unsigned int count);
 
+    void save_to_json(std::string file_name);
+    void save_to_txt_training(std::string file_name);
+    void save_to_txt_testing(std::string file_name);
+
 };
 
 #endif

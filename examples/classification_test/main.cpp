@@ -3,7 +3,7 @@
 
 #include <dataset_mnist.h>
 #include <dataset_cifar_10.h>
-  
+
 #include <classification_experiment.h>
 
 #include <dataset_line.h>
@@ -11,6 +11,11 @@
 int main()
 {
   DatasetLine dataset;
+
+
+  ClassificationExperiment experiment(dataset, "line_network/");
+  experiment.run();
+ 
 
   /*
   {

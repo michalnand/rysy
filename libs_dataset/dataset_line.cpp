@@ -4,14 +4,20 @@
 
 DatasetLine::DatasetLine()
 {
-  width     = 8;
-  height    = 8;
-  channels  = 1;
-
-
   classes_count  = 5;
-  unsigned int training_count = 50000;
-  unsigned int testing_count  = 5000;
+
+
+  width          = 8;
+  height         = width;
+  channels       = 1;
+
+  white_noise_level           = 0.1;
+  brightness_noise_level      = 1.0;
+  salt_and_pepper_noise_level = 0.02;
+
+
+  unsigned int testing_count  = classes_count*1000;
+  unsigned int training_count = testing_count*20;
 
 
   training.resize(classes_count);
@@ -21,8 +27,13 @@ DatasetLine::DatasetLine()
 
   print();
 
+
   for (unsigned int i = 0; i < 20; i++)
     print_testing_item(i);
+/*
+  save_to_txt_testing("testing_line.txt");
+  save_to_txt_training("training_line.txt");
+*/
 }
 
 DatasetLine::~DatasetLine()
@@ -59,34 +70,49 @@ sDatasetItem DatasetLine::create_item()
   for (unsigned int i = 0; i < classes_count; i++)
     result.output[i] = 0.0;
 
+  float PI      = 3.141592654;
+  float theta   = rnd(-PI/2, PI/2);
 
+  float x0  = width/2.0 + (1.0/width)*rnd();
+  float y0  = 0.0;
+  float x1  = x0 + width*2.0*sin(theta);
+  float y1  = y0 + width*2.0*cos(theta);
 
-  float PI    = 3.141592654;
-  float r     = width;
-  float theta = rnd(-PI/4.0, PI/4.0);
+  unsigned int steps = width*10;
 
-  float x0    = width/2.0;
-  float y0    = 0.0;
-  float x1    = x0 + r*sin(theta);
-  float y1    = y0 + r*cos(theta);
-
-
-
-
-  float dt = 0.01;
-  for (float t = 0.0; t < 1.0; t+= dt)
+  for (unsigned int t = 0; t < steps; t++)
   {
-    float x = (x1 - x0)*t + x0;
-    float y = (y1 - y0)*t + y0;
+    float t_ = t*1.0/steps;
 
-    set_input(result.input, ceil(x), ceil(y), 1.0);
-    set_input(result.input, floor(x), floor(y), 1.0);
+    float x = (x1 - x0)*t_ + x0;
+    float y = (y1 - y0)*t_ + y0;
+
+    int xa = floor(x);
+    int ya = floor(y);
+    int xb = ceil(x);
+    int yb = ceil(y);
+    int xc = trunc(x);
+    int yc = trunc(y);
+
+    set_input(result.input, xa, ya, interpolate(xa, ya, x, y));
+    set_input(result.input, xb, yb, interpolate(xb, yb, x, y));
+    set_input(result.input, xc, yc, interpolate(xc, yc, x, y));
   }
 
 
-  int angle = theta*360/(2.0*PI);
 
+  add_white_noise(result.input, white_noise_level);
+  add_brightness_noise(result.input, brightness_noise_level);
+  add_salt_and_pepper_noise(result.input, salt_and_pepper_noise_level);
 
+  normalise_input(result.input);
+
+  int angle_steps = 10000;
+  int angle = ((theta*angle_steps)/(PI/2.0) + angle_steps)/2;
+
+  unsigned int class_id = angle/(angle_steps/classes_count);
+
+  result.output[class_id] = 1.0;
 
 
   return result;
@@ -103,9 +129,81 @@ float DatasetLine::rnd(float min, float max)
 
 void DatasetLine::set_input(std::vector<float> &input, int x, int y, float value)
 {
-  if ((x >= 0)&&(y >= 0)&&(x < width)&&(y < height))
+  if ((x >= 0)&&(y >= 0)&&(x < (int)width)&&(y < (int)height))
   {
     unsigned int idx = y*width + x;
-    input[idx] = 1.0;
+    input[idx] = value;
+  }
+}
+
+
+float DatasetLine::interpolate(float x, float y, float x0, float y0)
+{
+  float result = 0.0;
+
+  result+= pow(x - x0, 2.0);
+  result+= pow(y - y0, 2.0);
+
+  result = exp(-result);
+
+  return result;
+}
+
+
+void DatasetLine::normalise_input(std::vector<float> &input)
+{
+  for (unsigned int y = 0; y < height; y++)
+  {
+    float max = -1000000.0;
+    float min = -max;
+
+    for (unsigned int x = 0; x < width; x++)
+    {
+      float v = input[y*width + x];
+      if (v > max)
+        max = v;
+      if (v < min)
+        min = v;
+    }
+
+    float k = 0.0;
+    float q = 0.0;
+
+    if (max > min)
+    {
+      k = 1.0/(max - min);
+      q = 1.0 - k*max;
+
+      for (unsigned int x = 0; x < width; x++)
+        input[y*width + x] = k*input[y*width + x] + q;
+    }
+  }
+}
+
+
+void DatasetLine::add_white_noise(std::vector<float> &vector, float value)
+{
+  for (unsigned int i = 0; i < vector.size(); i++)
+    vector[i]+= rnd(-value, value);
+}
+
+void DatasetLine::add_brightness_noise(std::vector<float> &vector, float value)
+{
+  float noise = rnd(-value, value);
+  for (unsigned int i = 0; i < vector.size(); i++)
+    vector[i]+= noise;
+}
+
+void DatasetLine::add_salt_and_pepper_noise(std::vector<float> &vector, float value)
+{
+  for (unsigned int i = 0; i < vector.size(); i++)
+  {
+    if (rnd(0, 1) < value)
+    {
+      if (rnd(0, 1) < 0.5)
+        vector[i] = 1.0;
+      else
+        vector[i] = 0.0;
+    }
   }
 }

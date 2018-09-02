@@ -2,6 +2,12 @@
 
 #include <iostream>
 #include <log.h>
+#include <json_config.h>
+
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <iomanip>
 
 DatasetInterface::DatasetInterface()
 {
@@ -113,7 +119,7 @@ void DatasetInterface::print_testing_item(unsigned int idx)
 {
   printf("\n");
   for (unsigned int i = 0; i < testing[idx].output.size(); i++)
-    printf("%6.4f ", testing[idx].output[i]);
+    printf("%4.2f ", testing[idx].output[i]);
   printf(" :\n");
 
   unsigned int ptr = 0;
@@ -124,13 +130,7 @@ void DatasetInterface::print_testing_item(unsigned int idx)
       for (unsigned int x = 0; x < width; x++)
       {
         float v = testing[idx].input[ptr];
-	/*
-        if (v > 0.01)
-          printf("* ");
-        else
-          printf(". ");
-	*/
-        printf("%6.4f ", v);
+        printf("%5.2f ", v);
 
         ptr++;
       }
@@ -185,4 +185,88 @@ void DatasetInterface::export_h_testing(std::string file_name, unsigned int coun
   result << "};\n\n\n";
 
   result << "#endif\n";
+}
+
+
+void DatasetInterface::save_to_json(std::string file_name)
+{
+  JsonConfig json;
+
+  unsigned int classes_count = (int)training.size();
+
+  json.result["width"]    = width;
+  json.result["height"]   = height;
+  json.result["channels"] = channels;
+  json.result["classes_count"] = classes_count;
+
+  std::vector<unsigned char> tmp_input(width*height*channels);
+  std::vector<unsigned char> tmp_output(classes_count);
+
+  for (unsigned int j = 0; j < testing.size(); j++)
+  {
+    for (unsigned int i = 0; i < testing[j].input.size(); i++)
+      json.result["testing"][j]["input"][i]  = (int)(testing[j].input[i]*255);
+
+    for (unsigned int i = 0; i < testing[j].output.size(); i++)
+      json.result["testing"][j]["output"][i]  = (int)(testing[j].output[i]*255);
+  }
+
+  unsigned int idx = 0;
+  for (unsigned int class_id = 0; class_id < training.size(); class_id++)
+  for (unsigned int j = 0; j < training[class_id].size(); j++)
+  {
+    for (unsigned int i = 0; i < training[class_id][j].input.size(); i++)
+      json.result["training"][idx]["input"][i]  = (int)(training[class_id][j].input[i]*255);
+
+    for (unsigned int i = 0; i < training[class_id][j].output.size(); i++)
+      json.result["training"][idx]["output"][i]  = (int)(training[class_id][j].output[i]*255);
+
+    idx++;
+  }
+
+
+  json.save(file_name);
+}
+
+
+void DatasetInterface::save_to_txt_training(std::string file_name)
+{
+  std::string result;
+
+  std::ofstream file;
+  file.open(file_name, std::ios::app);
+
+
+
+  for (unsigned int class_id = 0; class_id < training.size(); class_id++)
+  for (unsigned int j = 0; j < training[class_id].size(); j++)
+  {
+    std::stringstream result;
+
+    for (unsigned int i = 0; i < training[class_id][j].input.size(); i++)
+      result << std::fixed << std::setprecision(3) << training[class_id][j].input[i] << " ";
+
+    result << argmax(training[class_id][j].output) << "\n";
+    file << result.rdbuf();
+  }
+}
+
+
+void DatasetInterface::save_to_txt_testing(std::string file_name)
+{
+  std::string result;
+
+  std::ofstream file;
+  file.open(file_name, std::ios::app);
+
+  for (unsigned int j = 0; j < testing.size(); j++)
+  {
+    std::stringstream result;
+
+    for (unsigned int i = 0; i < testing[j].input.size(); i++)
+      result << std::fixed << std::setprecision(3) << testing[j].input[i] << " ";
+
+    result << argmax(testing[j].output) << "\n";
+    file << result.rdbuf();
+  }
 }
