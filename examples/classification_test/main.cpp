@@ -3,12 +3,16 @@
 
 #include <dataset_mnist.h>
 #include <dataset_cifar_10.h>
-
+  
 #include <classification_experiment.h>
 
+#include <dataset_line.h>
 
 int main()
 {
+  DatasetLine dataset;
+
+  /*
   {
     DatasetMnist dataset ( "/home/michal/dataset/mnist/train-images.idx3-ubyte",
                            "/home/michal/dataset/mnist/train-labels.idx1-ubyte",
@@ -25,7 +29,7 @@ int main()
       experiment.run();
     }
   }
-
+  */
 
   std::cout << "program done\n";
 
