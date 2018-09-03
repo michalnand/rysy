@@ -8,7 +8,7 @@
 
     "network_architecture" :
     {
-        "network_log_file_name" : "line_network/network.log",
+        "network_log_file_name" : "line_network_3/network.log",
 
         "input_geometry"     : [8, 8, 1],
         "output_geometry"    : [1, 1, 5],
@@ -52,8 +52,16 @@
           },
 
           {
-            "type"      : "convolution",
+            "type"      : "dense convolution",
             "geometry"  : [3, 3, 8]
+          },
+          {
+            "type"      : "relu"
+          },
+
+          {
+            "type"      : "convolution",
+            "geometry"  : [3, 3, 16]
           },
           {
             "type"      : "relu"

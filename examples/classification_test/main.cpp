@@ -12,10 +12,16 @@ int main()
 {
   DatasetLine dataset;
 
+  {
+    ClassificationExperiment experiment(dataset, "line_network_2/");
+    experiment.run();
+  }
 
-  ClassificationExperiment experiment(dataset, "line_network/");
-  experiment.run();
- 
+  {
+    ClassificationExperiment experiment(dataset, "line_network_3/");
+    experiment.run();
+  }
+
 
   /*
   {
