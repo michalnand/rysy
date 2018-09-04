@@ -95,9 +95,9 @@ sDatasetItem DatasetLine::create_item()
     int xc = trunc(x);
     int yc = trunc(y);
 
-    set_input(result.input, xa, ya, interpolate(xa, ya, x, y));
-    set_input(result.input, xb, yb, interpolate(xb, yb, x, y));
-    set_input(result.input, xc, yc, interpolate(xc, yc, x, y));
+    set_input(result.input, xa, height - 1 - ya, interpolate(xa, ya, x, y));
+    set_input(result.input, xb, height - 1 - yb, interpolate(xb, yb, x, y));
+    set_input(result.input, xc, height - 1 - yc, interpolate(xc, yc, x, y));
   }
 
 
