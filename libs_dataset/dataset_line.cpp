@@ -73,8 +73,9 @@ sDatasetItem DatasetLine::create_item()
   float PI      = 3.141592654;
   float theta   = rnd(-PI/2, PI/2);
 
-  float x0  = width/2.0 + (1.0/width)*rnd();
+  float x0  = width/2.0 + (width*0.125)*rnd();
   float y0  = 0.0;
+
   float x1  = x0 + width*2.0*sin(theta);
   float y1  = y0 + width*2.0*cos(theta);
 
@@ -94,9 +95,9 @@ sDatasetItem DatasetLine::create_item()
     int xc = trunc(x);
     int yc = trunc(y);
 
-    set_input(result.input, xa, ya, interpolate(xa, ya, x, y));
-    set_input(result.input, xb, yb, interpolate(xb, yb, x, y));
-    set_input(result.input, xc, yc, interpolate(xc, yc, x, y));
+    set_input(result.input, xa, height - 1 - ya, interpolate(xa, ya, x, y));
+    set_input(result.input, xb, height - 1 - yb, interpolate(xb, yb, x, y));
+    set_input(result.input, xc, height - 1 - yc, interpolate(xc, yc, x, y));
   }
 
 
