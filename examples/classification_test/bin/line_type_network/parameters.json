@@ -11,7 +11,7 @@
         "network_log_file_name" : "line_type_network/network.log",
 
         "input_geometry"     : [8, 8, 1],
-        "output_geometry"    : [1, 1, 5],
+        "output_geometry"    : [1, 1, 8],
 
         "hyperparameters" :
         {
@@ -26,14 +26,6 @@
 
         "layers"         :
         [
-
-          {
-            "type"      : "dense convolution",
-            "geometry"  : [3, 3, 8]
-          },
-          {
-            "type"      : "relu"
-          },
 
           {
             "type"      : "dense convolution",
