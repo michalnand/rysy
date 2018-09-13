@@ -31,6 +31,10 @@ class DatasetLine: public DatasetInterface
     void add_brightness_noise(std::vector<float> &input, float value);
     void add_salt_and_pepper_noise(std::vector<float> &vector, float value);
 
+  private:
+    sDatasetItem make_curved_item();
+    sDatasetItem make_shifted_item();
+
 };
 
 #endif

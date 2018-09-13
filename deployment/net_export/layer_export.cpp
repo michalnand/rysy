@@ -60,17 +60,17 @@ void LayerExport::process()
 
   result+= "\n";
 
-  result+= "sLayerGeometry " + layer_prefix + "_input_geometry = {";
+  result+= "const sLayerGeometry " + layer_prefix + "_input_geometry = {";
   result+= std::to_string(input_geometry.w) + ", ";
   result+= std::to_string(input_geometry.h) + ", ";
   result+= std::to_string(input_geometry.d) + "};\n";
 
-  result+= "sLayerGeometry " + layer_prefix + "_output_geometry = {";
+  result+= "const sLayerGeometry " + layer_prefix + "_output_geometry = {";
   result+= std::to_string(output_geometry.w) + ", ";
   result+= std::to_string(output_geometry.h) + ", ";
   result+= std::to_string(output_geometry.d) + "};\n";
 
-  result+= "sLayerGeometry " + layer_prefix + "_kernel_geometry = {";
+  result+= "const sLayerGeometry " + layer_prefix + "_kernel_geometry = {";
   result+= std::to_string(kernel_geometry.w) + ", ";
   result+= std::to_string(kernel_geometry.h) + ", ";
   result+= std::to_string(kernel_geometry.d) + "};\n";

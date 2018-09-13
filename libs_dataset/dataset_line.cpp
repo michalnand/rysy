@@ -4,7 +4,7 @@
 
 DatasetLine::DatasetLine()
 {
-  classes_count  = 5;
+  classes_count  = 8;
 
 
   width          = 8;
@@ -56,51 +56,16 @@ void DatasetLine::create(unsigned int count, bool testing)
   }
 }
 
+
 sDatasetItem DatasetLine::create_item()
 {
   sDatasetItem result;
 
-  result.input.resize(width*height*channels);
-  result.output.resize(classes_count);
-
-
-  for (unsigned int i = 0; i < classes_count; i++)
-    result.input[i] = 0.0;
-
-  for (unsigned int i = 0; i < classes_count; i++)
-    result.output[i] = 0.0;
-
-  float PI      = 3.141592654;
-  float theta   = rnd(-PI/2, PI/2);
-
-  float x0  = width/2.0 + (width*0.125)*rnd();
-  float y0  = 0.0;
-
-  float x1  = x0 + width*2.0*sin(theta);
-  float y1  = y0 + width*2.0*cos(theta);
-
-  unsigned int steps = width*10;
-
-  for (unsigned int t = 0; t < steps; t++)
+  switch (rand()%2)
   {
-    float t_ = t*1.0/steps;
-
-    float x = (x1 - x0)*t_ + x0;
-    float y = (y1 - y0)*t_ + y0;
-
-    int xa = floor(x);
-    int ya = floor(y);
-    int xb = ceil(x);
-    int yb = ceil(y);
-    int xc = trunc(x);
-    int yc = trunc(y);
-
-    set_input(result.input, xa, height - 1 - ya, interpolate(xa, ya, x, y));
-    set_input(result.input, xb, height - 1 - yb, interpolate(xb, yb, x, y));
-    set_input(result.input, xc, height - 1 - yc, interpolate(xc, yc, x, y));
+    case 0: result = make_curved_item(); break;
+    case 1: result = make_shifted_item(); break;
   }
-
-
 
   add_white_noise(result.input, white_noise_level);
   add_brightness_noise(result.input, brightness_noise_level);
@@ -108,12 +73,6 @@ sDatasetItem DatasetLine::create_item()
 
   normalise_input(result.input);
 
-  int angle_steps = 10000;
-  int angle = ((theta*angle_steps)/(PI/2.0) + angle_steps)/2;
-
-  unsigned int class_id = angle/(angle_steps/classes_count);
-
-  result.output[class_id] = 1.0;
 
 
   return result;
@@ -207,4 +166,115 @@ void DatasetLine::add_salt_and_pepper_noise(std::vector<float> &vector, float va
         vector[i] = 0.0;
     }
   }
+}
+
+
+
+
+sDatasetItem DatasetLine::make_curved_item()
+{
+  sDatasetItem result;
+  result.input.resize(width*height*channels);
+  result.output.resize(classes_count);
+
+
+  for (unsigned int i = 0; i < classes_count; i++)
+    result.input[i] = 0.0;
+
+  for (unsigned int i = 0; i < classes_count; i++)
+    result.output[i] = 0.0;
+
+  float PI      = 3.141592654;
+  float theta   = rnd(-PI/2, PI/2);
+
+  float x0  = width/2.0 + (width*0.125)*rnd();
+  float y0  = 0.0;
+
+  float x1  = x0 + width*2.0*sin(theta);
+  float y1  = y0 + width*2.0*cos(theta);
+
+  unsigned int steps = width*10;
+
+  for (unsigned int t = 0; t < steps; t++)
+  {
+    float t_ = t*1.0/steps;
+
+    float x = (x1 - x0)*t_ + x0;
+    float y = (y1 - y0)*t_ + y0;
+
+    int xa = floor(x);
+    int ya = floor(y);
+    int xb = ceil(x);
+    int yb = ceil(y);
+    int xc = trunc(x);
+    int yc = trunc(y);
+
+    set_input(result.input, xa, height - 1 - ya, interpolate(xa, ya, x, y));
+    set_input(result.input, xb, height - 1 - yb, interpolate(xb, yb, x, y));
+    set_input(result.input, xc, height - 1 - yc, interpolate(xc, yc, x, y));
+  }
+
+  int angle_steps = 10000;
+  int angle = ((theta*angle_steps)/(PI/2.0) + angle_steps)/2;
+
+  unsigned int class_id = angle/(angle_steps/classes_count);
+
+  result.output[class_id] = 1.0;
+  return result;
+}
+
+
+
+
+
+
+sDatasetItem DatasetLine::make_shifted_item()
+{
+  sDatasetItem result;
+  result.input.resize(width*height*channels);
+  result.output.resize(classes_count);
+
+
+  for (unsigned int i = 0; i < classes_count; i++)
+    result.input[i] = 0.0;
+
+  for (unsigned int i = 0; i < classes_count; i++)
+    result.output[i] = 0.0;
+
+  float center_normalised = (rnd() + 1.0)/2.0;
+
+  float x0  = width*center_normalised;
+  float y0  = 0.0;
+
+  float x1  = x0 + rnd()*2.0/width;
+  float y1  = width;
+
+  unsigned int steps = width*10;
+
+  for (unsigned int t = 0; t < steps; t++)
+  {
+    float t_ = t*1.0/steps;
+
+    float x = (x1 - x0)*t_ + x0;
+    float y = (y1 - y0)*t_ + y0;
+
+    int xa = floor(x);
+    int ya = floor(y);
+    int xb = ceil(x);
+    int yb = ceil(y);
+    int xc = trunc(x);
+    int yc = trunc(y);
+
+    set_input(result.input, xa, height - 1 - ya, interpolate(xa, ya, x, y));
+    set_input(result.input, xb, height - 1 - yb, interpolate(xb, yb, x, y));
+    set_input(result.input, xc, height - 1 - yc, interpolate(xc, yc, x, y));
+  }
+
+  int position_steps    = 10000;
+  int position          = center_normalised*position_steps;
+  unsigned int class_id = position/(position_steps/classes_count);
+
+  result.output[class_id] = 1.0;
+
+  return result;
 }
