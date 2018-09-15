@@ -26,7 +26,7 @@ SIZE = size
 
 CFLAGS = $(DEGUBFLAGS) -O2 -Os -s -Wall -Wextra -pedantic -std=c++11 $(INC)
 
-LDFLAGS = $(DEGUBFLAGS) -lm -lpthread -pthread -std=c++11 -lglut -lGL -lGLU -lX11 -ljsoncpp -L/usr/local/cuda/lib64 -lcuda -lcudart
+LDFLAGS = $(DEGUBFLAGS) -lm -lpthread -pthread -std=c++11 -lglut -lGL -lGLU -lX11 -ljsoncpp -L/usr/local/cuda/lib64 -lcuda
 
 
 SRCS+= $(shell find -name '*.cpp')

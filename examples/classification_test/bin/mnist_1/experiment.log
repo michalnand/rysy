@@ -1,0 +1,25 @@
+initializing
+training size    : 60000
+testing size     : 10000
+epoch count      : 10
+sub epoch size   : 5
+
+epoch_learning_rate_decay   : 8
+learning_rate_decay         : 0.250000
+
+training
+
+
+
+epoch [0 0] from [10 5]
+training time per iterations 6.076250[ms]
+testing
+testing done
+network success rate top1 96.730003% 96.870003% 
+network success rate top5 99.940002% 99.910004% 
+saving best net in top 1
+best net saved to mnist_1/trained/, with success rate 96.730003%
+
+
+
+epoch [0 1] from [10 5]
