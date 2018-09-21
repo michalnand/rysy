@@ -41,7 +41,6 @@ void cpu_convolution_forward_kernel(   float *output,
         }
 }
 
-#define TILE_SIZE 16
 
 
 template<unsigned int kernel_size>
@@ -58,161 +57,87 @@ void cuda_convolution_forward_kernel(   float *output,
 {
   unsigned int x      = threadIdx.x + blockIdx.x*blockDim.x;
   unsigned int y      = threadIdx.y + blockIdx.y*blockDim.y;
-  unsigned int z      = threadIdx.z + blockIdx.z*blockDim.z;
+  unsigned int filter = threadIdx.z + blockIdx.z*blockDim.z;
 
-
-  unsigned int ch     = z%input_geometry.d;
-  unsigned int filter = z/input_geometry.d;
 
   unsigned int k_half = (kernel_size - 1)/2;
   unsigned int input_size_y = input_geometry.h - 2*k_half;
   unsigned int input_size_x = input_geometry.w - 2*k_half;
 
-  __shared__ float w_shared[5][5];
-  if ( (z < input_geometry.d*output_geometry.d) && (threadIdx.y < kernel_size) && (threadIdx.y < kernel_size) )
-  {
-    unsigned int w_ofs = z*kernel_size*kernel_size;
-    w_shared[threadIdx.y][threadIdx.x] = w[w_ofs + threadIdx.y*kernel_size + threadIdx.x];
-  }
-
-  __shared__ float input_shared[TILE_SIZE][TILE_SIZE];
-  if ( (threadIdx.y < TILE_SIZE) && (threadIdx.y < TILE_SIZE) )
-  {
-    unsigned int in_ofs = 0;
-    input_shared[threadIdx.y][threadIdx.x] = input[in_ofs + threadIdx.y*TILE_SIZE + threadIdx.x];
-  }
-
-  __syncthreads();
-
 
   if (filter < output_geometry.d)
-  if (ch < input_geometry.d)
   if (y <= input_size_y)
   if (x <= input_size_x)
+  for (unsigned int ch = 0; ch < input_geometry.d; ch++)
   {
+    unsigned int filter_idx = (filter*input_geometry.d + ch)*kernel_size*kernel_size;
     unsigned int input_idx  = (ch*input_geometry.h + y)*input_geometry.w + x;
+
     float sum = 0.0;
 
-    /*
-    if (kernel_size == 1)
-    {
-      sum+= w_shared[0][0]*input_shared[0][0];
-    }
-
-    if (kernel_size == 3)
-    {
-      sum+= w_shared[0][0]*input_shared[0][0];
-      sum+= w_shared[0][1]*input_shared[0][1];
-      sum+= w_shared[0][2]*input_shared[0][2];
-
-      sum+= w_shared[1][0]*input_shared[1][0];
-      sum+= w_shared[1][1]*input_shared[1][1];
-      sum+= w_shared[1][2]*input_shared[1][2];
-
-      sum+= w_shared[2][0]*input_shared[2][0];
-      sum+= w_shared[2][1]*input_shared[2][1];
-      sum+= w_shared[2][2]*input_shared[2][2];
-    }
+      if (kernel_size == 1)
+      {
+        sum+= w[filter_idx]*input[input_idx]; input_idx++;
+        input_idx+= input_geometry.w - kernel_size;
+      }
 
 
-    if (kernel_size == 5)
-    {
-      sum+= w_shared[0][0]*input_shared[0][0];
-      sum+= w_shared[0][1]*input_shared[0][1];
-      sum+= w_shared[0][2]*input_shared[0][2];
-      sum+= w_shared[0][3]*input_shared[0][3];
-      sum+= w_shared[0][4]*input_shared[0][4];
+      if (kernel_size == 3)
+      {
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        input_idx+= input_geometry.w - kernel_size;
 
-      sum+= w_shared[1][0]*input_shared[1][0];
-      sum+= w_shared[1][1]*input_shared[1][1];
-      sum+= w_shared[1][2]*input_shared[1][2];
-      sum+= w_shared[1][3]*input_shared[1][3];
-      sum+= w_shared[1][4]*input_shared[1][4];
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        input_idx+= input_geometry.w - kernel_size;
 
-      sum+= w_shared[2][0]*input_shared[2][0];
-      sum+= w_shared[2][1]*input_shared[2][1];
-      sum+= w_shared[2][2]*input_shared[2][2];
-      sum+= w_shared[2][3]*input_shared[2][3];
-      sum+= w_shared[2][4]*input_shared[2][4];
-
-      sum+= w_shared[3][0]*input_shared[3][0];
-      sum+= w_shared[3][1]*input_shared[3][1];
-      sum+= w_shared[3][2]*input_shared[3][2];
-      sum+= w_shared[3][3]*input_shared[3][3];
-      sum+= w_shared[3][4]*input_shared[3][4];
-
-      sum+= w_shared[4][0]*input_shared[4][0];
-      sum+= w_shared[4][1]*input_shared[4][1];
-      sum+= w_shared[4][2]*input_shared[4][2];
-      sum+= w_shared[4][3]*input_shared[4][3];
-      sum+= w_shared[4][4]*input_shared[4][4];
-    }
-    */
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        input_idx+= input_geometry.w - kernel_size;
+      }
 
 
-    if (kernel_size == 1)
-    {
-      sum+= w_shared[0][0]*input[input_idx]; input_idx++;
-      input_idx+= input_geometry.w - kernel_size;
-    }
+      if (kernel_size == 5)
+      {
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        input_idx+= input_geometry.w - kernel_size;
 
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        input_idx+= input_geometry.w - kernel_size;
 
-    if (kernel_size == 3)
-    {
-      sum+= w_shared[0][0]*input[input_idx]; input_idx++;
-      sum+= w_shared[0][1]*input[input_idx]; input_idx++;
-      sum+= w_shared[0][2]*input[input_idx]; input_idx++;
-      input_idx+= input_geometry.w - kernel_size;
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        input_idx+= input_geometry.w - kernel_size;
 
-      sum+= w_shared[1][0]*input[input_idx]; input_idx++;
-      sum+= w_shared[1][1]*input[input_idx]; input_idx++;
-      sum+= w_shared[1][2]*input[input_idx]; input_idx++;
-      input_idx+= input_geometry.w - kernel_size;
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        input_idx+= input_geometry.w - kernel_size;
 
-      sum+= w_shared[2][0]*input[input_idx]; input_idx++;
-      sum+= w_shared[2][1]*input[input_idx]; input_idx++;
-      sum+= w_shared[2][2]*input[input_idx]; input_idx++;
-      input_idx+= input_geometry.w - kernel_size;
-    }
-
-
-    if (kernel_size == 5)
-    {
-      sum+= w_shared[0][0]*input[input_idx]; input_idx++;
-      sum+= w_shared[0][1]*input[input_idx]; input_idx++;
-      sum+= w_shared[0][2]*input[input_idx]; input_idx++;
-      sum+= w_shared[0][3]*input[input_idx]; input_idx++;
-      sum+= w_shared[0][4]*input[input_idx]; input_idx++;
-      input_idx+= input_geometry.w - kernel_size;
-
-      sum+= w_shared[1][0]*input[input_idx]; input_idx++;
-      sum+= w_shared[1][1]*input[input_idx]; input_idx++;
-      sum+= w_shared[1][2]*input[input_idx]; input_idx++;
-      sum+= w_shared[1][3]*input[input_idx]; input_idx++;
-      sum+= w_shared[1][4]*input[input_idx]; input_idx++;
-      input_idx+= input_geometry.w - kernel_size;
-
-      sum+= w_shared[2][0]*input[input_idx]; input_idx++;
-      sum+= w_shared[2][1]*input[input_idx]; input_idx++;
-      sum+= w_shared[2][2]*input[input_idx]; input_idx++;
-      sum+= w_shared[2][3]*input[input_idx]; input_idx++;
-      sum+= w_shared[2][4]*input[input_idx]; input_idx++;
-      input_idx+= input_geometry.w - kernel_size;
-
-      sum+= w_shared[3][0]*input[input_idx]; input_idx++;
-      sum+= w_shared[3][1]*input[input_idx]; input_idx++;
-      sum+= w_shared[3][2]*input[input_idx]; input_idx++;
-      sum+= w_shared[3][3]*input[input_idx]; input_idx++;
-      sum+= w_shared[3][4]*input[input_idx]; input_idx++;
-      input_idx+= input_geometry.w - kernel_size;
-
-      sum+= w_shared[4][0]*input[input_idx]; input_idx++;
-      sum+= w_shared[4][1]*input[input_idx]; input_idx++;
-      sum+= w_shared[4][2]*input[input_idx]; input_idx++;
-      sum+= w_shared[4][3]*input[input_idx]; input_idx++;
-      sum+= w_shared[4][4]*input[input_idx]; input_idx++;
-      input_idx+= input_geometry.w - kernel_size;
-    }
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        sum+= w[filter_idx]*input[input_idx]; input_idx++; filter_idx++;
+        input_idx+= input_geometry.w - kernel_size;
+      }
 
     unsigned int output_idx = (filter*input_geometry.h + y + k_half)*input_geometry.w + x + k_half;
     sum+= bias[filter]/input_geometry.d;
@@ -305,7 +230,7 @@ void convolution_layer_forward(   Tensor &output, Tensor &input,
       dim3 block(16, 16, 1);
       dim3 grid( (input_size_x      + block.x - 1)/block.x,
                  (input_size_y      + block.y - 1)/block.y,
-                 (kernel_geometry.d*input_geometry.d + block.z - 1)/block.z );
+                 (kernel_geometry.d + block.z - 1)/block.z );
 
       unsigned int kernel_size = kernel_geometry.w;
       switch (kernel_size)
