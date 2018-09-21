@@ -36,7 +36,7 @@ double layer_test(sGeometry input_geometry, sGeometry kernel_geometry)
   Tensor input(layer.get_input_geometry());
   Tensor output(layer.get_output_geometry());
 
-  unsigned int iterations = 32;
+  unsigned int iterations = 100;
   timer.start();
 
   for (unsigned int i = 0; i < iterations; i++)
@@ -69,7 +69,7 @@ int main()
 
   for (unsigned int kernel_sizes = 0; kernel_sizes < 3; kernel_sizes++)
   for (unsigned int input_feature_maps_count = 1; input_feature_maps_count < 32; input_feature_maps_count*= 2)
-    for (unsigned int input_size = 8; input_size <= 256; input_size*= 2)
+    for (unsigned int input_size = 8; input_size <= 64; input_size*= 2)
       for (unsigned int kernel_count = 8; kernel_count < 48; kernel_count+= 8)
       {
         unsigned int kernel_size = 1;
@@ -108,9 +108,6 @@ int main()
   result_log << "average time " << average_time << "\n";
   result_log << "min time " << min_time << "\n";
   result_log << "max time " << max_time << "\n";
-
-
-
 
   return 0;
 }

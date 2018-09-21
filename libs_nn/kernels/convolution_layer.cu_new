@@ -1,8 +1,5 @@
 #include "convolution_layer.cuh"
 
-#define TILE_SIZE 16
-
-
 __host__
 void cpu_convolution_forward_kernel(   float *output,
                                        float *input,
@@ -44,6 +41,7 @@ void cpu_convolution_forward_kernel(   float *output,
         }
 }
 
+#define TILE_SIZE 16
 
 
 template<unsigned int kernel_size>
@@ -77,6 +75,13 @@ void cuda_convolution_forward_kernel(   float *output,
     w_shared[threadIdx.y][threadIdx.x] = w[w_ofs + threadIdx.y*kernel_size + threadIdx.x];
   }
 
+  __shared__ float input_shared[TILE_SIZE][TILE_SIZE];
+  if ( (threadIdx.y < TILE_SIZE) && (threadIdx.y < TILE_SIZE) )
+  {
+    unsigned int in_ofs = 0;
+    input_shared[threadIdx.y][threadIdx.x] = input[in_ofs + threadIdx.y*TILE_SIZE + threadIdx.x];
+  }
+
   __syncthreads();
 
 
@@ -87,6 +92,63 @@ void cuda_convolution_forward_kernel(   float *output,
   {
     unsigned int input_idx  = (ch*input_geometry.h + y)*input_geometry.w + x;
     float sum = 0.0;
+
+    /*
+    if (kernel_size == 1)
+    {
+      sum+= w_shared[0][0]*input_shared[0][0];
+    }
+
+    if (kernel_size == 3)
+    {
+      sum+= w_shared[0][0]*input_shared[0][0];
+      sum+= w_shared[0][1]*input_shared[0][1];
+      sum+= w_shared[0][2]*input_shared[0][2];
+
+      sum+= w_shared[1][0]*input_shared[1][0];
+      sum+= w_shared[1][1]*input_shared[1][1];
+      sum+= w_shared[1][2]*input_shared[1][2];
+
+      sum+= w_shared[2][0]*input_shared[2][0];
+      sum+= w_shared[2][1]*input_shared[2][1];
+      sum+= w_shared[2][2]*input_shared[2][2];
+    }
+
+
+    if (kernel_size == 5)
+    {
+      sum+= w_shared[0][0]*input_shared[0][0];
+      sum+= w_shared[0][1]*input_shared[0][1];
+      sum+= w_shared[0][2]*input_shared[0][2];
+      sum+= w_shared[0][3]*input_shared[0][3];
+      sum+= w_shared[0][4]*input_shared[0][4];
+
+      sum+= w_shared[1][0]*input_shared[1][0];
+      sum+= w_shared[1][1]*input_shared[1][1];
+      sum+= w_shared[1][2]*input_shared[1][2];
+      sum+= w_shared[1][3]*input_shared[1][3];
+      sum+= w_shared[1][4]*input_shared[1][4];
+
+      sum+= w_shared[2][0]*input_shared[2][0];
+      sum+= w_shared[2][1]*input_shared[2][1];
+      sum+= w_shared[2][2]*input_shared[2][2];
+      sum+= w_shared[2][3]*input_shared[2][3];
+      sum+= w_shared[2][4]*input_shared[2][4];
+
+      sum+= w_shared[3][0]*input_shared[3][0];
+      sum+= w_shared[3][1]*input_shared[3][1];
+      sum+= w_shared[3][2]*input_shared[3][2];
+      sum+= w_shared[3][3]*input_shared[3][3];
+      sum+= w_shared[3][4]*input_shared[3][4];
+
+      sum+= w_shared[4][0]*input_shared[4][0];
+      sum+= w_shared[4][1]*input_shared[4][1];
+      sum+= w_shared[4][2]*input_shared[4][2];
+      sum+= w_shared[4][3]*input_shared[4][3];
+      sum+= w_shared[4][4]*input_shared[4][4];
+    }
+    */
+
 
     if (kernel_size == 1)
     {
