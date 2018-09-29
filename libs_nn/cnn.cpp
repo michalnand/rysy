@@ -8,6 +8,9 @@
 #include "layers/convolution_layer.h"
 #include "layers/dense_convolution_layer.h"
 
+#include "layers/gating_layer.h"
+
+
 #include "layers/dropout_layer.h"
 #include "layers/max_pooling_layer.h"
 #include "layers/unpooling_layer.h"
@@ -285,6 +288,14 @@ Layer* CNN::create_layer(Json::Value &parameters, sHyperparameters hyperparamete
     layer_kernel_geometry.h = parameters["geometry"][1].asInt();
     layer_kernel_geometry.d = parameters["geometry"][2].asInt();
     result = new DenseConvolutionLayer(layer_input_geometry, layer_kernel_geometry, hyperparameters);
+  }
+
+  if (type == "gating")
+  {
+    layer_kernel_geometry.w = parameters["geometry"][0].asInt();
+    layer_kernel_geometry.h = parameters["geometry"][1].asInt();
+    layer_kernel_geometry.d = parameters["geometry"][2].asInt();
+    result = new GatingLayer(layer_input_geometry, layer_kernel_geometry, hyperparameters);
   }
 
 

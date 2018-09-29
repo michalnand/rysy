@@ -9,7 +9,7 @@
 
 int main()
 {
- 
+
   {
     DatasetMnist dataset ( "/home/michal/dataset/mnist/train-images.idx3-ubyte",
                            "/home/michal/dataset/mnist/train-labels.idx1-ubyte",
@@ -17,6 +17,9 @@ int main()
                            "/home/michal/dataset/mnist/t10k-labels.idx1-ubyte",
                           0);
 
+    ClassificationExperiment experiment(dataset, "mnist_2/");
+    experiment.run();
+/*
     JsonConfig parameters("experiments_mnist.json");
 
     for (unsigned int i = 0; i < parameters.result["experiments"].size(); i++)
@@ -25,6 +28,7 @@ int main()
       ClassificationExperiment experiment(dataset, config_dir);
       experiment.run();
     }
+    */
   }
 
 

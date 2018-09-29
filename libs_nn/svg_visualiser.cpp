@@ -88,6 +88,13 @@ void SVGVisualiser::process(std::string image_file_name)
           b = 190;
         }
 
+        if (layer_type == "gating")
+        {
+          r = 0;
+          g = 190;
+          b = 0;
+        }
+
         if (layer_type == "max_pooling")
         {
           r = 190;
