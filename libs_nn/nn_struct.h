@@ -14,6 +14,7 @@ struct sHyperparameters
   float lambda1;
   float lambda2;
   float dropout;
+  float noise;  
 
   float beta1;
   float beta2;

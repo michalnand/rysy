@@ -1,6 +1,8 @@
 #include "cs_parse_file.h"
-#include <image.h>
 #include <iostream>
+
+#include <CImg.h>
+
 
 CSParseFile::CSParseFile(
                           std::string input_file_name_prefix,

@@ -55,8 +55,8 @@ GatingLayer::GatingLayer(sGeometry input_geometry, sGeometry kernel_geometry, sH
   flops = input_size;
 
   layer_name = "GATING";
-} 
-
+}
+ 
 void GatingLayer::copy_gating(GatingLayer &other)
 {
   (void)other;

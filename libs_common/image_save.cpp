@@ -48,18 +48,20 @@ void ImageSave::show(std::vector<float> &v)
 }
 
 
-void ImageSave::vector_to_image(std::vector<float> &v)
+void ImageSave::vector_to_image(std::vector<float> v)
 {
   std::vector<float> pixel(3);
+
+  normalise(v, 0, 255);
 
   if (m_grayscale)
   {
     for (unsigned int y = 0; y < m_height; y++)
     for (unsigned int x = 0; x < m_width; x++)
     {
-      pixel[0] = v[(0*m_height + y)*m_width + x]*255;
-      pixel[1] = v[(0*m_height + y)*m_width + x]*255;
-      pixel[2] = v[(0*m_height + y)*m_width + x]*255;
+      pixel[0] = v[(0*m_height + y)*m_width + x];
+      pixel[1] = v[(0*m_height + y)*m_width + x];
+      pixel[2] = v[(0*m_height + y)*m_width + x];
 
       output_image->draw_point(x, y, &pixel[0]);
     }
@@ -69,11 +71,40 @@ void ImageSave::vector_to_image(std::vector<float> &v)
     for (unsigned int y = 0; y < m_height; y++)
     for (unsigned int x = 0; x < m_width; x++)
     {
-      pixel[0] = v[(0*m_height + y)*m_width + x]*255;
-      pixel[1] = v[(1*m_height + y)*m_width + x]*255;
-      pixel[2] = v[(2*m_height + y)*m_width + x]*255;
+      pixel[0] = v[(0*m_height + y)*m_width + x];
+      pixel[1] = v[(1*m_height + y)*m_width + x];
+      pixel[2] = v[(2*m_height + y)*m_width + x];
 
       output_image->draw_point(x, y, &pixel[0]);
     }
+  }
+}
+
+
+void ImageSave::normalise(std::vector<float> &v, float min, float max)
+{
+  float max_v = v[0];
+  float min_v = v[0];
+  for (unsigned int i = 0; i < v.size(); i++)
+  {
+    if (v[i] > max_v)
+      max_v = v[i];
+
+    if (v[i] < min_v)
+      min_v = v[i];
+  }
+
+  float k = 0.0;
+  float q = 0.0;
+
+  if (max_v > min_v)
+  {
+    k = (max - min)/(max_v - min_v);
+    q = max - k*max_v;
+  }
+
+  for (unsigned int i = 0; i < v.size(); i++)
+  {
+    v[i] = k*v[i] + q;
   }
 }

@@ -23,7 +23,9 @@ class ImageSave
     void show(std::vector<float> &v);
 
   private:
-    void vector_to_image(std::vector<float> &v);
+    void vector_to_image(std::vector<float> v);
+    void normalise(std::vector<float> &v, float min, float max);
+
 };
 
 

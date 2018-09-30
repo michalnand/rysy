@@ -2,7 +2,7 @@
 
 #include <math.h>
 #include <timer.h>
-#include <image.h>
+#include <image_save.h>
 
 AutoencoderExperiment::AutoencoderExperiment(DatasetInterface &dataset, std::string config_dir)
 {
@@ -256,15 +256,34 @@ bool AutoencoderExperiment::test(CNN &nn)
 void AutoencoderExperiment::process_best(CNN &nn)
 {
   std::vector<float> nn_output(dataset->get_input_size());
+  std::vector<float> nn_noise_output(dataset->get_input_size());
+
+  Json::Value json_config;
+  sGeometry input_geometry, output_geometry;
+
+  input_geometry.w = dataset->get_width();
+  input_geometry.h = dataset->get_height();
+  input_geometry.d = dataset->get_channels();
+
+  output_geometry = input_geometry;
+
+  json_config["network_architecture"]["hyperparameters"] = parameters.result["network_architecture"]["hyperparameters"];
+  json_config["network_architecture"]["layers"][0]["type"] = "noise";
+
+  CNN nn_noise(json_config["network_architecture"], input_geometry, output_geometry);
+
 
   for (unsigned int item_idx = 0; item_idx < 100; item_idx++)
   {
     sDatasetItem item = dataset->get_testing(item_idx%dataset->get_testing_size());
 
     nn.forward(nn_output, item.input);
+    nn_noise.forward(nn_noise_output, item.input);
+
 
     save_image(parameters.result["export_required_examples_path"].asString() + std::to_string(item_idx) + ".png", item.input);
     save_image(parameters.result["export_reconstructed_examples_path"].asString() + std::to_string(item_idx) + ".png", nn_output);
+    save_image(parameters.result["export_input_examples_path"].asString() + std::to_string(item_idx) + ".png", nn_noise_output);
   }
 }
 
@@ -294,12 +313,12 @@ float AutoencoderExperiment::compute_rms(std::vector<float> &va, std::vector<flo
 
 void AutoencoderExperiment::save_image(std::string file_name, std::vector<float> &v)
 {
-  Image image(dataset->get_width(), dataset->get_height());
+  bool grayscale = false;
 
-  if (dataset->get_channels() == 3)
-    image.from_vector(v);
-  else
-    image.from_vector_grayscale(v);
+  if (dataset->get_channels() == 1)
+    grayscale = true;
 
-  image.save(file_name);
+  ImageSave image(dataset->get_width(), dataset->get_height(), grayscale);
+
+  image.save(file_name, v);
 }

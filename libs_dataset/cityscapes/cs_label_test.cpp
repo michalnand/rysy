@@ -1,5 +1,5 @@
 #include "cs_label_test.h"
-#include <image.h>
+#include <image_save.h>
 
 CSLabelTest::CSLabelTest(std::string polygons_file_name, std::string output_file_name)
 {
@@ -17,7 +17,8 @@ CSLabelTest::~CSLabelTest()
 
 void CSLabelTest::process()
 {
-  Image image(labels.width(), labels.height());
+  /*
+  ImageSave image(labels.width(), labels.height());
 
   auto palette = make_color_palette(cs_to_class_id.get_count());
 
@@ -43,12 +44,15 @@ void CSLabelTest::process()
           image.pixels[y + ky][x + kx].b[0] = r;
           image.pixels[y + ky][x + kx].b[1] = g;
           image.pixels[y + ky][x + kx].b[2] = b;
+
+
         }
       }
     }
 
 
-  image.save(output_file_name);
+  image.save(output_file_name, v);
+  */
 }
 
 

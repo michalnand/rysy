@@ -3,7 +3,7 @@
 #include <iostream>
 #include <json_config.h>
 #include <math.h>
-#include <image.h>
+#include <image_save.h>
 
 DatasetStack::DatasetStack( unsigned int width,
                             unsigned int height,
@@ -295,15 +295,16 @@ float DatasetStack::compute_confidence(std::vector<std::vector<float>> &rect_ref
 
 void DatasetStack::save_image(std::string item_image_file_name, std::vector<std::vector<float>> &rectangle_a, std::vector<std::vector<float>> &rectangle_b)
 {
-  Image image(width, height);
+  ImageSave image(width, height, false);
+  std::vector<float> v(width*height*3);
 
   for (unsigned int j = 0; j < height; j++)
     for (unsigned int i = 0; i < width; i++)
     {
-      image.pixels[j][i].b[0] = rectangle_a[j][i];
-      image.pixels[j][i].b[1] = rectangle_b[j][i];
-      image.pixels[j][i].b[2] = 1.0;
+      v[(0*height + j)*width + i] = rectangle_a[j][i];
+      v[(1*height + j)*width + i] = rectangle_b[j][i];
+      v[(2*height + j)*width + i] = 1.0;
     }
 
-  image.save(item_image_file_name);
+  image.save(item_image_file_name, v);
 }

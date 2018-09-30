@@ -16,7 +16,7 @@
         "hyperparameters" :
         {
           "init_weight_range" : 0.0,
-          "learning_rate"     : 0.0005,
+          "learning_rate"     : 0.0002,
           "lambda1"           : 0.001,
           "lambda2"           : 0.001,
           "dropout"           : 0.2,
@@ -44,19 +44,6 @@
 
 
           {
-            "type"      : "convolution",
-            "geometry"  : [3, 3, 32]
-          },
-          {
-            "type"      : "gating"
-          },
-          {
-            "type"      : "relu"
-          },
-
-
-
-          {
             "type"      : "max_pooling",
             "geometry"  : [2, 2, 1]
           },
@@ -64,6 +51,18 @@
           {
             "type"      : "convolution",
             "geometry"  : [3, 3, 32]
+          },
+          {
+            "type"      : "relu"
+          },
+
+
+          {
+            "type"      : "convolution",
+            "geometry"  : [3, 3, 32]
+          },
+          {
+            "type"      : "gating"
           },
           {
             "type"      : "relu"

@@ -68,7 +68,7 @@ Image::Image(std::string file_name, bool grayscale, bool normalise)
 Image::Image(unsigned int width, unsigned int height, bool normalise)
 {
   m_normalise = normalise;
-  
+
   std::vector<struct sPixel> row;
 
   struct sPixel pixel;
@@ -193,7 +193,6 @@ void Image::from_vector(float *v_image)
           float tmp =  v_image[ptr];
           ptr++;
 
-
           if (tmp > 1.0)
             tmp = 1.0;
 
@@ -204,65 +203,31 @@ void Image::from_vector(float *v_image)
         }
 }
 
-void Image::from_vector_grayscale(std::vector<float> &v_image)
-{
-  from_vector_grayscale(&v_image[0]);
-}
 
 void Image::from_vector_grayscale(float *v_image)
 {
-  from_feature_map(v_image, 1);
-}
+  unsigned int ptr = 0;
 
-void Image::from_feature_map(std::vector<float> &v_image, unsigned int maps_count)
-{
-  from_feature_map(&v_image[0], maps_count);
-}
-
-void Image::from_feature_map(float *v_image, unsigned int maps_count)
-{
-  unsigned int map_height = height/maps_count;
-
-
-  for (unsigned int map = 0; map < maps_count; map++)
-  {
-    float max = -1000000000.0;
-    float min = -max;
-
-    for (unsigned int j = 0; j < map_height; j++)
-      for (unsigned int i = 0; i < width; i++)
+    for (unsigned int j = 0; j < pixels.size(); j++)
+      for (unsigned int i = 0; i < pixels[j].size(); i++)
         {
-          unsigned int idx = (j*width + i)*maps_count + map;
-          float tmp = v_image[idx];
+          float tmp =  v_image[ptr];
+          ptr++;
+
+          if (tmp > 1.0)
+            tmp = 1.0;
 
           if (tmp < 0.0)
             tmp = 0.0;
 
-          if (tmp > max)
-            max = tmp;
-
-          if (tmp < min)
-            min = tmp;
-
           for (unsigned int ch = 0; ch < 3; ch++)
-            pixels[map*map_height + j][i].b[ch] = tmp;
-        }
+            pixels[j][i].b[ch] = tmp;
+        } 
+}
 
-        float k = 0.0;
-        float q = 0.0;
-
-        if (max > min)
-        {
-          k = (1.0 - 0.0)/(max - min);
-          q = 1.0 - k*max;
-        }
-
-        for (unsigned int j = 0; j < map_height; j++)
-          for (unsigned int i = 0; i < width; i++)
-            for (unsigned int ch = 0; ch < 3; ch++)
-              pixels[map*map_height + j][i].b[ch] = k*pixels[map*map_height + j][i].b[ch] + q;
-  }
-
+void Image::from_vector_grayscale(std::vector<float> &v_image)
+{
+  from_vector_grayscale(&v_image[0]);
 }
 
 

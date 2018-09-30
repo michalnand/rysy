@@ -1,6 +1,7 @@
 #include "dense_convolution_layer.h"
 
-#include "kernels/convolution_layer.cuh"
+#include "kernels/convolution_layer_forward.cuh"
+#include "kernels/convolution_layer_backward.cuh"
 #include "kernels/w_update.cuh"
 
 #include "../cuda_float_allocator.cuh"

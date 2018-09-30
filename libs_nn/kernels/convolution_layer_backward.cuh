@@ -1,10 +1,7 @@
-#ifndef _CONVOLUTION_LAYER_CUH_
-#define _CONVOLUTION_LAYER_CUH_
+#ifndef _CONVOLUTION_LAYER_BACKWARD_CUH_
+#define _CONVOLUTION_LAYER_BACKWARD_CUH_
 
 #include "../tensor.h"
-
-void convolution_layer_forward(   Tensor &output, Tensor &input,
-                                  Tensor &w, Tensor &bias);
 
 void convolution_layer_gradient(Tensor &w_grad, Tensor &input, Tensor &error);
 

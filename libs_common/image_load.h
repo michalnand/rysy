@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <string>
- 
+
 class ImageLoad
 {
   private:
@@ -12,10 +12,13 @@ class ImageLoad
     std::vector<float> m_pixels;
 
   public:
+    ImageLoad();
     ImageLoad(std::string file_name, bool load_grayscale = false, bool normalise = false);
     virtual ~ImageLoad();
 
   public:
+    void load(std::string file_name, bool load_grayscale = false, bool normalise = false);
+
     std::vector<float>& get();
     unsigned int width();
     unsigned int height();

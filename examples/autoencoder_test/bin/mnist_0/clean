@@ -4,10 +4,20 @@ rm training_progress.log
 
 cd export_reconstructed_examples
 rm *.png
+rm *.bmp
+rm *.jpg
 cd ..
 
 cd export_required_examples
 rm *.png
+rm *.bmp
+rm *.jpg
+cd ..
+
+cd export_input_examples
+rm *.png
+rm *.bmp
+rm *.jpg
 cd ..
 
 

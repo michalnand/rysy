@@ -21,6 +21,8 @@
           "lambda2"           : 0.1,
           "dropout"           : 0.2,
 
+          "noise"             : 0.2,
+
           "minibatch_size"    : 32
         },
 
@@ -28,12 +30,24 @@
         [
 
           {
-            "type"      : "convolution",
+            "type"      : "noise"
+          },
+          
+          {
+            "type"      : "dense convolution",
             "geometry"  : [3, 3, 8]
           },
           {
             "type"      : "relu"
           },
+          {
+            "type"      : "dense convolution",
+            "geometry"  : [3, 3, 8]
+          },
+          {
+            "type"      : "relu"
+          },
+
           {
             "type"      : "max_pooling",
             "geometry"  : [2, 2, 1]

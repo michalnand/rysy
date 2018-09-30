@@ -45,9 +45,6 @@ class Image
     void from_vector_grayscale(std::vector<float> &v_image);
     void from_vector_grayscale(float *v_image);
 
-    void from_feature_map(std::vector<float> &v_image, unsigned int maps_count);
-    void from_feature_map(float *v_image, unsigned int maps_count);
-
     void add_row(float *row);
 
     float compare(class Image &image);

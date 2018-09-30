@@ -2,7 +2,17 @@
 
 #include <CImg.h>
 
+ImageLoad::ImageLoad()
+{
+
+}
+
 ImageLoad::ImageLoad(std::string file_name, bool load_grayscale, bool normalise)
+{
+  load(file_name, load_grayscale, normalise);
+}
+
+void ImageLoad::load(std::string file_name, bool load_grayscale, bool normalise)
 {
   cimg_library::CImg<float> image(file_name.c_str());
 
