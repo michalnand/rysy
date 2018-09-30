@@ -1,0 +1,214 @@
+{
+	"hyperparameters" : 
+	{
+		"dropout" : 0.20000000298023224,
+		"init_weight_range" : 0,
+		"lambda1" : 4.9999998736893758e-06,
+		"lambda2" : 0.0099999997764825821,
+		"learning_rate" : 9.9999997473787516e-05,
+		"minibatch_size" : 32,
+		"noise" : 0
+	},
+	"input_geometry" : 
+	[
+		28,
+		28,
+		2
+	],
+	"layers" : 
+	[
+		{
+			"geometry" : 
+			[
+				3,
+				3,
+				8
+			],
+			"type" : "dense convolution",
+			"weights_file_name" : "mnist_compare_2/trained/layer_0"
+		},
+		{
+			"type" : "relu",
+			"weights_file_name" : "mnist_compare_2/trained/layer_1"
+		},
+		{
+			"geometry" : 
+			[
+				3,
+				3,
+				8
+			],
+			"type" : "dense convolution",
+			"weights_file_name" : "mnist_compare_2/trained/layer_2"
+		},
+		{
+			"type" : "relu",
+			"weights_file_name" : "mnist_compare_2/trained/layer_3"
+		},
+		{
+			"geometry" : 
+			[
+				2,
+				2,
+				1
+			],
+			"type" : "max_pooling",
+			"weights_file_name" : "mnist_compare_2/trained/layer_4"
+		},
+		{
+			"geometry" : 
+			[
+				3,
+				3,
+				8
+			],
+			"type" : "dense convolution",
+			"weights_file_name" : "mnist_compare_2/trained/layer_5"
+		},
+		{
+			"type" : "relu",
+			"weights_file_name" : "mnist_compare_2/trained/layer_6"
+		},
+		{
+			"geometry" : 
+			[
+				3,
+				3,
+				8
+			],
+			"type" : "dense convolution",
+			"weights_file_name" : "mnist_compare_2/trained/layer_7"
+		},
+		{
+			"type" : "relu",
+			"weights_file_name" : "mnist_compare_2/trained/layer_8"
+		},
+		{
+			"geometry" : 
+			[
+				3,
+				3,
+				8
+			],
+			"type" : "dense convolution",
+			"weights_file_name" : "mnist_compare_2/trained/layer_9"
+		},
+		{
+			"type" : "relu",
+			"weights_file_name" : "mnist_compare_2/trained/layer_10"
+		},
+		{
+			"geometry" : 
+			[
+				3,
+				3,
+				8
+			],
+			"type" : "dense convolution",
+			"weights_file_name" : "mnist_compare_2/trained/layer_11"
+		},
+		{
+			"type" : "relu",
+			"weights_file_name" : "mnist_compare_2/trained/layer_12"
+		},
+		{
+			"geometry" : 
+			[
+				3,
+				3,
+				32
+			],
+			"type" : "convolution",
+			"weights_file_name" : "mnist_compare_2/trained/layer_13"
+		},
+		{
+			"type" : "gating",
+			"weights_file_name" : "mnist_compare_2/trained/layer_14"
+		},
+		{
+			"type" : "relu",
+			"weights_file_name" : "mnist_compare_2/trained/layer_15"
+		},
+		{
+			"geometry" : 
+			[
+				2,
+				2,
+				1
+			],
+			"type" : "max_pooling",
+			"weights_file_name" : "mnist_compare_2/trained/layer_16"
+		},
+		{
+			"geometry" : 
+			[
+				3,
+				3,
+				8
+			],
+			"type" : "dense convolution",
+			"weights_file_name" : "mnist_compare_2/trained/layer_17"
+		},
+		{
+			"type" : "relu",
+			"weights_file_name" : "mnist_compare_2/trained/layer_18"
+		},
+		{
+			"geometry" : 
+			[
+				3,
+				3,
+				8
+			],
+			"type" : "dense convolution",
+			"weights_file_name" : "mnist_compare_2/trained/layer_19"
+		},
+		{
+			"type" : "relu",
+			"weights_file_name" : "mnist_compare_2/trained/layer_20"
+		},
+		{
+			"geometry" : 
+			[
+				3,
+				3,
+				8
+			],
+			"type" : "dense convolution",
+			"weights_file_name" : "mnist_compare_2/trained/layer_21"
+		},
+		{
+			"type" : "relu",
+			"weights_file_name" : "mnist_compare_2/trained/layer_22"
+		},
+		{
+			"geometry" : 
+			[
+				3,
+				3,
+				8
+			],
+			"type" : "dense convolution",
+			"weights_file_name" : "mnist_compare_2/trained/layer_23"
+		},
+		{
+			"type" : "relu",
+			"weights_file_name" : "mnist_compare_2/trained/layer_24"
+		},
+		{
+			"type" : "dropout",
+			"weights_file_name" : "mnist_compare_2/trained/layer_25"
+		},
+		{
+			"type" : "output",
+			"weights_file_name" : "mnist_compare_2/trained/layer_26"
+		}
+	],
+	"network_log_file_name" : "mnist_compare_2/network.log",
+	"output_geometry" : 
+	[
+		1,
+		1,
+		2
+	]
+}
