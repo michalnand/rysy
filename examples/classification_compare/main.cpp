@@ -17,7 +17,7 @@ int main()
                                 "/home/michal/dataset/mnist/t10k-labels.idx1-ubyte",
                                 0);
 
-  unsigned int count = dataset_source.get_training_size()*2;
+  unsigned int count = dataset_source.get_training_size()*5;
 
   std::cout << "count " << count << "\n";
   DatasetPair dataset(dataset_source, count);
