@@ -10,9 +10,9 @@
 
 #include "layers/gating_layer.h"
 
-
 #include "layers/dropout_layer.h"
 #include "layers/noise_layer.h"
+#include "layers/crop_layer.h"
 
 #include "layers/max_pooling_layer.h"
 #include "layers/unpooling_layer.h"
@@ -348,6 +348,14 @@ Layer* CNN::create_layer(Json::Value &parameters, sHyperparameters hyperparamete
     layer_kernel_geometry.h = parameters["geometry"][1].asInt();
     layer_kernel_geometry.d = parameters["geometry"][2].asInt();
     result = new NoiseLayer(layer_input_geometry, layer_kernel_geometry, hyperparameters);
+  }
+
+  if (type == "crop")
+  {
+    layer_kernel_geometry.w = parameters["geometry"][0].asInt();
+    layer_kernel_geometry.h = parameters["geometry"][1].asInt();
+    layer_kernel_geometry.d = parameters["geometry"][2].asInt();
+    result = new CropLayer(layer_input_geometry, layer_kernel_geometry, hyperparameters);
   }
 
   if ((type == "max pooling")||(type == "max_pooling"))

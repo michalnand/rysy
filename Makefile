@@ -9,6 +9,7 @@ all:
 	cd examples/autoencoder_test && make -j4
 	cd examples/speed_test && make -j4
 	cd examples/convolution_speed_test && make -j4
+	cd examples/classification_compare && make -j4
 
 
 
@@ -21,4 +22,4 @@ clean:
 	cd examples/classification_test && make clean
 	cd examples/autoencoder_test && make clean
 	cd examples/speed_test && make clean
-	cd examples/convolution_speed_test && make -j4
+	cd examples/classification_compare && make clean

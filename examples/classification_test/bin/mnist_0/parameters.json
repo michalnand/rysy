@@ -21,7 +21,7 @@
           "lambda2"           : 0.1,
           "dropout"           : 0.2,
 
-          "noise"             : 0.2,
+          "noise"             : 0.0,
 
           "minibatch_size"    : 32
         },
@@ -30,19 +30,8 @@
         [
 
           {
-            "type"      : "noise"
-          },
-          
-          {
-            "type"      : "dense convolution",
-            "geometry"  : [3, 3, 8]
-          },
-          {
-            "type"      : "relu"
-          },
-          {
-            "type"      : "dense convolution",
-            "geometry"  : [3, 3, 8]
+            "type"      : "convolution",
+            "geometry"  : [3, 3, 16]
           },
           {
             "type"      : "relu"
@@ -61,6 +50,11 @@
           {
             "type"      : "relu"
           },
+
+          {
+            "type"      : "crop",
+            "geometry"  : [2, 2, 1]
+          }, 
 
           {
             "type"      : "dropout"
