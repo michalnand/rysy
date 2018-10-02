@@ -1,9 +1,6 @@
 {
   "experiments" :
   [
-    "mnist_compare_0/",
-    "mnist_compare_1/",
-    "mnist_compare_2/",
-    "mnist_compare_3/"
+    "mnist_compare_4/"
   ]
 }
