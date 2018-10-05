@@ -10,7 +10,7 @@ all:
 	cd examples/speed_test && make -j4
 	cd examples/convolution_speed_test && make -j4
 	cd examples/classification_compare && make -j4
-	cd examples/dataset_test && make -j4
+
 
 
 
@@ -24,4 +24,4 @@ clean:
 	cd examples/autoencoder_test && make clean
 	cd examples/speed_test && make clean
 	cd examples/classification_compare && make clean
-	cd examples/dataset_test && make clean
+
