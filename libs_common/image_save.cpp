@@ -53,7 +53,7 @@ void ImageSave::vector_to_image(std::vector<float> v)
   std::vector<float> pixel(3);
 
   normalise(v, 0, 255);
-
+ 
   if (m_grayscale)
   {
     for (unsigned int y = 0; y < m_height; y++)

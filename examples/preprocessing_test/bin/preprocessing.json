@@ -1,0 +1,18 @@
+{
+  "preprocessing" :
+  {
+    "layers" :
+    [
+      {
+        "type"  : "luma_noise_layer",
+        "noise" : 1.0
+      },
+      {
+        "type"  : "rgb_to_yuv_layer"
+      },
+      {
+        "type"  : "yuv_to_rgb_layer"
+      }
+    ]
+  }
+}
