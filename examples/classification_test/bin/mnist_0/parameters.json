@@ -17,8 +17,8 @@
         {
           "init_weight_range" : 0.0,
           "learning_rate"     : 0.001,
-          "lambda1"           : 0.00005,
-          "lambda2"           : 0.1,
+          "lambda1"           : 0.001,
+          "lambda2"           : 0.001,
           "dropout"           : 0.2,
 
           "noise"             : 0.0,
@@ -44,8 +44,24 @@
 
 
           {
-            "type"      : "convolution",
-            "geometry"  : [5, 5, 32]
+            "type"      : "dense convolution",
+            "geometry"  : [5, 5, 16]
+          },
+          {
+            "type"      : "relu"
+          },
+
+          {
+            "type"      : "dense convolution",
+            "geometry"  : [5, 5, 16]
+          },
+          {
+            "type"      : "relu"
+          },
+
+          {
+            "type"      : "dense convolution",
+            "geometry"  : [5, 5, 16]
           },
           {
             "type"      : "relu"
@@ -54,7 +70,7 @@
           {
             "type"      : "crop",
             "geometry"  : [2, 2, 1]
-          }, 
+          },
 
           {
             "type"      : "dropout"
