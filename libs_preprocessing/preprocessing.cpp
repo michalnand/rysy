@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "luma_noise_layer.h"
+#include "white_noise_layer.h"
 #include "rgb_to_yuv_layer.h"
 #include "yuv_to_rgb_layer.h"
 
@@ -35,6 +36,9 @@ Preprocessing::Preprocessing(Json::Value json, sGeometry input_geometry)
 
     if ( (json_["type"].asString() == "luma_noise_layer") || (json_["layer"].asString() == "luma noise layer"))
       layer = new LumaNoiseLayer(json_);
+    else
+    if ( (json_["type"].asString() == "white_noise_layer") || (json_["layer"].asString() == "white noise layer"))
+      layer = new WhiteNoiseLayer(json_);
     else
     if ( (json_["type"].asString() == "rgb_to_yuv_layer") || (json_["layer"].asString() == "rgb to yuv layer"))
       layer = new RgbToYuvLayer(json_);

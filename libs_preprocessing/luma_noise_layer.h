@@ -7,7 +7,7 @@
 class LumaNoiseLayer: public PreprocessingLayer
 {
   protected:
-    float noise;
+    float noise_level;
     Json::Value parameters;
 
   public:

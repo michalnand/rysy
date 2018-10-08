@@ -7,10 +7,6 @@
 #include <timer.h>
 
 
-void process(PreprocessingLayer &layer, Tensor &output, Tensor &input)
-{
-  layer.process(output, input);
-}
 
 int main()
 {
@@ -19,7 +15,7 @@ int main()
   JsonConfig json_config("preprocessing.json");
 
   ImageLoad input("input.jpg", false, true);
- 
+
   sGeometry input_geometry;
 
   input_geometry.w = input.width();
@@ -36,7 +32,6 @@ int main()
   std::cout << "init done\n";
 
   preprocessing.process(output_tensor, input_tensor);
-
 
   std::vector<float> output_v(input.width()*input.height()*input.channels());
   output_tensor.set_to_host(output_v);

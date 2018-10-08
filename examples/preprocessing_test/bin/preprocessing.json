@@ -8,6 +8,10 @@
         "noise" : 1.0
       },
       {
+        "type"  : "white_noise_layer",
+        "noise" : 0.1
+      },
+      {
         "type"  : "rgb_to_yuv_layer"
       },
       {
