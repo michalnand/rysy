@@ -31,7 +31,7 @@
 
           {
             "type"      : "convolution",
-            "geometry"  : [3, 3, 16]
+            "geometry"  : [3, 3, 8]
           },
           {
             "type"      : "relu"
@@ -44,32 +44,11 @@
 
 
           {
-            "type"      : "dense convolution",
+            "type"      : "convolution",
             "geometry"  : [5, 5, 16]
           },
           {
             "type"      : "relu"
-          },
-
-          {
-            "type"      : "dense convolution",
-            "geometry"  : [5, 5, 16]
-          },
-          {
-            "type"      : "relu"
-          },
-
-          {
-            "type"      : "dense convolution",
-            "geometry"  : [5, 5, 16]
-          },
-          {
-            "type"      : "relu"
-          },
-
-          {
-            "type"      : "crop",
-            "geometry"  : [2, 2, 1]
           },
 
           {
