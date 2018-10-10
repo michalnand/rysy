@@ -29,8 +29,12 @@ class DatasetInterface
 
   public:
     virtual sDatasetItem get_random_training();
+    virtual sDatasetItem get_training(unsigned int class_idx, unsigned int idx);
+    unsigned int get_class_items_count(unsigned int class_idx);
 
     virtual sDatasetItem get_testing(unsigned int idx);
+
+
     virtual sDatasetItem get_random_testing();
 
     virtual sDatasetItem get_unlabeled(unsigned int idx);
@@ -77,6 +81,9 @@ class DatasetInterface
       return channels;
     }
 
+  public:
+
+
   protected:
     void add_training(sDatasetItem &item);
     void add_testing(sDatasetItem &item);
@@ -92,6 +99,19 @@ class DatasetInterface
     void save_to_txt_training(std::string file_name);
     void save_to_txt_testing(std::string file_name);
 
+    void save_to_binary(  std::string training_file_name,
+                          std::string testing_file_name,
+                          std::string unlabeled_file_name);
+
+  private:
+    void save_item(std::ofstream &file, sDatasetItem &item);
+
+    unsigned int get_binary_magic()
+    {
+      return 0x134AE479;
+    }
+
+    void make_header(std::ofstream &file, unsigned int items_count);
 };
 
 #endif

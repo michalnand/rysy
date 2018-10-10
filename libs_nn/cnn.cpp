@@ -11,7 +11,6 @@
 #include "layers/gating_layer.h"
 
 #include "layers/dropout_layer.h"
-#include "layers/noise_layer.h"
 #include "layers/crop_layer.h"
 
 #include "layers/max_pooling_layer.h"
@@ -141,11 +140,6 @@ void CNN::init(Json::Value &json_config, sGeometry input_geometry_, sGeometry ou
   else
     hyperparameters.minibatch_size  = 32;
 
-  if (json_config["hyperparameters"]["noise"] != Json::Value::null)
-    hyperparameters.noise  = json_config["hyperparameters"]["noise"].asFloat();
-  else
-    hyperparameters.noise  = 0.0;
-
   if ((input_geometry_.w == 0) ||
       (input_geometry_.h == 0) ||
       (input_geometry_.d == 0) )
@@ -192,7 +186,6 @@ void CNN::init(Json::Value &json_config, sGeometry input_geometry_, sGeometry ou
   network_log << "lambda1 " << hyperparameters.lambda1 << "\n";
   network_log << "lambda2 " << hyperparameters.lambda2 << "\n";
   network_log << "dropout " << hyperparameters.dropout << "\n";
-  network_log << "noise " << hyperparameters.noise << "\n";
   network_log << "minibatch size " << hyperparameters.minibatch_size << "\n";
 
   network_log << "\n";
@@ -342,13 +335,6 @@ Layer* CNN::create_layer(Json::Value &parameters, sHyperparameters hyperparamete
     result = new DropoutLayer(layer_input_geometry, layer_kernel_geometry, hyperparameters);
   }
 
-  if (type == "noise")
-  {
-    layer_kernel_geometry.w = parameters["geometry"][0].asInt();
-    layer_kernel_geometry.h = parameters["geometry"][1].asInt();
-    layer_kernel_geometry.d = parameters["geometry"][2].asInt();
-    result = new NoiseLayer(layer_input_geometry, layer_kernel_geometry, hyperparameters);
-  }
 
   if (type == "crop")
   {
@@ -568,7 +554,6 @@ void CNN::save(std::string file_name_prefix)
   json_parameters["hyperparameters"]["lambda1"]            = hyperparameters.lambda1;
   json_parameters["hyperparameters"]["lambda2"]            = hyperparameters.lambda2;
   json_parameters["hyperparameters"]["dropout"]           = hyperparameters.dropout;
-  json_parameters["hyperparameters"]["noise"]           = hyperparameters.noise;
   json_parameters["hyperparameters"]["minibatch_size"]    = hyperparameters.minibatch_size;
 
 

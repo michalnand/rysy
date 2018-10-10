@@ -7,6 +7,9 @@ DatasetTicTacToe::DatasetTicTacToe(std::string data_file_name, float testing_rat
   height     = 3 + 2*padding;
   channels   = 2;
 
+  output_size = 2;
+  training.resize(output_size);
+
   load_dataset(data_file_name, testing_ratio, padding);
 
   print();

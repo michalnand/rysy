@@ -44,6 +44,8 @@ void DatasetCIFAR::load(std::string file_name, bool load_fine, bool testing)
   if (load_fine)
     output_size = 100;
 
+  training.resize(output_size);
+
   sDatasetItem item;
 
   item.input.resize(input_size);

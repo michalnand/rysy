@@ -27,7 +27,7 @@ class PreprocessingLayer
     void copy(const PreprocessingLayer& other);
 
   public:
-    virtual void process(Tensor &output, Tensor &input);
+    virtual void process(Tensor &output, Tensor &input, unsigned int augumentation);
 
     virtual sGeometry get_output_geometry(sGeometry input_geometry);
 };

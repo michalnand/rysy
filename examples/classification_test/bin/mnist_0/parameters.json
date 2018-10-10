@@ -6,21 +6,6 @@
     "epoch_learning_rate_decay" : 8,
     "learning_rate_decay"       : 0.25,
 
-    "preprocessing" :
-    {
-      "layers":
-      [
-        {
-          "type"  : "luma_noise_layer",
-          "noise" : 1.0
-        },
-        {
-          "type"  : "white_noise_layer",
-          "noise" : 0.1
-        }
-      ]
-    },
-
     "network_architecture" :
     {
         "network_log_file_name" : "mnist_0/network.log",

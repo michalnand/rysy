@@ -11,6 +11,9 @@ DatasetMnist::DatasetMnist( std::string training_data_file_name, std::string tra
   height    = 28 + 2*padding;
   channels  = 1;
 
+  output_size = 10;
+  training.resize(output_size);
+
   load_dataset(training_data_file_name, training_labels_file_name, false);
   load_dataset(testing_data_file_name, testing_labels_file_name, true);
 

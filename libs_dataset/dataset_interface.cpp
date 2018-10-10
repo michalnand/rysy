@@ -20,7 +20,7 @@ DatasetInterface::DatasetInterface()
   training_size = 0;
   output_size = 0;
 
-  training.resize(10);
+  training.resize(1);
 }
 
 DatasetInterface::~DatasetInterface()
@@ -36,6 +36,7 @@ void DatasetInterface::print()
   std::cout << "\n";
   std::cout << "classes count   " << get_output_size() << "\n";;
   std::cout << "geometry        " << get_width() << " " << get_height() << " " << get_channels() << "\n";
+  std::cout << "\n";
 }
 
 sDatasetItem DatasetInterface::get_random_training()
@@ -51,6 +52,16 @@ sDatasetItem DatasetInterface::get_random_training()
   unsigned int item_id  = rand()%training[class_id].size();
 
   return training[class_id][item_id];
+}
+
+sDatasetItem DatasetInterface::get_training(unsigned int class_idx, unsigned int idx)
+{
+  return training[class_idx][idx];
+}
+
+unsigned int DatasetInterface::get_class_items_count(unsigned int class_idx)
+{
+  return training[class_idx].size();
 }
 
 sDatasetItem DatasetInterface::get_testing(unsigned int idx)
@@ -72,6 +83,8 @@ sDatasetItem DatasetInterface::get_random_unlabeled()
 {
   return get_unlabeled(rand()%get_unlabeled_size());
 }
+
+
 
 
 
@@ -269,4 +282,65 @@ void DatasetInterface::save_to_txt_testing(std::string file_name)
     result << argmax(testing[j].output) << "\n";
     file << result.rdbuf();
   }
+}
+
+
+void DatasetInterface::save_to_binary(  std::string training_file_name,
+                                        std::string testing_file_name,
+                                        std::string unlabeled_file_name)
+{
+  {
+    std::ofstream file;
+    file.open (training_file_name, std::ios::out | std::ios::binary);
+
+    make_header(file, get_training_size());
+
+    for (unsigned int j = 0; j < training.size(); j++)
+      for (unsigned int i = 0; i < training[j].size(); i++)
+      {
+        save_item(file, training[j][i]);
+      }
+  }
+
+  {
+    std::ofstream file;
+    file.open (testing_file_name, std::ios::out | std::ios::binary);
+
+    make_header(file, get_training_size());
+
+    for (unsigned int j = 0; j < testing.size(); j++)
+    {
+      save_item(file, testing[j]);
+    } 
+  }
+
+  {
+    std::ofstream file;
+    file.open (unlabeled_file_name, std::ios::out | std::ios::binary);
+
+    make_header(file, get_training_size());
+
+    for (unsigned int j = 0; j < unlabeled.size(); j++)
+    {
+      save_item(file, unlabeled[j]);
+    }
+  }
+}
+
+void DatasetInterface::save_item(std::ofstream &file, sDatasetItem &item)
+{
+  file.write(reinterpret_cast<const char *>(&item.input[0]), item.input.size()*sizeof(float));
+  file.write(reinterpret_cast<const char *>(&item.output[0]), item.output.size()*sizeof(float));
+}
+
+void DatasetInterface::make_header(std::ofstream &file, unsigned int items_count)
+{
+  unsigned int magic = get_binary_magic();
+
+  file.write(reinterpret_cast<const char *>(&magic), sizeof(magic));
+  file.write(reinterpret_cast<const char *>(&items_count), sizeof(items_count));
+  file.write(reinterpret_cast<const char *>(&width), sizeof(width));
+  file.write(reinterpret_cast<const char *>(&height), sizeof(height));
+  file.write(reinterpret_cast<const char *>(&channels), sizeof(channels));
+  file.write(reinterpret_cast<const char *>(&output_size), sizeof(output_size));
 }

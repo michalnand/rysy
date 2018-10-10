@@ -20,15 +20,17 @@ WhiteNoiseLayer::~WhiteNoiseLayer()
 }
 
 
-void WhiteNoiseLayer::process(Tensor &output, Tensor &input)
+void WhiteNoiseLayer::process(Tensor &output, Tensor &input, unsigned int augumentation)
 {
+  (void)augumentation;
+  
   if ( (output.w() != noise.w())||(output.h() != noise.h())||(output.d() != noise.d()) )
   {
     noise.init(output.get_geometry());
   }
 
 
-  noise.set_random(1.0); 
+  noise.set_random(1.0);
 
   white_noise_layer(output, input, noise, noise_level);
 }

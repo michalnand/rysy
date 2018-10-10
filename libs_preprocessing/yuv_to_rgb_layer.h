@@ -12,7 +12,7 @@ class YuvToRgbLayer: public PreprocessingLayer
     virtual ~YuvToRgbLayer();
 
   public:
-    void process(Tensor &output, Tensor &input);
+    void process(Tensor &output, Tensor &input, unsigned int augumentation);
 };
 
 

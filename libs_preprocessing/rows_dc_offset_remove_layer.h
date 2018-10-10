@@ -12,7 +12,7 @@ class RowsDCOffsetRemoveLayer: public PreprocessingLayer
     virtual ~RowsDCOffsetRemoveLayer();
 
   public:
-    void process(Tensor &output, Tensor &input);
+    void process(Tensor &output, Tensor &input, unsigned int augumentation);
 };
 
 

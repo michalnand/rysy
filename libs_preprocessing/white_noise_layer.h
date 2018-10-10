@@ -17,7 +17,7 @@ class WhiteNoiseLayer: public PreprocessingLayer
     virtual ~WhiteNoiseLayer();
 
   public:
-    void process(Tensor &output, Tensor &input);
+    void process(Tensor &output, Tensor &input, unsigned int augumentation);
 };
 
 

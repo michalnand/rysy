@@ -9,6 +9,9 @@ DatasetLANDSAT::DatasetLANDSAT(std::string training_data_file_name, std::string 
   width     = 3 + 2*padding;
   height    = 3 + 2*padding;
 
+  output_size = 8;
+  training.resize(output_size);
+
   load_dataset(training_data_file_name, padding, false);
   load_dataset(testing_data_file_name, padding, true);
 

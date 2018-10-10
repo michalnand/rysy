@@ -20,8 +20,10 @@ RowsSignNoiseLayer::~RowsSignNoiseLayer()
 }
 
 
-void RowsSignNoiseLayer::process(Tensor &output, Tensor &input)
+void RowsSignNoiseLayer::process(Tensor &output, Tensor &input, unsigned int augumentation)
 {
+  (void)augumentation;
+  
   if (output.h() != noise.h())
   {
     noise.init(output.h());

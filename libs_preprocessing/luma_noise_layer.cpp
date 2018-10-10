@@ -22,8 +22,10 @@ LumaNoiseLayer::~LumaNoiseLayer()
 
 
 
-void LumaNoiseLayer::process(Tensor &output, Tensor &input)
+void LumaNoiseLayer::process(Tensor &output, Tensor &input, unsigned int augumentation)
 {
+  (void)augumentation;
+
   float noise_f = (rand()%100000)/100000.0;
   if (rand()%2)
     noise_f = -noise_f;

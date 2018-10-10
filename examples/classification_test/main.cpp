@@ -3,6 +3,7 @@
 
 #include <dataset_mnist.h>
 #include <dataset_cifar_10.h>
+#include <dataset_preprocessing.h>
 
 #include <classification_experiment.h>
 
@@ -16,7 +17,7 @@ int main()
                            "/home/michal/dataset/mnist/t10k-labels.idx1-ubyte",
                           0);
 
- 
+
     JsonConfig parameters("experiments_mnist.json");
 
     for (unsigned int i = 0; i < parameters.result["experiments"].size(); i++)
@@ -25,6 +26,7 @@ int main()
       ClassificationExperiment experiment(dataset, config_dir);
       experiment.run();
     }
+
   }
 
   std::cout << "program done\n";

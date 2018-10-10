@@ -12,9 +12,12 @@ DatasetMnistTiny::DatasetMnistTiny( std::string training_data_file_name,
   width     = 9 + 2*padding;
   height    = 9 + 2*padding;
 
+  output_size = 10;
+  training.resize(output_size);
+
   load_dataset(training_data_file_name, false);
   load_dataset(testing_data_file_name, true);
-  
+
   print();
 }
 

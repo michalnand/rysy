@@ -19,11 +19,6 @@ class ClassificationExperiment
     DatasetInterface *dataset;
      std::string config_dir;
 
-  protected:
-    Preprocessing preprocessing;
-    bool preprocessing_enabled;
-    Tensor t_nn_preprocessing_input, t_nn_input, t_nn_required_output;
-
   public:
     ClassificationExperiment(DatasetInterface &dataset, std::string config_dir);
     virtual ~ClassificationExperiment();

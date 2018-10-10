@@ -20,7 +20,8 @@ RgbToYuvLayer::~RgbToYuvLayer()
 
 
 
-void RgbToYuvLayer::process(Tensor &output, Tensor &input)
+void RgbToYuvLayer::process(Tensor &output, Tensor &input, unsigned int augumentation)
 {
+  (void)augumentation;
   rgb_to_yuv_layer(output, input);
 }

@@ -55,8 +55,9 @@ void PreprocessingLayer::copy(const PreprocessingLayer& other)
 
 
 
-void PreprocessingLayer::process(Tensor &output, Tensor &input)
+void PreprocessingLayer::process(Tensor &output, Tensor &input, unsigned int augumentation)
 {
+  (void)augumentation;
   output.copy(input);
 }
 

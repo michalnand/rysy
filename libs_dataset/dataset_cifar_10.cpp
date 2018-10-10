@@ -55,6 +55,8 @@ void DatasetCIFAR10::load(std::string file_name, bool testing)
   item.input.resize(input_size);
   item.output.resize(output_size);
 
+  training.resize(output_size);
+
   for (unsigned int i = 0; i < item.input.size(); i++)
     item.input[i] = 0.0;
 
@@ -92,7 +94,7 @@ void DatasetCIFAR10::load(std::string file_name, bool testing)
         add_testing(item);
       else
         add_training(item);
-    } 
+    }
   }
 
   fclose(f);

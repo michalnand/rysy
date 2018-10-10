@@ -100,22 +100,22 @@ Preprocessing::~Preprocessing()
 
 }
 
-void Preprocessing::process(Tensor &output, Tensor &input)
+void Preprocessing::process(Tensor &output, Tensor &input, unsigned int augumentation)
 {
   unsigned int size = layers.size();
 
   if (size == 1)
-    layers[size-1]->process(output, input);
+    layers[size-1]->process(output, input, augumentation);
   else
   for (unsigned int i = 0; i < size; i++)
   {
     if (i == 0)
-      layers[i]->process(*layers_output[i], input);
+      layers[i]->process(*layers_output[i], input, augumentation);
     else
     if (i == (size-1))
-      layers[i]->process(output, *layers_output[(size-2)]);
+      layers[i]->process(output, *layers_output[(size-2)], augumentation);
     else
-      layers[i]->process(*layers_output[i], *layers_output[i-1]);
+      layers[i]->process(*layers_output[i], *layers_output[i-1], augumentation);
   }
 
 }

@@ -18,7 +18,7 @@ class Preprocessing
 
     void init(Json::Value json, sGeometry input_geometry);
 
-    void process(Tensor &output, Tensor &input);
+    void process(Tensor &output, Tensor &input, unsigned int augumentation = 0);
 };
 
 #endif
