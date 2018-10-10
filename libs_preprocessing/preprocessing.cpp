@@ -6,11 +6,35 @@
 #include "white_noise_layer.h"
 #include "rgb_to_yuv_layer.h"
 #include "yuv_to_rgb_layer.h"
+#include "rows_sign_noise_layer.h"
+#include "rows_dc_offset_remove_layer.h"
+
+Preprocessing::Preprocessing()
+{
+
+}
 
 Preprocessing::Preprocessing(Json::Value json, sGeometry input_geometry)
 {
-  unsigned int layers_count = json["layers"].size();
+  init(json, input_geometry);
+}
 
+void Preprocessing::init(Json::Value json, sGeometry input_geometry)
+{
+  for (unsigned int layer = 0; layer < layers.size(); layer++)
+  {
+    delete layers[layer];
+  }
+
+  for (unsigned int layer = 0; layer < layers_output.size(); layer++)
+  {
+    delete layers_output[layer];
+  }
+
+  layers.clear();
+  layers_output.clear();
+
+  unsigned int layers_count = json["layers"].size();
 
   sGeometry layer_input_geometry;
 
@@ -45,7 +69,12 @@ Preprocessing::Preprocessing(Json::Value json, sGeometry input_geometry)
     else
     if ( (json_["type"].asString() == "yuv_to_rgb_layer") || (json_["layer"].asString() == "yuv to rgb layer"))
       layer = new YuvToRgbLayer(json_);
-
+    else
+    if ( (json_["type"].asString() == "rows_sign_noise_layer") || (json_["layer"].asString() == "rows sign noise layer"))
+      layer = new RowsSignNoiseLayer(json_);
+    else
+    if ( (json_["type"].asString() == "rows_dc_offset_remove_layer") || (json_["layer"].asString() == "rows dc offset remove layer"))
+      layer = new RowsDCOffsetRemoveLayer(json_);
 
     sGeometry output_geometry = layer->get_output_geometry(layer_input_geometry);
 

@@ -6,6 +6,21 @@
     "epoch_learning_rate_decay" : 8,
     "learning_rate_decay"       : 0.25,
 
+    "preprocessing" :
+    {
+      "layers":
+      [
+        {
+          "type"  : "luma_noise_layer",
+          "noise" : 1.0
+        },
+        {
+          "type"  : "white_noise_layer",
+          "noise" : 0.1
+        }
+      ]
+    },
+
     "network_architecture" :
     {
         "network_log_file_name" : "mnist_0/network.log",
@@ -31,7 +46,7 @@
 
           {
             "type"      : "convolution",
-            "geometry"  : [3, 3, 8]
+            "geometry"  : [3, 3, 16]
           },
           {
             "type"      : "relu"
@@ -44,8 +59,24 @@
 
 
           {
-            "type"      : "convolution",
+            "type"      : "dense convolution",
             "geometry"  : [5, 5, 16]
+          },
+          {
+            "type"      : "relu"
+          },
+
+          {
+            "type"      : "dense convolution",
+            "geometry"  : [5, 5, 16]
+          },
+          {
+            "type"      : "relu"
+          },
+
+          {
+            "type"      : "convolution",
+            "geometry"  : [5, 5, 32]
           },
           {
             "type"      : "relu"

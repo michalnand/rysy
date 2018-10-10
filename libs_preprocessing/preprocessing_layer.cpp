@@ -10,7 +10,7 @@ PreprocessingLayer::PreprocessingLayer(Json::Value parameters)
 {
   this->parameters = parameters;
 
-  std::cout << "creating layer " << parameters["type"].asString() << "\n";
+  // std::cout << "creating layer " << parameters["type"].asString() << "\n";
 }
 
 PreprocessingLayer::PreprocessingLayer(PreprocessingLayer& other)

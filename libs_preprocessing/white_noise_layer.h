@@ -8,7 +8,6 @@ class WhiteNoiseLayer: public PreprocessingLayer
 {
   protected:
     float noise_level;
-    Json::Value parameters;
 
     Tensor noise;
 

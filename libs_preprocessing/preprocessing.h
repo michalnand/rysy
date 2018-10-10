@@ -12,9 +12,11 @@ class Preprocessing
     std::vector<PreprocessingLayer*> layers;
 
   public:
+    Preprocessing();
     Preprocessing(Json::Value json, sGeometry input_geometry = {0, 0, 0});
-
     virtual ~Preprocessing();
+
+    void init(Json::Value json, sGeometry input_geometry);
 
     void process(Tensor &output, Tensor &input);
 };

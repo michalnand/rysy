@@ -6,9 +6,6 @@
 
 class RgbToYuvLayer: public PreprocessingLayer
 {
-  protected:
-    Json::Value parameters;
-
   public:
     RgbToYuvLayer();
     RgbToYuvLayer(Json::Value parameters);

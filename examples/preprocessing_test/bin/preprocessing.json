@@ -4,12 +4,15 @@
     "layers" :
     [
       {
+        "type"  : "rows_dc_offset_remove_layer"
+      },
+      {
         "type"  : "luma_noise_layer",
         "noise" : 1.0
       },
       {
         "type"  : "white_noise_layer",
-        "noise" : 0.1
+        "noise" : 0.0
       },
       {
         "type"  : "rgb_to_yuv_layer"
@@ -17,6 +20,7 @@
       {
         "type"  : "yuv_to_rgb_layer"
       }
+
     ]
   }
 }

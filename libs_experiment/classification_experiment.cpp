@@ -72,6 +72,19 @@ void ClassificationExperiment::run()
     learning_rate_decay = parameters.result["learning_rate_decay"].asFloat();
 
 
+  if (parameters.result["preprocessing"] != Json::Value::null)
+  {
+    t_nn_preprocessing_input.init(input_geometry);
+    t_nn_input.init(input_geometry);
+    t_nn_required_output.init(output_geometry);
+
+    preprocessing.init(parameters.result["preprocessing"], input_geometry);
+
+    preprocessing_enabled = true;
+  }
+  else
+    preprocessing_enabled = false;
+
 
 
 
@@ -95,6 +108,7 @@ void ClassificationExperiment::run()
   experiment_log << "\n";
   experiment_log << "epoch_learning_rate_decay   : " << epoch_learning_rate_decay  << "\n";
   experiment_log << "learning_rate_decay         : " << learning_rate_decay  << "\n";
+  experiment_log << "preprocessing               : " << preprocessing_enabled  << "\n";
 
 
   experiment_log << "\n";
@@ -194,9 +208,6 @@ void ClassificationExperiment::run()
 }
 
 
-
-
-
 void ClassificationExperiment::train_iterations(CNN &nn, unsigned int iterations)
 {
   nn.set_training_mode();
@@ -204,7 +215,17 @@ void ClassificationExperiment::train_iterations(CNN &nn, unsigned int iterations
   for (unsigned int i = 0; i < iterations; i++)
   {
     sDatasetItem item = dataset->get_random_training();
-    nn.train(item.output, item.input);
+
+    if (preprocessing_enabled)
+    {
+      t_nn_preprocessing_input.set_from_host(item.input);
+      t_nn_required_output.set_from_host(item.output);
+
+      preprocessing.process(t_nn_input, t_nn_preprocessing_input);
+      nn.train(t_nn_required_output, t_nn_input);
+    }
+    else
+      nn.train(item.output, item.input);
   }
 
   nn.unset_training_mode();
@@ -227,7 +248,18 @@ bool ClassificationExperiment::test(CNN &nn)
     {
       sDatasetItem item = dataset->get_testing(i);
 
-      nn.forward(nn_output, item.input);
+      if (preprocessing_enabled)
+      {
+        t_nn_preprocessing_input.set_from_host(item.input);
+        preprocessing.process(t_nn_input, t_nn_preprocessing_input);
+
+        nn.forward(t_nn_required_output, t_nn_input);
+
+        t_nn_required_output.set_to_host(nn_output);
+      }
+      else
+        nn.forward(nn_output, item.input);
+
 
       compare_testing.compare(item.output, nn_output);
       compare_testing_top5.compare(item.output, nn_output);
