@@ -5,7 +5,7 @@ DatasetTicTacToe::DatasetTicTacToe(std::string data_file_name, float testing_rat
 {
   width      = 3 + 2*padding;
   height     = 3 + 2*padding;
-  channels   = 2;
+  channels   = 3;
 
   output_size = 2;
   training.resize(output_size);
@@ -47,13 +47,15 @@ int DatasetTicTacToe::load_dataset(std::string data_file_name, float testing_rat
       for (unsigned int y = 0; y < 3; y++)
       for (unsigned int x = 0; x < 3; x++)
       {
-        int ch = -1;
+        int ch;
 
         if (line[str_ptr] == 'x')
           ch = 0;
         else
         if (line[str_ptr] == 'o')
           ch = 1;
+        else
+          ch = 2;
 
 
         str_ptr+= 2;
