@@ -13,7 +13,6 @@
 int main()
 {
 
-  /*
   {
     DatasetMnist dataset ( "/home/michal/dataset/mnist/train-images.idx3-ubyte",
                            "/home/michal/dataset/mnist/train-labels.idx1-ubyte",
@@ -31,14 +30,14 @@ int main()
       experiment.run();
     }
   }
-  */
 
+/*
 
   DatasetTicTacToe dataset("/home/michal/dataset/tic_tac_toe/tic_tac_toe.data", 0.5, 2);
 
   ClassificationExperiment experiment(dataset, "tic_tac/");
   experiment.run();
-
+*/
 
   std::cout << "program done\n";
 
