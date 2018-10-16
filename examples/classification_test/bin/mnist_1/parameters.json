@@ -17,8 +17,8 @@
         {
           "init_weight_range" : 0.0,
           "learning_rate"     : 0.001,
-          "lambda1"           : 0.000005,
-          "lambda2"           : 0.1,
+          "lambda1"           : 0.00001,
+          "lambda2"           : 0.00001,
           "dropout"           : 0.2,
 
           "minibatch_size"    : 32
@@ -29,11 +29,12 @@
 
           {
             "type"      : "convolution",
-            "geometry"  : [3, 3, 8]
+            "geometry"  : [3, 3, 16]
           },
           {
             "type"      : "relu"
           },
+
           {
             "type"      : "max_pooling",
             "geometry"  : [2, 2, 1]
@@ -42,48 +43,23 @@
 
           {
             "type"      : "dense convolution",
-            "geometry"  : [3, 3, 8]
+            "geometry"  : [5, 5, 16]
           },
           {
             "type"      : "relu"
           },
-          {
-            "type"      : "dense convolution",
-            "geometry"  : [3, 3, 8]
-          },
-          {
-            "type"      : "relu"
-          },
-          {
-            "type"      : "dense convolution",
-            "geometry"  : [3, 3, 8]
-          },
-          {
-            "type"      : "relu"
-          },
-          {
-            "type"      : "dense convolution",
-            "geometry"  : [3, 3, 8]
-          },
-          {
-            "type"      : "relu"
-          },
-          {
-            "type"      : "max_pooling",
-            "geometry"  : [2, 2, 1]
-          },
-
 
           {
             "type"      : "dense convolution",
-            "geometry"  : [3, 3, 16]
+            "geometry"  : [5, 5, 16]
           },
           {
             "type"      : "relu"
           },
+
           {
-            "type"      : "dense convolution",
-            "geometry"  : [3, 3, 16]
+            "type"      : "convolution",
+            "geometry"  : [5, 5, 32]
           },
           {
             "type"      : "relu"

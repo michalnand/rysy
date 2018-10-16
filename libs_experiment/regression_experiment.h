@@ -1,81 +1,39 @@
 #ifndef _REGRESSION_EXPERIMENT_H_
 #define _REGRESSION_EXPERIMENT_H_
 
-#include <dataset_interface.h>
-#include <batch.h>
 
+#include <dataset_interface.h>
 #include <cnn.h>
 #include <log.h>
 
-
-struct sRegressionTestResult
-{
-  bool output_valid;
-  bool too_big_difference;
-  bool best_net;
-  bool long_term_without_improvement;
-
-  float error;
-  float error_min;
-  float error_max;
-};
+#include "classification_compare.h"
 
 class RegressionExperiment
 {
   protected:
-    Json::Value       parameters;
-    DatasetInterface  *dataset;
-    Batch             *batch;
-
-    sGeometry input_geometry, output_geometry;
+    ClassificationCompare compare_testing, compare_training;
+    ClassificationCompare compare_testing_top5, compare_training_top5;
 
   protected:
-    std::string log_prefix;
-    Log training_log;
-    Log experiment_log;
-
-
-
-  private:
-    sRegressionTestResult result, best_result;
-
-    unsigned int init_networks_try_count, epoch_count, epoch_without_improvement;
-    float learning_rate, lambda1, lambda2, learning_rate_decay;
-
-    float error_best;
-
+    DatasetInterface *dataset;
+     std::string config_dir;
 
   public:
-    RegressionExperiment(std::string parameters_file_name, DatasetInterface *dataset);
+    RegressionExperiment(DatasetInterface &dataset, std::string config_dir);
     virtual ~RegressionExperiment();
 
     void run();
 
-    sRegressionTestResult get_best_result()
-    {
-      return best_result;
-    }
-
-  private:
-    void init();
+  protected:
+    void train_iterations(CNN &nn, unsigned int iterations);
+    bool test(CNN &nn);
 
   protected:
-    virtual void best_net_log_process();
+    virtual void process_best();
 
   private:
-    int search_initial_net();
-    CNN* load_saved_net(std::string best_net_file_name);
+    bool is_valid(std::vector<float> &v);
 
-
-    sRegressionTestResult test(CNN *nn, bool quick_test = false);
-    bool check_valid(std::vector<float> &v);
-
-    float rms(std::vector<float> &va, std::vector<float> &vb);
-    void print_vector(std::vector<float> &v);
-
-  protected:
-    virtual void fill_batch();
-    void save_examples(CNN *nn);
 
 };
 

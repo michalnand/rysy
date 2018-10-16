@@ -8,17 +8,17 @@
 
     "network_architecture" :
     {
-        "network_log_file_name" : "line_type_network/network.log",
+        "network_log_file_name" : "mnist_3/network.log",
 
-        "input_geometry"     : [8, 8, 1],
-        "output_geometry"    : [1, 1, 8],
+        "input_geometry"     : [28, 28, 1],
+        "output_geometry"    : [1, 1, 10],
 
         "hyperparameters" :
         {
           "init_weight_range" : 0.0,
           "learning_rate"     : 0.001,
-          "lambda1"           : 0.00005,
-          "lambda2"           : 0.1,
+          "lambda1"           : 0.00001,
+          "lambda2"           : 0.00001,
           "dropout"           : 0.2,
 
           "minibatch_size"    : 32
@@ -34,14 +34,40 @@
           {
             "type"      : "relu"
           },
-
           {
-            "type"      : "convolution",
+            "type"      : "dense convolution",
             "geometry"  : [3, 3, 8]
           },
           {
             "type"      : "relu"
           },
+
+
+          {
+            "type"      : "max_pooling",
+            "geometry"  : [2, 2, 1]
+          },
+
+          {
+            "type"      : "convolution",
+            "geometry"  : [3, 3, 32]
+          },
+          {
+            "type"      : "relu"
+          },
+
+
+          {
+            "type"      : "convolution",
+            "geometry"  : [3, 3, 32]
+          },
+          {
+            "type"      : "gating"
+          },
+          {
+            "type"      : "relu"
+          },
+
 
           {
             "type"      : "dropout"

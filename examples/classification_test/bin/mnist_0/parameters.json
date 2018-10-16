@@ -17,11 +17,9 @@
         {
           "init_weight_range" : 0.0,
           "learning_rate"     : 0.001,
-          "lambda1"           : 0.001,
-          "lambda2"           : 0.001,
+          "lambda1"           : 0.00001,
+          "lambda2"           : 0.00001,
           "dropout"           : 0.2,
-
-          "noise"             : 0.0,
 
           "minibatch_size"    : 32
         },
@@ -31,37 +29,7 @@
 
           {
             "type"      : "convolution",
-            "geometry"  : [3, 3, 16]
-          },
-          {
-            "type"      : "relu"
-          },
-
-          {
-            "type"      : "max_pooling",
-            "geometry"  : [2, 2, 1]
-          },
-
-
-          {
-            "type"      : "dense convolution",
-            "geometry"  : [5, 5, 16]
-          },
-          {
-            "type"      : "relu"
-          },
-
-          {
-            "type"      : "dense convolution",
-            "geometry"  : [5, 5, 16]
-          },
-          {
-            "type"      : "relu"
-          },
-
-          {
-            "type"      : "convolution",
-            "geometry"  : [5, 5, 32]
+            "geometry"  : [3, 3, 32]
           },
           {
             "type"      : "relu"

@@ -1,27 +1,34 @@
 #include "regression_experiment.h"
 
-#include <timer.h>
 #include <math.h>
+#include <timer.h>
 
-RegressionExperiment::RegressionExperiment(std::string parameters_file_name, DatasetInterface *dataset)
+
+RegressionExperiment::RegressionExperiment(DatasetInterface &dataset, std::string config_dir)
 {
-  JsonConfig json(parameters_file_name);
-  this->dataset = dataset;
-
-  parameters = json.result;
-
-  init();
+  this->dataset    = &dataset;
+  this->config_dir = config_dir;
 }
 
 
-void RegressionExperiment::init()
-{
-  log_prefix = parameters["experiment_log_prefix"].asString();
 
-  experiment_log.set_output_file_name(log_prefix + "experiment.log");
-  training_log.set_output_file_name(log_prefix + "training_progress.log");
+RegressionExperiment::~RegressionExperiment()
+{
+
+}
+
+void RegressionExperiment::run()
+{
+  JsonConfig parameters(config_dir + "parameters.json");
+
+  Log experiment_log(config_dir + "experiment.log");
+  Log training_progress_log(config_dir + "training_progress.log");
 
   experiment_log << "initializing\n";
+
+  sGeometry input_geometry;
+  sGeometry output_geometry;
+
 
   input_geometry.w = dataset->get_width();
   input_geometry.h = dataset->get_height();
@@ -31,349 +38,245 @@ void RegressionExperiment::init()
   output_geometry.h = 1;
   output_geometry.d = dataset->get_output_size();
 
+  CNN nn(parameters.result["network_architecture"], input_geometry, output_geometry);
 
-  unsigned int batch_max_size  = parameters["batch_max_size"].asInt();
+  compare_testing.set_classes_count(dataset->get_output_size());
+  compare_testing.set_top_n_count(1);
+  compare_training.set_classes_count(dataset->get_output_size());
+  compare_training.set_top_n_count(1);
 
-  batch = new Batch(input_geometry,
-                    output_geometry,
-                    batch_max_size);
+  compare_testing_top5.set_classes_count(dataset->get_output_size());
+  compare_testing_top5.set_top_n_count(5);
+  compare_training_top5.set_classes_count(dataset->get_output_size());
+  compare_training_top5.set_top_n_count(5);
 
 
-  experiment_log << "creating batch with size " << batch->size() << "\n";
+  float best_sucess = 0;
+  unsigned int epoch_count = parameters.result["epoch_count"].asInt();
 
-  fill_batch();
+  unsigned int sub_epoch_size = 1;
+  if (parameters.result["sub_epoch_size"] != Json::Value::null)
+    sub_epoch_size = parameters.result["sub_epoch_size"].asInt();
+
+  bool compare_top_5 = false;
+  if (parameters.result["compare_top_5"] != Json::Value::null)
+    compare_top_5 = parameters.result["compare_top_5"].asBool();
+
+  unsigned int epoch_learning_rate_decay = epoch_count;
+  if (parameters.result["epoch_learning_rate_decay"] != Json::Value::null)
+    epoch_learning_rate_decay = parameters.result["epoch_learning_rate_decay"].asInt();
+
+  float learning_rate_decay = 1.0;
+  if (parameters.result["learning_rate_decay"] != Json::Value::null)
+    learning_rate_decay = parameters.result["learning_rate_decay"].asFloat();
 
 
-  init_networks_try_count   = parameters["init_networks_try_count"].asInt();
-  epoch_count               = parameters["epoch_count"].asInt();
-  learning_rate_decay       = parameters["learning_rate_decay"].asFloat();
 
-  learning_rate       = parameters["network_architecture"]["hyperparameters"]["learning_rate"].asFloat();
-  lambda1              = parameters["network_architecture"]["hyperparameters"]["lambda1"].asFloat();
-  lambda2              = parameters["network_architecture"]["hyperparameters"]["lambda2"].asFloat();
+  unsigned int sub_epoch_iterations = dataset->get_training_size()/sub_epoch_size;
+  bool output_valid = true;
+
+
+  float learning_rate  = nn.get_learning_rate();
+  float lambda1        = nn.get_lambda1();
+  float lambda2        = nn.get_lambda2();
+
+  Timer timer;
+
+
+
+  experiment_log << "training size    : " << dataset->get_training_size() << "\n";
+  experiment_log << "testing size     : " << dataset->get_testing_size()  << "\n";
+  experiment_log << "epoch count      : " << epoch_count  << "\n";
+  experiment_log << "sub epoch size   : " << sub_epoch_size  << "\n";
+  experiment_log << "\n";
+  experiment_log << "epoch_learning_rate_decay   : " << epoch_learning_rate_decay  << "\n";
+  experiment_log << "learning_rate_decay         : " << learning_rate_decay  << "\n";
+
 
   experiment_log << "\n";
-  experiment_log << "parameters :\n";
-
-  experiment_log << "init networks try count : " << init_networks_try_count << "\n";
-  experiment_log << "epoch count :             " << epoch_count << "\n";
-
-  experiment_log << "learning rate_decay : " << learning_rate_decay << "\n";
-
-  experiment_log << "init done\n\n";
-}
-
-RegressionExperiment::~RegressionExperiment()
-{
-  experiment_log << "uninit\n";
-
-  if (batch != nullptr)
-  {
-    delete batch;
-    batch = nullptr;
-  }
-
-  experiment_log << "uninit done\n";
-}
+  experiment_log << "training\n";
 
 
-
-void RegressionExperiment::run()
-{
-  srand(time(NULL));
-
-  error_best = 1000000000.0;
-
-  //skip search init network when there is pretrained net
-  if (parameters["use_pretrained"].asBool() == false)
-  {
-    if (search_initial_net() != 0)
-      return;
-  }
-
-
-  std::string best_net_file_name;
-  best_net_file_name = log_prefix + "trained/";
-
-  experiment_log << "loading from : " << best_net_file_name << "cnn_config.json" << "\n";
-  CNN *nn = new CNN(best_net_file_name + "cnn_config.json", input_geometry, output_geometry);
-
-  /*
-
-  TODO : set learning_rate
-  learning_rate = nn->get_learning_rate();
-  lambda        = nn->get_lambda();
-  */
-  epoch_without_improvement = 0;
-
-  experiment_log << "training\n\n";
-
-
-  //learn network -> use best network
   for (unsigned int epoch = 0; epoch < epoch_count; epoch++)
   {
-    experiment_log << "epoch " << epoch << "\n";
-
-    fill_batch();
-
-    nn->set_training_mode();
-    //learning
-    for (unsigned int i = 0; i < batch->size(); i++)
-    {
-      batch->set_random();
-      nn->train(batch->get_output(), batch->get_input());
-
-      if ((i%(batch->size()/100)) == 0)
+      for (unsigned int sub_epoch = 0; sub_epoch < sub_epoch_size; sub_epoch++)
       {
-        sRegressionTestResult quick_result = test(nn, true);
+        experiment_log << "\n\n\n";
+        experiment_log << "epoch [" << epoch << " " << sub_epoch << "] from [" << epoch_count << " " << sub_epoch_size << "]\n";
 
-        float done = (100.0*i)/batch->size();
-        experiment_log << "training done = " << done << " %    error = " << quick_result.error << " \n";
+        timer.start();
+        train_iterations(nn, sub_epoch_iterations);
+        timer.stop();
+
+        experiment_log << "training time per iterations " << timer.get_duration()/sub_epoch_iterations << "[ms]\n";
+        experiment_log << "testing\n";
+
+        output_valid = test(nn);
+
+        experiment_log << "testing done\n";
+
+        experiment_log << "network success rate top1 " << compare_testing.get_success() << "% " << compare_training.get_success() << "% \n";
+        experiment_log << "network success rate top5 " << compare_testing_top5.get_success() << "% " << compare_training_top5.get_success() << "% \n";
+
+        float progress = epoch + sub_epoch*1.0/sub_epoch_size;
+
+        training_progress_log << progress << " " << epoch << " " << sub_epoch << " " << compare_testing.get_success() << " " << compare_training.get_success() << " ";
+        training_progress_log << " " << compare_testing_top5.get_success() << " " << compare_training_top5.get_success() << " \n";
+
+        float success = 0.0;
+        if (compare_top_5)
+          success = compare_testing_top5.get_success();
+        else
+          success = compare_testing.get_success();
+
+        if (success > best_sucess)
+        {
+          best_sucess = success;
+
+          if (parameters.result["compare_top_5"].asBool())
+            experiment_log << "saving best net in top 5\n";
+          else
+            experiment_log << "saving best net in top 1\n";
+
+          std::string best_net = config_dir + "trained/";
+          nn.save(best_net);
+
+          compare_testing.save_json_file(config_dir + "best_net_testing_result.json");
+          compare_testing.save_text_file(config_dir + "best_net_testing_result.txt");
+
+          compare_training.save_json_file(config_dir + "best_net_training_result.json");
+          compare_training.save_text_file(config_dir + "best_net_training_result.txt");
+
+          compare_testing_top5.save_json_file(config_dir + "best_net_testing_result_top5.json");
+          compare_testing_top5.save_text_file(config_dir + "best_net_testing_result_top5.txt");
+
+          compare_training_top5.save_json_file(config_dir + "best_net_training_result_top5.json");
+          compare_training_top5.save_text_file(config_dir + "best_net_training_result_top5.txt");
+
+          experiment_log << "best net saved to " << best_net << ", with success rate " << best_sucess << "%\n";
+
+          process_best();
+        }
+
+        if (output_valid != true)
+          break;
       }
-    }
 
-    nn->unset_training_mode();
+      if (((epoch+1)%epoch_learning_rate_decay) == 0)
+      {
+        learning_rate*= learning_rate_decay;
+        lambda1*= learning_rate_decay;
+        lambda2*= learning_rate_decay;
 
-    //process testing on testing set
-    experiment_log << "testing\n";
-    result = test(nn);
+        nn.set_learning_rate(learning_rate);
+        nn.set_lambda1(lambda1);
+        nn.set_lambda2(lambda2);
 
-    //NaN error -> set lower learning rate and load best network
-    if (result.output_valid == false)
-    {
-      delete nn;
-      nn = load_saved_net(best_net_file_name);
-    }
-    //error too big -> set lower learning rate and load best network
-    else if (result.too_big_difference)
-    {
-      delete nn;
-      nn = load_saved_net(best_net_file_name);
-    }
-    //best network -> save result
-    else if (result.best_net)
-    {
-      nn->save(best_net_file_name);
+        experiment_log << "setting learning rate to " << learning_rate << "\n";
+      }
 
-      experiment_log << " error = " << result.error << " saved as new best network\n";
 
-      epoch_without_improvement = 0;
-
-      best_result = result;
-
-      best_net_log_process();
-
-      save_examples(nn);
-    }
-    else if (result.long_term_without_improvement)
-    {
-      delete nn;
-      nn = load_saved_net(best_net_file_name);
-    }
-
-    experiment_log << " error = " << result.error << " " << result.error_min << " " << result.error_max << "\n";
-    training_log << epoch << " " << result.error << " " << result.error_min << " " << result.error_max << "\n";
-    experiment_log << "\n";
+      if (output_valid != true)
+        break;
   }
 
-  delete nn;
+  if (output_valid != true)
+  {
+    experiment_log << "NaN error, ending training\n";
+  }
+
   experiment_log << "training done\n";
+
 }
 
 
-
-
-int RegressionExperiment::search_initial_net()
+void RegressionExperiment::train_iterations(CNN &nn, unsigned int iterations)
 {
-  bool saved = false;
+  nn.set_training_mode();
 
-  std::string best_net_file_name;
-  best_net_file_name = log_prefix + "trained/";
-
-  experiment_log << "search initial network\n\n";
-
-  //try learn few networks one epoch
-  for (unsigned int nn_try = 0; nn_try < init_networks_try_count; nn_try++)
+  for (unsigned int i = 0; i < iterations; i++)
   {
-    experiment_log << "creating new net with id " << nn_try << "\n";
+    sDatasetItem item = dataset->get_random_training();
 
-    CNN *nn = new CNN(parameters["network_architecture"], input_geometry, output_geometry);
+    nn.train(item.output, item.input);
+  }
 
-    experiment_log << "training network\n";
+  nn.unset_training_mode();
+}
 
-    //learning
-    for (unsigned int i = 0; i < batch->size(); i++)
+bool RegressionExperiment::test(CNN &nn)
+{
+    compare_testing.clear();
+    compare_training.clear();
+    compare_testing_top5.clear();
+    compare_training_top5.clear();
+
+    bool valid_output = true;
+
+    std::vector<float> nn_output(dataset->get_output_size());
+
+    unsigned int testing_size = dataset->get_testing_size();
+
+    for (unsigned int i = 0; i < testing_size; i++)
     {
-      batch->set_random();
-      nn->train(batch->get_output(), batch->get_input());
+      sDatasetItem item = dataset->get_testing(i);
 
-      if ((i%(batch->size()/100)) == 0)
+      nn.forward(nn_output, item.input);
+
+      compare_testing.compare(item.output, nn_output);
+      compare_testing_top5.compare(item.output, nn_output);
+
+      if (i < 10)
       {
-        sRegressionTestResult quick_result = test(nn, true);
-
-        float done = (100.0*i)/batch->size();
-        experiment_log << "training done = " << done << " %    error = " << quick_result.error << " \n";
+        if (is_valid(nn_output) != true)
+        {
+          valid_output = false;
+          break;
+        }
       }
     }
 
-    experiment_log << "testing network\n";
+    if (valid_output != true)
+      return false;
 
-    //process testing on testing set
-    sRegressionTestResult compare_result = test(nn);
-
-    if (compare_result.output_valid)
+    for (unsigned int i = 0; i < testing_size; i++)
     {
-      if (compare_result.best_net)
+      sDatasetItem item = dataset->get_random_training();
+
+      nn.forward(nn_output, item.input);
+
+      compare_training.compare(item.output, nn_output);
+      compare_training_top5.compare(item.output, nn_output);
+
+      if (i < 10)
       {
-        nn->save(best_net_file_name);
-
-        best_result = result;
-        best_net_log_process();
-
-        save_examples(nn);
-
-        saved = true;
-        experiment_log << "net " << nn_try << " error = " << compare_result.error << " saved as new best network\n";
+        if (is_valid(nn_output) != true)
+        {
+          valid_output = false;
+          break;
+        }
       }
-      else
-        experiment_log << "net " << nn_try << " error = " << compare_result.error << "\n";
-    }
-    else
-    {
-      experiment_log << "net " << nn_try << " " << "NaN\n";
     }
 
-    delete nn;
+    if (valid_output != true)
+      return false;
 
-    experiment_log << "\n\n\n";
-  }
 
-  //all nets ended as NaN -> terminate experiment, try lower learning rate or initial weights range
-  if (saved == false)
-  {
-    experiment_log << "ending experiment -> no valid network\n";
-    return -1;
-  }
+    compare_testing.process(true);
+    compare_training.process(true);
+    compare_testing_top5.process(true);
+    compare_training_top5.process(true);
 
-  return 0;
+    return true;
 }
 
-CNN* RegressionExperiment::load_saved_net(std::string best_net_file_name)
+
+void RegressionExperiment::process_best()
 {
-  learning_rate*= learning_rate_decay;
-  lambda1*= learning_rate_decay;
-  lambda2*= learning_rate_decay;
 
-  if (result.output_valid != true)
-    experiment_log << "NaN error, loading best network, and setting learning rate = " << learning_rate << "\n";
-  else if (result.too_big_difference)
-    experiment_log << "too big error " << result.error <<" , loading best network and setting learning rate = " << learning_rate << "\n";
-  else if (result.long_term_without_improvement)
-    experiment_log << "long term without improvement, loading best network, and setting learning rate = " << learning_rate << "\n";
-  else
-    experiment_log << "something wrong\n";
-
-  CNN *nn = new CNN(best_net_file_name + "cnn_config.json", input_geometry, output_geometry);
-  nn->set_learning_rate(learning_rate);
-  nn->set_lambda1(lambda1);
-  nn->set_lambda2(lambda2);
-
-  epoch_without_improvement = 0;
-
-  return nn;
 }
 
-
-sRegressionTestResult RegressionExperiment::test(CNN *nn, bool quick_test)
-{
-  sRegressionTestResult result;
-
-  result.output_valid       = true;
-  result.too_big_difference = false;
-  result.best_net           = false;
-  result.error              = 10000000.0;
-  result.error_min          = result.error;
-  result.error_max          = -result.error;
-
-  result.long_term_without_improvement = false;
-
-
-  std::vector<float> nn_output(dataset->get_output_size());
-
-  float error_sum = 0.0;
-
-  unsigned int testing_iterations = dataset->get_testing_size();
-  if (quick_test)
-    testing_iterations/= 10;
-
-  for (unsigned int i = 0; i < testing_iterations; i++)
-  {
-    sDatasetItem ground_truth;
-
-    if (quick_test)
-      ground_truth = dataset->get_random_testing();
-    else
-      ground_truth = dataset->get_testing(i);
-
-    nn->forward(nn_output, ground_truth.input);
-
-    if (check_valid(nn_output) != true)
-    {
-      result.output_valid = false;
-      break;
-    }
-
-    float error = rms(ground_truth.output, nn_output);
-
-    if (error > result.error_max)
-      result.error_max = error;
-
-    if (error < result.error_min)
-      result.error_min = error;
-
-    error_sum+= error;
-
-/*
-    if ((i%10) == 0)
-    {
-      print_vector(ground_truth.output);
-      printf(" : ");
-      print_vector(nn_output);
-      printf("\n");
-    }
-*/
-  }
-
-
-  result.error = error_sum/testing_iterations;
-
-  if (quick_test)
-    return result;
-
-  if (result.error < error_best)
-  {
-    result.best_net = true;
-    error_best = result.error;
-  }
-  else
-  if (result.error > error_best*1.2)
-  {
-    result.too_big_difference = true;
-  }
-  else
-  {
-    epoch_without_improvement++;
-    if ((int)epoch_without_improvement >= parameters["epoch_without_improvement"].asInt())
-    {
-      epoch_without_improvement = 0.0;
-      result.long_term_without_improvement = true;
-    }
-  }
-
-  return result;
-}
-
-bool RegressionExperiment::check_valid(std::vector<float> &v)
+bool RegressionExperiment::is_valid(std::vector<float> &v)
 {
   for (unsigned int i = 0; i < v.size(); i++)
     if (isnan(v[i]))
@@ -384,61 +287,4 @@ bool RegressionExperiment::check_valid(std::vector<float> &v)
       return false;
 
   return true;
-}
-
-void RegressionExperiment::fill_batch()
-{
-  for (unsigned int i = 0; i < batch->size(); i++)
-  {
-    sDatasetItem item = dataset->get_random_training();
-    batch->add(item.output, item.input);
-  }
-}
-
-
-float RegressionExperiment::rms(std::vector<float> &va, std::vector<float> &vb)
-{
-  float result = 0.0;
-
-  for (unsigned int i = 0; i < va.size(); i++)
-  {
-    float tmp = va[i] - vb[i];
-    result+= tmp*tmp;
-  }
-
-  return sqrt(result/va.size());
-}
-
-
-void RegressionExperiment::print_vector(std::vector<float> &v)
-{
-  for (unsigned int i = 0; i < v.size(); i++)
-    printf("%6.3f ", v[i]);
-}
-
-void RegressionExperiment::best_net_log_process()
-{
-
-}
-
-void RegressionExperiment::save_examples(CNN *nn)
-{
-  Log output_examples("best_net_output_examples.log");
-
-
-  std::vector<float> nn_output(dataset->get_output_size());
-
-  for (unsigned int i = 0; i < 100; i++)
-  {
-    sDatasetItem ground_truth;
-    ground_truth = dataset->get_random_testing();
-    nn->forward(nn_output, ground_truth.input);
-
-//    output_examples << "\n\n";
-//    output_examples << ground_truth.input << "\n";
-    output_examples << ground_truth.output << " >> " << nn_output << "\n";
-  }
-
-
-
 }

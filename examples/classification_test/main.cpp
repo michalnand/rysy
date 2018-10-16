@@ -1,19 +1,10 @@
-#include <timer.h>
 #include <iostream>
-
 #include <dataset_mnist.h>
-#include <dataset_cifar_10.h>
-#include <dataset_tic_tac_toe.h>
-
-#include <dataset_preprocessing.h>
-
 #include <classification_experiment.h>
 
 
 int main()
 {
-
-  {
     DatasetMnist dataset ( "/home/michal/dataset/mnist/train-images.idx3-ubyte",
                            "/home/michal/dataset/mnist/train-labels.idx1-ubyte",
                            "/home/michal/dataset/mnist/t10k-images.idx3-ubyte",
@@ -29,15 +20,7 @@ int main()
       ClassificationExperiment experiment(dataset, config_dir);
       experiment.run();
     }
-  }
 
-/*
-
-  DatasetTicTacToe dataset("/home/michal/dataset/tic_tac_toe/tic_tac_toe.data", 0.5, 2);
-
-  ClassificationExperiment experiment(dataset, "tic_tac/");
-  experiment.run();
-*/
 
   std::cout << "program done\n";
 
