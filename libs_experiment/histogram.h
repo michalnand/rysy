@@ -29,7 +29,7 @@ class Histogram
     void add(float value);
     void clear();
 
-    void compute(unsigned int count = 101);
+    void compute(unsigned int count = 201);
 
   public:
     unsigned int get_count();

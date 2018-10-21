@@ -40,27 +40,15 @@ void RegressionExperiment::run()
 
   CNN nn(parameters.result["network_architecture"], input_geometry, output_geometry);
 
-  compare_testing.set_classes_count(dataset->get_output_size());
-  compare_testing.set_top_n_count(1);
-  compare_training.set_classes_count(dataset->get_output_size());
-  compare_training.set_top_n_count(1);
-
-  compare_testing_top5.set_classes_count(dataset->get_output_size());
-  compare_testing_top5.set_top_n_count(5);
-  compare_training_top5.set_classes_count(dataset->get_output_size());
-  compare_training_top5.set_top_n_count(5);
+  compare_testing.set_output_size(dataset->get_output_size());
+  compare_training.set_output_size(dataset->get_output_size());
 
 
-  float best_sucess = 0;
   unsigned int epoch_count = parameters.result["epoch_count"].asInt();
 
   unsigned int sub_epoch_size = 1;
   if (parameters.result["sub_epoch_size"] != Json::Value::null)
     sub_epoch_size = parameters.result["sub_epoch_size"].asInt();
-
-  bool compare_top_5 = false;
-  if (parameters.result["compare_top_5"] != Json::Value::null)
-    compare_top_5 = parameters.result["compare_top_5"].asBool();
 
   unsigned int epoch_learning_rate_decay = epoch_count;
   if (parameters.result["epoch_learning_rate_decay"] != Json::Value::null)
@@ -96,6 +84,7 @@ void RegressionExperiment::run()
   experiment_log << "\n";
   experiment_log << "training\n";
 
+  float best_error = 1000000000.0*dataset->get_output_size();
 
   for (unsigned int epoch = 0; epoch < epoch_count; epoch++)
   {
@@ -115,45 +104,37 @@ void RegressionExperiment::run()
 
         experiment_log << "testing done\n";
 
-        experiment_log << "network success rate top1 " << compare_testing.get_success() << "% " << compare_training.get_success() << "% \n";
-        experiment_log << "network success rate top5 " << compare_testing_top5.get_success() << "% " << compare_training_top5.get_success() << "% \n";
+        experiment_log << "average error " << compare_testing.get_error_average_squared() << "\n";
+        experiment_log << "min error     " << compare_testing.get_error_min_squared() << "\n";
+        experiment_log << "max error     " << compare_testing.get_error_max_squared() << "\n";
+
 
         float progress = epoch + sub_epoch*1.0/sub_epoch_size;
 
-        training_progress_log << progress << " " << epoch << " " << sub_epoch << " " << compare_testing.get_success() << " " << compare_training.get_success() << " ";
-        training_progress_log << " " << compare_testing_top5.get_success() << " " << compare_training_top5.get_success() << " \n";
+        training_progress_log << progress << " " << epoch << " " << sub_epoch << " ";
+        training_progress_log << compare_testing.get_error_average_squared() << " " << compare_testing.get_error_min_squared() << " " << compare_testing.get_error_max_squared() << " ";
+        training_progress_log << compare_training.get_error_average_squared() << " " << compare_training.get_error_min_squared() << " " << compare_training.get_error_max_squared() << "\n";
 
-        float success = 0.0;
-        if (compare_top_5)
-          success = compare_testing_top5.get_success();
-        else
-          success = compare_testing.get_success();
+        float error_summary = compare_testing.get_error_average_squared();
 
-        if (success > best_sucess)
+        if (best_error > error_summary)
         {
-          best_sucess = success;
+          best_error = error_summary;
 
-          if (parameters.result["compare_top_5"].asBool())
-            experiment_log << "saving best net in top 5\n";
-          else
-            experiment_log << "saving best net in top 1\n";
+          experiment_log << "saving best net\n";
 
           std::string best_net = config_dir + "trained/";
+          std::string result_training_dir = config_dir + "result_training/";
+          std::string result_testing_dir = config_dir + "result_testing/";
           nn.save(best_net);
 
-          compare_testing.save_json_file(config_dir + "best_net_testing_result.json");
-          compare_testing.save_text_file(config_dir + "best_net_testing_result.txt");
+          compare_testing.save_json_file(result_testing_dir + "best_net_result.json");
+          compare_testing.save_text_file(result_testing_dir);
 
-          compare_training.save_json_file(config_dir + "best_net_training_result.json");
-          compare_training.save_text_file(config_dir + "best_net_training_result.txt");
+          compare_training.save_json_file(result_training_dir + "best_net_result.json");
+          compare_training.save_text_file(result_training_dir);
 
-          compare_testing_top5.save_json_file(config_dir + "best_net_testing_result_top5.json");
-          compare_testing_top5.save_text_file(config_dir + "best_net_testing_result_top5.txt");
-
-          compare_training_top5.save_json_file(config_dir + "best_net_training_result_top5.json");
-          compare_training_top5.save_text_file(config_dir + "best_net_training_result_top5.txt");
-
-          experiment_log << "best net saved to " << best_net << ", with success rate " << best_sucess << "%\n";
+          experiment_log << "best net saved to " << best_net << ", with error " << best_error << "\n";
 
           process_best();
         }
@@ -208,8 +189,9 @@ bool RegressionExperiment::test(CNN &nn)
 {
     compare_testing.clear();
     compare_training.clear();
-    compare_testing_top5.clear();
-    compare_training_top5.clear();
+
+    compare_testing.set_output_size(dataset->get_output_size());
+    compare_training.set_output_size(dataset->get_output_size());
 
     bool valid_output = true;
 
@@ -224,7 +206,6 @@ bool RegressionExperiment::test(CNN &nn)
       nn.forward(nn_output, item.input);
 
       compare_testing.compare(item.output, nn_output);
-      compare_testing_top5.compare(item.output, nn_output);
 
       if (i < 10)
       {
@@ -246,7 +227,6 @@ bool RegressionExperiment::test(CNN &nn)
       nn.forward(nn_output, item.input);
 
       compare_training.compare(item.output, nn_output);
-      compare_training_top5.compare(item.output, nn_output);
 
       if (i < 10)
       {
@@ -262,10 +242,8 @@ bool RegressionExperiment::test(CNN &nn)
       return false;
 
 
-    compare_testing.process(true);
-    compare_training.process(true);
-    compare_testing_top5.process(true);
-    compare_training_top5.process(true);
+    compare_testing.process();
+    compare_training.process();
 
     return true;
 }

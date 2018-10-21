@@ -6,13 +6,12 @@
 #include <cnn.h>
 #include <log.h>
 
-#include "classification_compare.h"
+#include "regression_compare.h"
 
 class RegressionExperiment
 {
   protected:
-    ClassificationCompare compare_testing, compare_training;
-    ClassificationCompare compare_testing_top5, compare_training_top5;
+    RegressionCompare compare_testing, compare_training;
 
   protected:
     DatasetInterface *dataset;

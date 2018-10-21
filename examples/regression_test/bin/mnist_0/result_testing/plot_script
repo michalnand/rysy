@@ -1,0 +1,55 @@
+set   autoscale                        # scale axes automatically
+unset log                              # remove any log-scaling
+unset label                            # remove any previous labels
+set xtic auto                         	# set xtics automatically
+set ytic auto                         # set ytics automatically
+set ztic auto
+
+
+set grid ytics lt 0.1 lw 0.1 lc rgb "#bbbbbb"
+set grid xtics lt 0.1 lw 0.1 lc rgb "#bbbbbb"
+
+#set terminal png size 2048,1356 enhanced font "Helvetica,20"
+set terminal png size 1024,768 enhanced font "Helvetica,20"
+
+set key right top
+
+# set style fill solid 1.0
+
+set xlabel "error"
+
+set ylabel "count"
+set output 'error_summary.png'
+plot 'h_error_summary.log' using 2:3 notitle with boxes linecolor rgb "red"
+
+set ylabel "relative count"
+set output 'error_summary_relative.png'
+plot 'h_error_summary.log' using 2:4 notitle with boxes linecolor rgb "red"
+
+
+set ylabel "count"
+set output 'error_all.png'
+plot 'h_error_0.log' using 2:3 with boxes, \
+     'h_error_1.log' using 2:3 with boxes, \
+     'h_error_2.log' using 2:3 with boxes, \
+     'h_error_3.log' using 2:3 with boxes, \
+     'h_error_4.log' using 2:3 with boxes, \
+     'h_error_5.log' using 2:3 with boxes, \
+     'h_error_6.log' using 2:3 with boxes, \
+     'h_error_7.log' using 2:3 with boxes, \
+     'h_error_8.log' using 2:3 with boxes, \
+     'h_error_9.log' using 2:3 with boxes
+
+
+set ylabel "relative count"
+set output 'error_relative_all.png'
+plot 'h_error_0.log' using 2:4 with boxes, \
+     'h_error_1.log' using 2:4 with boxes, \
+     'h_error_2.log' using 2:4 with boxes, \
+     'h_error_3.log' using 2:4 with boxes, \
+     'h_error_4.log' using 2:4 with boxes, \
+     'h_error_5.log' using 2:4 with boxes, \
+     'h_error_6.log' using 2:4 with boxes, \
+     'h_error_7.log' using 2:4 with boxes, \
+     'h_error_8.log' using 2:4 with boxes, \
+     'h_error_9.log' using 2:4 with boxes
