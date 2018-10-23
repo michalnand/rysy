@@ -38,10 +38,17 @@ void Histogram::compute(unsigned int count)
   find_range();
   init_histogram();
 
-  for (unsigned int i = 0; i < values.size(); i++)
+  if (min >= max)
   {
-    unsigned int idx = find_nearest(values[i]);
-    histogram[idx].count++;
+    histogram[0].count = values.size();
+  }
+  else
+  {
+    for (unsigned int i = 0; i < values.size(); i++)
+    {
+      unsigned int idx = find_nearest(values[i]);
+      histogram[idx].count++;
+    }
   }
 
   unsigned int cnt = 0;

@@ -106,10 +106,10 @@ void RegressionCompare::compare(std::vector<float> &required_value, std::vector<
 
 void RegressionCompare::process(int fixed_bars_count)
 {
+  //std::cout << "RegressionCompare::process()\n";
+
   if (count == 0)
     return;
-
-
 
   int bars_count;
 
@@ -131,7 +131,17 @@ void RegressionCompare::process(int fixed_bars_count)
       bars_count+= 1;
   }
 
+  /*
+  std::cout << "bars count " << bars_count << "\n";
+  std::cout << "output size " << output_size << "\n";
+  std::cout << "count " << count << "\n";
 
+  std::cout << "h_required " << h_required.size() << "\n";
+  std::cout << "h_resulted " << h_resulted.size() << "\n";
+  std::cout << "h_error " << h_error.size() << "\n";
+
+  std::cout << "computing 1\n";
+  */
   for (unsigned int i = 0; i < output_size; i++)
   {
     h_required[i].compute(bars_count);
@@ -146,7 +156,6 @@ void RegressionCompare::process(int fixed_bars_count)
 
   error_average_squared = error_average_squared/count;
 
-
   json_result = process_json_result();
 }
 
@@ -158,7 +167,7 @@ float RegressionCompare::get_error_average_squared()
 float RegressionCompare::get_error_min_squared()
 {
   return error_min_squared;
-} 
+}
 
 float RegressionCompare::get_error_max_squared()
 {
