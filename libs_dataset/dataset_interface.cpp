@@ -99,11 +99,25 @@ void DatasetInterface::add_training(sDatasetItem &item)
 
   training[class_id].push_back(item);
 
-  output_size   = training.size();
+  output_size   = item.output.size();
   training_size = 0;
 
   for (unsigned int j = 0; j < training.size(); j++)
     training_size+= training[j].size();
+}
+
+
+void DatasetInterface::add_training_for_regression(sDatasetItem &item)
+{
+  if (training.size() != 1)
+  {
+    training.resize(1);
+  }
+
+  training[0].push_back(item);
+
+  output_size   = training.size();
+  training_size = training[0].size();
 }
 
 void DatasetInterface::add_testing(sDatasetItem &item)
@@ -132,7 +146,7 @@ void DatasetInterface::print_testing_item(unsigned int idx)
 {
   printf("\n");
   for (unsigned int i = 0; i < testing[idx].output.size(); i++)
-    printf("%4.2f ", testing[idx].output[i]);
+    printf("%5.6f ", testing[idx].output[i]);
   printf(" :\n");
 
   unsigned int ptr = 0;
@@ -143,7 +157,7 @@ void DatasetInterface::print_testing_item(unsigned int idx)
       for (unsigned int x = 0; x < width; x++)
       {
         float v = testing[idx].input[ptr];
-        printf("%5.2f ", v);
+        printf("%5.6f ", v);
 
         ptr++;
       }

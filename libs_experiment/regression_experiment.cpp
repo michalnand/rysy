@@ -98,9 +98,9 @@ void RegressionExperiment::run()
         timer.stop();
 
         experiment_log << "training time per iterations " << timer.get_duration()/sub_epoch_iterations << "[ms]\n";
-        experiment_log << "testing\n";
+        experiment_log << "testing on " << dataset->get_testing_size() << " items\n";
 
-        output_valid = test(nn);
+        output_valid = test(nn); 
 
         experiment_log << "testing done\n";
 

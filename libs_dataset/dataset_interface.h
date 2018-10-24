@@ -86,6 +86,8 @@ class DatasetInterface
 
   protected:
     void add_training(sDatasetItem &item);
+    void add_training_for_regression(sDatasetItem &item);
+
     void add_testing(sDatasetItem &item);
     void add_unlabeled(sDatasetItem &item);
 
