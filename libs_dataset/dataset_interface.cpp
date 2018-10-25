@@ -36,7 +36,8 @@ void DatasetInterface::print()
   std::cout << "\n";
   std::cout << "classes count   " << get_output_size() << "\n";;
   std::cout << "geometry        " << get_width() << " " << get_height() << " " << get_channels() << "\n";
-  std::cout << "\n";
+  std::cout << "outputs size    "  << get_output_size() << "\n";
+  std::cout << "\n"; 
 }
 
 sDatasetItem DatasetInterface::get_random_training()
@@ -114,9 +115,9 @@ void DatasetInterface::add_training_for_regression(sDatasetItem &item)
     training.resize(1);
   }
 
-  training[0].push_back(item);
+  training[0].push_back(item); 
 
-  output_size   = training.size();
+  output_size   = item.output.size();
   training_size = training[0].size();
 }
 
