@@ -19,7 +19,7 @@ int main()
       std::string config_dir = parameters.result["experiments"][i].asString();
       ClassificationExperiment experiment(dataset, config_dir);
       experiment.run();
-    }
+    } 
 
 
   std::cout << "program done\n";

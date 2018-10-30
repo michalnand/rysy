@@ -69,8 +69,8 @@ void cuda_convolution_forward_kernel(   float *output,
   unsigned int input_size_y = input_geometry.h - 2*k_half;
   unsigned int input_size_x = input_geometry.w - 2*k_half;
 
-  __shared__ float w_shared[5][5];
-  if ( (z < input_geometry.d*output_geometry.d) && (threadIdx.y < kernel_size) && (threadIdx.y < kernel_size) )
+  __shared__ float w_shared[5][5]; 
+  if ( (z < input_geometry.d*output_geometry.d) && (threadIdx.x < kernel_size) && (threadIdx.y < kernel_size) )
   {
     unsigned int w_ofs = z*kernel_size*kernel_size;
     w_shared[threadIdx.y][threadIdx.x] = w[w_ofs + threadIdx.y*kernel_size + threadIdx.x];
@@ -89,8 +89,8 @@ void cuda_convolution_forward_kernel(   float *output,
 
     if (kernel_size == 1)
     {
-      sum+= w_shared[0][0]*input[input_idx]; input_idx++;
-      input_idx+= input_geometry.w - kernel_size;
+      sum+= w_shared[0][0]*input[input_idx];
+      input_idx+= input_geometry.w;
     }
 
 
