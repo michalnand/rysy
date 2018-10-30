@@ -171,15 +171,22 @@ unsigned int Histogram::find_nearest(float value)
   unsigned int left   = 0;
   unsigned int right  = count-1;
 
-  while (left <= right)
-  {
-    center = (left + right)/2;
+  unsigned int result = 0;
 
-    if (value < histogram[center].value)
-      right = center - 1;
-    else
-      left  = center + 1;
+  if (value > histogram[0].value)
+  {
+    while (left <= right)
+    {
+      center = (left + right)/2;
+
+      if (value < histogram[center].value)
+        right = center - 1;
+      else
+        left  = center + 1;
+    }
+
+    result = (right + left)/2;
   }
 
-  return (right + left)/2;
+  return result;
 }
