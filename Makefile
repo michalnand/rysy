@@ -1,3 +1,6 @@
+LIBS_PATH=$(HOME)/libs/rysy
+
+export LIBS_PATH
 
 all:
 	cd libs_common && make -j4
