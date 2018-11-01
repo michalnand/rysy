@@ -151,8 +151,8 @@ void Histogram::init_histogram()
 
   if (max > min)
   {
-    float tmp = histogram.size();
-    k = (max - min)/tmp;
+    float tmp = histogram.size()-1;
+    k = (max - min)/tmp;  
     q = min;
   }
 
