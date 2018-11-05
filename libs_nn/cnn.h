@@ -16,9 +16,8 @@ class CNN
     CNN(CNN& other);
     CNN(const CNN& other);
 
-    CNN(std::string json_file_name, sGeometry input_geometry = {0, 0, 0}, sGeometry output_geometry = {0, 0, 0});
-    CNN(Json::Value &json_config, sGeometry input_geometry = {0, 0, 0}, sGeometry output_geometry = {0, 0, 0});
-
+    CNN(std::string json_file_name, sGeometry input_geometry = {0, 0, 0}, sGeometry output_geometry = {0, 0, 0}, bool detector_mode = false);
+    CNN(Json::Value &json_config, sGeometry input_geometry = {0, 0, 0}, sGeometry output_geometry = {0, 0, 0}, bool detector_mode = false);
 
     virtual ~CNN();
 
@@ -29,8 +28,8 @@ class CNN
     void copy(CNN& other);
     void copy(const CNN& other);
 
-    void init(Json::Value &json_config, sGeometry input_geometry_, sGeometry output_geometry_);
-    Layer* create_layer(Json::Value &parameters, sHyperparameters hyperparameters, sGeometry layer_input_geometry);
+    void init(Json::Value &json_config, sGeometry input_geometry_, sGeometry output_geometry_, bool detector_mode = false);
+    Layer* create_layer(Json::Value &parameters, sHyperparameters hyperparameters, sGeometry layer_input_geometry, bool detector_mode = false);
 
   public:
     void forward(std::vector<float> &output, std::vector<float> &input);
@@ -64,6 +63,7 @@ class CNN
     }
 
     void save(std::string file_name_prefix);
+    void load_weights(std::string file_name_prefix);
 
   protected:
     void forward_training(Tensor &output, Tensor &input);

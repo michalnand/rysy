@@ -31,15 +31,15 @@ CNN::CNN(const CNN& other)
   copy(other);
 }
 
-CNN::CNN(std::string json_file_name, sGeometry input_geometry, sGeometry output_geometry)
+CNN::CNN(std::string json_file_name, sGeometry input_geometry, sGeometry output_geometry, bool detector_mode)
 {
   JsonConfig json(json_file_name);
-  init(json.result, input_geometry, output_geometry);
+  init(json.result, input_geometry, output_geometry, detector_mode);
 }
 
-CNN::CNN(Json::Value &json_config, sGeometry input_geometry, sGeometry output_geometry)
+CNN::CNN(Json::Value &json_config, sGeometry input_geometry, sGeometry output_geometry, bool detector_mode)
 {
-  init(json_config, input_geometry, output_geometry);
+  init(json_config, input_geometry, output_geometry, detector_mode);
 }
 
 
@@ -92,9 +92,8 @@ void CNN::copy(const CNN& other)
 }
 
 
-void CNN::init(Json::Value &json_config, sGeometry input_geometry_, sGeometry output_geometry_)
+void CNN::init(Json::Value &json_config, sGeometry input_geometry_, sGeometry output_geometry_, bool detector_mode)
 {
-
   json_parameters = json_config;
 
   std::string network_log_file_name = json_parameters["network_log_file_name"].asString();
@@ -129,6 +128,16 @@ void CNN::init(Json::Value &json_config, sGeometry input_geometry_, sGeometry ou
     hyperparameters.dropout            = json_config["hyperparameters"]["dropout"].asFloat();
   else
     hyperparameters.dropout = 0.0;
+
+
+  if (json_config["detector_mode"] != Json::Value::null)
+  {
+    if (json_config["detector_mode"].asBool() == true)
+      detector_mode = true;
+    else
+      detector_mode = false;
+  }
+
 
   hyperparameters.beta1   = 0.9;
   hyperparameters.beta2   = 0.999;
@@ -196,7 +205,7 @@ void CNN::init(Json::Value &json_config, sGeometry input_geometry_, sGeometry ou
 
   for (auto layer: json_config["layers"])
   {
-    Layer *layer_ = create_layer(layer, hyperparameters, layer_input_geometry);
+    Layer *layer_ = create_layer(layer, hyperparameters, layer_input_geometry, detector_mode);
 
     if (layer_ != nullptr)
     {
@@ -240,7 +249,7 @@ void CNN::init(Json::Value &json_config, sGeometry input_geometry_, sGeometry ou
 
 
 
-Layer* CNN::create_layer(Json::Value &parameters, sHyperparameters hyperparameters, sGeometry layer_input_geometry)
+Layer* CNN::create_layer(Json::Value &parameters, sHyperparameters hyperparameters, sGeometry layer_input_geometry, bool detector_mode)
 {
   Layer *result = nullptr;
 
@@ -301,10 +310,23 @@ Layer* CNN::create_layer(Json::Value &parameters, sHyperparameters hyperparamete
 
   if (type == "output")
   {
-    layer_kernel_geometry.w = 1;
-    layer_kernel_geometry.h = 1;
-    layer_kernel_geometry.d = output_geometry.d;
-    result = new FCLayer(layer_input_geometry, layer_kernel_geometry, hyperparameters);
+    if (detector_mode)
+    {
+      //create big convolution kernel
+      layer_kernel_geometry.w = parameters["input_geometry"][0].asInt();
+      layer_kernel_geometry.h = parameters["input_geometry"][1].asInt();
+      layer_kernel_geometry.d = output_geometry.d;
+
+      result = new ConvolutionLayer(layer_input_geometry, layer_kernel_geometry, hyperparameters);
+    }
+    else
+    {
+      layer_kernel_geometry.w = 1;
+      layer_kernel_geometry.h = 1;
+      layer_kernel_geometry.d = output_geometry.d;
+
+      result = new FCLayer(layer_input_geometry, layer_kernel_geometry, hyperparameters);
+    }
   }
 
 
@@ -566,6 +588,12 @@ void CNN::save(std::string file_name_prefix)
 
     weights_file_name = file_name_prefix + "layer_" + std::to_string(layer);
     json.result["layers"][layer]["weights_file_name"] = weights_file_name;
+    json.result["layers"][layer]["input_geometry"][0] = layers[layer]->get_input_geometry().w;
+    json.result["layers"][layer]["input_geometry"][1] = layers[layer]->get_input_geometry().h;
+    json.result["layers"][layer]["input_geometry"][2] = layers[layer]->get_input_geometry().d;
+    json.result["layers"][layer]["output_geometry"][0] = layers[layer]->get_output_geometry().w;
+    json.result["layers"][layer]["output_geometry"][1] = layers[layer]->get_output_geometry().h;
+    json.result["layers"][layer]["output_geometry"][2] = layers[layer]->get_output_geometry().d;
 
     layers[layer]->save(weights_file_name);
   }
@@ -578,4 +606,13 @@ void CNN::save(std::string file_name_prefix)
 
 
   // network_log << "saving done\n";
+}
+
+void CNN::load_weights(std::string file_name_prefix)
+{
+  for (unsigned int layer = 0; layer < layers.size(); layer++)
+  { 
+    std::string layer_file_name = file_name_prefix + "layer_" + std::to_string(layer);
+    layers[layer]->load(layer_file_name);
+  }
 }
