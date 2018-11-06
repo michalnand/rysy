@@ -82,6 +82,15 @@
             "type"      : "relu"
           },
 
+          {
+            "type"      : "convolution",
+            "geometry"  : [1, 1, 32]
+          },
+          {
+            "type"      : "relu"
+          },
+
+
 
           {
             "type"      : "dropout"
