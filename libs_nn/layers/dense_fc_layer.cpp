@@ -106,13 +106,13 @@ void DenseFCLayer::forward(Tensor &output, Tensor &input)
 {
   fc_layer_forward(output_fc, input, w, bias);
 
-  cuda_float_allocator.device_to_device(output.v, output_fc.v, output_fc.size());
-  cuda_float_allocator.device_to_device(output.v + output_fc.size(), input.v, input.size());
+  cu_device_to_device(output.v, output_fc.v, output_fc.size());
+  cu_device_to_device(output.v + output_fc.size(), input.v, input.size());
 }
 
 void DenseFCLayer::backward(LayerMemory &layer_mem_prev, LayerMemory &layer_mem, bool update_weights)
 {
-  cuda_float_allocator.device_to_device(error_fc.v, layer_mem.error.v, error_fc.size());
+  cu_device_to_device(error_fc.v, layer_mem.error.v, error_fc.size());
 
   fc_layer_gradient(w_grad, layer_mem_prev.output, error_fc);
 

@@ -1,6 +1,6 @@
 #include "crop_layer.cuh"
 
-
+ 
 __host__
 void cpu_crop_forward_kernel(   float *output, float *input,
                                 unsigned int out_width, unsigned int out_height, unsigned int out_depth,

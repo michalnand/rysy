@@ -9,6 +9,9 @@ class Visualisation
   private:
     float time_;
 
+    bool  g_visualisation_gl_init_done ;
+    int   g_visualisation_window_handle ;
+
   public:
     Visualisation(unsigned int window_width = 800, unsigned int window_height = 600);
     virtual ~Visualisation();

@@ -12,11 +12,12 @@
 
 #include <math.h>
 
-bool  g_visualisation_gl_init_done = false;
-int   g_visualisation_window_handle = -1;
 
 Visualisation::Visualisation(unsigned int window_width, unsigned int window_height)
 {
+  g_visualisation_gl_init_done = false;
+  g_visualisation_window_handle = -1;
+
   if (g_visualisation_gl_init_done == false)
   {
     int num = 0;

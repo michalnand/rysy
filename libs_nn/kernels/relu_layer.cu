@@ -1,5 +1,5 @@
 #include "relu_layer.cuh"
-
+ 
 __host__
 void cpu_relu_forward_kernel(float *output, float *input, unsigned int size)
 {

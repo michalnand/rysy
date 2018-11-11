@@ -1,7 +1,7 @@
 #include "convolution_layer_forward.cuh"
 
 #define TILE_SIZE 16
-
+ 
 __host__
 void cpu_convolution_forward_kernel(   float *output,
                                        float *input,
@@ -69,7 +69,7 @@ void cuda_convolution_forward_kernel(   float *output,
   unsigned int input_size_y = input_geometry.h - 2*k_half;
   unsigned int input_size_x = input_geometry.w - 2*k_half;
 
-  __shared__ float w_shared[5][5]; 
+  __shared__ float w_shared[5][5];
   if ( (z < input_geometry.d*output_geometry.d) && (threadIdx.x < kernel_size) && (threadIdx.y < kernel_size) )
   {
     unsigned int w_ofs = z*kernel_size*kernel_size;

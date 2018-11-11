@@ -1,5 +1,5 @@
 #include "unpooling_layer.cuh"
-
+ 
 __host__
 void cpu_unpooling_forward_kernel(  float *output,
                                     float *input,

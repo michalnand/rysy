@@ -1,5 +1,5 @@
 #include "dropout_layer.cuh"
-
+ 
 __host__
 void cpu_dropout_forward_kernel(float *output, float *input, float *noise, float dropout, unsigned int size)
 {

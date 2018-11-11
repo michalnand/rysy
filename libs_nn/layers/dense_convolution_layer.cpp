@@ -98,14 +98,14 @@ void DenseConvolutionLayer::forward(Tensor &output, Tensor &input)
 {
   convolution_layer_forward(output_convolution, input, w, bias);
 
-  cuda_float_allocator.device_to_device(output.v, output_convolution.v, output_convolution.size());
-  cuda_float_allocator.device_to_device(output.v + output_convolution.size(), input.v, input.size());
+  cu_device_to_device(output.v, output_convolution.v, output_convolution.size());
+  cu_device_to_device(output.v + output_convolution.size(), input.v, input.size());
 
 }
 
 void DenseConvolutionLayer::backward(LayerMemory &layer_mem_prev, LayerMemory &layer_mem, bool update_weights)
 {
-  cuda_float_allocator.device_to_device(error_convolution.v, layer_mem.error.v, error_convolution.size());
+  cu_device_to_device(error_convolution.v, layer_mem.error.v, error_convolution.size());
 
   //MINIBATCH
   convolution_layer_gradient(w_grad, layer_mem_prev.output, error_convolution);

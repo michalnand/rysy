@@ -76,7 +76,7 @@ void w_update(Tensor &w, Tensor &w_grad, Tensor &m, Tensor &v,
   unsigned int size = w.size();
 
   #ifdef NETWORK_USE_CUDA
-
+ 
     dim3 block(256);
     dim3 grid((size  + block.x - 1)/block.x);
 

@@ -42,7 +42,7 @@ Tensor::~Tensor()
   if (v != nullptr)
   {
     #ifdef NETWORK_USE_CUDA
-      cuda_float_allocator.free(v);
+      cu_free(v);
     #else
       delete v;
     #endif
@@ -118,7 +118,7 @@ unsigned int Tensor::d()
 void Tensor::set_from_host(float *v)
 {
   #ifdef NETWORK_USE_CUDA
-  cuda_float_allocator.host_to_device(this->v, v, size());
+  cu_host_to_device(this->v, v, size());
   #else
   for (unsigned int i = 0; i < size(); i++)
     this->v[i] = v[i];
@@ -133,7 +133,7 @@ void Tensor::set_from_host(std::vector<float> &v)
 void Tensor::set_to_host(float *v)
 {
   #ifdef NETWORK_USE_CUDA
-  cuda_float_allocator.device_to_host(v, this->v, size());
+  cu_device_to_host(v, this->v, size());
   #else
   for (unsigned int i = 0; i < size(); i++)
     v[i] = this->v[i];
@@ -355,7 +355,7 @@ void Tensor::copy(Tensor &other)
     if (v != nullptr)
     {
       #ifdef NETWORK_USE_CUDA
-        cuda_float_allocator.free(v);
+        cu_free(v);
       #else
         delete v;
       #endif
@@ -364,7 +364,7 @@ void Tensor::copy(Tensor &other)
     }
 
     #ifdef NETWORK_USE_CUDA
-      cuda_float_allocator.device_to_device(v, other.v, other.m_size);
+      cu_device_to_device(v, other.v, other.m_size);
     #else
       v = new float[other.m_size];
     #endif
@@ -377,7 +377,7 @@ void Tensor::copy(Tensor &other)
   m_size = m_w*m_h*m_d;
 
   #ifdef NETWORK_USE_CUDA
-    cuda_float_allocator.device_to_device(v, other.v, size());
+    cu_device_to_device(v, other.v, size());
   #else
     memcpy(v, other.v, size()*sizeof(float));
   #endif
@@ -390,7 +390,7 @@ void Tensor::copy(const Tensor &other)
     if (v != nullptr)
     {
       #ifdef NETWORK_USE_CUDA
-        cuda_float_allocator.free(v);
+        cu_free(v);
       #else
         delete v;
       #endif
@@ -406,8 +406,8 @@ void Tensor::copy(const Tensor &other)
   m_size = m_w*m_h*m_d;
 
   #ifdef NETWORK_USE_CUDA
-    v = cuda_float_allocator.malloc(size());
-    cuda_float_allocator.device_to_device(v, other.v, size());
+    v = cu_malloc(size());
+    cu_device_to_device(v, other.v, size());
   #else
     v = new float[size()];
     memcpy(v, other.v, size()*sizeof(float));
@@ -433,7 +433,7 @@ void Tensor::init(unsigned int w_, unsigned h_, unsigned d_)
   if (v != nullptr)
   {
     #ifdef NETWORK_USE_CUDA
-      cuda_float_allocator.free(v);
+      cu_free(v);
     #else
       delete v;
     #endif
@@ -449,7 +449,7 @@ void Tensor::init(unsigned int w_, unsigned h_, unsigned d_)
   m_size = m_w*m_h*m_d;
 
   #ifdef NETWORK_USE_CUDA
-    v = cuda_float_allocator.malloc(size());
+    v = cu_malloc(size());
   #else
     v = new float[size()];
   #endif

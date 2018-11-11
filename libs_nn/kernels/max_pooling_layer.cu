@@ -1,7 +1,7 @@
 #include "max_pooling_layer.cuh"
 
 #define MAX_POOLING_VALUE_MIN   ((float)-10000000.0)
-
+ 
 __host__
 void cpu_max_pooling_forward_kernel(  float *output,
                                       float *input,

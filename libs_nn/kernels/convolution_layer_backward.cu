@@ -2,7 +2,7 @@
 
 #define TILE_SIZE 16
 
-
+ 
 __host__
 void cpu_convolution_layer_weights_gradient(  float *w_grad,
                                               float *error,
