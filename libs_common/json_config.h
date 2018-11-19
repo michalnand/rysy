@@ -20,6 +20,8 @@ class JsonConfig
 
     void load(std::string json_file_name);
     void save(std::string file_name);
+
+    Json::Value get_result();
 };
 
 

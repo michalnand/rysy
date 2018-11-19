@@ -19,6 +19,12 @@ Preprocessing::Preprocessing(Json::Value json, sGeometry input_geometry)
   init(json, input_geometry);
 }
 
+Preprocessing::Preprocessing(std::string json_file_name, sGeometry input_geometry)
+{
+  JsonConfig json(json_file_name);
+  init(json.result, input_geometry);
+}
+
 void Preprocessing::init(Json::Value json, sGeometry input_geometry)
 {
   for (unsigned int layer = 0; layer < layers.size(); layer++)

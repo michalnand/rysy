@@ -51,3 +51,8 @@ void JsonConfig::save(std::string file_name)
   json_file << result;
   json_file.close();
 }
+
+Json::Value JsonConfig::get_result()
+{
+  return result;
+}

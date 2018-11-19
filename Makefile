@@ -8,6 +8,9 @@ all:
 	cd libs_nn && make -j4
 	cd libs_preprocessing && make -j4
 	cd libs_experiment && make -j4
+
+	cd libs_rysy_python && make -j4
+
 	cd deployment && make -j4
 	cd examples/classification_test && make -j4
 	cd examples/regression_test && make -j4
@@ -26,6 +29,9 @@ clean:
 	cd libs_nn && make clean
 	cd libs_preprocessing && make clean
 	cd libs_experiment && make clean
+
+	cd libs_rysy_python && make clean
+
 	cd deployment && make clean
 	cd examples/classification_test && make clean
 	cd examples/regression_test && make clean
