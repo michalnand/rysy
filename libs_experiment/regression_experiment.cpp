@@ -242,8 +242,8 @@ bool RegressionExperiment::test(CNN &nn)
       return false;
 
 
-    compare_testing.process();
-    compare_training.process();
+    compare_testing.process(100);
+    compare_training.process(100);
 
     return true;
 }
