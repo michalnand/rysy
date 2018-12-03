@@ -1,0 +1,9 @@
+apt-get install -f git make clang g++ python3-dev python3 python3-pip swig swig3.0 libjsoncpp-dev cimg-dev freeglut3-dev 
+
+pip3 install numpy
+
+wget https://developer.nvidia.com/compute/cuda/9.0/Prod/local_installers/cuda_9.0.176_384.81_linux-run
+chmod +x cuda_9.0.176_384.81_linux-run
+sudo ./cuda-linux.9.0.176-22781540.run
+
+rm cuda-linux.9.0.176-22781540.run
