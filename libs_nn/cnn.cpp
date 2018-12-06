@@ -425,6 +425,33 @@ void CNN::train_single_output(float required_output, unsigned int output_idx, st
   train_single_output(required_output, output_idx, nn_input);
 }
 
+void CNN::train(std::vector<Tensor> &required_output, std::vector<Tensor> &input)
+{
+  set_training_mode();
+
+  for (unsigned int i = 0; i < required_output.size(); i++)
+  {
+    train(required_output[i], input[i]);
+  }
+
+  unset_training_mode();
+}
+
+void CNN::train(std::vector<std::vector<float>> &required_output, std::vector<std::vector<float>> &input)
+{
+  set_training_mode();
+
+  for (unsigned int i = 0; i < required_output.size(); i++)
+  {
+    nn_input.set_from_host(input[i]);
+    nn_required_output.set_from_host(required_output[i]);
+
+    train(nn_required_output, nn_input);
+  }
+
+  unset_training_mode();
+}
+
 void CNN::forward(Tensor &output, Tensor &input)
 {
   for (unsigned int i = 0; i < layers.size(); i++)
@@ -611,7 +638,7 @@ void CNN::save(std::string file_name_prefix)
 void CNN::load_weights(std::string file_name_prefix)
 {
   for (unsigned int layer = 0; layer < layers.size(); layer++)
-  { 
+  {
     std::string layer_file_name = file_name_prefix + "layer_" + std::to_string(layer);
     layers[layer]->load(layer_file_name);
   }

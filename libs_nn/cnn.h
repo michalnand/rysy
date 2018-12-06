@@ -40,6 +40,10 @@ class CNN
     void train(Tensor &required_output, Tensor &input);
     void train_single_output(float required_output, unsigned int output_idx, Tensor &input);
 
+    void train(std::vector<Tensor> &required_output, std::vector<Tensor> &input);
+    void train(std::vector<std::vector<float>> &required_output, std::vector<std::vector<float>> &input);
+
+
     void set_training_mode();
     void unset_training_mode();
 

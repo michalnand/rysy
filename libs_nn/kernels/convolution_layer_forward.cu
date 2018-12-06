@@ -238,8 +238,7 @@ void convolution_layer_forward(   Tensor &output, Tensor &input,
 
     #ifdef NETWORK_USE_CUDA
       output.clear();
-
-
+        
         dim3 block(16, 16, 1);
         dim3 grid( (input_size_x      + block.x - 1)/block.x,
                    (input_size_y      + block.y - 1)/block.y,

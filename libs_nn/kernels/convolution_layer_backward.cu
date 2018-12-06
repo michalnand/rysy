@@ -69,10 +69,11 @@ void cuda_convolution_layer_weights_gradient(   float *w_grad,
 
       float w_dif = 0.0;
 
+
       for (unsigned int y = 0; y < input_size_y; y++)
       {
         unsigned int input_idx  = (ch*input_geometry.h + y + ky)*input_geometry.w + kx;
-        unsigned int error_idx = (filter*error_geometry.h + y + kh_half)*error_geometry.w + kw_half;
+        unsigned int error_idx  = (filter*error_geometry.h + y + kh_half)*error_geometry.w + kw_half;
 
         for (unsigned int x = 0; x < input_size_x; x++)
         {
@@ -110,7 +111,7 @@ void convolution_layer_gradient(Tensor &w_grad, Tensor &input, Tensor &error)
 
   #ifdef NETWORK_USE_CUDA
 
-        dim3 block(8, 8, 8);
+        dim3 block(4, 4, 8);
         dim3 grid( (weights_geometry.w  + block.x - 1)/block.x,
                    (weights_geometry.h  + block.y - 1)/block.y,
                    (weights_geometry.d  + block.z - 1)/block.z);
@@ -272,6 +273,8 @@ void cpu_convolution_back_kernel( float *error,
   }
 }
 
+
+
 template<const unsigned int kernel_size>
 __global__
 void cuda_convolution_back_kernel(  float *error,
@@ -304,6 +307,7 @@ void cuda_convolution_back_kernel(  float *error,
       float err = error[error_idx];
 
       unsigned int error_back_idx = (ch*height + y)*width + x;
+
 
       if (kernel_size == 1)
       {
@@ -372,11 +376,6 @@ void cuda_convolution_back_kernel(  float *error,
 }
 
 
-
-
-
-
-
 __global__
 void cuda_convolution_back_kernel_any_size(   float *error,
                                               float *error_back,
@@ -435,6 +434,7 @@ void convolution_layer_backward( Tensor &error_back, Tensor &input, Tensor &erro
   unsigned int kernel_size = w.w();
 
   #ifdef NETWORK_USE_CUDA
+
 
       dim3 block(4, 4, 16);
       dim3 grid( (error_back.w()      + block.x - 1)/block.x,

@@ -1781,11 +1781,11 @@ class CNN(_object):
     def forward(self, *args):
         return _rysy.CNN_forward(self, *args)
 
-    def train(self, *args):
-        return _rysy.CNN_train(self, *args)
-
     def train_single_output(self, *args):
         return _rysy.CNN_train_single_output(self, *args)
+
+    def train(self, *args):
+        return _rysy.CNN_train(self, *args)
 
     def set_training_mode(self):
         return _rysy.CNN_set_training_mode(self)
