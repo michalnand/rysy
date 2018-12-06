@@ -50,6 +50,6 @@ $(ELF): $(LIBS) $(OBJS) $(OBJS_CUDA)
 	$(CU) -c $(CUDAFLAGS) $< -o $@
 
 clean:
-	rm $(OBJS) -rf
-	rm $(OBJS_CUDA) -rf
-	rm $(ELF) -rf
+	rm $(OBJS) -f
+	rm $(OBJS_CUDA) -f
+	rm $(ELF) -f

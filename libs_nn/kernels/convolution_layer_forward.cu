@@ -1,7 +1,7 @@
 #include "convolution_layer_forward.cuh"
 
-#define TILE_SIZE 16
- 
+#define TILE_MAX_SIZE ((unsigned int)32)
+
 __host__
 void cpu_convolution_forward_kernel(   float *output,
                                        float *input,
@@ -21,8 +21,8 @@ void cpu_convolution_forward_kernel(   float *output,
   unsigned int input_size_x = input_geometry.w - 2*k_half;
 
   for (unsigned int filter = 0; filter < kernel_geometry.d; filter++)
-    for (unsigned int y = 0; y <= input_size_y; y++)
-      for (unsigned int x = 0; x <= input_size_x; x++)
+    for (unsigned int y = 0; y < input_size_y; y++)
+      for (unsigned int x = 0; x < input_size_x; x++)
         {
           unsigned int filter_idx = kernel_geometry.w*kernel_geometry.h*input_geometry.d*filter;
 
@@ -239,59 +239,60 @@ void convolution_layer_forward(   Tensor &output, Tensor &input,
     #ifdef NETWORK_USE_CUDA
       output.clear();
 
-      dim3 block(16, 16, 1);
-      dim3 grid( (input_size_x      + block.x - 1)/block.x,
-                 (input_size_y      + block.y - 1)/block.y,
-                 (kernel_geometry.d*input_geometry.d + block.z - 1)/block.z );
 
-      unsigned int kernel_size = kernel_geometry.w;
-      switch (kernel_size)
-      {
-                case 1:  cuda_convolution_forward_kernel<1><<<grid, block>>>( output.v,
-                                                                              input.v,
-                                                                              w.v,
-                                                                              bias.v,
+        dim3 block(16, 16, 1);
+        dim3 grid( (input_size_x      + block.x - 1)/block.x,
+                   (input_size_y      + block.y - 1)/block.y,
+                   (kernel_geometry.d*input_geometry.d + block.z - 1)/block.z );
 
-                                                                              output_geometry,
-                                                                              input_geometry,
-                                                                              kernel_geometry);
+        unsigned int kernel_size = kernel_geometry.w;
+        switch (kernel_size)
+        {
+                  case 1:  cuda_convolution_forward_kernel<1><<<grid, block>>>( output.v,
+                                                                                input.v,
+                                                                                w.v,
+                                                                                bias.v,
+
+                                                                                output_geometry,
+                                                                                input_geometry,
+                                                                                kernel_geometry);
+                              break;
+
+                  case 3:  cuda_convolution_forward_kernel<3><<<grid, block>>>( output.v,
+                                                                                input.v,
+                                                                                w.v,
+                                                                                bias.v,
+
+                                                                                output_geometry,
+                                                                                input_geometry,
+                                                                                kernel_geometry);
+                              break;
+
+                  case 5:  cuda_convolution_forward_kernel<5><<<grid, block>>>( output.v,
+                                                                                input.v,
+                                                                                w.v,
+                                                                                bias.v,
+
+                                                                                output_geometry,
+                                                                                input_geometry,
+                                                                                kernel_geometry);
+                              break;
+
+
+                  default:
+                          cuda_convolution_forward_kernel_any_size<<<grid, block>>>(
+                                                                                output.v,
+                                                                                input.v,
+                                                                                w.v,
+                                                                                bias.v,
+
+                                                                                output_geometry,
+                                                                                input_geometry,
+                                                                                kernel_geometry);
                             break;
+          }
 
-                case 3:  cuda_convolution_forward_kernel<3><<<grid, block>>>( output.v,
-                                                                              input.v,
-                                                                              w.v,
-                                                                              bias.v,
-
-                                                                              output_geometry,
-                                                                              input_geometry,
-                                                                              kernel_geometry);
-                            break;
-
-                case 5:  cuda_convolution_forward_kernel<5><<<grid, block>>>( output.v,
-                                                                              input.v,
-                                                                              w.v,
-                                                                              bias.v,
-
-                                                                              output_geometry,
-                                                                              input_geometry,
-                                                                              kernel_geometry);
-                            break;
-
-
-                default:
-                        cuda_convolution_forward_kernel_any_size<<<grid, block>>>(
-                                                                              output.v,
-                                                                              input.v,
-                                                                              w.v,
-                                                                              bias.v,
-
-                                                                              output_geometry,
-                                                                              input_geometry,
-                                                                              kernel_geometry);
-                          break;
-        }
-
-        cudaDeviceSynchronize();
+          cudaDeviceSynchronize();
 
     #else
 

@@ -6,7 +6,7 @@
 #define SIGMOID_DERIVATIVE(x) (SIGMOID(x)*(1.0 - SIGMOID(x)))
 
 
- 
+
 __host__
 void cpu_gating_forward_kernel(float *output, float *input, unsigned int size)
 {
@@ -15,9 +15,9 @@ void cpu_gating_forward_kernel(float *output, float *input, unsigned int size)
     unsigned int idx_input  = idx;
     unsigned int idx_gate   = idx + size;
 
-    output[idx] = input[idx_gate]*input[idx_input];
+  //  output[idx] = input[idx_gate]*input[idx_input];
 
-  //  output[idx] = SIGMOID(input[idx_gate])*input[idx_input];
+    output[idx] = SIGMOID(input[idx_gate])*input[idx_input];
   }
 }
 
@@ -31,9 +31,9 @@ void cuda_gating_forward_kernel(float *output, float *input, unsigned int size)
     unsigned int idx_input  = idx;
     unsigned int idx_gate   = idx + size;
 
-    output[idx] = input[idx_gate]*input[idx_input];
+    //output[idx] = input[idx_gate]*input[idx_input];
 
-    // output[idx] = SIGMOID(input[idx_gate])*input[idx_input];
+    output[idx] = SIGMOID(input[idx_gate])*input[idx_input];
   }
 }
 
@@ -71,13 +71,14 @@ void cpu_gating_backward_kernel(float *error_back, float *input, float *error, f
 
       float err = error[idx];
 
-      /*
+
       error_back[idx_input] = err*SIGMOID(input[idx_gate]);
       error_back[idx_gate]  = err*SIGMOID_DERIVATIVE(input[idx_gate])*input[idx_input];
-      */
 
+      /*
       error_back[idx_input] = err*input[idx_gate];
       error_back[idx_gate]  = err*input[idx_input];
+      */
   }
 }
 
@@ -93,13 +94,13 @@ void cuda_gating_backward_kernel(float *error_back, float *input, float *error, 
 
     float err = error[idx];
 
-    /*
     error_back[idx_input] = err*SIGMOID(input[idx_gate]);
     error_back[idx_gate]  = err*SIGMOID_DERIVATIVE(input[idx_gate])*input[idx_input];
-    */
 
+    /*
     error_back[idx_input] = err*input[idx_gate];
     error_back[idx_gate]  = err*input[idx_input];
+    */
   }
 }
 
