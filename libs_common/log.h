@@ -16,7 +16,7 @@ class Log
     virtual ~Log();
 
     void set_output_file_name(std::string file_name);
-    void put_string(std::string &str);
+    void put_string(std::string str);
 
   public:
     Log& operator <<(std::string &rhs);

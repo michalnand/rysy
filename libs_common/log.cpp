@@ -29,7 +29,7 @@ void Log::set_output_file_name(std::string file_name)
 }
 
 
-void Log::put_string(std::string &str)
+void Log::put_string(std::string str)
 {
   if (file_name == "std_out_file_name")
   {
