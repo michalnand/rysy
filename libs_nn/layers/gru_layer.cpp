@@ -4,6 +4,9 @@
 #include "kernels/gru_gate.cuh"
 #include "kernels/w_update.cuh"
 
+#include "../cuda_float_allocator.cuh"
+#include "../cuda_tensor.cuh"
+
 GRULayer::GRULayer()
         :Layer()
 {
@@ -24,7 +27,8 @@ GRULayer::GRULayer(const GRULayer& other)
 
 GRULayer::~GRULayer()
 {
-
+  delete u_layer;
+  delete g_layer;
 }
 
 GRULayer& GRULayer::operator= (GRULayer& other)
@@ -56,6 +60,20 @@ GRULayer::GRULayer(sGeometry input_geometry, sGeometry kernel_geometry, sHyperpa
   this->output_geometry.h = 1;
   this->output_geometry.d = output_size;
 
+
+  sGeometry _input_geometry;
+  _input_geometry.w = 1;
+  _input_geometry.h = 1;
+  _input_geometry.d = input_size + output_size;
+
+  u_layer = new FCLayer(_input_geometry, kernel_geometry, hyperparameters);
+  g_layer = new FCLayer(_input_geometry, kernel_geometry, hyperparameters);
+
+
+  _input.init(_input_geometry);
+  state.init(output_geometry);
+  g_output.init(output_geometry);
+  g_output.init(output_geometry);
 
 /*
   w.init(inputs_count*neurons_count);
@@ -90,10 +108,22 @@ void GRULayer::copy_gru(const GRULayer &other)
   (void)other;
 }
 
+void GRULayer::reset()
+{
+  state.clear();
+}
 
 void GRULayer::forward(Tensor &output, Tensor &input)
 {
-  //fc_layer_forward(output, input, w, bias);
+  cu_device_to_device(_input.v, state.v, state.size());
+  cu_device_to_device(_input.v + state.size(), input.v, input.size());
+
+  u_layer->forward(u_output, _input);
+  g_layer->forward(g_output, _input);
+
+  gru_gate_forward(output, state, u_output, g_output);
+
+  state.copy(output);
 }
 
 void GRULayer::backward(LayerMemory &layer_mem_prev, LayerMemory &layer_mem, bool update_weights)

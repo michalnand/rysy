@@ -27,11 +27,14 @@ class GRULayer: public Layer
       return true;
     }
 
+    void reset();
     void forward(Tensor &output, Tensor &input);
     void backward(LayerMemory &layer_mem_prev, LayerMemory &layer_mem, bool update_weights = false);
 
   public:
-    FCLayer *layer_update, *layer_gate;
+    FCLayer *u_layer, *g_layer;
+    Tensor _input, state;
+    Tensor g_output, u_output;
 
 };
 
