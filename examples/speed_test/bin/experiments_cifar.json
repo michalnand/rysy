@@ -1,7 +1,0 @@
-{
-  "experiments" :
-  [
-    "cifar_10_0/",
-    "cifar_10_1/"
-  ]
-}
