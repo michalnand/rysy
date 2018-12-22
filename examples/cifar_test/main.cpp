@@ -31,6 +31,11 @@ int main()
       experiment.run();
     }
 
+    {
+      ClassificationExperiment experiment(dataset, "cifar_4/");
+      experiment.run();
+    }
+
 
 
   std::cout << "program done\n";
