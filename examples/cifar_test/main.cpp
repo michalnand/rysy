@@ -10,29 +10,7 @@ int main()
                            true
                          );
     {
-      ClassificationExperiment experiment(dataset, "cifar_0/");
-      experiment.run();
-    }
-
-    {
-      ClassificationExperiment experiment(dataset, "cifar_1/");
-      experiment.run();
-    }
-
-
-    {
-      ClassificationExperiment experiment(dataset, "cifar_2/");
-      experiment.run();
-    }
-
-
-    {
-      ClassificationExperiment experiment(dataset, "cifar_3/");
-      experiment.run();
-    }
-
-    {
-      ClassificationExperiment experiment(dataset, "cifar_4/");
+      ClassificationExperiment experiment(dataset, "cifar_5/");
       experiment.run();
     }
 
