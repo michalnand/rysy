@@ -9,6 +9,8 @@
 #include <sstream>
 #include <iomanip>
 
+#include <image_save.h>
+
 DatasetInterface::DatasetInterface()
 {
   srand(time(NULL));
@@ -37,7 +39,7 @@ void DatasetInterface::print()
   std::cout << "classes count   " << get_output_size() << "\n";;
   std::cout << "geometry        " << get_width() << " " << get_height() << " " << get_channels() << "\n";
   std::cout << "outputs size    "  << get_output_size() << "\n";
-  std::cout << "\n"; 
+  std::cout << "\n";
 }
 
 sDatasetItem DatasetInterface::get_random_training()
@@ -115,7 +117,7 @@ void DatasetInterface::add_training_for_regression(sDatasetItem &item)
     training.resize(1);
   }
 
-  training[0].push_back(item); 
+  training[0].push_back(item);
 
   output_size   = item.output.size();
   training_size = training[0].size();
@@ -326,7 +328,7 @@ void DatasetInterface::save_to_binary(  std::string training_file_name,
     for (unsigned int j = 0; j < testing.size(); j++)
     {
       save_item(file, testing[j]);
-    } 
+    }
   }
 
   {
@@ -340,6 +342,42 @@ void DatasetInterface::save_to_binary(  std::string training_file_name,
       save_item(file, unlabeled[j]);
     }
   }
+}
+
+void DatasetInterface::save_images(     std::string training_file_name_prefix,
+                                        std::string testing_file_name_prefix )
+{
+    bool grayscale = true;
+    if (get_channels() == 3)
+        grayscale = false;
+
+
+    ImageSave image_save(get_width(), get_height(), grayscale);
+
+    for (unsigned int j = 0; j < training.size(); j++)
+        for (unsigned int i = 0; i < training[j].size(); i++)
+        {
+            std::string file_name;
+            file_name = training_file_name_prefix + std::to_string(j) + "_" + std::to_string(i) + ".png";
+
+            image_save.save(file_name, training[j][i].input);
+        }
+
+    for (unsigned int i = 0; i < testing.size(); i++)
+    {
+        unsigned int class_id = 0;
+        for (unsigned int j = 0; j < testing[i].output.size(); j++)
+        {
+            if (testing[i].output[j] > testing[i].output[class_id])
+                class_id = j;
+        }
+
+        std::string file_name;
+        file_name = testing_file_name_prefix + std::to_string(class_id) + "_" + std::to_string(i) + ".png";
+
+        image_save.save(file_name, testing[i].input);
+    }
+
 }
 
 void DatasetInterface::save_item(std::ofstream &file, sDatasetItem &item)

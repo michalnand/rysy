@@ -105,6 +105,8 @@ class DatasetInterface
                           std::string testing_file_name,
                           std::string unlabeled_file_name);
 
+    void save_images(     std::string training_file_name_prefix,
+                          std::string testing_file_name_prefix);
   private:
     void save_item(std::ofstream &file, sDatasetItem &item);
 

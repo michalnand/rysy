@@ -8,6 +8,7 @@
 #include "yuv_to_rgb_layer.h"
 #include "rows_sign_noise_layer.h"
 #include "rows_dc_offset_remove_layer.h"
+#include "augmentation_layer.h"
 
 Preprocessing::Preprocessing()
 {
@@ -81,6 +82,9 @@ void Preprocessing::init(Json::Value json, sGeometry input_geometry)
     else
     if ( (json_["type"].asString() == "rows_dc_offset_remove_layer") || (json_["layer"].asString() == "rows dc offset remove layer"))
       layer = new RowsDCOffsetRemoveLayer(json_);
+    else
+    if ( (json_["type"].asString() == "augmentation_layer") || (json_["layer"].asString() == "augmentation layer"))
+        layer = new AugmentationLayer(json_);
 
     sGeometry output_geometry = layer->get_output_geometry(layer_input_geometry);
 

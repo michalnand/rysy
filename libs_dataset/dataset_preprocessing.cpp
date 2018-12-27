@@ -20,8 +20,9 @@ DatasetPreprocessing::DatasetPreprocessing(DatasetInterface &dataset, std::strin
 
   preprocessing.init(json.result, input_geometry);
 
-  unsigned int augumentation_count = json.result["preprocessing"]["augumentation count"].asInt();
+  unsigned int augmentation_count = json.result["augmentation count"].asInt();
 
+  std::cout << "augmentation_count = " << augmentation_count;
 
   //copy testing
   for (unsigned int i = 0; i < dataset.get_testing_size(); i++)
@@ -56,9 +57,9 @@ DatasetPreprocessing::DatasetPreprocessing(DatasetInterface &dataset, std::strin
 
       //create artifical data
       t_input.set_from_host(preprocessing_input.input);
-      for (unsigned int a = 0; a < augumentation_count; a++)
+      for (unsigned int a = 0; a < augmentation_count; a++)
       {
-        preprocessing.process(t_output, t_input, a);
+        preprocessing.process(t_output, t_input, a + 4);
 
         t_output.set_to_host(preprocessing_output.input);
 
@@ -66,7 +67,6 @@ DatasetPreprocessing::DatasetPreprocessing(DatasetInterface &dataset, std::strin
       }
     }
   }
-
 
   print();
 }
