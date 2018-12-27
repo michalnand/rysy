@@ -15,6 +15,12 @@ int main()
 
    //dataset.save_images("/home/michal/cifar/training/", "/home/michal/cifar/testing/");
 
+   {
+     ClassificationExperiment experiment(dataset, "cifar_3/");
+     experiment.run();
+   }
+
+
     {
       ClassificationExperiment experiment(dataset, "cifar_0/");
       experiment.run();
@@ -30,20 +36,7 @@ int main()
       experiment.run();
     }
 
-    {
-      ClassificationExperiment experiment(dataset, "cifar_3/");
-      experiment.run();
-    }
 
-    {
-      ClassificationExperiment experiment(dataset, "cifar_4/");
-      experiment.run();
-    }
-
-    {
-      ClassificationExperiment experiment(dataset, "cifar_5/");
-      experiment.run();
-    }
 
 
 
