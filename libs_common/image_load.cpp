@@ -1,6 +1,7 @@
 #include "image_load.h"
 
 #include <CImg.h>
+#include <iostream>
 
 ImageLoad::ImageLoad()
 {
@@ -36,9 +37,9 @@ void ImageLoad::load(std::string file_name, bool load_grayscale, bool normalise)
     for (unsigned int y = 0; y < height(); y++)
       for (unsigned int x = 0; x < width(); x++)
       {
-        float r = *(image.data(x, y, 0, 0));
-        float g = *(image.data(x, y, 0, 1));
-        float b = *(image.data(x, y, 0, 2));
+        float r = *(image.data(x, y, 0, 0%image.spectrum()));
+        float g = *(image.data(x, y, 0, 1%image.spectrum()));
+        float b = *(image.data(x, y, 0, 2%image.spectrum()));
 
         float v = 0.2126*r + 0.7152*g + 0.0722*b;
 
@@ -51,10 +52,11 @@ void ImageLoad::load(std::string file_name, bool load_grayscale, bool normalise)
       for (unsigned int y = 0; y < height(); y++)
         for (unsigned int x = 0; x < width(); x++)
         {
-          float v = *(image.data(x, y, 0, ch));
+          float v = *(image.data(x, y, 0, ch%image.spectrum()));
           m_pixels[(ch*height() + y)*width() + x] = v;
         }
   }
+
 
   if (normalise)
   {
@@ -111,6 +113,7 @@ void ImageLoad::normalise_image(float min, float max)
     if (m_pixels[i] < min_s)
       min_s = m_pixels[i];
   }
+
 
   float k = 0.0;
   float q = 0.0;
