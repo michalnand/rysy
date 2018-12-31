@@ -11,7 +11,8 @@ DatasetImages::DatasetImages(std::string json_config_file_name)
   width     = json.result["width"].asInt();
   height    = json.result["height"].asInt();
 
-  max_items_per_folder = json.result["max_items_per_folder"].asInt();
+  max_items_per_folder = json.result["max items per folder"].asInt();
+  testing_ratio = json.result["testing ratio"].asFloat();
 
   if (grayscale)
     channels  = 1;
@@ -22,9 +23,7 @@ DatasetImages::DatasetImages(std::string json_config_file_name)
   training.resize(classes_count);
 
 
-
-  load(json.result["training"], classes_count, false);
-  load(json.result["testing"], classes_count, true);
+  load(json.result["dataset"], classes_count);
 
   print();
 }
@@ -36,13 +35,13 @@ DatasetImages::~DatasetImages()
 
 
 
-void DatasetImages::load(Json::Value parameters, unsigned int classes_count, bool testing)
+void DatasetImages::load(Json::Value parameters, unsigned int classes_count)
 {
   for (unsigned int j = 0; j < parameters.size(); j++)
-    load_dir(parameters[j]["path"].asString(), parameters[j]["class"].asInt(), classes_count, testing);
+    load_dir(parameters[j]["path"].asString(), parameters[j]["class"].asInt(), classes_count);
 }
 
-void DatasetImages::load_dir(std::string path, unsigned int class_id, unsigned int classes_count, bool testing)
+void DatasetImages::load_dir(std::string path, unsigned int class_id, unsigned int classes_count)
 {
   printf("loading directory %s\n", path.c_str());
 
@@ -58,28 +57,32 @@ void DatasetImages::load_dir(std::string path, unsigned int class_id, unsigned i
        // printf(">>>> %s \n", image_file_name.c_str());
        ImageLoad image(image_file_name, grayscale, true);
 
-       sDatasetItem item;
-
-       item.input = image.get();
-
-
-       item.output.resize(classes_count);
-       for (unsigned int i = 0; i < item.output.size(); i++)
-          item.output[i] = 0.0;
-
-       item.output[class_id] = 1.0;
-
-
-       if (testing)
-        add_testing(item);
-       else
-        add_training(item);
-
-       items_count++;
-       if (max_items_per_folder != -1)
+       if ((image.width() == width) && (image.width() == height))
        {
-         if (items_count > max_items_per_folder)
-          return;
+           sDatasetItem item;
+
+           item.input = image.get();
+
+
+           item.output.resize(classes_count);
+           for (unsigned int i = 0; i < item.output.size(); i++)
+              item.output[i] = 0.0;
+
+           item.output[class_id] = 1.0;
+
+           float p = (rand()%100000)/100000.0;
+
+           if (p < testing_ratio)
+            add_testing(item);
+           else
+            add_training(item);
+
+           items_count++;
+           if (max_items_per_folder != -1)
+           {
+             if (items_count > max_items_per_folder)
+              return;
+            }
         }
      }
    }
