@@ -4,6 +4,7 @@
 #include "dataset_interface.h"
 
 #include <json_config.h>
+#include <mutex>
 
 class DatasetImages: public DatasetInterface
 {
@@ -12,12 +13,14 @@ class DatasetImages: public DatasetInterface
     float testing_ratio;
     int max_items_per_folder;
 
+    std::mutex mutex;
+
   public:
     DatasetImages(std::string json_config_file_name);
     ~DatasetImages();
 
   private:
-    void load(Json::Value parameters, unsigned int classes_count);
+    void load(Json::Value parameters, unsigned int classes_count, unsigned int load_threads_count = 4);
     void load_dir(std::string path, unsigned int class_id, unsigned int classes_count);
 
 
