@@ -466,6 +466,24 @@ void CNN::forward(Tensor &output, Tensor &input)
   output.copy(layer_memory[layers.size()-1]->output);
 }
 
+void CNN::forward_sequence(Tensor &output, std::vector<Tensor> &input)
+{
+    reset_state();
+
+    for (unsigned int j = 0; j < input.size(); j++)
+    {
+        for (unsigned int i = 0; i < layers.size(); i++)
+        {
+            if (i == 0)
+                layers[i]->forward(layer_memory[i]->output, input[j]);
+            else
+                layers[i]->forward(layer_memory[i]->output, layer_memory[i-1]->output);
+        }
+    }
+
+    output.copy(layer_memory[layers.size()-1]->output);
+}
+
 void CNN::forward_training(Tensor &output, Tensor &input)
 {
   input_layer_memory.output.copy(input);
@@ -508,6 +526,37 @@ void CNN::train(Tensor &required_output, Tensor &input)
     else
       layers[i]->backward(*layer_memory[i-1], *layer_memory[i], update_weights);
   }
+}
+
+
+void CNN::train_sequence(Tensor &required_output, std::vector<Tensor> &input)
+{
+    reset_state();
+
+    for (unsigned int i = 0; i < input.size(); i++)
+        forward_training(nn_output, input[i]);
+
+    unsigned int last_idx = layers.size()-1;
+
+    layer_memory[last_idx]->error.copy(required_output);
+    layer_memory[last_idx]->error.sub(nn_output);
+
+    bool update_weights = false;
+    minibatch_counter++;
+
+    if (minibatch_counter >= hyperparameters.minibatch_size)
+    {
+        update_weights = true;
+        minibatch_counter = 0;
+    }
+
+    for (int i = last_idx; i>= 0; i--)
+    {
+        if (i == 0)
+            layers[i]->backward(input_layer_memory, *layer_memory[i], update_weights);
+        else
+            layers[i]->backward(*layer_memory[i-1], *layer_memory[i], update_weights);
+    }
 }
 
 
@@ -569,6 +618,12 @@ void CNN::unset_training_mode()
 
   for (unsigned int i = 0; i < layer_memory.size(); i++)
     layer_memory[i]->clear();
+}
+
+void CNN::reset_state()
+{
+    for (unsigned int i = 0; i < layer_memory.size(); i++)
+        layers[i]->reset_state();
 }
 
 void CNN::set_learning_rate(float learning_rate)

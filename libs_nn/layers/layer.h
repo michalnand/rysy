@@ -83,6 +83,11 @@ class Layer
       return flops;
     }
 
+    virtual void reset_state()
+    {
+
+    }
+
   public:
     virtual void forward(Tensor &output, Tensor &input);
     virtual void backward(LayerMemory &layer_mem_prev, LayerMemory &layer_mem, bool update_weights = false);

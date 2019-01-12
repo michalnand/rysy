@@ -1778,8 +1778,14 @@ class CNN(_object):
     __swig_destroy__ = _rysy.delete_CNN
     __del__ = lambda self: None
 
+    def train_sequence(self, required_output, input):
+        return _rysy.CNN_train_sequence(self, required_output, input)
+
     def forward(self, *args):
         return _rysy.CNN_forward(self, *args)
+
+    def forward_sequence(self, output, input):
+        return _rysy.CNN_forward_sequence(self, output, input)
 
     def train_single_output(self, *args):
         return _rysy.CNN_train_single_output(self, *args)
@@ -1792,6 +1798,9 @@ class CNN(_object):
 
     def unset_training_mode(self):
         return _rysy.CNN_unset_training_mode(self)
+
+    def reset_state(self):
+        return _rysy.CNN_reset_state(self)
 
     def set_learning_rate(self, learning_rate):
         return _rysy.CNN_set_learning_rate(self, learning_rate)
