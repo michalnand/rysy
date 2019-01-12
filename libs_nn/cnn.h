@@ -34,12 +34,9 @@ class CNN
   public:
     void forward(std::vector<float> &output, std::vector<float> &input);
     void train(std::vector<float> &required_output, std::vector<float> &input);
-    void train_sequence(Tensor &required_output, std::vector<Tensor> &input);
     void train_single_output(float required_output, unsigned int output_idx, std::vector<float> &input);
 
     void forward(Tensor &output, Tensor &input);
-    void forward_sequence(Tensor &output, std::vector<Tensor> &input);
-
     void train(Tensor &required_output, Tensor &input);
     void train_single_output(float required_output, unsigned int output_idx, Tensor &input);
 
