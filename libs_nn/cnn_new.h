@@ -1,5 +1,5 @@
-#ifndef _CNN_NEW_H_
-#define _CNN_NEW_H_
+#ifndef _CNN_New_H_
+#define _CNN_New_H_
 
 #include "layer_memory.h"
 
@@ -8,25 +8,25 @@
 #include <json_config.h>
 #include <log.h>
 
-class CNN
+class CNNNew
 {
   public:
-    CNN();
+    CNNNew();
 
-    CNN(CNN& other);
-    CNN(const CNN& other);
+    CNNNew(CNNNew& other);
+    CNNNew(const CNNNew& other);
 
-    CNN(std::string json_file_name, sGeometry input_geometry = {0, 0, 0}, sGeometry output_geometry = {0, 0, 0}, bool detector_mode = false);
-    CNN(Json::Value &json_config, sGeometry input_geometry = {0, 0, 0}, sGeometry output_geometry = {0, 0, 0}, bool detector_mode = false);
+    CNNNew(std::string json_file_name, sGeometry input_geometry = {0, 0, 0}, sGeometry output_geometry = {0, 0, 0}, bool detector_mode = false);
+    CNNNew(Json::Value &json_config, sGeometry input_geometry = {0, 0, 0}, sGeometry output_geometry = {0, 0, 0}, bool detector_mode = false);
 
-    virtual ~CNN();
+    virtual ~CNNNew();
 
-    CNN& operator= (CNN& other);
-    CNN& operator= (const CNN& other);
+    CNNNew& operator= (CNNNew& other);
+    CNNNew& operator= (const CNNNew& other);
 
   protected:
-    void copy(CNN& other);
-    void copy(const CNN& other);
+    void copy(CNNNew& other);
+    void copy(const CNNNew& other);
 
     void init(Json::Value &json_config, sGeometry input_geometry_, sGeometry output_geometry_, bool detector_mode = false);
     Layer* create_layer(Json::Value &parameters, sHyperparameters hyperparameters, sGeometry layer_input_geometry, bool detector_mode = false);
@@ -42,7 +42,6 @@ class CNN
 
     void train(std::vector<Tensor> &required_output, std::vector<Tensor> &input);
     void train(std::vector<std::vector<float>> &required_output, std::vector<std::vector<float>> &input);
-
 
     void set_training_mode();
     void unset_training_mode();

@@ -1,0 +1,45 @@
+initializing
+training size    : 7225
+testing size     : 775
+epoch count      : 10
+sub epoch size   : 5
+
+epoch_learning_rate_decay   : 8
+learning_rate_decay         : 0.250000
+
+training
+
+
+
+epoch [0 0] from [10 5]
+training time per iterations 1.241522[ms]
+testing
+testing done
+network success rate top1 48.258064% 50.967743% 
+network success rate top5 100.000000% 100.000000% 
+saving best net in top 1
+best net saved to net_1/trained/, with success rate 48.258064%
+
+
+
+epoch [0 1] from [10 5]
+training time per iterations 1.130104[ms]
+testing
+testing done
+network success rate top1 48.258064% 49.290321% 
+network success rate top5 100.000000% 100.000000% 
+
+
+
+epoch [0 2] from [10 5]
+training time per iterations 1.220761[ms]
+testing
+testing done
+network success rate top1 51.741936% 53.935482% 
+network success rate top5 100.000000% 100.000000% 
+saving best net in top 1
+best net saved to net_1/trained/, with success rate 51.741936%
+
+
+
+epoch [0 3] from [10 5]

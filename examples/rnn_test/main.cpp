@@ -7,10 +7,10 @@ int main()
 {
     DatasetTimeWave dataset(8000, 64);
 
-
-    ClassificationExperiment experiment(dataset, "net_0/");
-    experiment.run();
  
+    ClassificationExperiment experiment(dataset, "net_1/");
+    experiment.run();
+
     std::cout << "program done\n";
 
     return 0;

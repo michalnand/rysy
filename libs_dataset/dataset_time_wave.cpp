@@ -20,9 +20,9 @@ DatasetTimeWave::DatasetTimeWave(unsigned int items_count, unsigned int time_win
 
     for (unsigned int i = 0; i < waves_count; i++)
     {
-        a.push_back(10.0*(rand()%10000)/10000.0);
+        a.push_back(16.0*(rand()%10000)/10000.0);
         b.push_back(3.141592654*2.0*(rand()%10000)/10000.0);
-        c.push_back(10.0*(rand()%10000)/10000.0);
+        c.push_back(16.0*(rand()%10000)/10000.0);
         d.push_back(3.141592654*2.0*(rand()%10000)/10000.0);
     }
 
@@ -84,7 +84,7 @@ sDatasetItem DatasetTimeWave::create_item(unsigned int time_window_size)
 
     float target = func(x + 100*dx);
 
-    if (target < 0.0)
+    if (target > 0.0)
     {
         item.output.push_back(1.0);
         item.output.push_back(0.0);
@@ -101,9 +101,10 @@ sDatasetItem DatasetTimeWave::create_item(unsigned int time_window_size)
 float DatasetTimeWave::func(float x)
 {
     float result = 0.0;
-
     for (unsigned int i = 0; i < waves_count; i++)
+    {
         result+= sin(a[i]*x + b[i])*sin(c[i]*x + d[i]);
+    }
 
-    return result/waves_count;
+    return result;
 }
