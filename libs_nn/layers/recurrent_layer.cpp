@@ -136,7 +136,8 @@ void RecurrentLayer::forward(Tensor &output, Tensor &input)
 
 void RecurrentLayer::backward(LayerMemory &layer_mem_prev, LayerMemory &layer_mem, bool update_weights)
 {
-    layer_mem_prev.error.clear();
+    if (time_idx > 0)
+        time_idx--;
 
     h_error[time_idx].add(layer_mem.error);
     for (unsigned int i = time_idx; i > 0; i--)
@@ -156,15 +157,15 @@ void RecurrentLayer::backward(LayerMemory &layer_mem_prev, LayerMemory &layer_me
         */
     }
 
+    layer_mem_prev.error.clear();
+
+
     if (update_weights)
     {
         w_update(w, w_grad, m, v, hyperparameters);
         w_grad.clear();
     }
 
-
-    if (time_idx > 0)
-        time_idx--;
 }
 
 void RecurrentLayer::reset_state()
