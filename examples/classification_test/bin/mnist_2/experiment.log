@@ -1,0 +1,109 @@
+initializing
+training size    : 60000
+testing size     : 10000
+epoch count      : 10
+sub epoch size   : 5
+
+epoch_learning_rate_decay   : 8
+learning_rate_decay         : 0.250000
+
+training
+
+
+
+epoch [0 0] from [10 5]
+training time per iterations 3.460167[ms]
+testing
+testing done
+network success rate top1 97.070000% 96.519997% 
+network success rate top5 99.970001% 99.959999% 
+saving best net in top 1
+best net saved to mnist_2/trained/, with success rate 97.070000%
+
+
+
+epoch [0 1] from [10 5]
+training time per iterations 3.001250[ms]
+testing
+testing done
+network success rate top1 97.910004% 97.699997% 
+network success rate top5 99.989998% 99.970001% 
+saving best net in top 1
+best net saved to mnist_2/trained/, with success rate 97.910004%
+
+
+
+epoch [0 2] from [10 5]
+training time per iterations 3.014083[ms]
+testing
+testing done
+network success rate top1 98.150002% 98.029999% 
+network success rate top5 99.989998% 99.980003% 
+saving best net in top 1
+best net saved to mnist_2/trained/, with success rate 98.150002%
+
+
+
+epoch [0 3] from [10 5]
+training time per iterations 4.356000[ms]
+testing
+testing done
+network success rate top1 98.279999% 97.989998% 
+network success rate top5 99.970001% 99.959999% 
+saving best net in top 1
+best net saved to mnist_2/trained/, with success rate 98.279999%
+
+
+
+epoch [0 4] from [10 5]
+training time per iterations 5.442250[ms]
+testing
+testing done
+network success rate top1 98.419998% 98.379997% 
+network success rate top5 99.989998% 100.000000% 
+saving best net in top 1
+best net saved to mnist_2/trained/, with success rate 98.419998%
+
+
+
+epoch [1 0] from [10 5]
+training time per iterations 5.143250[ms]
+testing
+testing done
+network success rate top1 98.419998% 98.470001% 
+network success rate top5 99.989998% 99.989998% 
+
+
+
+epoch [1 1] from [10 5]
+training time per iterations 5.189333[ms]
+testing
+testing done
+network success rate top1 98.580002% 98.610001% 
+network success rate top5 99.980003% 100.000000% 
+saving best net in top 1
+best net saved to mnist_2/trained/, with success rate 98.580002%
+
+
+
+epoch [1 2] from [10 5]
+training time per iterations 6.355083[ms]
+testing
+testing done
+network success rate top1 98.580002% 98.610001% 
+network success rate top5 99.989998% 99.980003% 
+
+
+
+epoch [1 3] from [10 5]
+training time per iterations 6.609750[ms]
+testing
+testing done
+network success rate top1 98.589996% 98.629997% 
+network success rate top5 99.989998% 99.970001% 
+saving best net in top 1
+best net saved to mnist_2/trained/, with success rate 98.589996%
+
+
+
+epoch [1 4] from [10 5]

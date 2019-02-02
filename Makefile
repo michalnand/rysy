@@ -23,6 +23,7 @@ all:
 	cd examples/convolution_speed_test && make -j4
 	cd examples/cifar_test && make -j4
 	cd examples/rnn_test && make -j4
+	cd examples/convolution_test && make -j4
 
 
 
@@ -46,3 +47,4 @@ clean:
 	cd examples/convolution_speed_test && make clean
 	cd examples/cifar_test && make clean
 	cd examples/rnn_test && make clean
+	cd examples/convolution_test && make clean

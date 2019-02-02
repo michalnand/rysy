@@ -57,103 +57,104 @@ void cuda_convolution_forward_kernel(   float *output,
                                         sGeometry kernel_geometry
                                     )
 {
-    unsigned int x      = threadIdx.x + blockIdx.x*blockDim.x;
-    unsigned int y      = threadIdx.y + blockIdx.y*blockDim.y;
-    unsigned int z      = threadIdx.z + blockIdx.z*blockDim.z;
+  unsigned int x      = threadIdx.x + blockIdx.x*blockDim.x;
+  unsigned int y      = threadIdx.y + blockIdx.y*blockDim.y;
+  unsigned int z      = threadIdx.z + blockIdx.z*blockDim.z;
 
-    unsigned int filter = z;
 
-    unsigned int k_half = (kernel_size - 1)/2;
-    unsigned int input_size_y = input_geometry.h - 2*k_half;
-    unsigned int input_size_x = input_geometry.w - 2*k_half;
+  unsigned int ch     = z%input_geometry.d;
+  unsigned int filter = z/input_geometry.d;
 
-    __shared__ float w_shared[320][kernel_size][kernel_size];
-    if ( (threadIdx.x < kernel_size) && (threadIdx.y < kernel_size) )
-    for (unsigned int ch = 0; ch < input_geometry.d; ch++)
+  unsigned int k_half = (kernel_size - 1)/2;
+  unsigned int input_size_y = input_geometry.h - 2*k_half;
+  unsigned int input_size_x = input_geometry.w - 2*k_half;
+ 
+  __shared__ float w_shared[kernel_size][kernel_size];
+  if ( (z < input_geometry.d*output_geometry.d) && (threadIdx.x < kernel_size) && (threadIdx.y < kernel_size) )
+  {
+    unsigned int w_ofs = z*kernel_size*kernel_size;
+    w_shared[threadIdx.y][threadIdx.x] = w[w_ofs + threadIdx.y*kernel_size + threadIdx.x];
+  }
+
+  __syncthreads();
+
+
+  if (filter < output_geometry.d)
+  if (ch < input_geometry.d)
+  if (y < input_size_y)
+  if (x < input_size_x)
+  {
+    unsigned int input_idx  = (ch*input_geometry.h + y)*input_geometry.w + x;
+    float sum = 0.0;
+
+    if (kernel_size == 1)
     {
-        unsigned int w_ofs = kernel_size*kernel_size*ch + filter*kernel_size*kernel_size*input_geometry.d;
-        w_shared[ch][threadIdx.y][threadIdx.x] = w[w_ofs + threadIdx.y*kernel_size + threadIdx.x];
+      sum+= w_shared[0][0]*input[input_idx];
+      input_idx+= input_geometry.w;
     }
 
-    __syncthreads();
 
-
-    if (filter < output_geometry.d)
-    if (y < input_size_y)
-    if (x < input_size_x)
+    if (kernel_size == 3)
     {
-        float sum = bias[filter];
+      sum+= w_shared[0][0]*input[input_idx]; input_idx++;
+      sum+= w_shared[0][1]*input[input_idx]; input_idx++;
+      sum+= w_shared[0][2]*input[input_idx]; input_idx++;
+      input_idx+= input_geometry.w - kernel_size;
 
-        for (unsigned int ch = 0; ch < input_geometry.d; ch++)
-        {
-            unsigned int input_idx  = (ch*input_geometry.h + y)*input_geometry.w + x;
+      sum+= w_shared[1][0]*input[input_idx]; input_idx++;
+      sum+= w_shared[1][1]*input[input_idx]; input_idx++;
+      sum+= w_shared[1][2]*input[input_idx]; input_idx++;
+      input_idx+= input_geometry.w - kernel_size;
 
-            if (kernel_size == 1)
-            {
-                sum+= w_shared[ch][0][0]*input[input_idx];
-                input_idx+= input_geometry.w;
-            }
-
-            if (kernel_size == 3)
-            {
-                sum+= w_shared[ch][0][0]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][0][1]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][0][2]*input[input_idx]; input_idx++;
-                input_idx+= input_geometry.w - kernel_size;
-
-                sum+= w_shared[ch][1][0]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][1][1]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][1][2]*input[input_idx]; input_idx++;
-                input_idx+= input_geometry.w - kernel_size;
-
-                sum+= w_shared[ch][2][0]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][2][1]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][2][2]*input[input_idx]; input_idx++;
-                input_idx+= input_geometry.w - kernel_size;
-            }
-
-            if (kernel_size == 5)
-            {
-                sum+= w_shared[ch][0][0]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][0][1]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][0][2]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][0][3]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][0][4]*input[input_idx]; input_idx++;
-                input_idx+= input_geometry.w - kernel_size;
-
-                sum+= w_shared[ch][1][0]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][1][1]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][1][2]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][1][3]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][1][4]*input[input_idx]; input_idx++;
-                input_idx+= input_geometry.w - kernel_size;
-
-                sum+= w_shared[ch][2][0]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][2][1]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][2][2]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][2][3]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][2][4]*input[input_idx]; input_idx++;
-                input_idx+= input_geometry.w - kernel_size;
-
-                sum+= w_shared[ch][3][0]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][3][1]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][3][2]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][3][3]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][3][4]*input[input_idx]; input_idx++;
-                input_idx+= input_geometry.w - kernel_size;
-
-                sum+= w_shared[ch][4][0]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][4][1]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][4][2]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][4][3]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][4][4]*input[input_idx]; input_idx++;
-                input_idx+= input_geometry.w - kernel_size;
-            }
-        }
-
-        unsigned int output_idx = (filter*input_geometry.h + y + k_half)*input_geometry.w + x + k_half;
-        atomicAdd(&output[output_idx], sum);
+      sum+= w_shared[2][0]*input[input_idx]; input_idx++;
+      sum+= w_shared[2][1]*input[input_idx]; input_idx++;
+      sum+= w_shared[2][2]*input[input_idx]; input_idx++;
+      input_idx+= input_geometry.w - kernel_size;
     }
+
+
+    if (kernel_size == 5)
+    {
+      sum+= w_shared[0][0]*input[input_idx]; input_idx++;
+      sum+= w_shared[0][1]*input[input_idx]; input_idx++;
+      sum+= w_shared[0][2]*input[input_idx]; input_idx++;
+      sum+= w_shared[0][3]*input[input_idx]; input_idx++;
+      sum+= w_shared[0][4]*input[input_idx]; input_idx++;
+      input_idx+= input_geometry.w - kernel_size;
+
+      sum+= w_shared[1][0]*input[input_idx]; input_idx++;
+      sum+= w_shared[1][1]*input[input_idx]; input_idx++;
+      sum+= w_shared[1][2]*input[input_idx]; input_idx++;
+      sum+= w_shared[1][3]*input[input_idx]; input_idx++;
+      sum+= w_shared[1][4]*input[input_idx]; input_idx++;
+      input_idx+= input_geometry.w - kernel_size;
+
+      sum+= w_shared[2][0]*input[input_idx]; input_idx++;
+      sum+= w_shared[2][1]*input[input_idx]; input_idx++;
+      sum+= w_shared[2][2]*input[input_idx]; input_idx++;
+      sum+= w_shared[2][3]*input[input_idx]; input_idx++;
+      sum+= w_shared[2][4]*input[input_idx]; input_idx++;
+      input_idx+= input_geometry.w - kernel_size;
+
+      sum+= w_shared[3][0]*input[input_idx]; input_idx++;
+      sum+= w_shared[3][1]*input[input_idx]; input_idx++;
+      sum+= w_shared[3][2]*input[input_idx]; input_idx++;
+      sum+= w_shared[3][3]*input[input_idx]; input_idx++;
+      sum+= w_shared[3][4]*input[input_idx]; input_idx++;
+      input_idx+= input_geometry.w - kernel_size;
+
+      sum+= w_shared[4][0]*input[input_idx]; input_idx++;
+      sum+= w_shared[4][1]*input[input_idx]; input_idx++;
+      sum+= w_shared[4][2]*input[input_idx]; input_idx++;
+      sum+= w_shared[4][3]*input[input_idx]; input_idx++;
+      sum+= w_shared[4][4]*input[input_idx]; input_idx++;
+      input_idx+= input_geometry.w - kernel_size;
+    }
+
+    unsigned int output_idx = (filter*input_geometry.h + y + k_half)*input_geometry.w + x + k_half;
+    sum+= bias[filter]/input_geometry.d;
+    atomicAdd(&output[output_idx], sum);
+  }
 }
 
 
@@ -167,47 +168,46 @@ void cuda_convolution_forward_kernel_any_size(  float *output,
                                                 sGeometry input_geometry,
                                                 sGeometry kernel_geometry )
 {
-    unsigned int x      = threadIdx.x + blockIdx.x*blockDim.x;
-    unsigned int y      = threadIdx.y + blockIdx.y*blockDim.y;
-    unsigned int z      = threadIdx.z + blockIdx.z*blockDim.z;
+  unsigned int x      = threadIdx.x + blockIdx.x*blockDim.x;
+  unsigned int y      = threadIdx.y + blockIdx.y*blockDim.y;
+  unsigned int z      = threadIdx.z + blockIdx.z*blockDim.z;
 
-    unsigned int filter = z;
+  unsigned int ch     = z%input_geometry.d;
+  unsigned int filter = z/input_geometry.d;
 
-    unsigned int k_half_h = (kernel_geometry.h - 1)/2;
-    unsigned int k_half_w = (kernel_geometry.w - 1)/2;
+  unsigned int k_half_h = (kernel_geometry.h - 1)/2;
+  unsigned int k_half_w = (kernel_geometry.w - 1)/2;
 
-    unsigned int input_size_y = input_geometry.h - 2*k_half_h;
-    unsigned int input_size_x = input_geometry.w - 2*k_half_w;
+  unsigned int input_size_y = input_geometry.h - 2*k_half_h;
+  unsigned int input_size_x = input_geometry.w - 2*k_half_w;
 
-    if (filter < output_geometry.d)
-    if (y < input_size_y)
-    if (x < input_size_x)
-    {
-        float sum = bias[filter];
+  if (filter < output_geometry.d)
+  if (ch     < input_geometry.d)
+  if (y <= input_size_y)
+  if (x <= input_size_x)
+  {
+    float sum = 0.0;
 
-        for (unsigned int ch = 0; ch < input_geometry.d; ch++)
+    unsigned int filter_idx = (filter*input_geometry.d + ch)*kernel_geometry.h*kernel_geometry.w;
+    unsigned int input_idx  = (ch*input_geometry.h + y)*input_geometry.w + x;
+
+      for (unsigned int ky = 0; ky < kernel_geometry.h; ky++)
+      {
+        for (unsigned int kx = 0; kx < kernel_geometry.w; kx++)
         {
-            unsigned int filter_idx = (filter*input_geometry.d + ch)*kernel_geometry.h*kernel_geometry.w;
-            unsigned int input_idx  = (ch*input_geometry.h + y)*input_geometry.w + x;
-
-            for (unsigned int ky = 0; ky < kernel_geometry.h; ky++)
-            {
-                for (unsigned int kx = 0; kx < kernel_geometry.w; kx++)
-                {
-                    unsigned int input_idx = (ch*input_geometry.h + y + ky)*input_geometry.w + x + kx;
-                    sum+= w[filter_idx]*input[input_idx];
-                    filter_idx++;
-                    input_idx++;
-                }
-
-                input_idx+= input_geometry.w - kernel_geometry.w;
-            }
-
+          unsigned int input_idx = (ch*input_geometry.h + y + ky)*input_geometry.w + x + kx;
+          sum+= w[filter_idx]*input[input_idx];
+          filter_idx++;
+          input_idx++;
         }
 
-        unsigned int output_idx = (filter*input_geometry.h + y + k_half_h)*input_geometry.w + x + k_half_w;
-        output[output_idx] = sum;
-    }
+        input_idx+= input_geometry.w - kernel_geometry.w;
+      }
+
+    unsigned int output_idx = (filter*input_geometry.h + y + k_half_h)*input_geometry.w + x + k_half_w;
+    sum+= bias[filter]/input_geometry.d;
+    atomicAdd(&output[output_idx], sum);
+  }
 }
 
 
@@ -242,10 +242,9 @@ void convolution_layer_forward(   Tensor &output, Tensor &input,
         dim3 block(16, 16, 1);
         dim3 grid( (input_size_x      + block.x + 1)/block.x,
                    (input_size_y      + block.y + 1)/block.y,
-                   (kernel_geometry.d + block.z + 1)/block.z );
+                   (kernel_geometry.d*input_geometry.d + block.z - 1)/block.z );
 
         unsigned int kernel_size = kernel_geometry.w;
-
         switch (kernel_size)
         {
                   case 1:  cuda_convolution_forward_kernel<1><<<grid, block>>>( output.v,

@@ -11,7 +11,8 @@
 
 class Layer
 {
-  protected:
+  //protected:
+    public:
 
     sGeometry input_geometry, kernel_geometry, output_geometry;
     sHyperparameters hyperparameters;
