@@ -28,11 +28,13 @@ void layer_forward_test(sGeometry input_geometry, sGeometry kernel_geometry)
   layer.w.set_const(1.0);
   layer.bias.set_const(0.0);
 
+  layer.w.set_random(1.0);
+
   Tensor input(layer.get_input_geometry());
   Tensor output(layer.get_output_geometry());
 
   input.set_const(1.0);
-  //input.set_random(1.0);
+  input.set_random(1.0);
 
   input.print();
 
@@ -52,12 +54,13 @@ int main()
 
   kernel_geometry.w = 3;
   kernel_geometry.h = 3;
-  kernel_geometry.d = 2;
+  kernel_geometry.d = 32;
+
+  input_geometry.d = 32;
 
   {
       input_geometry.w = 9;
       input_geometry.h = 9;
-      input_geometry.d = 1;
 
 
       layer_forward_test(input_geometry, kernel_geometry);
@@ -66,7 +69,6 @@ int main()
     {
         input_geometry.w = 10;
         input_geometry.h = 10;
-        input_geometry.d = 1;
 
         layer_forward_test(input_geometry, kernel_geometry);
       }
@@ -74,7 +76,6 @@ int main()
       {
           input_geometry.w = 19;
           input_geometry.h = 19;
-          input_geometry.d = 1;
 
           layer_forward_test(input_geometry, kernel_geometry);
         }
@@ -82,7 +83,6 @@ int main()
         {
             input_geometry.w = 20;
             input_geometry.h = 20;
-            input_geometry.d = 1;
 
             layer_forward_test(input_geometry, kernel_geometry);
           }
