@@ -2,29 +2,37 @@
 #include <experimental/filesystem>
 #include <image_load.h>
 #include <thread>
+#include <iostream>
 
 DatasetImages::DatasetImages(std::string json_config_file_name)
 {
-  JsonConfig json(json_config_file_name);
+    JsonConfig json(json_config_file_name);
 
-  grayscale     = json.result["grayscale"].asBool();
+    grayscale     = json.result["grayscale"].asBool();
+    width     = json.result["width"].asInt();
+    height    = json.result["height"].asInt();
 
-  width     = json.result["width"].asInt();
-  height    = json.result["height"].asInt();
+    max_items_per_folder = json.result["max items per folder"].asInt();
+    float testing_ratio = json.result["testing ratio"].asFloat();
+ 
+    if (grayscale)
+        channels  = 1;
+    else
+        channels  = 3;
 
-  max_items_per_folder = json.result["max items per folder"].asInt();
-  testing_ratio = json.result["testing ratio"].asFloat();
+    unsigned int classes_count = json.result["classes count"].asInt();
+    training.resize(classes_count);
 
-  if (grayscale)
-    channels  = 1;
-  else
-    channels  = 3;
+    if (testing_ratio > 0.001)
+        load(json.result["dataset"], classes_count, 4, testing_ratio);
+    else
+    {
+        std::cout << "loading training\n";
+        load(json.result["dataset"], classes_count, 4, 0.0);
+        std::cout << "loading testing\n";
+        load(json.result["dataset testing"], classes_count, 4, 1.0);
+    }
 
-  unsigned int classes_count = json.result["classes count"].asInt();
-  training.resize(classes_count);
-
-
-  load(json.result["dataset"], classes_count, 4);
 
   print();
 }
@@ -36,7 +44,7 @@ DatasetImages::~DatasetImages()
 
 
 
-void DatasetImages::load(Json::Value parameters, unsigned int classes_count, unsigned int load_threads_count)
+void DatasetImages::load(Json::Value parameters, unsigned int classes_count, unsigned int load_threads_count, float testing_ratio)
 {
     unsigned int ptr = 0;
     while (ptr < parameters.size())
@@ -50,7 +58,7 @@ void DatasetImages::load(Json::Value parameters, unsigned int classes_count, uns
                 std::string path        = parameters[ptr]["path"].asString();
                 unsigned int class_id   = parameters[ptr]["class"].asInt();
 
-                load_threads.push_back(std::thread(&DatasetImages::load_dir, this, path, class_id, classes_count));
+                load_threads.push_back(std::thread(&DatasetImages::load_dir, this, path, class_id, classes_count, testing_ratio));
                 //load_dir(path, class_id, classes_count);
 
                 ptr++;
@@ -62,9 +70,10 @@ void DatasetImages::load(Json::Value parameters, unsigned int classes_count, uns
     }
 }
 
-void DatasetImages::load_dir(std::string path, unsigned int class_id, unsigned int classes_count)
+void DatasetImages::load_dir(std::string path, unsigned int class_id, unsigned int classes_count, float testing_ratio)
 {
-  printf("loading directory %s\n", path.c_str());
+    std::cout << "loading directory " << path.c_str() << "\n";
+
 
   int items_count = 0;
 
