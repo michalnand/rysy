@@ -12,7 +12,7 @@ double layer_forward_test(Log &log, sGeometry input_geometry, sGeometry kernel_g
   double result;
 
   sHyperparameters hyperparameters;
-
+ 
   hyperparameters.init_weight_range = 0.0;
   hyperparameters.learning_rate = 0.001;
   hyperparameters.lambda1 = 0.0001;

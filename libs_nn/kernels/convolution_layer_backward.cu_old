@@ -69,6 +69,7 @@ void cuda_convolution_layer_weights_gradient(   float *w_grad,
 
       float w_dif = 0.0;
 
+
       for (unsigned int y = 0; y < input_size_y; y++)
       {
         unsigned int input_idx  = (ch*input_geometry.h + y + ky)*input_geometry.w + kx;
@@ -111,9 +112,9 @@ void convolution_layer_gradient(Tensor &w_grad, Tensor &input, Tensor &error)
   #ifdef NETWORK_USE_CUDA
 
         dim3 block(4, 4, 8);
-        dim3 grid( (weights_geometry.w  + block.x + 1)/block.x,
-                   (weights_geometry.h  + block.y + 1)/block.y,
-                   (weights_geometry.d  + block.z + 1)/block.z);
+        dim3 grid( (weights_geometry.w  + block.x - 1)/block.x,
+                   (weights_geometry.h  + block.y - 1)/block.y,
+                   (weights_geometry.d  + block.z - 1)/block.z);
 
         cuda_convolution_layer_weights_gradient<<<grid, block>>>(   w_grad.v,
                                                                     error.v,
@@ -306,6 +307,7 @@ void cuda_convolution_back_kernel(  float *error,
       float err = error[error_idx];
 
       unsigned int error_back_idx = (ch*height + y)*width + x;
+
 
       if (kernel_size == 1)
       {

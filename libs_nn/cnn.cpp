@@ -3,6 +3,9 @@
 #include <image_save.h>
 
 #include "layers/relu_layer.h"
+#include "layers/relu6_layer.h"
+#include "layers/leaky_relu_layer.h"
+
 #include "layers/fc_layer.h"
 #include "layers/dense_fc_layer.h"
 #include "layers/convolution_layer.h"
@@ -14,8 +17,8 @@
 #include "layers/max_pooling_layer.h"
 #include "layers/unpooling_layer.h"
 
-#include "layers/relu6_layer.h"
-#include "layers/recurrent_layer.h"
+#include "layers/ode_convolution_layer.h"
+
 
 
 CNN::CNN()
@@ -276,6 +279,13 @@ Layer* CNN::create_layer(Json::Value &parameters, sHyperparameters hyperparamete
     result = new Relu6Layer(layer_input_geometry, layer_kernel_geometry, hyperparameters);
   }
 
+  if (type == "leaky relu")
+  {
+    layer_kernel_geometry.w = parameters["geometry"][0].asInt();
+    layer_kernel_geometry.h = parameters["geometry"][1].asInt();
+    layer_kernel_geometry.d = parameters["geometry"][2].asInt();
+    result = new LeakyReluLayer(layer_input_geometry, layer_kernel_geometry, hyperparameters);
+  }
 
   if (type == "fc")
   {
@@ -307,6 +317,15 @@ Layer* CNN::create_layer(Json::Value &parameters, sHyperparameters hyperparamete
     layer_kernel_geometry.h = parameters["geometry"][1].asInt();
     layer_kernel_geometry.d = parameters["geometry"][2].asInt();
     result = new DenseConvolutionLayer(layer_input_geometry, layer_kernel_geometry, hyperparameters);
+  }
+
+  if ((type == "ode convolution")||(type == "ode_convolution"))
+  {
+    layer_kernel_geometry.w = parameters["geometry"][0].asInt();
+    layer_kernel_geometry.h = parameters["geometry"][1].asInt();
+    layer_kernel_geometry.d = parameters["geometry"][2].asInt();
+    unsigned int iterations = parameters["geometry"][3].asInt();
+    result = new OdeConvolutionLayer(layer_input_geometry, layer_kernel_geometry, hyperparameters, iterations);
   }
 
   if (type == "output")
@@ -381,14 +400,6 @@ Layer* CNN::create_layer(Json::Value &parameters, sHyperparameters hyperparamete
     layer_kernel_geometry.h = parameters["geometry"][1].asInt();
     layer_kernel_geometry.d = parameters["geometry"][2].asInt();
     result = new UnPoolingLayer(layer_input_geometry, layer_kernel_geometry, hyperparameters);
-  }
-
-  if (type == "recurrent")
-  {
-    layer_kernel_geometry.w = parameters["geometry"][0].asInt();
-    layer_kernel_geometry.h = parameters["geometry"][1].asInt();
-    layer_kernel_geometry.d = parameters["geometry"][2].asInt();
-    result = new RecurrentLayer(layer_input_geometry, layer_kernel_geometry, hyperparameters);
   }
 
   if (result == nullptr)

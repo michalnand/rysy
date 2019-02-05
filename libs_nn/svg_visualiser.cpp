@@ -83,9 +83,16 @@ void SVGVisualiser::process(std::string image_file_name)
 
         if ((layer_type == "dense convolution")||(layer_type == "dense_convolution"))
         {
-          r = 100;
+          r = 190;
           g = 100;
-          b = 190;
+          b = 100;
+        }
+
+        if (layer_type == "ode convolution")
+        {
+          r = 196;
+          g = 126;
+          b = 0;
         }
 
         if (layer_type == "gating")

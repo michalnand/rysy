@@ -8,7 +8,7 @@
 
     "network_architecture" :
     {
-        "network_log_file_name" : "net_0/network.log",
+        "network_log_file_name" : "net_5/network.log",
 
         "input_geometry"     : [9, 9, 1],
         "output_geometry"    : [1, 1, 10],
@@ -28,10 +28,13 @@
         [
           {
             "type"      : "convolution",
-            "geometry"  : [3, 3, 128]
+            "geometry"  : [1, 1, 128]
           },
+
+
           {
-            "type"      : "lekay relu"
+            "type"      : "ode convolution",
+            "geometry"  : [3, 3, 128, 8]
           },
 
           {
