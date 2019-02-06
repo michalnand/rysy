@@ -45,8 +45,8 @@ void SVGVisualiser::process(std::string image_file_name)
     if (layer == -1)
     {
       int r = 200;
-      int g = 80;
-      int b = 80;
+      int g = 200;
+      int b = 0;
 
       int sr = r/2;
       int sg = g/2;
@@ -124,10 +124,10 @@ void SVGVisualiser::process(std::string image_file_name)
         }
 
         if ((layer_type == "relu") ||
-           (layer_type == "lrelu") ||
+           (layer_type == "lekay relu") ||
            (layer_type == "tanh") )
         {
-          r = 190;
+          r = 100;
           g = 190;
           b = 100;
         }
