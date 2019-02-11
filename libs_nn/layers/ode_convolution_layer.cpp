@@ -77,17 +77,20 @@ OdeConvolutionLayer::OdeConvolutionLayer(   sGeometry input_geometry,
     m.init(w.get_geometry());
     v.init(w.get_geometry());
 
+
+
+    for (unsigned int i = 0; i < iterations + 1; i++)
+      h.push_back(Tensor(this->output_geometry));
+
     for (unsigned int i = 0; i < iterations; i++)
-        activation_out.push_back(Tensor(this->output_geometry));
+      g.push_back(Tensor(this->output_geometry));
 
-    for (unsigned int i = 0; i < (iterations+1); i++)
-        hidden_state.push_back(Tensor(this->output_geometry));
+    for (unsigned int i = 0; i < iterations; i++)
+      f.push_back(Tensor(this->output_geometry));
 
-    convolution_out.init(this->output_geometry);
-    hidden_error.init(this->output_geometry);
-    convolution_error.init(this->output_geometry);
-    activation_error.init(this->output_geometry);
-
+    e.init(output_geometry);
+    ef.init(output_geometry);
+    eg.init(output_geometry);
 
     unsigned int output_size  = output_geometry.w*output_geometry.h;
     flops = output_size*kernel_geometry.d*(1 + kernel_geometry.w*kernel_geometry.h*input_geometry.d); //convolution flops
@@ -110,46 +113,46 @@ void OdeConvolutionLayer::copy_ode_convolution(const OdeConvolutionLayer &other)
 
 void OdeConvolutionLayer::forward(Tensor &output, Tensor &input)
 {
-    for (unsigned int i = 0; i < hidden_state.size(); i++)
-        hidden_state[i].clear();
+    for (unsigned int i = 0; i < h.size(); i++)
+        h[i].clear();
 
-    hidden_state[0].copy(input);
+    h[0].copy(input);
 
     for (unsigned int i = 0; i < iterations; i++)
     {
-        convolution_layer_forward(convolution_out, hidden_state[i], w, bias);
-        leaky_relu_layer_forward(activation_out[i], convolution_out);
-        hidden_state[i+1].copy(hidden_state[i]);
-        hidden_state[i+1].add(activation_out[i]);
+        convolution_layer_forward(g[i], h[i], w, bias);
+        leaky_relu_layer_forward(f[i], g[i]);
+
+        h[i + 1].copy(f[i]);  //copy layer output
+        h[i + 1].add(h[i]);   //add residuum
     }
 
-    output.copy(hidden_state[iterations]);
+    output.copy(h[iterations]);
 }
 
 
 void OdeConvolutionLayer::backward(LayerMemory &layer_mem_prev, LayerMemory &layer_mem, bool update_weights)
 {
-    hidden_error.copy(layer_mem.error);
+  e.copy(layer_mem.error);
 
-    for (int i = (iterations-1); i >= 0; i--)
-    {
-        leaky_relu_layer_backward(activation_error, activation_out[i], hidden_error);
+  int i = iterations - 1;
+  while (i >= 0)
+  {
+    //activation error backpropagate
+    leaky_relu_layer_backward(ef, f[i], e);
 
-        convolution_layer_gradient(w_grad, hidden_state[i], activation_error);
-        convolution_layer_update_bias(bias, activation_error, hyperparameters.learning_rate);
+    //convolution layer compute gradient
+    convolution_layer_gradient(w_grad, h[i], ef);
+    convolution_layer_update_bias(bias, ef, hyperparameters.learning_rate);
 
-        //backpropagate error
-        convolution_layer_backward(convolution_error, hidden_state[i], activation_error, w);
+    //backpropagate error
+    convolution_layer_backward(eg, h[i], ef, w);
 
-        hidden_error.add(convolution_error);
-    }
+    //sum error
+    e.add(eg);
 
+    i--;
+  }
 
-    if (update_weights)
-    {
-        w_update(w, w_grad, m, v, hyperparameters);
-        w_grad.clear();
-    }
-
-    layer_mem_prev.error.copy(hidden_error);
+  layer_mem_prev.error.copy(e);
 }

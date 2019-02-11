@@ -34,11 +34,12 @@ class OdeConvolutionLayer: public Layer
 
     private:
         unsigned int iterations;
-        
-        std::vector<Tensor> activation_out;
-        std::vector<Tensor> hidden_state;
-        Tensor convolution_out;
-        Tensor hidden_error, convolution_error, activation_error;
+
+        std::vector<Tensor> h;
+        std::vector<Tensor> g;
+        std::vector<Tensor> f;
+
+        Tensor e, ef, eg;
 };
 
 #endif

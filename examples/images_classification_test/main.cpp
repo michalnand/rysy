@@ -10,6 +10,21 @@ int main()
 
 	DatasetImages dataset("dataset.json");
 
+
+	{
+    	ClassificationExperiment experiment(dataset, "net_6/");
+    	experiment.run();
+	}
+	{
+    	ClassificationExperiment experiment(dataset, "net_7/");
+    	experiment.run();
+	}
+	{
+    	ClassificationExperiment experiment(dataset, "net_8/");
+    	experiment.run();
+	}
+
+/*
 	{
     	ClassificationExperiment experiment(dataset, "net_2/");
     	experiment.run();
@@ -34,7 +49,7 @@ int main()
     	ClassificationExperiment experiment(dataset, "net_5/");
     	experiment.run();
 	}
-
+*/
     std::cout << "program done\n";
 
     return 0;
