@@ -28,13 +28,17 @@
         [
           {
             "type"      : "convolution",
-            "geometry"  : [1, 1, 64]
+            "geometry"  : [1, 1, 32]
           },
 
 
           {
             "type"      : "ode convolution",
-            "geometry"  : [3, 3, 64, 8]
+            "geometry"  : [3, 3, 32, 2]
+          },
+          {
+            "type"      : "ode convolution",
+            "geometry"  : [3, 3, 32, 2]
           },
 
           {

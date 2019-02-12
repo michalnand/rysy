@@ -10,11 +10,12 @@ int main()
 
 	DatasetImages dataset("dataset.json");
 
-
+	/*
 	{
     	ClassificationExperiment experiment(dataset, "net_6/");
     	experiment.run();
 	}
+	*/
 	{
     	ClassificationExperiment experiment(dataset, "net_7/");
     	experiment.run();
