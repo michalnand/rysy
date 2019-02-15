@@ -154,5 +154,11 @@ void OdeConvolutionLayer::backward(LayerMemory &layer_mem_prev, LayerMemory &lay
     i--;
   }
 
+  if (update_weights)
+  {
+    w_update(w, w_grad, m, v, hyperparameters);
+    w_grad.clear();
+  }
+
   layer_mem_prev.error.copy(e);
 }

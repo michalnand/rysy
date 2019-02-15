@@ -34,7 +34,7 @@
 
           {
             "type"      : "ode convolution",
-            "geometry"  : [3, 3, 128, 8]
+            "geometry"  : [3, 3, 128, 4]
           },
 
           {
