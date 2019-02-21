@@ -110,3 +110,12 @@ void cu_clear(float *result, unsigned int size)
 {
   cudaMemset(result, 0, size*sizeof(float));
 }
+
+size_t cu_get_mem_free()
+{
+    size_t mem_free = 0;
+    size_t mem_total = 0;
+    cudaMemGetInfo(&mem_free, &mem_total);
+
+    return mem_free;
+}

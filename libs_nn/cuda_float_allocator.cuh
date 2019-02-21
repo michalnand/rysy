@@ -38,6 +38,7 @@ void cu_device_to_host(float *host_ptr, float *dev_ptr, unsigned int size);
 void cu_device_to_device(float *dest_ptr, float *src_ptr, unsigned int size);
 
 void cu_clear(float *result, unsigned int size);
+size_t cu_get_mem_free();
 
 
 #endif

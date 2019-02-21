@@ -3,12 +3,15 @@
 #include <math.h>
 #include <classification_compare.h>
 #include <timer.h>
-
+#include <cuda_float_allocator.cuh>
+#include <iostream>
 
 ClassificationExperiment::ClassificationExperiment(DatasetInterface &dataset, std::string config_dir)
 {
-  this->dataset    = &dataset;
-  this->config_dir = config_dir;
+    this->dataset    = &dataset;
+    this->config_dir = config_dir;
+
+
 }
 
 
@@ -84,6 +87,30 @@ void ClassificationExperiment::run()
   Timer timer;
 
 
+  unsigned int batch_size = 8192;
+
+  #ifdef NETWORK_USE_CUDA
+      unsigned long int cuda_mem_free = cu_get_mem_free();
+
+      unsigned long int dataset_input_item_size  = sizeof(float)*dataset->get_width()*dataset->get_height()*dataset->get_channels();
+      unsigned long int dataset_output_item_size = sizeof(float)*dataset->get_output_size();
+
+      unsigned long int max_items_count = cuda_mem_free/(dataset_input_item_size + dataset_output_item_size);
+      max_items_count*= 0.3;
+
+
+      batch_size = max_items_count;
+
+      /*
+      std::cout << "GPU free memory " << cuda_mem_free/1000000 << " MB\n";
+      std::cout << "max items count in batch " << max_items_count << "\n";
+      std::cout << "batch size " << batch_size << "\n";
+      */
+  #endif
+
+  training_batch.init(*dataset, batch_size);
+
+
 
   experiment_log << "training size    : " << dataset->get_training_size() << "\n";
   experiment_log << "testing size     : " << dataset->get_testing_size()  << "\n";
@@ -92,6 +119,7 @@ void ClassificationExperiment::run()
   experiment_log << "\n";
   experiment_log << "epoch_learning_rate_decay   : " << epoch_learning_rate_decay  << "\n";
   experiment_log << "learning_rate_decay         : " << learning_rate_decay  << "\n";
+  experiment_log << "batch size                  : " << training_batch.size()  << "\n";
 
 
   experiment_log << "\n";
@@ -193,16 +221,24 @@ void ClassificationExperiment::run()
 
 void ClassificationExperiment::train_iterations(CNN &nn, unsigned int iterations)
 {
-  nn.set_training_mode();
+    nn.set_training_mode();
 
+  /*
   for (unsigned int i = 0; i < iterations; i++)
   {
     sDatasetItem item = dataset->get_random_training();
 
     nn.train(item.output, item.input);
   }
+  */
 
-  nn.unset_training_mode();
+    for (unsigned int i = 0; i < iterations; i++)
+    {
+        nn.train(training_batch.get_output(), training_batch.get_input());
+        training_batch.next();
+    }
+
+    nn.unset_training_mode();
 }
 
 bool ClassificationExperiment::test(CNN &nn)

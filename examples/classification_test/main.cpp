@@ -41,8 +41,10 @@ int main()
                            "/home/michal/dataset/mnist/t10k-labels.idx1-ubyte",
                           0);
 
-  //  net_test(dataset, "mnist_2/");
+    ClassificationExperiment experiment(dataset, "mnist_0/");
+    experiment.run();
 
+                          /*
     JsonConfig parameters("experiments_mnist.json");
 
     for (unsigned int i = 0; i < parameters.result["experiments"].size(); i++)
@@ -51,6 +53,7 @@ int main()
       ClassificationExperiment experiment(dataset, config_dir);
       experiment.run();
     }
+    */
 
 
   std::cout << "program done\n";

@@ -5,35 +5,39 @@
 #include <dataset_interface.h>
 #include <cnn.h>
 #include <log.h>
+#include <batch.h>
 
 #include "classification_compare.h"
 #include <preprocessing.h>
 
 class ClassificationExperiment
 {
-  protected:
-    ClassificationCompare compare_testing, compare_training;
-    ClassificationCompare compare_testing_top5, compare_training_top5;
+    protected:
+        ClassificationCompare compare_testing, compare_training;
+        ClassificationCompare compare_testing_top5, compare_training_top5;
 
-  protected:
-    DatasetInterface *dataset;
-     std::string config_dir;
+    protected:
+        DatasetInterface *dataset;
+        std::string config_dir;
 
-  public:
-    ClassificationExperiment(DatasetInterface &dataset, std::string config_dir);
-    virtual ~ClassificationExperiment();
+    protected:
+        Batch training_batch;
 
-    void run();
+    public:
+        ClassificationExperiment(DatasetInterface &dataset, std::string config_dir);
+        virtual ~ClassificationExperiment();
 
-  protected:
-    void train_iterations(CNN &nn, unsigned int iterations);
-    bool test(CNN &nn);
+        void run();
 
-  protected:
-    virtual void process_best();
+    protected:
+        void train_iterations(CNN &nn, unsigned int iterations);
+        bool test(CNN &nn);
 
-  private:
-    bool is_valid(std::vector<float> &v);
+    protected:
+        virtual void process_best();
+
+    private:
+        bool is_valid(std::vector<float> &v);
 
 
 };
