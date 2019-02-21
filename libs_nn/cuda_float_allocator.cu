@@ -67,15 +67,19 @@ void CudaFloatAllocator::clear(float *result, unsigned int size)
 
 
 
+std::mutex cu_allocator_mutex;
 
-
+ 
 
 float* cu_malloc(unsigned int count)
 {
   float *result = nullptr;
 
+  cu_allocator_mutex.lock();
+
   cudaMalloc(&result, count*sizeof(float));
 
+  cu_allocator_mutex.unlock();
 
   cu_clear(result, count);
 
@@ -84,11 +88,15 @@ float* cu_malloc(unsigned int count)
 
 void cu_free(void *ptr)
 {
+    cu_allocator_mutex.lock();
+
   if (ptr != nullptr)
   {
     cudaFree(ptr);
     ptr = nullptr;
   }
+
+  cu_allocator_mutex.unlock();
 }
 
 void cu_host_to_device(float *dev_ptr, float *host_ptr, unsigned int size)
@@ -113,9 +121,13 @@ void cu_clear(float *result, unsigned int size)
 
 size_t cu_get_mem_free()
 {
+    cu_allocator_mutex.lock();
+
     size_t mem_free = 0;
     size_t mem_total = 0;
     cudaMemGetInfo(&mem_free, &mem_total);
+
+    cu_allocator_mutex.unlock();
 
     return mem_free;
 }
