@@ -47,12 +47,9 @@
 
 
 #include <dataset_interface.h>
-#include <dataset_cifar.h>
-#include <dataset_cifar_10.h>
+#include <dataset_binary.h>
 #include <dataset_images.h>
-#include <dataset_landsat.h>
 #include <dataset_mnist.h>
-#include <dataset_mnist_tiny.h>
 #include <dataset_pair.h>
 #include <dataset_preprocessing.h>
 #include <dataset_tic_tac_toe.h>
@@ -81,12 +78,9 @@
 
 
 %include <dataset_interface.h>
-%include <dataset_cifar.h>
-%include <dataset_cifar_10.h>
+%include <dataset_binary.h>
 %include <dataset_images.h>
-%include <dataset_landsat.h>
 %include <dataset_mnist.h>
-%include <dataset_mnist_tiny.h>
 %include <dataset_pair.h>
 %include <dataset_preprocessing.h>
 %include <dataset_tic_tac_toe.h>

@@ -12,19 +12,13 @@ all:
 	cd libs_rysy_python && make -j4
 
 	cd deployment && make -j4
-	cd examples/classification_test && make -j4
-	cd examples/regression_test && make -j4
 	cd examples/autoencoder_test && make -j4
-	cd examples/speed_test && make -j4
-	cd examples/convolution_speed_test && make -j4
 	cd examples/classification_compare && make -j4
-	cd examples/preprocessing_test && make -j4
-
 	cd examples/convolution_speed_test && make -j4
-	cd examples/cifar_test && make -j4
-	cd examples/rnn_test && make -j4
 	cd examples/convolution_test && make -j4
 	cd examples/images_classification_test && make -j4
+	cd examples/preprocessing_test && make -j4
+	cd examples/regression_test && make -j4
 
 
 
@@ -38,15 +32,10 @@ clean:
 	cd libs_rysy_python && make clean
 
 	cd deployment && make clean
-	cd examples/classification_test && make clean
-	cd examples/regression_test && make clean
 	cd examples/autoencoder_test && make clean
-	cd examples/speed_test && make clean
 	cd examples/classification_compare && make clean
-	cd examples/preprocessing_test && make clean
-
 	cd examples/convolution_speed_test && make clean
-	cd examples/cifar_test && make clean
-	cd examples/rnn_test && make clean
 	cd examples/convolution_test && make clean
 	cd examples/images_classification_test && make clean
+	cd examples/preprocessing_test && make clean
+	cd examples/regression_test && make clean

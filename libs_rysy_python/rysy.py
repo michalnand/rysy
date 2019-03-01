@@ -1959,49 +1959,27 @@ class DatasetInterface(_object):
 DatasetInterface_swigregister = _rysy.DatasetInterface_swigregister
 DatasetInterface_swigregister(DatasetInterface)
 
-class DatasetCIFAR(DatasetInterface):
+class DatasetBinary(DatasetInterface):
     __swig_setmethods__ = {}
     for _s in [DatasetInterface]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
-    __setattr__ = lambda self, name, value: _swig_setattr(self, DatasetCIFAR, name, value)
+    __setattr__ = lambda self, name, value: _swig_setattr(self, DatasetBinary, name, value)
     __swig_getmethods__ = {}
     for _s in [DatasetInterface]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
-    __getattr__ = lambda self, name: _swig_getattr(self, DatasetCIFAR, name)
+    __getattr__ = lambda self, name: _swig_getattr(self, DatasetBinary, name)
     __repr__ = _swig_repr
 
-    def __init__(self, training_batch_file_name, testing_batch_file_name, load_fine=False, padding=0):
-        this = _rysy.new_DatasetCIFAR(training_batch_file_name, testing_batch_file_name, load_fine, padding)
+    def __init__(self, training_file_name, testing_file_name):
+        this = _rysy.new_DatasetBinary(training_file_name, testing_file_name)
         try:
             self.this.append(this)
         except __builtin__.Exception:
             self.this = this
-    __swig_destroy__ = _rysy.delete_DatasetCIFAR
+    __swig_destroy__ = _rysy.delete_DatasetBinary
     __del__ = lambda self: None
-DatasetCIFAR_swigregister = _rysy.DatasetCIFAR_swigregister
-DatasetCIFAR_swigregister(DatasetCIFAR)
-
-class DatasetCIFAR10(DatasetInterface):
-    __swig_setmethods__ = {}
-    for _s in [DatasetInterface]:
-        __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
-    __setattr__ = lambda self, name, value: _swig_setattr(self, DatasetCIFAR10, name, value)
-    __swig_getmethods__ = {}
-    for _s in [DatasetInterface]:
-        __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
-    __getattr__ = lambda self, name: _swig_getattr(self, DatasetCIFAR10, name)
-    __repr__ = _swig_repr
-
-    def __init__(self, training_batch_1_file_name, training_batch_2_file_name, training_batch_3_file_name, training_batch_4_file_name, training_batch_5_file_name, testing_batch_file_name, padding=0):
-        this = _rysy.new_DatasetCIFAR10(training_batch_1_file_name, training_batch_2_file_name, training_batch_3_file_name, training_batch_4_file_name, training_batch_5_file_name, testing_batch_file_name, padding)
-        try:
-            self.this.append(this)
-        except __builtin__.Exception:
-            self.this = this
-    __swig_destroy__ = _rysy.delete_DatasetCIFAR10
-    __del__ = lambda self: None
-DatasetCIFAR10_swigregister = _rysy.DatasetCIFAR10_swigregister
-DatasetCIFAR10_swigregister(DatasetCIFAR10)
+DatasetBinary_swigregister = _rysy.DatasetBinary_swigregister
+DatasetBinary_swigregister(DatasetBinary)
 
 class DatasetImages(DatasetInterface):
     __swig_setmethods__ = {}
@@ -2025,28 +2003,6 @@ class DatasetImages(DatasetInterface):
 DatasetImages_swigregister = _rysy.DatasetImages_swigregister
 DatasetImages_swigregister(DatasetImages)
 
-class DatasetLANDSAT(DatasetInterface):
-    __swig_setmethods__ = {}
-    for _s in [DatasetInterface]:
-        __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
-    __setattr__ = lambda self, name, value: _swig_setattr(self, DatasetLANDSAT, name, value)
-    __swig_getmethods__ = {}
-    for _s in [DatasetInterface]:
-        __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
-    __getattr__ = lambda self, name: _swig_getattr(self, DatasetLANDSAT, name)
-    __repr__ = _swig_repr
-
-    def __init__(self, training_data_file_name, testing_data_file_name, padding):
-        this = _rysy.new_DatasetLANDSAT(training_data_file_name, testing_data_file_name, padding)
-        try:
-            self.this.append(this)
-        except __builtin__.Exception:
-            self.this = this
-    __swig_destroy__ = _rysy.delete_DatasetLANDSAT
-    __del__ = lambda self: None
-DatasetLANDSAT_swigregister = _rysy.DatasetLANDSAT_swigregister
-DatasetLANDSAT_swigregister(DatasetLANDSAT)
-
 class DatasetMnist(DatasetInterface):
     __swig_setmethods__ = {}
     for _s in [DatasetInterface]:
@@ -2068,28 +2024,6 @@ class DatasetMnist(DatasetInterface):
     __del__ = lambda self: None
 DatasetMnist_swigregister = _rysy.DatasetMnist_swigregister
 DatasetMnist_swigregister(DatasetMnist)
-
-class DatasetMnistTiny(DatasetInterface):
-    __swig_setmethods__ = {}
-    for _s in [DatasetInterface]:
-        __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
-    __setattr__ = lambda self, name, value: _swig_setattr(self, DatasetMnistTiny, name, value)
-    __swig_getmethods__ = {}
-    for _s in [DatasetInterface]:
-        __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
-    __getattr__ = lambda self, name: _swig_getattr(self, DatasetMnistTiny, name)
-    __repr__ = _swig_repr
-
-    def __init__(self, training_data_file_name, testing_data_file_name, padding=0):
-        this = _rysy.new_DatasetMnistTiny(training_data_file_name, testing_data_file_name, padding)
-        try:
-            self.this.append(this)
-        except __builtin__.Exception:
-            self.this = this
-    __swig_destroy__ = _rysy.delete_DatasetMnistTiny
-    __del__ = lambda self: None
-DatasetMnistTiny_swigregister = _rysy.DatasetMnistTiny_swigregister
-DatasetMnistTiny_swigregister(DatasetMnistTiny)
 
 class DatasetPair(DatasetInterface):
     __swig_setmethods__ = {}

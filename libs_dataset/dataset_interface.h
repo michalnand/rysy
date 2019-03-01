@@ -107,7 +107,7 @@ class DatasetInterface
 
     void save_images(     std::string training_file_name_prefix,
                           std::string testing_file_name_prefix);
-  private:
+  protected:
     void save_item(std::ofstream &file, sDatasetItem &item);
 
     unsigned int get_binary_magic()
@@ -116,6 +116,11 @@ class DatasetInterface
     }
 
     void make_header(std::ofstream &file, unsigned int items_count);
+
+
+    void load_item(std::ifstream &file, sDatasetItem &item);
+    int load_header(std::ifstream &file);
+
 };
 
 #endif

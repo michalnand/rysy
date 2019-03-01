@@ -323,7 +323,7 @@ void DatasetInterface::save_to_binary(  std::string training_file_name,
     std::ofstream file;
     file.open (testing_file_name, std::ios::out | std::ios::binary);
 
-    make_header(file, get_training_size());
+    make_header(file, get_testing_size());
 
     for (unsigned int j = 0; j < testing.size(); j++)
     {
@@ -396,4 +396,31 @@ void DatasetInterface::make_header(std::ofstream &file, unsigned int items_count
   file.write(reinterpret_cast<const char *>(&height), sizeof(height));
   file.write(reinterpret_cast<const char *>(&channels), sizeof(channels));
   file.write(reinterpret_cast<const char *>(&output_size), sizeof(output_size));
+}
+
+
+
+void DatasetInterface::load_item(std::ifstream &file, sDatasetItem &item)
+{
+  file.read(reinterpret_cast<char *>(&item.input[0]), item.input.size()*sizeof(float));
+  file.read(reinterpret_cast<char *>(&item.output[0]), item.output.size()*sizeof(float));
+}
+
+int DatasetInterface::load_header(std::ifstream &file)
+{
+    int items_count = 0;
+
+    unsigned int magic = get_binary_magic();
+
+    file.read(reinterpret_cast<char *>(&magic), sizeof(magic));
+    file.read(reinterpret_cast<char *>(&items_count), sizeof(items_count));
+    file.read(reinterpret_cast<char *>(&width), sizeof(width));
+    file.read(reinterpret_cast<char *>(&height), sizeof(height));
+    file.read(reinterpret_cast<char *>(&channels), sizeof(channels));
+    file.read(reinterpret_cast<char *>(&output_size), sizeof(output_size));
+
+    if (magic!= get_binary_magic())
+        return -1;
+
+    return items_count;
 }

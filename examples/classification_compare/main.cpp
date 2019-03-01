@@ -2,7 +2,6 @@
 #include <iostream>
 
 #include <dataset_mnist.h>
-#include <dataset_cifar_10.h>
 
 #include <classification_experiment.h>
 #include <dataset_pair.h>
