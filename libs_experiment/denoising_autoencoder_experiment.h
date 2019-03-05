@@ -6,13 +6,13 @@
 #include <cnn.h>
 #include <log.h>
 
-#include "regression_compare.h"
+#include "autoencoder_compare.h"
 
 class DenoisingAutoencoderExperiment
 {
     protected:
-      RegressionCompare compare_testing, compare_training;
-
+      AutoencoderCompare compare_testing, compare_training;
+ 
     protected:
       DatasetInterface *dataset;
        std::string config_dir;

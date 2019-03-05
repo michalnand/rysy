@@ -9,7 +9,7 @@ int main()
 {
 	srand(time(NULL));
 
- 
+
 	/*
 	DatasetDenoisingAutoencoder dataset("dataset.json");
 
@@ -44,6 +44,12 @@ int main()
 		DenoisingAutoencoderExperiment experiment(dataset, "net_3/");
 		experiment.run();
 	}
+
+	/*
+	ExportSTL10 stl_export("/home/michal/Downloads/stl10_binary/unlabeled_X.bin", "/home/michal/dataset/images/");
+	stl_export.process(30000);
+	*/
+ 
 
     std::cout << "program done\n";
 

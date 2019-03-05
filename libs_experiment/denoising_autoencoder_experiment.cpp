@@ -40,10 +40,6 @@ void DenoisingAutoencoderExperiment::run()
 
   CNN nn(parameters.result["network_architecture"], input_geometry, output_geometry);
 
-  compare_testing.set_output_size(dataset->get_output_size());
-  compare_training.set_output_size(dataset->get_output_size());
-
-
   unsigned int epoch_count = parameters.result["epoch_count"].asInt();
 
   unsigned int sub_epoch_size = 1;
@@ -132,7 +128,7 @@ void DenoisingAutoencoderExperiment::run()
 
            std::string examples_dir = config_dir + "examples/";
            save_examples(nn, examples_dir);
-          
+
           /*
           std::string result_training_dir = config_dir + "result_training/";
           std::string result_testing_dir = config_dir + "result_testing/";
@@ -199,9 +195,6 @@ bool DenoisingAutoencoderExperiment::test(CNN &nn)
 {
     compare_testing.clear();
     compare_training.clear();
-
-    compare_testing.set_output_size(dataset->get_output_size());
-    compare_training.set_output_size(dataset->get_output_size());
 
     bool valid_output = true;
 
