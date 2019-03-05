@@ -1,0 +1,102 @@
+{
+    "epoch_count"               : 1,
+    "sub_epoch_size"            : 5,
+    "compare_top_5"             : false,
+
+    "epoch_learning_rate_decay" : 8,
+    "learning_rate_decay"       : 0.25,
+
+    "network_architecture" :
+    {
+        "network_log_file_name" : "net_1/network.log",
+
+        "input_geometry"     : [28, 28, 1],
+        "output_geometry"     : [28, 28, 1],
+
+        "hyperparameters" :
+        {
+          "init_weight_range" : 0.0,
+          "learning_rate"     : 0.001,
+          "lambda1"           : 0.0000001,
+          "lambda2"           : 0.0000001,
+          "dropout"           : 0.2,
+
+          "minibatch_size"    : 32
+        },
+
+        "layers"         :
+        [
+            {
+                "type"      : "dense convolution",
+                "geometry"  : [3, 3, 16]
+            },
+            {
+              "type"      : "relu"
+            },
+            {
+                "type"      : "dense convolution",
+                "geometry"  : [3, 3, 16]
+            },
+            {
+              "type"      : "relu"
+            },
+            {
+                "type"      : "dense convolution",
+                "geometry"  : [3, 3, 16]
+            },
+            {
+              "type"      : "relu"
+            },
+            {
+                "type"      : "dense convolution",
+                "geometry"  : [3, 3, 16]
+            },
+            {
+              "type"      : "relu"
+            },
+            {
+                "type"      : "convolution",
+                "geometry"  : [1, 1, 32]
+            },
+            {
+              "type"      : "relu"
+            },
+
+
+
+
+            {
+                "type"      : "dense convolution",
+                "geometry"  : [3, 3, 16]
+            },
+            {
+              "type"      : "relu"
+            },
+            {
+                "type"      : "dense convolution",
+                "geometry"  : [3, 3, 16]
+            },
+            {
+              "type"      : "relu"
+            },
+            {
+                "type"      : "dense convolution",
+                "geometry"  : [3, 3, 16]
+            },
+            {
+              "type"      : "relu"
+            },
+            {
+                "type"      : "dense convolution",
+                "geometry"  : [3, 3, 16]
+            },
+            {
+              "type"      : "relu"
+            },
+            {
+                "type"      : "convolution",
+                "geometry"  : [1, 1, 1]
+            }
+        ]
+    }
+}

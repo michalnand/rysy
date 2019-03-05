@@ -1,0 +1,76 @@
+initializing
+training size    : 60000
+testing size     : 10000
+epoch count      : 1
+sub epoch size   : 5
+
+epoch_learning_rate_decay   : 8
+learning_rate_decay         : 0.250000
+
+training
+
+
+
+epoch [0 0] from [1 5]
+training time per iterations 6.810250[ms]
+testing on 10000 items
+testing done
+average error 0.011254
+min error     0.000000
+max error     1.124021
+saving best net
+error testing = 0.011254 0.000000 1.124021
+error training = 0.011291 0.000000 1.102678
+
+best net saved to net_0/trained/, with error 0.011254
+
+
+
+epoch [0 1] from [1 5]
+training time per iterations 6.632083[ms]
+testing on 10000 items
+testing done
+average error 0.010654
+min error     0.000000
+max error     1.088134
+saving best net
+error testing = 0.010654 0.000000 1.088134
+error training = 0.010785 0.000000 1.061255
+
+best net saved to net_0/trained/, with error 0.010654
+
+
+
+epoch [0 2] from [1 5]
+training time per iterations 6.360833[ms]
+testing on 10000 items
+testing done
+average error 0.011201
+min error     0.000000
+max error     1.186176
+
+
+
+epoch [0 3] from [1 5]
+training time per iterations 6.361167[ms]
+testing on 10000 items
+testing done
+average error 0.010039
+min error     0.000000
+max error     1.126236
+saving best net
+error testing = 0.010039 0.000000 1.126236
+error training = 0.010104 0.000000 1.119137
+
+best net saved to net_0/trained/, with error 0.010039
+
+
+
+epoch [0 4] from [1 5]
+training time per iterations 6.368250[ms]
+testing on 10000 items
+testing done
+average error 0.010524
+min error     0.000000
+max error     1.119217
+training done

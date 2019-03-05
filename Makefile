@@ -19,7 +19,7 @@ all:
 	cd examples/images_classification_test && make -j4
 	cd examples/preprocessing_test && make -j4
 	cd examples/regression_test && make -j4
-
+	cd examples/denoising_autoencoder && make -j4
 
 
 clean:
@@ -39,3 +39,4 @@ clean:
 	cd examples/images_classification_test && make clean
 	cd examples/preprocessing_test && make clean
 	cd examples/regression_test && make clean
+	cd examples/denoising_autoencoder && make clean

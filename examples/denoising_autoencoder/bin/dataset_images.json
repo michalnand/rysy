@@ -1,0 +1,22 @@
+{
+    "grayscale"     :   false,
+    "width"         :   96,
+    "height"        :   96,
+
+    "max items per folder"  : 5000,
+
+    "white noise level" : 0.4,
+    "salt and peper noise level" : 0.2,
+    "color noise level" : 0.3,
+
+
+    "testing ratio" : 0.1,
+
+    "dataset" :
+        [
+            {
+                "class" : 0,
+                "path"  :  "/home/michal/dataset/images/"
+            }
+        ]
+}

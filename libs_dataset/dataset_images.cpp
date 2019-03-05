@@ -14,7 +14,7 @@ DatasetImages::DatasetImages(std::string json_config_file_name)
 
     max_items_per_folder = json.result["max items per folder"].asInt();
     float testing_ratio = json.result["testing ratio"].asFloat();
- 
+
     if (grayscale)
         channels  = 1;
     else
@@ -82,7 +82,10 @@ void DatasetImages::load_dir(std::string path, unsigned int class_id, unsigned i
      std::string image_file_name;
      image_file_name = p.path();
 
-     if (std::experimental::filesystem::path(image_file_name).extension() == ".png")
+
+     auto extension = std::experimental::filesystem::path(image_file_name).extension();
+
+     if ( (extension == ".png") || (extension == ".jpg"))
      {
        // printf(">>>> %s \n", image_file_name.c_str());
        ImageLoad image(image_file_name, grayscale, true);
