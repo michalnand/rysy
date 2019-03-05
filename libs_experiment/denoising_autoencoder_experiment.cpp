@@ -129,10 +129,10 @@ void DenoisingAutoencoderExperiment::run()
           std::string best_net = config_dir + "trained/";
           nn.save(best_net);
 
-
+          /*
            std::string examples_dir = config_dir + "examples/";
            save_examples(nn, examples_dir);
-
+          */
           /*
           std::string result_training_dir = config_dir + "result_training/";
           std::string result_testing_dir = config_dir + "result_testing/";
@@ -301,7 +301,7 @@ void DenoisingAutoencoderExperiment::save_examples(CNN &nn, std::string path, un
         sDatasetItem item = dataset->get_testing(i);
         nn.forward(nn_output, item.input);
 
-        std::string file_name   = path + std::to_string(i) + "_2_ae_output.png";
+        std::string file_name   = path + std::to_string(i) + "_2_ae_output.bmp";
 
         image.save(file_name, nn_output);
     }
