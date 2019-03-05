@@ -8,9 +8,9 @@ DatasetImages::DatasetImages(std::string json_config_file_name)
 {
     JsonConfig json(json_config_file_name);
 
-    grayscale     = json.result["grayscale"].asBool();
-    width     = json.result["width"].asInt();
-    height    = json.result["height"].asInt();
+    grayscale   = json.result["grayscale"].asBool();
+    width       = json.result["width"].asInt();
+    height      = json.result["height"].asInt();
 
     max_items_per_folder = json.result["max items per folder"].asInt();
     float testing_ratio = json.result["testing ratio"].asFloat();

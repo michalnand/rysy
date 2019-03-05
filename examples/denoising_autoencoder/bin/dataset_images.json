@@ -3,7 +3,7 @@
     "width"         :   96,
     "height"        :   96,
 
-    "max items per folder"  : 5000,
+    "max items per folder"  : 10000,
 
     "white noise level" : 0.4,
     "salt and peper noise level" : 0.2,
