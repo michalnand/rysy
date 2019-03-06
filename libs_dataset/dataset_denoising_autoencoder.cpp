@@ -177,7 +177,7 @@ std::vector<float> DatasetDenoisingAutoencoder::apply_noise(std::vector<float> &
             result[i] = srnd();
     }
 
-
+    /*
     if ((rand()%2) == 0)
     if (grayscale == false)
     {
@@ -188,7 +188,7 @@ std::vector<float> DatasetDenoisingAutoencoder::apply_noise(std::vector<float> &
             float r = result[i + layer_size*0];
             float g = result[i + layer_size*1];
             float b = result[i + layer_size*2];
- 
+
             float res = 0.3*r + 0.59*g + 0.11*b;
 
             result[i + layer_size*0] = res;
@@ -196,7 +196,8 @@ std::vector<float> DatasetDenoisingAutoencoder::apply_noise(std::vector<float> &
             result[i + layer_size*2] = res;
         }
     }
-
+    */
+   
     normalise(result, 0.0, 1.0);
 
     return result;

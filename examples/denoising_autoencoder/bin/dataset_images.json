@@ -5,9 +5,9 @@
 
     "max items per folder"  : 20000,
 
-    "white noise level" : 0.3,
-    "salt and peper noise level" : 0.2,
-    "color noise level" : 0.3,
+    "white noise level" : 0.1,
+    "salt and peper noise level" : 0.1,
+    "color noise level" : 0.05,
 
 
     "testing ratio" : 0.1,
