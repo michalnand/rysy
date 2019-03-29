@@ -1,0 +1,74 @@
+{
+  "epoch_count"          : 60,
+  "sub_epoch_size"       : 5,
+  "compare_top_5"        : false,
+
+  "epoch_learning_rate_decay" : 15,
+  "learning_rate_decay"       : 0.5,
+
+    "network_architecture" :
+    {
+        "network_log_file_name" : "networks/path_net_0/network.log",
+        "input_geometry"     : [64, 64, 3],
+        "output_geometry"    : [1, 1, 2],
+
+        "hyperparameters" :
+        {
+          "init_weight_range" : 0.0,
+          "learning_rate"     : 0.0005,
+          "lambda1"           : 0.0000001,
+          "lambda2"           : 0.0000001,
+          "dropout"           : 0.4,
+          "minibatch_size"    : 32
+        },
+
+        "layers"         :
+        [
+            {
+              "type"      : "convolution",
+              "geometry"  : [3, 3, 8]
+            },
+            {
+              "type"      : "relu"
+            },
+            {
+                "type"      : "max pooling",
+                "geometry"  : [2, 2, 1]
+            },
+
+
+            {
+              "type"      : "convolution",
+              "geometry"  : [3, 3, 8]
+            },
+            {
+              "type"      : "relu"
+            },
+            {
+                "type"      : "max pooling",
+                "geometry"  : [2, 2, 1]
+            },
+
+            {
+              "type"      : "convolution",
+              "geometry"  : [3, 3, 8]
+            },
+            {
+              "type"      : "relu"
+            },
+
+            {
+                "type"      : "max pooling",
+                "geometry"  : [2, 2, 1]
+            },
+
+            {
+                "type"      : "dropout"
+            },
+
+            {
+                "type"      : "output"
+            }
+        ]
+    }
+}
