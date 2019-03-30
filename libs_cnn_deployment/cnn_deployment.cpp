@@ -150,12 +150,13 @@ unsigned int CNNDeployment::get_output_size()
     return output_geometry.w*output_geometry.h*output_geometry.d;
 }
 
+#include <timer.h>
+
 void CNNDeployment::forward(std::vector<float> &output, std::vector<float> &input)
 {
     float *input_buffer  = buffer_a;
     float *output_buffer = buffer_b;
     float *tmp_buffer    = nullptr;
-
 
     cuda_float_allocator.host_to_device(input_buffer, &input[0], get_input_size());
 
@@ -187,7 +188,7 @@ LayerInterface* CNNDeployment::create_layer(Json::Value json, sGeometry input_ge
     if (type == "output")
     {
         result = new LayerOutput(json, input_geometry);
- 
+
         this->output_geometry.w = result->get_output_geometry().w;
         this->output_geometry.h = result->get_output_geometry().h;
         this->output_geometry.d = result->get_output_geometry().d;

@@ -16,7 +16,7 @@ Detector::Detector(std::string network_config_file_name, unsigned int image_widt
     input_geometry.w = image_width;
     input_geometry.h = image_height;
     input_geometry.d = 3;
- 
+
     sGeometry output_geometry;
 
     unsigned int output_kernel_width    = json.result["layers"][last_layer]["input_geometry"][0].asInt();
@@ -46,11 +46,18 @@ Detector::~Detector()
     delete cnn;
 }
 
+float Detector::cnn_output_get(unsigned int x, unsigned y, unsigned ch)
+{
+    unsigned int idx = (ch*output_height + y)*output_width + x;
+    return cnn_output[idx];
+}
+
 void Detector::process(std::vector<float> &image_v)
 {
     Timer timer;
 
     timer.start();
+
     cnn->forward(cnn_output, image_v);
 
     unsigned int ptr;
@@ -59,32 +66,16 @@ void Detector::process(std::vector<float> &image_v)
     int y_shift = 2;
     int x_shift = 2;
 
-    for (unsigned int k = 0; k < output_depth; k++)
-    {
-        for (unsigned int j = 0; j < output_height; j++)
-        for (unsigned int i = 0; i < output_width; i++)
-        {
-            int y_ = j + y_shift;
-            int x_ = i + x_shift;
 
-            if (y_ >= 0 && x_ >= 0)
-            if (y_ < output_height && x_ < output_width)
-            {
-                result.confidence_result[k][y_][x_] = cnn_output[ptr];
-            }
-            ptr++;
-        }
-    }
-
-
-    for (unsigned int j = 0; j < output_height; j++)
-    for (unsigned int i = 0; i < output_width; i++)
+    for (unsigned int j = 0; j < output_height - y_shift; j++)
+    for (unsigned int i = 0; i < output_width - x_shift; i++)
     {
         unsigned int max_k = 0;
         for (unsigned int k = 0; k < output_depth; k++)
         {
-            float conf_best = result.confidence_result[max_k][j][i];
-            float conf = result.confidence_result[k][j][i];
+            float conf_best = cnn_output_get(i, j, max_k);
+            float conf = cnn_output_get(i, j, k);
+
             if (k != 0)
             if (conf > conf_best)
             if (conf > confidence)
@@ -94,12 +85,43 @@ void Detector::process(std::vector<float> &image_v)
             }
         }
 
-        result.class_result[j][i] = max_k;
+        result.class_result[j + y_shift][i + x_shift] = max_k;
     }
 
-    timer.stop();
 
+
+
+    timer.stop();
     result.computing_time = timer.get_duration();
+
+
+    result.json.clear();
+
+    unsigned int classes_count = output_depth;
+
+    result.json["width"] = output_width;
+    result.json["output_height"] = output_height;
+    result.json["classes_count"] = classes_count;
+    result.json["computing_time"] = result.computing_time;
+
+    unsigned int result_idx = 0;
+    for (unsigned int j = 0; j < result.class_result.size(); j++)
+    for (unsigned int i = 0; i < result.class_result[j].size(); i++)
+    {
+        unsigned int class_id = result.class_result[j][i];
+        if (class_id != 0)
+        {
+            result.json["result"][result_idx][0] = class_id;
+            result.json["result"][result_idx][1] = i;
+            result.json["result"][result_idx][2] = j;
+            result_idx++;
+        }
+    }
+
+    Json::FastWriter fastWriter;
+    result.json_string = fastWriter.write(result.json);
+
+
 }
 
 void Detector::process(cv::Mat &image)
@@ -110,10 +132,10 @@ void Detector::process(cv::Mat &image)
     for (unsigned int y = 0; y < image_height; y++)
         for (unsigned int x = 0; x < image_width; x++)
         {
-
-            float r = image.at<cv::Vec3b>(y,x)[2]/256.0;
-            float g = image.at<cv::Vec3b>(y,x)[1]/256.0;
-            float b = image.at<cv::Vec3b>(y,x)[0]/256.0;
+            auto pixel = image.at<cv::Vec3b>(y,x);
+            float r = pixel[2]/256.0;
+            float g = pixel[1]/256.0;
+            float b = pixel[0]/256.0;
 
 
             cnn_input[input_idx + 0*layer_size] = r;
@@ -124,7 +146,6 @@ void Detector::process(cv::Mat &image)
         }
 
     process(cnn_input);
-
 }
 
 
@@ -208,17 +229,7 @@ void Detector::result_init()
             result.class_result[j][i] = 0;
     }
 
-    result.confidence_result.resize(output_depth);
-    for (unsigned int k = 0; k < output_depth; k++)
-    {
-        result.confidence_result[k].resize(output_height);
-        for (unsigned int j = 0; j < output_height; j++)
-        {
-            result.confidence_result[k][j].resize(output_width);
-            for (unsigned int i = 0; i < output_width; i++)
-                result.confidence_result[k][j][i] = 0.0;
-        }
-    }
+    result.json.clear();
 }
 
 std::vector<std::vector<float>> Detector::generate_color_palette(unsigned int count)

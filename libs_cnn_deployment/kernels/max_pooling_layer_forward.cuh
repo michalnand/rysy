@@ -3,8 +3,8 @@
 
 #include <nn_struct.h>
 
-void max_pooling_layer_forward( float *input,
-                                float *output,
+void max_pooling_layer_forward( float *output,
+                                float *input,
                                 sGeometry input_geometry);
 
 #endif

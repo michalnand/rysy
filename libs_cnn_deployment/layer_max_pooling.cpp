@@ -12,7 +12,7 @@ LayerMaxPooling::LayerMaxPooling()
 
 LayerMaxPooling::LayerMaxPooling(LayerMaxPooling& other)
                  :LayerInterface(other)
-{
+{ 
     copy(other);
 }
 
@@ -112,8 +112,6 @@ void LayerMaxPooling::print()
 
 void LayerMaxPooling::forward(float *output, float *input)
 {
-    return;
-    
     max_pooling_layer_forward(  output, input,
                                 this->output_geometry );
 }

@@ -1,9 +1,28 @@
 #include <iostream>
 
+
+#include <opencv_detector.h>
+
+int main() 
+{
+	OpenCVDetector opencv_detector("detector_config.json");
+
+	while (opencv_detector.process_frame() == 0)
+	{
+
+	}
+
+	std::cout << "program don\n";
+
+	return 0;
+}
+/*
+
 #include <detector.h>
 #include "opencv2/opencv.hpp"
 
 #include <timer.h>
+
 
 unsigned int padding(unsigned int value, unsigned int padding)
 {
@@ -16,7 +35,7 @@ float round_to_two(float var)
 {
     float value = (int)(var * 100 + .5);
     return (float)value / 100;
-} 
+}
 
 int main()
 {
@@ -92,6 +111,7 @@ int main()
 		//video_writer.write(frame);
 
 		cv::imshow("camera", frame);
+
 		if( cv::waitKey(10) == 27 )
 			break; // stop capturing by pressing ESC
 	}
@@ -101,3 +121,4 @@ int main()
 	std::cout << "program done\n";
  	return 0;
 }
+*/

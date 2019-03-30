@@ -5,22 +5,25 @@
 #include <string>
 #include <cnn_deployment.h>
 
+#include <json_config.h>
+
 #include "opencv2/opencv.hpp"
 
 typedef std::vector<std::vector<unsigned int>>           Class;
-typedef std::vector<std::vector<std::vector<float>>>     Confidence;
 
 
 struct sDetectorResult
 {
     Class class_result;
-    Confidence  confidence_result;
 
     unsigned int output_width  ;
     unsigned int output_height ;
     unsigned int classes_count ;
 
     float computing_time;
+
+    Json::Value json;
+    std::string json_string;
 };
 
 class Detector
@@ -57,6 +60,9 @@ class Detector
 
         std::vector<std::vector<float>> generate_color_palette(unsigned int count);
         std::vector<float>& get_class_color(unsigned int class_id);
+
+        float cnn_output_get(unsigned int x, unsigned y, unsigned ch);
+
 };
 
 
