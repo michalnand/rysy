@@ -135,3 +135,8 @@ int OpenCVDetector::process_frame()
 
     return 0;
 }
+
+float OpenCVDetector::get_fps()
+{
+    return fps_filtered;
+}

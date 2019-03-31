@@ -18,6 +18,8 @@ class OpenCVDetector
         int process_frame();
         sDetectorResult& get_result();
 
+        float get_fps();
+
     private:
         unsigned int padding(unsigned int value, unsigned int padding);
         float round_to_two(float var);
