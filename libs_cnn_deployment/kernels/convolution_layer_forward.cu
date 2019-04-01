@@ -81,6 +81,7 @@ void cuda_convolution_forward_kernel(   float *output,
 }
 */
 
+
 #define TILE_SIZE           ((unsigned int)32)
 #define KERNEL_MAX_SIZE     ((unsigned int)3)
 
@@ -161,6 +162,7 @@ void cuda_convolution_forward_kernel(   float *output,
     }
 }
 
+
 /*
 #define TILE_SIZE           ((unsigned int)32)
 #define KERNEL_MAX_SIZE     ((unsigned int)3)
@@ -210,14 +212,14 @@ void cuda_convolution_forward_kernel(   float *output,
             }
             w_ofs+= kernel_size*kernel_size;
 
+
+
             if ( (threadIdx.x < TILE_SIZE) && (threadIdx.y < TILE_SIZE) )
             {
                 unsigned int input_idx;
-
-                input_idx  = input_offset + (y + 1)*input_geometry.w + x + 1;
-                input_shared[threadIdx.y + 1][threadIdx.x + 1] = input[input_idx];
+                input_idx  = input_offset + y*input_geometry.w + x;
+                input_shared[threadIdx.y][threadIdx.x] = input[input_idx];
             }
-
             __syncthreads();
 
 
