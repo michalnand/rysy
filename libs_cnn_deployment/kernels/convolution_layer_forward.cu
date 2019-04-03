@@ -107,22 +107,70 @@ void cuda_convolution_forward_kernel(   float *output,
     unsigned int input_size_y = input_geometry.h - 2*k_half;
     unsigned int input_size_x = input_geometry.w - 2*k_half;
 
+
+    __shared__ float w_shared[kernel_size][kernel_size];
+    //__shared__ float input_shared[TILE_SIZE + KERNEL_MAX_SIZE - 1][TILE_SIZE + KERNEL_MAX_SIZE - 1];
+
     if ((filter < output_geometry.d) && (y < input_size_y) && (x < input_size_x))
     {
-        __shared__ float w_shared[kernel_size][kernel_size];
-
         float sum = bias[filter];
-        unsigned int w_ofs = filter*kernel_size*kernel_size*input_geometry.d;
 
         for (unsigned int ch = 0; ch < input_geometry.d; ch++)
         {
-            __syncthreads();
-
+            unsigned int offset = filter*kernel_size*kernel_size*input_geometry.d;
             if ( (threadIdx.x < kernel_size) && (threadIdx.y < kernel_size) )
             {
+                unsigned int w_ofs = kernel_size*kernel_size*ch + offset;
                 w_shared[threadIdx.y][threadIdx.x] = w[w_ofs + threadIdx.y*kernel_size + threadIdx.x];
             }
-            w_ofs+= kernel_size*kernel_size;
+
+            /*
+            if ((threadIdx.y < TILE_SIZE) && (threadIdx.x < TILE_SIZE))
+            {
+                unsigned int input_idx  = (ch*input_geometry.h + y)*input_geometry.w + x;
+                input_shared[threadIdx.y + 1][threadIdx.x + 1] = input[input_idx];
+
+                if (threadIdx.y == 0)
+                {
+                    input_shared[threadIdx.y + 1 - 1][threadIdx.x + 1] = input[input_idx];
+                }
+                if (threadIdx.x == 0)
+                {
+                    input_shared[threadIdx.y + 1][threadIdx.x + 1 - 1] = input[input_idx];
+                }
+                if (threadIdx.y == (TILE_SIZE-1))
+                {
+                    input_shared[threadIdx.y + 1 + 1][threadIdx.x + 1] = input[input_idx];
+                }
+                if (threadIdx.x == (TILE_SIZE-1))
+                {
+                    input_shared[threadIdx.y + 1][threadIdx.x + 1 + 1] = input[input_idx];
+                }
+            }
+
+            __syncthreads();
+
+
+            if (kernel_size == 1)
+            {
+                sum+= w_shared[0][0]*input_shared[threadIdx.y][threadIdx.x];
+            }
+
+            if (kernel_size == 3)
+            {
+                sum+= w_shared[0][0]*input_shared[threadIdx.y + 0][threadIdx.x + 0];
+                sum+= w_shared[0][1]*input_shared[threadIdx.y + 0][threadIdx.x + 1];
+                sum+= w_shared[0][2]*input_shared[threadIdx.y + 0][threadIdx.x + 2];
+
+                sum+= w_shared[1][0]*input_shared[threadIdx.y + 1][threadIdx.x + 0];
+                sum+= w_shared[1][1]*input_shared[threadIdx.y + 1][threadIdx.x + 1];
+                sum+= w_shared[1][2]*input_shared[threadIdx.y + 1][threadIdx.x + 2];
+
+                sum+= w_shared[2][0]*input_shared[threadIdx.y + 2][threadIdx.x + 0];
+                sum+= w_shared[2][1]*input_shared[threadIdx.y + 2][threadIdx.x + 1];
+                sum+= w_shared[2][2]*input_shared[threadIdx.y + 2][threadIdx.x + 2];
+            }
+            */
 
             __syncthreads();
 
@@ -151,6 +199,8 @@ void cuda_convolution_forward_kernel(   float *output,
                 sum+= w_shared[2][2]*input[input_idx++];
                 input_idx+= input_geometry.w - kernel_size;
             }
+
+            __syncthreads();
         }
 
         //ReLU
