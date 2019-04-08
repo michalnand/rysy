@@ -1,6 +1,6 @@
 apt-get install -f git make clang g++ python3-dev python3 python3-pip swig swig3.0
 apt-get install -f libjsoncpp-dev cimg-dev freeglut3-dev nvidia-cuda-toolkit nvidia-utils-390 nvidia-profiler
-pip3 install numpy
+pip3 install numpy noise
 # apt-get install -f gcc-arm-none-eabi gcc-avr gtkterm dfu-util avrdude
 # apt-get install -f synaptic gnuplot vlc rar
 
