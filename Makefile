@@ -23,6 +23,7 @@ all:
 	cd examples/regression_test && make -j4
 	cd examples/denoising_autoencoder && make -j4
 	cd examples/deployment_test && make -j4
+	cd examples/classification_test && make -j4
 
 
 clean:
@@ -47,3 +48,4 @@ clean:
 	cd examples/denoising_autoencoder && make clean
 
 	cd examples/deployment_test && make clean
+	cd examples/classification_test && make clean

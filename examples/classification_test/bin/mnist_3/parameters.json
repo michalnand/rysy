@@ -1,5 +1,5 @@
 {
-    "epoch_count"               : 10,
+    "epoch_count"               : 1,
     "sub_epoch_size"            : 5,
     "compare_top_5"             : false,
 
@@ -27,6 +27,7 @@
         "layers"         :
         [
 
+
           {
             "type"      : "dense convolution",
             "geometry"  : [3, 3, 8]
@@ -41,33 +42,72 @@
           {
             "type"      : "relu"
           },
-
-
+          {
+            "type"      : "dense convolution",
+            "geometry"  : [3, 3, 8]
+          },
+          {
+            "type"      : "relu"
+          },
+          {
+            "type"      : "dense convolution",
+            "geometry"  : [3, 3, 8]
+          },
+          {
+            "type"      : "relu"
+          },
+          {
+            "type"      : "convolution",
+            "geometry"  : [1, 1, 32]
+          },
+          {
+            "type"      : "relu"
+          },
           {
             "type"      : "max_pooling",
             "geometry"  : [2, 2, 1]
           },
 
+
           {
-            "type"      : "convolution",
-            "geometry"  : [3, 3, 32]
+            "type"      : "dense convolution",
+            "geometry"  : [3, 3, 8]
           },
           {
             "type"      : "relu"
           },
-
-
           {
-            "type"      : "convolution",
-            "geometry"  : [3, 3, 32]
-          },
-          {
-            "type"      : "gating"
+            "type"      : "dense convolution",
+            "geometry"  : [3, 3, 8]
           },
           {
             "type"      : "relu"
           },
-
+          {
+            "type"      : "dense convolution",
+            "geometry"  : [3, 3, 8]
+          },
+          {
+            "type"      : "relu"
+          },
+          {
+            "type"      : "dense convolution",
+            "geometry"  : [3, 3, 8]
+          },
+          {
+            "type"      : "relu"
+          },
+          {
+            "type"      : "convolution",
+            "geometry"  : [1, 1, 32]
+          },
+          {
+            "type"      : "relu"
+          },
+          {
+            "type"      : "max_pooling",
+            "geometry"  : [2, 2, 1]
+          },
 
           {
             "type"      : "dropout"

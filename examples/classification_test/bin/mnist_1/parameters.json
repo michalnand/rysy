@@ -1,5 +1,5 @@
 {
-    "epoch_count"               : 10,
+    "epoch_count"               : 5,
     "sub_epoch_size"            : 5,
     "compare_top_5"             : false,
 
@@ -17,8 +17,8 @@
         {
           "init_weight_range" : 0.0,
           "learning_rate"     : 0.001,
-          "lambda1"           : 0.00001,
-          "lambda2"           : 0.00001,
+          "lambda1"           : 0.000001,
+          "lambda2"           : 0.000001,
           "dropout"           : 0.2,
 
           "minibatch_size"    : 32
@@ -34,32 +34,59 @@
           {
             "type"      : "relu"
           },
+          {
+            "type"      : "convolution",
+            "geometry"  : [3, 3, 16]
+          },
+          {
+            "type"      : "relu"
+          },
 
           {
-            "type"      : "max_pooling",
+            "type"      : "max pooling",
             "geometry"  : [2, 2, 1]
           },
-
-
-          {
-            "type"      : "dense convolution",
-            "geometry"  : [5, 5, 16]
-          },
           {
             "type"      : "relu"
           },
 
-          {
-            "type"      : "dense convolution",
-            "geometry"  : [5, 5, 16]
-          },
-          {
-            "type"      : "relu"
-          },
 
           {
             "type"      : "convolution",
-            "geometry"  : [5, 5, 32]
+            "geometry"  : [3, 3, 32]
+          },
+          {
+            "type"      : "relu"
+          },
+          {
+            "type"      : "convolution",
+            "geometry"  : [3, 3, 32]
+          },
+          {
+            "type"      : "relu"
+          },
+
+          {
+            "type"      : "max pooling",
+            "geometry"  : [2, 2, 1]
+          },
+          {
+            "type"      : "relu"
+          },
+
+
+          {
+            "type"      : "convolution",
+            "geometry"  : [3, 3, 48]
+          },
+          {
+            "type"      : "relu"
+          },
+
+
+          {
+            "type"      : "convolution",
+            "geometry"  : [1, 1, 32]
           },
           {
             "type"      : "relu"
@@ -68,7 +95,6 @@
           {
             "type"      : "dropout"
           },
-
           {
             "type"      : "output"
           }

@@ -20,7 +20,7 @@ void net_test(DatasetInterface &dataset, std::string config_dir)
   CNN nn(parameters.result["network_architecture"], input_geometry, output_geometry);
 
   unsigned int iterations = 1000;
-
+ 
   nn.set_training_mode();
 
   for (unsigned int i = 0; i < iterations; i++)

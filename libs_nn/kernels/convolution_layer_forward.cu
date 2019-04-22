@@ -67,7 +67,7 @@ void cuda_convolution_forward_kernel(   float *output,
     unsigned int input_size_y = input_geometry.h - 2*k_half;
     unsigned int input_size_x = input_geometry.w - 2*k_half;
 
-    __shared__ float w_shared[320][kernel_size][kernel_size];
+    __shared__ float w_shared[512][kernel_size][kernel_size];
     if ( (threadIdx.x < kernel_size) && (threadIdx.y < kernel_size) )
     for (unsigned int ch = 0; ch < input_geometry.d; ch++)
     {
@@ -109,44 +109,6 @@ void cuda_convolution_forward_kernel(   float *output,
                 sum+= w_shared[ch][2][0]*input[input_idx]; input_idx++;
                 sum+= w_shared[ch][2][1]*input[input_idx]; input_idx++;
                 sum+= w_shared[ch][2][2]*input[input_idx]; input_idx++;
-                input_idx+= input_geometry.w - kernel_size;
-            }
-
-            if (kernel_size == 5)
-            {
-                sum+= w_shared[ch][0][0]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][0][1]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][0][2]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][0][3]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][0][4]*input[input_idx]; input_idx++;
-                input_idx+= input_geometry.w - kernel_size;
-
-                sum+= w_shared[ch][1][0]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][1][1]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][1][2]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][1][3]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][1][4]*input[input_idx]; input_idx++;
-                input_idx+= input_geometry.w - kernel_size;
-
-                sum+= w_shared[ch][2][0]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][2][1]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][2][2]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][2][3]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][2][4]*input[input_idx]; input_idx++;
-                input_idx+= input_geometry.w - kernel_size;
-
-                sum+= w_shared[ch][3][0]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][3][1]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][3][2]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][3][3]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][3][4]*input[input_idx]; input_idx++;
-                input_idx+= input_geometry.w - kernel_size;
-
-                sum+= w_shared[ch][4][0]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][4][1]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][4][2]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][4][3]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][4][4]*input[input_idx]; input_idx++;
                 input_idx+= input_geometry.w - kernel_size;
             }
         }
@@ -259,16 +221,6 @@ void convolution_layer_forward(   Tensor &output, Tensor &input,
                               break;
 
                   case 3:  cuda_convolution_forward_kernel<3><<<grid, block>>>( output.v,
-                                                                                input.v,
-                                                                                w.v,
-                                                                                bias.v,
-
-                                                                                output_geometry,
-                                                                                input_geometry,
-                                                                                kernel_geometry);
-                              break;
-
-                  case 5:  cuda_convolution_forward_kernel<5><<<grid, block>>>( output.v,
                                                                                 input.v,
                                                                                 w.v,
                                                                                 bias.v,

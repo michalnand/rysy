@@ -307,7 +307,7 @@ void Tensor::print()
     {
       for (unsigned int w_ = 0; w_ < w(); w_++)
       {
-        printf("%6.3f ", tmp[ptr]);
+        printf("%5.3f ", tmp[ptr]);
         ptr++;
       }
       printf("\n");

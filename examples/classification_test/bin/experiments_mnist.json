@@ -1,11 +1,6 @@
 {
   "experiments" :
   [
-      "mnist_5/",
-      "mnist_0/",
-      "mnist_1/",
-      "mnist_2/",
-      "mnist_3/",
-      "mnist_4/"
+      "mnist_1/"
   ]
 }

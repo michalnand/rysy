@@ -223,6 +223,11 @@ void convolution_layer_update_bias(Tensor &bias, Tensor &error, float learning_r
 
 
 
+
+
+
+
+
 __host__
 void cpu_convolution_back_kernel( float *error,
                                   float *error_back,
@@ -273,7 +278,8 @@ void cpu_convolution_back_kernel( float *error,
 }
 
 
-
+/*
+OLD implementations - SLOW
 template<const unsigned int kernel_size>
 __global__
 void cuda_convolution_back_kernel(  float *error,
@@ -285,92 +291,163 @@ void cuda_convolution_back_kernel(  float *error,
                                     unsigned int channels_count,
                                     unsigned int kernels_count )
 {
-  unsigned int x      = threadIdx.x + blockIdx.x*blockDim.x;
-  unsigned int y      = threadIdx.y + blockIdx.y*blockDim.y;
-  unsigned int ch     = threadIdx.z + blockIdx.z*blockDim.z;
+    unsigned int x      = threadIdx.x + blockIdx.x*blockDim.x;
+    unsigned int y      = threadIdx.y + blockIdx.y*blockDim.y;
+    unsigned int ch     = threadIdx.z + blockIdx.z*blockDim.z;
 
-  unsigned int kernel_size_half = (kernel_size - 1)/2;
+    unsigned int kernel_size_half = (kernel_size - 1)/2;
 
-  unsigned int height_  = height - 2*kernel_size_half;
-  unsigned int width_   = width  - 2*kernel_size_half;
+    unsigned int height_  = height - 2*kernel_size_half;
+    unsigned int width_   = width  - 2*kernel_size_half;
 
-  if (  (ch < channels_count) &&
-        (y <  height_) &&
-        (x <  width_) )
-  {
-    for (unsigned int kernel = 0; kernel < kernels_count; kernel++)
+    if (    (ch < channels_count) &&
+            (y <  height_) &&
+            (x <  width_) )
     {
-      unsigned int w_idx     = kernel*channels_count*kernel_size*kernel_size + ch*kernel_size*kernel_size;
-      unsigned int error_idx = (kernel*height + y + kernel_size_half)*width + x + kernel_size_half;
+        for (unsigned int kernel = 0; kernel < kernels_count; kernel++)
+        {
+          unsigned int w_idx     = kernel*channels_count*kernel_size*kernel_size + ch*kernel_size*kernel_size;
+          unsigned int error_idx = (kernel*height + y + kernel_size_half)*width + x + kernel_size_half;
 
-      float err = error[error_idx];
+          float err = error[error_idx];
 
-      unsigned int error_back_idx = (ch*height + y)*width + x;
+          unsigned int error_back_idx = (ch*height + y)*width + x;
 
-      if (kernel_size == 1)
-      {
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        error_back_idx+= width - kernel_size;
+          if (kernel_size == 1)
+          {
+              atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+              error_back_idx+= width - kernel_size;
+          }
+
+          if (kernel_size == 3)
+          {
+              atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+              atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+              atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+              error_back_idx+= width - kernel_size;
+
+              atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+              atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+              atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+              error_back_idx+= width - kernel_size;
+
+              atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+              atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+              atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
+              error_back_idx+= width - kernel_size;
+          }
       }
-
-      if (kernel_size == 3)
-      {
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        error_back_idx+= width - kernel_size;
-
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        error_back_idx+= width - kernel_size;
-
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        error_back_idx+= width - kernel_size;
-      }
-
-      if (kernel_size == 5)
-      {
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        error_back_idx+= width - kernel_size;
-
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        error_back_idx+= width - kernel_size;
-
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        error_back_idx+= width - kernel_size;
-
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        error_back_idx+= width - kernel_size;
-
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        atomicAdd(&error_back[error_back_idx], err*w[w_idx]); w_idx++; error_back_idx++;
-        error_back_idx+= width - kernel_size;
-      }
-
     }
-  }
+}
+*/
+
+
+
+
+
+
+__global__
+void cuda_convolution_back_kernel_1(    float *error,
+                                        float *error_back,
+                                        float *w,
+
+                                        unsigned int width,
+                                        unsigned int height,
+                                        unsigned int channels_count,
+                                        unsigned int kernels_count )
+{
+    unsigned int x       = threadIdx.x + blockIdx.x*blockDim.x;
+    unsigned int y       = threadIdx.y + blockIdx.y*blockDim.y;
+    unsigned int channel = threadIdx.z + blockIdx.z*blockDim.z;
+
+
+    if (    (channel < channels_count) &&
+            (y <  height) &&
+            (x <  width) )
+    {
+        unsigned int w_idx      = channel;
+        unsigned int error_idx  = y*width + x;
+
+        float sum = 0.0;
+
+        for (unsigned int kernel = 0; kernel < kernels_count; kernel++)
+        {
+            sum+=       w[w_idx]*error[error_idx];
+
+            w_idx+=     channels_count;
+            error_idx+= width*height;
+        }
+
+        unsigned int error_back_idx = (channel*height + y)*width + x;
+        error_back[error_back_idx]  = sum;
+    }
+}
+
+
+
+__global__
+void cuda_convolution_back_kernel_3(    float *error,
+                                        float *error_back,
+                                        float *w,
+
+                                        int width,
+                                        int height,
+                                        unsigned int channels_count,
+                                        unsigned int kernels_count )
+{
+    unsigned int x       = threadIdx.x + blockIdx.x*blockDim.x;
+    unsigned int y       = threadIdx.y + blockIdx.y*blockDim.y;
+    unsigned int channel = threadIdx.z + blockIdx.z*blockDim.z;
+
+
+
+    if ((channel < channels_count) && (y < height) && (x < width))
+    {
+        unsigned int kernel_size    = 3;
+        unsigned int width_         = width - 1;
+        unsigned int height_        = height - 1;
+        float sum = 0.0;
+
+        for (unsigned int kernel = 0; kernel < kernels_count; kernel++)
+        {
+            unsigned int w_idx        = (kernel*channels_count + channel)*kernel_size*kernel_size;
+            unsigned int error_offset = (kernel*height + y + 0)*width + x + 0;
+
+            if ((x < width_) && (y < height_))
+                sum+= w[w_idx]*error[error_offset + 1*width + 1]; w_idx++;
+
+            if (y < height_)
+                sum+= w[w_idx]*error[error_offset + 1*width + 0]; w_idx++;
+
+            if ((x > 0) && (y < height_))
+                sum+= w[w_idx]*error[error_offset + 1*width - 1]; w_idx++;
+
+
+
+            if (x < width_)
+                sum+= w[w_idx]*error[error_offset + 0*width + 1]; w_idx++;
+
+            if (true)
+                sum+= w[w_idx]*error[error_offset + 0*width + 0]; w_idx++;
+
+            if (x > 0)
+                sum+= w[w_idx]*error[error_offset + 0*width - 1]; w_idx++;
+
+
+
+            if ((x < width_) && (y > 0))
+                sum+= w[w_idx]*error[error_offset - 1*width + 1]; w_idx++;
+
+            if (y > 0)
+                sum+= w[w_idx]*error[error_offset - 1*width + 0]; w_idx++;
+
+            if ((x > 0) && (y > 0))
+                sum+= w[w_idx]*error[error_offset - 1*width - 1]; w_idx++;
+        }
+
+        unsigned int error_back_idx = (channel*height + y)*width + x;
+        error_back[error_back_idx]  = sum;
+    }
 }
 
 
@@ -425,68 +502,85 @@ void cuda_convolution_back_kernel_any_size(   float *error,
   }
 }
 
+
+
 void convolution_layer_backward( Tensor &error_back, Tensor &input, Tensor &error, Tensor &w)
 {
-  error_back.clear();
+    error_back.clear();
 
-  unsigned int kernel_size = w.w();
+    unsigned int kernel_width = w.w();
+    unsigned int kernel_height = w.h();
 
-  #ifdef NETWORK_USE_CUDA
+    #ifdef NETWORK_USE_CUDA
 
+    if ((kernel_width == 1) && (kernel_height == 1))
+    {
+        dim3 block(8, 8, 1);
+        dim3 grid( (error_back.w()      + block.x + 1)/block.x,
+                   (error_back.h()      + block.y + 1)/block.y,
+                   (error_back.d()      + block.z + 1)/block.z );
 
+        cuda_convolution_back_kernel_1<<<grid, block>>>(    error.v,
+                                                            error_back.v,
+                                                            w.v,
+
+                                                            error.w(),
+                                                            error.h(),
+                                                            error_back.d(),
+                                                            error.d() );
+    }
+    else if ((kernel_width == 3) && (kernel_height == 3))
+    {
+        dim3 block(8, 8, 1);
+        dim3 grid( (error_back.w()      + block.x + 1)/block.x,
+                   (error_back.h()      + block.y + 1)/block.y,
+                   (error_back.d()      + block.z + 1)/block.z );
+
+        cuda_convolution_back_kernel_3<<<grid, block>>>(    error.v,
+                                                            error_back.v,
+                                                            w.v,
+
+                                                            error.w(),
+                                                            error.h(),
+                                                            error_back.d(),
+                                                            error.d() );
+
+                                                            /*
       dim3 block(4, 4, 16);
       dim3 grid( (error_back.w()      + block.x + 1)/block.x,
                  (error_back.h()      + block.y + 1)/block.y,
                  (error_back.d()      + block.z + 1)/block.z );
 
-      switch (kernel_size)
-      {
-        case 1:       cuda_convolution_back_kernel<1><<<grid, block>>>( error.v,
-                                                                        error_back.v,
-                                                                        w.v,
+      cuda_convolution_back_kernel<3><<<grid, block>>>( error.v,
+                                                        error_back.v,
+                                                        w.v,
 
-                                                                        error.w(),
-                                                                        error.h(),
-                                                                        error_back.d(),
-                                                                        error.d() );
-                      break;
+                                                        error.w(),
+                                                        error.h(),
+                                                        error_back.d(),
+                                                        error.d() );
+                                                        */
+    }
+    else
+    {
+        dim3 block(4, 4, 16);
+        dim3 grid( (error_back.w()      + block.x + 1)/block.x,
+                   (error_back.h()      + block.y + 1)/block.y,
+                   (error_back.d()      + block.z + 1)/block.z );
 
-        case 3:      cuda_convolution_back_kernel<3><<<grid, block>>>( error.v,
-                                                                       error_back.v,
-                                                                       w.v,
+        cuda_convolution_back_kernel_any_size<<<grid, block>>>( error.v,
+                                                                error_back.v,
+                                                                w.v,
 
-                                                                       error.w(),
-                                                                       error.h(),
-                                                                       error_back.d(),
-                                                                       error.d() );
-                      break;
+                                                                error.w(),
+                                                                error.h(),
+                                                                error_back.d(),
+                                                                error.d(),
+                                                                w.w(),
+                                                                w.h());
+    }
 
-        case 5:       cuda_convolution_back_kernel<5><<<grid, block>>>( error.v,
-                                                                        error_back.v,
-                                                                        w.v,
-
-                                                                        error.w(),
-                                                                        error.h(),
-                                                                        error_back.d(),
-                                                                        error.d() );
-                      break;
-
-        default:
-                    cuda_convolution_back_kernel_any_size<<<grid, block>>>( error.v,
-                                                                            error_back.v,
-                                                                            w.v,
-
-                                                                            error.w(),
-                                                                            error.h(),
-                                                                            error_back.d(),
-                                                                            error.d(),
-                                                                            w.w(),
-                                                                            w.h());
-
-                    break;
-      }
-
-      cudaDeviceSynchronize();
+    cudaDeviceSynchronize();
 
 
   #else
