@@ -22,13 +22,13 @@ minibatch size 32
                 RELU  [    7     7    32] [    1     1     1] [    7     7    32] [         0          0][      3136]
          CONVOLUTION  [    7     7    32] [    3     3    48] [    7     7    48] [     13824         48][    679728]
                 RELU  [    7     7    48] [    1     1     1] [    7     7    48] [         0          0][      4704]
-         CONVOLUTION  [    7     7    48] [    1     1    32] [    7     7    32] [      1536         32][     76832]
-                RELU  [    7     7    32] [    1     1     1] [    7     7    32] [         0          0][      3136]
-             DROPOUT  [    7     7    32] [    1     1     1] [    7     7    32] [         0          0][      3136]
-                  FC  [    7     7    32] [    1     1    10] [    1     1    10] [     15680         10][     31380]
+         CONVOLUTION  [    7     7    48] [    1     1    64] [    7     7    64] [      3072         64][    153664]
+                RELU  [    7     7    64] [    1     1     1] [    7     7    64] [         0          0][      6272]
+             DROPOUT  [    7     7    64] [    1     1     1] [    7     7    64] [         0          0][      6272]
+                  FC  [    7     7    64] [    1     1    10] [    1     1    10] [     31360         10][     62740]
 
 input_geometry  [28 28 1]
 output_geometry [1 1 10]
-network flops operations 5587588 FLOPS, 0.005588 GFLOPS
+network flops operations 5702052 FLOPS, 0.005702 GFLOPS
 init DONE
 

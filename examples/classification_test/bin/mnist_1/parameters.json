@@ -86,7 +86,7 @@
 
           {
             "type"      : "convolution",
-            "geometry"  : [1, 1, 32]
+            "geometry"  : [1, 1, 64]
           },
           {
             "type"      : "relu"

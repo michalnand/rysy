@@ -13,3 +13,80 @@ training
 
 
 epoch [0 0] from [5 5]
+training time per iterations 3.404750[ms]
+testing
+testing done
+network success rate top1 92.309998% 91.120003% 
+network success rate top5 99.610001% 99.400002% 
+saving best net in top 1
+best net saved to mnist_1/trained/, with success rate 92.309998%
+
+
+
+epoch [0 1] from [5 5]
+training time per iterations 3.523250[ms]
+testing
+testing done
+network success rate top1 95.370003% 94.989998% 
+network success rate top5 99.820000% 99.790001% 
+saving best net in top 1
+best net saved to mnist_1/trained/, with success rate 95.370003%
+
+
+
+epoch [0 2] from [5 5]
+training time per iterations 3.464417[ms]
+testing
+testing done
+network success rate top1 95.949997% 95.639999% 
+network success rate top5 99.889999% 99.849998% 
+saving best net in top 1
+best net saved to mnist_1/trained/, with success rate 95.949997%
+
+
+
+epoch [0 3] from [5 5]
+training time per iterations 3.677667[ms]
+testing
+testing done
+network success rate top1 96.769997% 96.129997% 
+network success rate top5 99.919998% 99.930000% 
+saving best net in top 1
+best net saved to mnist_1/trained/, with success rate 96.769997%
+
+
+
+epoch [0 4] from [5 5]
+training time per iterations 3.549167[ms]
+testing
+testing done
+network success rate top1 96.919998% 96.300003% 
+network success rate top5 99.919998% 99.940002% 
+saving best net in top 1
+best net saved to mnist_1/trained/, with success rate 96.919998%
+
+
+
+epoch [1 0] from [5 5]
+training time per iterations 3.689583[ms]
+testing
+testing done
+network success rate top1 97.540001% 97.190002% 
+network success rate top5 99.959999% 99.870003% 
+saving best net in top 1
+best net saved to mnist_1/trained/, with success rate 97.540001%
+
+
+
+epoch [1 1] from [5 5]
+training time per iterations 3.972833[ms]
+testing
+testing done
+network success rate top1 97.750000% 97.379997% 
+network success rate top5 99.980003% 99.870003% 
+saving best net in top 1
+best net saved to mnist_1/trained/, with success rate 97.750000%
+
+
+
+epoch [1 2] from [5 5]

@@ -283,6 +283,12 @@
 			"weights_file_name" : "mnist_1/trained/layer_13"
 		},
 		{
+			"geometry" : 
+			[
+				1,
+				1,
+				64
+			],
 			"input_geometry" : 
 			[
 				7,
@@ -293,9 +299,9 @@
 			[
 				7,
 				7,
-				48
+				64
 			],
-			"type" : "dropout",
+			"type" : "convolution",
 			"weights_file_name" : "mnist_1/trained/layer_14"
 		},
 		{
@@ -303,7 +309,39 @@
 			[
 				7,
 				7,
-				48
+				64
+			],
+			"output_geometry" : 
+			[
+				7,
+				7,
+				64
+			],
+			"type" : "relu",
+			"weights_file_name" : "mnist_1/trained/layer_15"
+		},
+		{
+			"input_geometry" : 
+			[
+				7,
+				7,
+				64
+			],
+			"output_geometry" : 
+			[
+				7,
+				7,
+				64
+			],
+			"type" : "dropout",
+			"weights_file_name" : "mnist_1/trained/layer_16"
+		},
+		{
+			"input_geometry" : 
+			[
+				7,
+				7,
+				64
 			],
 			"output_geometry" : 
 			[
@@ -312,7 +350,7 @@
 				10
 			],
 			"type" : "output",
-			"weights_file_name" : "mnist_1/trained/layer_15"
+			"weights_file_name" : "mnist_1/trained/layer_17"
 		}
 	],
 	"network_log_file_name" : "mnist_1/network.log",
