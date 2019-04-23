@@ -403,9 +403,9 @@ void cuda_convolution_back_kernel_3(    float *error,
     unsigned int height_        = height - 1;
     unsigned int kernel_size    = 3;
 
+    /*
     if (channel >= channels_count)
         return;
-
 
 
     __shared__ float w_shared[512][3][3];
@@ -492,12 +492,12 @@ void cuda_convolution_back_kernel_3(    float *error,
         unsigned int error_back_idx = (channel*height + y)*width + x;
         error_back[error_back_idx]  = sum;
     }
-
+    */
 
     //without shared memory implementation
-    /*
 
-    if ((y < height) && (x < width))
+
+    if ( (channel < channels_count) && (y < height) && (x < width))
     {
         float sum = 0.0;
 
@@ -541,8 +541,6 @@ void cuda_convolution_back_kernel_3(    float *error,
         unsigned int error_back_idx = (channel*height + y)*width + x;
         error_back[error_back_idx]  = sum;
     }
-    */
-
 }
 
 
@@ -624,7 +622,7 @@ void convolution_layer_backward( Tensor &error_back, Tensor &input, Tensor &erro
     }
     else if ((kernel_width == 3) && (kernel_height == 3))
     {
-        dim3 block(16, 16, 1);
+        dim3 block(8, 8, 8);
         dim3 grid( (error_back.w()      + block.x + 1)/block.x,
                    (error_back.h()      + block.y + 1)/block.y,
                    (error_back.d()      + block.z + 1)/block.z );
