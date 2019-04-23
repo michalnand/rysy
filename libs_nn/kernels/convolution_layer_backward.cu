@@ -626,7 +626,7 @@ void convolution_layer_backward( Tensor &error_back, Tensor &input, Tensor &erro
     }
     else if ((kernel_width == 3) && (kernel_height == 3))
     {
-        dim3 block(32, 32, 1);
+        dim3 block(16, 16, 1);
         dim3 grid( (error_back.w()      + block.x + 1)/block.x,
                    (error_back.h()      + block.y + 1)/block.y,
                    (error_back.d()      + block.z + 1)/block.z );
