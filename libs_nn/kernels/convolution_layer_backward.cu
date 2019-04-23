@@ -399,7 +399,7 @@ void cuda_convolution_back_kernel_3(    float *error,
     unsigned int y       = threadIdx.y + blockIdx.y*blockDim.y;
     unsigned int channel = threadIdx.z + blockIdx.z*blockDim.z;
 
-
+    /*
     if ((channel < channels_count) && (y < height) && (x < width))
     {
         unsigned int width_         = width - 1;
@@ -448,10 +448,9 @@ void cuda_convolution_back_kernel_3(    float *error,
         unsigned int error_back_idx = (channel*height + y)*width + x;
         error_back[error_back_idx]  = sum;
     }
+    */
 
 
-
-    /*
     if (channel < channels_count)
     {
         if ((y < height-1) && (x < width-1) && (y > 0) && (x > 0))
@@ -531,7 +530,6 @@ void cuda_convolution_back_kernel_3(    float *error,
             }
         }
     }
-    */
 
 }
 
