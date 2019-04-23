@@ -399,7 +399,102 @@ void cuda_convolution_back_kernel_3(    float *error,
     unsigned int y       = threadIdx.y + blockIdx.y*blockDim.y;
     unsigned int channel = threadIdx.z + blockIdx.z*blockDim.z;
 
+    unsigned int width_         = width - 1;
+    unsigned int height_        = height - 1;
+    unsigned int kernel_size    = 3;
+
+    if (channel >= channels_count)
+        return;
+
+    __shared__ float w_shared[512][3][3];
+
+    if ((threadIdx.x < kernel_size) && (threadIdx.y < kernel_size))
+    {
+        unsigned int w_ofs       = (0*channels_count + channel)*kernel_size*kernel_size;
+        for (unsigned int kernel = 0; kernel < kernels_count; kernel++)
+        {
+            w_shared[kernel][threadIdx.y][threadIdx.x] = w[w_ofs + threadIdx.y*kernel_size + threadIdx.x];
+            w_ofs+= kernel_size*kernel_size*channels_count;
+        }
+    }
+
+    __syncthreads();
+
+
+    if ((y < height_) && (x < width_) && (y > 0) && (x > 0))
+    {
+        float sum = 0.0;
+
+
+        for (unsigned int kernel = 0; kernel < kernels_count; kernel++)
+        {
+            unsigned int error_offset = (kernel*height + y + 0)*width + x + 0;
+
+            sum+= w_shared[kernel][0][0]*error[error_offset + 1*width + 1];
+            sum+= w_shared[kernel][0][1]*error[error_offset + 1*width + 0];
+            sum+= w_shared[kernel][0][2]*error[error_offset + 1*width - 1];
+
+            sum+= w_shared[kernel][1][0]*error[error_offset + 0*width + 1];
+            sum+= w_shared[kernel][1][1]*error[error_offset + 0*width + 0];
+            sum+= w_shared[kernel][1][2]*error[error_offset + 0*width - 1];
+
+            sum+= w_shared[kernel][2][0]*error[error_offset - 1*width + 1];
+            sum+= w_shared[kernel][2][1]*error[error_offset - 1*width + 0];
+            sum+= w_shared[kernel][2][2]*error[error_offset - 1*width - 1];
+        }
+
+        unsigned int error_back_idx = (channel*height + y)*width + x;
+        error_back[error_back_idx]  = sum;
+    }
+    else
+    if ( ((y == height-1)||(y == 0)) && ((x == width-1)||(x == 0)) )
+    {
+        float sum = 0.0;
+
+        for (unsigned int kernel = 0; kernel < kernels_count; kernel++)
+        {
+            unsigned int error_offset = (kernel*height + y + 0)*width + x + 0;
+
+            if ((x < width_) && (y < height_))
+                sum+= w_shared[kernel][0][0]*error[error_offset + 1*width + 1];
+
+            if (y < height_)
+                sum+= w_shared[kernel][0][1]*error[error_offset + 1*width + 0];
+
+            if ((x > 0) && (y < height_))
+                sum+= w_shared[kernel][0][2]*error[error_offset + 1*width - 1];
+
+
+
+            if (x < width_)
+                sum+= w_shared[kernel][1][0]*error[error_offset + 0*width + 1];
+
+            if (true)
+                sum+= w_shared[kernel][1][1]*error[error_offset + 0*width + 0];
+
+            if (x > 0)
+                sum+= w_shared[kernel][1][2]*error[error_offset + 0*width - 1];
+
+
+
+            if ((x < width_) && (y > 0))
+                sum+= w_shared[kernel][2][0]*error[error_offset - 1*width + 1];
+
+            if (y > 0)
+                sum+= w_shared[kernel][2][1]*error[error_offset - 1*width + 0];
+
+            if ((x > 0) && (y > 0))
+                sum+= w_shared[kernel][2][2]*error[error_offset - 1*width - 1];
+        }
+
+        unsigned int error_back_idx = (channel*height + y)*width + x;
+        error_back[error_back_idx]  = sum;
+    }
+
+
+    //without shared memory implementation
     /*
+
     if ((channel < channels_count) && (y < height) && (x < width))
     {
         unsigned int width_         = width - 1;
@@ -449,87 +544,6 @@ void cuda_convolution_back_kernel_3(    float *error,
         error_back[error_back_idx]  = sum;
     }
     */
-
-
-    if (channel < channels_count)
-    {
-        if ((y < height-1) && (x < width-1) && (y > 0) && (x > 0))
-        {
-            unsigned int width_         = width - 1;
-            unsigned int height_        = height - 1;
-            unsigned int kernel_size    = 3;
-
-            float sum = 0.0;
-
-            for (unsigned int kernel = 0; kernel < kernels_count; kernel++)
-            {
-                unsigned int w_idx        = (kernel*channels_count + channel)*kernel_size*kernel_size;
-                unsigned int error_offset = (kernel*height + y + 0)*width + x + 0;
-
-                sum+= w[w_idx]*error[error_offset + 1*width + 1]; w_idx++;
-                sum+= w[w_idx]*error[error_offset + 1*width + 0]; w_idx++;
-                sum+= w[w_idx]*error[error_offset + 1*width - 1]; w_idx++;
-
-                sum+= w[w_idx]*error[error_offset + 0*width + 1]; w_idx++;
-                sum+= w[w_idx]*error[error_offset + 0*width + 0]; w_idx++;
-                sum+= w[w_idx]*error[error_offset + 0*width - 1]; w_idx++;
-
-                sum+= w[w_idx]*error[error_offset - 1*width + 1]; w_idx++;
-                sum+= w[w_idx]*error[error_offset - 1*width + 0]; w_idx++;
-                sum+= w[w_idx]*error[error_offset - 1*width - 1]; w_idx++;
-            }
-
-            unsigned int error_back_idx = (channel*height + y)*width + x;
-            error_back[error_back_idx]  = sum;
-        }
-
-        if (((y == height-1)||(y == 0)) && ((x == width-1)||(x == 0)) )
-        {
-            unsigned int width_         = width - 1;
-            unsigned int height_        = height - 1;
-            unsigned int kernel_size    = 3;
-
-            float sum = 0.0;
-
-
-            for (unsigned int kernel = 0; kernel < kernels_count; kernel++)
-            {
-                unsigned int w_idx        = (kernel*channels_count + channel)*kernel_size*kernel_size;
-                unsigned int error_offset = (kernel*height + y + 0)*width + x + 0;
-
-                if ((x < width_) && (y < height_))
-                    sum+= w[w_idx]*error[error_offset + 1*width + 1]; w_idx++;
-
-                if (y < height_)
-                    sum+= w[w_idx]*error[error_offset + 1*width + 0]; w_idx++;
-
-                if ((x > 0) && (y < height_))
-                    sum+= w[w_idx]*error[error_offset + 1*width - 1]; w_idx++;
-
-
-
-                if (x < width_)
-                    sum+= w[w_idx]*error[error_offset + 0*width + 1]; w_idx++;
-
-                if (true)
-                    sum+= w[w_idx]*error[error_offset + 0*width + 0]; w_idx++;
-
-                if (x > 0)
-                    sum+= w[w_idx]*error[error_offset + 0*width - 1]; w_idx++;
-
-
-
-                if ((x < width_) && (y > 0))
-                    sum+= w[w_idx]*error[error_offset - 1*width + 1]; w_idx++;
-
-                if (y > 0)
-                    sum+= w[w_idx]*error[error_offset - 1*width + 0]; w_idx++;
-
-                if ((x > 0) && (y > 0))
-                    sum+= w[w_idx]*error[error_offset - 1*width - 1]; w_idx++;
-            }
-        }
-    }
 
 }
 
@@ -612,7 +626,7 @@ void convolution_layer_backward( Tensor &error_back, Tensor &input, Tensor &erro
     }
     else if ((kernel_width == 3) && (kernel_height == 3))
     {
-        dim3 block(8, 8, 8);
+        dim3 block(32, 32, 1);
         dim3 grid( (error_back.w()      + block.x + 1)/block.x,
                    (error_back.h()      + block.y + 1)/block.y,
                    (error_back.d()      + block.z + 1)/block.z );
