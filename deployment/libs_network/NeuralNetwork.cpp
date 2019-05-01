@@ -34,6 +34,7 @@ void NeuralNetwork::forward()
 
         layers[i]->forward(output, input);
 
+
         io_swap();
     }
 

@@ -104,6 +104,11 @@ int main()
         printf("\n");
       }
     }
+
+    std::cout << "\n";
+    std::cout << "GOOD " << good << "\n";
+    std::cout << "WRONG " << wrong << "\n";
+    std::cout << "result = " << good*100.0/(good + wrong) << "[\%]\n";
   }
 
 

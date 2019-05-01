@@ -81,7 +81,7 @@
 			[
 				1,
 				1,
-				10
+				8
 			],
 			"type" : "output",
 			"weights_file_name" : "net_0/trained/layer_3"

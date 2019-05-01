@@ -11,11 +11,10 @@ minibatch size 32
                   FC  [  128     1     1] [    1     1    64] [    1     1    64] [      8192         64][     16512]
                 RELU  [    1     1    64] [    1     1     1] [    1     1    64] [         0          0][       128]
              DROPOUT  [    1     1    64] [    1     1     1] [    1     1    64] [         0          0][       128]
-                  FC  [    1     1    64] [    1     1    10] [    1     1    10] [       640         10][      1300]
+                  FC  [    1     1    64] [    1     1     8] [    1     1     8] [       512          8][      1040]
 
 input_geometry  [128 1 1]
-output_geometry [1 1 10]
-network flops operations 18068 FLOPS, 0.000018 GFLOPS
+output_geometry [1 1 8]
+network flops operations 17808 FLOPS, 0.000018 GFLOPS
 init DONE
 
-network destructor done

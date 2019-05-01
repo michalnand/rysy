@@ -1,6 +1,5 @@
 #include "NetworkConvolutionKernel.h"
 #include "NetworkConfig.h"
-#include <iostream>
 
 //optimized kernel
 template<const unsigned int kernel_size>
@@ -89,25 +88,24 @@ void t_network_convolution_kernel_1d(   nn_layer_t *output,
                                         unsigned int in_channels,
                                         unsigned int out_channels )
 {
-    unsigned int k_half = (kernel_size - 1)/2;
 
+    unsigned int k_half = (kernel_size - 1)/2;
     unsigned int input_size_x = in_width - 2*k_half;
 
     for (unsigned int filter = 0; filter < out_channels; filter++)
-        for (unsigned int x = 0; x <= input_size_x; x++)
+        for (unsigned int x = 0; x < input_size_x; x++)
         {
             unsigned int filter_idx = kernel_size*in_channels*filter;
+            unsigned int input_idx = x;
 
             nn_t dot_result = 0;
             nn_t bias_result;
 
             for (unsigned int ch = 0; ch < in_channels; ch++)
             {
-                unsigned int input_idx = ch*in_width + x;
-
                 if (kernel_size == 1)
                 {
-                    dot_result+= ((int16_t)w[filter_idx])*((int16_t)input[input_idx]); filter_idx++;
+                    dot_result+= ((int16_t)w[filter_idx])*((int16_t)input[input_idx]); filter_idx++; input_idx++;
                 }
 
                 if (kernel_size == 3)
@@ -116,6 +114,8 @@ void t_network_convolution_kernel_1d(   nn_layer_t *output,
                     dot_result+= ((int16_t)w[filter_idx])*((int16_t)input[input_idx]); filter_idx++; input_idx++;
                     dot_result+= ((int16_t)w[filter_idx])*((int16_t)input[input_idx]); filter_idx++; input_idx++;
                 }
+
+                input_idx+= in_width - kernel_size;
             }
 
             dot_result  = (dot_result*w_range)/128;
@@ -129,8 +129,8 @@ void t_network_convolution_kernel_1d(   nn_layer_t *output,
             if (result < -NETWORK_LAYER_OUTPUT_RANGE)
                 result = -NETWORK_LAYER_OUTPUT_RANGE;
 
-            unsigned int output_idx = filter*in_width + x + k_half;
 
+            unsigned int output_idx = x + k_half + filter*in_width;
             output[output_idx] = result;
         }
 }

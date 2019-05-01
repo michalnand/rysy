@@ -3,18 +3,19 @@
 
 int main(int argc, char* argv[])
 {
-  if (argc != 4)
+  if (argc != 3)
   {
-    std::cout << "usage: " << argv[0] << " trained_network_file" << " export_path_dir" << " export_network_name/\n";
+    std::cout << "usage: " << argv[0] << " trained_network_file" << " network_export_dir_name" << "\n";
     return 0;
   }
 
   std::string trained_network_file  = argv[1];
-  std::string export_path_dir       = argv[2];
-  std::string export_network_name   = argv[3];
+  std::string network_export_name       = argv[2];
+
+  std::string export_path_dir = network_export_name + "/";
 
   NetExport net_export(trained_network_file);
-  net_export.process(export_path_dir, export_network_name);
+  net_export.process(export_path_dir, network_export_name);
 
   return 0;
 }

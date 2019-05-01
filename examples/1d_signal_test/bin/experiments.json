@@ -1,9 +1,6 @@
 {
   "experiments" :
   [
-      "net_0/",
-      "net_1/",
-      "net_2/",
-      "net_3/"
+      "net_4/"
   ]
 }

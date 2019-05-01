@@ -1,14 +1,15 @@
 #include <iostream>
-#include <dataset_signal.h>
+#include <dataset_line_camera.h>
 #include <classification_experiment.h>
 
 
 int main()
 {
-    unsigned int classes_count = 10;
-    unsigned int length = 128;
-    float noise_level = 0.5;
-    DatasetSignal dataset(classes_count, length, noise_level);
+    unsigned int sensors_count  = 8;
+    unsigned int pixels_count   = 128;
+    float noise_level           = 0.6;
+
+    DatasetLineCamera dataset(sensors_count, pixels_count, noise_level);
 
 
     JsonConfig parameters("experiments.json");

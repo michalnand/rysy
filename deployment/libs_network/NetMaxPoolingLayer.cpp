@@ -47,22 +47,24 @@ void network_max_pooling_kernel_1d( nn_layer_t *output,
 
                                     sLayerGeometry output_geometry)
 {
-    unsigned int input_width     = output_geometry.w*2;
-
     for (unsigned int ch = 0; ch < output_geometry.d; ch++)
-    for (unsigned int x = 0; x < output_geometry.w; x++)
     {
-        unsigned int idx = ch*input_width + x*2;
+        unsigned int input_idx  = ch*2*output_geometry.w;
+        unsigned int output_idx = ch*output_geometry.w;
 
-        nn_t va = input[idx + 0];
-        nn_t vb = input[idx + 1];
+        for (unsigned int x = 0; x < output_geometry.w; x++)
+        {
+            nn_t va = input[input_idx + 0];
+            nn_t vb = input[input_idx + 1];
 
-        unsigned int output_idx = ch*output_geometry.w + x;
+            if (va > vb)
+                output[output_idx] = va;
+            else
+                output[output_idx] = vb;
 
-        if (va > vb)
-            output[output_idx] = va;
-        else
-            output[output_idx] = vb;
+            input_idx+= 2;
+            output_idx++;
+        }
     }
 }
 

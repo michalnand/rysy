@@ -1,18 +1,18 @@
-#include "dataset_signal.h"
+#include "dataset_line_camera.h"
 #include <math.h>
 
-DatasetSignal::DatasetSignal(unsigned int classes_count, unsigned int length, float noise_level)
+DatasetLineCamera::DatasetLineCamera(unsigned int sensors_count, unsigned int pixels_count, float noise_level)
 {
-  width      = length;
+  width      = pixels_count;
   height     = 1;
   channels   = 1;
 
-  output_size = classes_count;
+  output_size = sensors_count;
   training.resize(output_size);
 
-  unsigned int total_count = classes_count*10000;
+  unsigned int total_count = sensors_count*10000;
 
-  create(total_count, length, 0.1, noise_level);
+  create(total_count, pixels_count, 0.1, noise_level);
 
   print();
 
@@ -23,12 +23,12 @@ DatasetSignal::DatasetSignal(unsigned int classes_count, unsigned int length, fl
 }
 
 
-DatasetSignal::~DatasetSignal()
+DatasetLineCamera::~DatasetLineCamera()
 {
 
 }
 
-void DatasetSignal::create(unsigned int items_count, unsigned int length, float testing_ratio, float noise_level)
+void DatasetLineCamera::create(unsigned int items_count, unsigned int pixels_count, float testing_ratio, float noise_level)
 {
     sDatasetItem item;
 
@@ -40,9 +40,9 @@ void DatasetSignal::create(unsigned int items_count, unsigned int length, float 
             item.output[j] = 0.0;
 
         unsigned int class_id = rand()%output_size;
-        float frequency = class_id + 4;
+        float center = ((class_id*1.0/output_size) - 0.5)*2.0;
 
-        item.input = signal(frequency, length, noise_level);
+        item.input = signal(center, pixels_count, noise_level);
         item.output[class_id] = 1.0;
 
         float p = (rand()%100000)/100000.0;
@@ -54,19 +54,16 @@ void DatasetSignal::create(unsigned int items_count, unsigned int length, float 
 }
 
 
-std::vector<float> DatasetSignal::signal(float frequency, unsigned int length, float noise_level)
+std::vector<float> DatasetLineCamera::signal(float center, unsigned int length, float noise_level)
 {
     std::vector<float> result(length);
 
-    float pi = 3.141592654;
-    float phase = ((rand()%100000)/100000.0)*2.0*pi;
-
     for (unsigned int i = 0; i < length; i++)
     {
-        float phase_noise = 0.1*((rand()%100000)/100000.0 - 0.5)*2.0;
-
-        float x = phase_noise + phase + (2.0*pi*frequency*i)/length;
-        float y = sin(x);
+        float k = 40.0;
+        float x = ((i*1.0/length) - 0.5)*2.0;
+        float d = x - center;
+        float y = exp(-k*d*d);
 
         float noise = ((rand()%100000)/100000.0 - 0.5)*2.0;
 
@@ -89,12 +86,12 @@ std::vector<float> DatasetSignal::signal(float frequency, unsigned int length, f
 
     if (max > min)
     {
-        k = 2.0/(max - min);
+        k = 1.0/(max - min);
         q = 1.0 - k*max;
     }
 
     for (unsigned int i = 0; i < length; i++)
         result[i] = k*result[i] + q;
-
+    
     return result;
 }
