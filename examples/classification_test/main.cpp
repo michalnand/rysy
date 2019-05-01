@@ -20,7 +20,7 @@ void net_test(DatasetInterface &dataset, std::string config_dir)
   CNN nn(parameters.result["network_architecture"], input_geometry, output_geometry);
 
   unsigned int iterations = 1000;
- 
+
   nn.set_training_mode();
 
   for (unsigned int i = 0; i < iterations; i++)
@@ -39,7 +39,7 @@ int main()
                            "/home/michal/dataset/mnist/train-labels.idx1-ubyte",
                            "/home/michal/dataset/mnist/t10k-images.idx3-ubyte",
                            "/home/michal/dataset/mnist/t10k-labels.idx1-ubyte",
-                          0);
+                           false);
 
 
     JsonConfig parameters("experiments_mnist.json");

@@ -20,15 +20,16 @@ minibatch size 32
                 RELU  [   14    14    32] [    1     1     1] [   14    14    32] [         0          0][     12544]
          MAX POOLING  [   14    14    32] [    2     2     1] [    7     7    32] [         0          0][     12544]
                 RELU  [    7     7    32] [    1     1     1] [    7     7    32] [         0          0][      3136]
-         CONVOLUTION  [    7     7    32] [    3     3    48] [    7     7    48] [     13824         48][    679728]
-                RELU  [    7     7    48] [    1     1     1] [    7     7    48] [         0          0][      4704]
-         CONVOLUTION  [    7     7    48] [    1     1    64] [    7     7    64] [      3072         64][    153664]
-                RELU  [    7     7    64] [    1     1     1] [    7     7    64] [         0          0][      6272]
-             DROPOUT  [    7     7    64] [    1     1     1] [    7     7    64] [         0          0][      6272]
-                  FC  [    7     7    64] [    1     1    10] [    1     1    10] [     31360         10][     62740]
+         CONVOLUTION  [    7     7    32] [    3     3    32] [    7     7    32] [      9216         32][    453152]
+                RELU  [    7     7    32] [    1     1     1] [    7     7    32] [         0          0][      3136]
+         CONVOLUTION  [    7     7    32] [    1     1    32] [    7     7    32] [      1024         32][     51744]
+                RELU  [    7     7    32] [    1     1     1] [    7     7    32] [         0          0][      3136]
+             DROPOUT  [    7     7    32] [    1     1     1] [    7     7    32] [         0          0][      3136]
+                  FC  [    7     7    32] [    1     1    10] [    1     1    10] [     15680         10][     31380]
 
 input_geometry  [28 28 1]
 output_geometry [1 1 10]
-network flops operations 5702052 FLOPS, 0.005702 GFLOPS
+network flops operations 5334356 FLOPS, 0.005334 GFLOPS
 init DONE
 
+network destructor done

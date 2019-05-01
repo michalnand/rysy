@@ -1,15 +1,23 @@
 #include "dataset_mnist.h"
-
+#include <iostream>
 
 DatasetMnist::DatasetMnist( std::string training_data_file_name, std::string training_labels_file_name,
                             std::string testing_data_file_name, std::string testing_labels_file_name,
-                            unsigned int padding)
+                            bool make_1d)
               :DatasetInterface()
 {
-  this->padding = padding;
-  width     = 28 + 2*padding;
-  height    = 28 + 2*padding;
-  channels  = 1;
+    if (make_1d)
+    {
+        width   = 28*28;
+        height  = 1;
+    }
+    else
+    {
+        width     = 28;
+        height    = 28;
+    }
+
+    channels  = 1;
 
   output_size = 10;
   training.resize(output_size);
@@ -102,9 +110,13 @@ int DatasetMnist::load_dataset(std::string data_file_name, std::string labels_fi
       raw_input[i] = b/256.0; //normalise into <0, 1> range
     }
 
+    unsigned int ptr = 0;
     for (unsigned int y = 0; y < rows; y++)
       for (unsigned int x = 0; x < columns; x++)
-        item.input[(y + padding)*width + (x + padding)] = raw_input[y*columns + x];
+      {
+        item.input[ptr] = raw_input[y*columns + x];
+        ptr++;
+      }
 
     for (i = 0; i < 10; i++)
       item.output[i] = 0.0;
@@ -114,13 +126,13 @@ int DatasetMnist::load_dataset(std::string data_file_name, std::string labels_fi
     (void)read_res;
     item.output[b] =  1.0;
 
-
     if (testing)
       add_testing(item);
     else
       add_training(item);
   }
 
+  std::cout << "loading done\n";
 
   fclose(f_data);
   fclose(f_labels);

@@ -2014,8 +2014,8 @@ class DatasetMnist(DatasetInterface):
     __getattr__ = lambda self, name: _swig_getattr(self, DatasetMnist, name)
     __repr__ = _swig_repr
 
-    def __init__(self, training_data_file_name, training_labels_file_name, testing_data_file_name, testing_labels_file_name, padding=0):
-        this = _rysy.new_DatasetMnist(training_data_file_name, training_labels_file_name, testing_data_file_name, testing_labels_file_name, padding)
+    def __init__(self, training_data_file_name, training_labels_file_name, testing_data_file_name, testing_labels_file_name, make_1d=False):
+        this = _rysy.new_DatasetMnist(training_data_file_name, training_labels_file_name, testing_data_file_name, testing_labels_file_name, make_1d)
         try:
             self.this.append(this)
         except __builtin__.Exception:

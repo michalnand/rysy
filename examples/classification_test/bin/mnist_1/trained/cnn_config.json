@@ -249,7 +249,7 @@
 			[
 				3,
 				3,
-				48
+				32
 			],
 			"input_geometry" : 
 			[
@@ -261,7 +261,7 @@
 			[
 				7,
 				7,
-				48
+				32
 			],
 			"type" : "convolution",
 			"weights_file_name" : "mnist_1/trained/layer_12"
@@ -271,13 +271,13 @@
 			[
 				7,
 				7,
-				48
+				32
 			],
 			"output_geometry" : 
 			[
 				7,
 				7,
-				48
+				32
 			],
 			"type" : "relu",
 			"weights_file_name" : "mnist_1/trained/layer_13"
@@ -287,19 +287,19 @@
 			[
 				1,
 				1,
-				64
+				32
 			],
 			"input_geometry" : 
 			[
 				7,
 				7,
-				48
+				32
 			],
 			"output_geometry" : 
 			[
 				7,
 				7,
-				64
+				32
 			],
 			"type" : "convolution",
 			"weights_file_name" : "mnist_1/trained/layer_14"
@@ -309,13 +309,13 @@
 			[
 				7,
 				7,
-				64
+				32
 			],
 			"output_geometry" : 
 			[
 				7,
 				7,
-				64
+				32
 			],
 			"type" : "relu",
 			"weights_file_name" : "mnist_1/trained/layer_15"
@@ -325,13 +325,13 @@
 			[
 				7,
 				7,
-				64
+				32
 			],
 			"output_geometry" : 
 			[
 				7,
 				7,
-				64
+				32
 			],
 			"type" : "dropout",
 			"weights_file_name" : "mnist_1/trained/layer_16"
@@ -341,7 +341,7 @@
 			[
 				7,
 				7,
-				64
+				32
 			],
 			"output_geometry" : 
 			[

@@ -5,13 +5,10 @@
 
 class DatasetMnist: public DatasetInterface
 {
-  private:
-    unsigned int padding;
-
   public:
     DatasetMnist( std::string training_data_file_name, std::string training_labels_file_name,
                   std::string testing_data_file_name, std::string testing_labels_file_name,
-                  unsigned int padding = 0);
+                  bool make_1d = false);
 
     ~DatasetMnist();
 

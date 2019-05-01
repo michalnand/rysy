@@ -27,11 +27,11 @@
 <rect x="1200" y="1" width="50" height="500" fill="rgb(100,190,100)" stroke-width="2" stroke="rgb(50,95,50)" />
 <text x="1225" y="191" style="font-size: 30px; writing-mode: tb; ">relu    </text>
 <rect x="1300" y="1" width="50" height="500" fill="rgb(100,100,190)" stroke-width="2" stroke="rgb(50,50,95)" />
-<text x="1325" y="109" style="font-size: 30px; writing-mode: tb; ">convolution 3 3 48 </text>
+<text x="1325" y="109" style="font-size: 30px; writing-mode: tb; ">convolution 3 3 32 </text>
 <rect x="1400" y="1" width="50" height="500" fill="rgb(100,190,100)" stroke-width="2" stroke="rgb(50,95,50)" />
 <text x="1425" y="191" style="font-size: 30px; writing-mode: tb; ">relu    </text>
 <rect x="1500" y="1" width="50" height="500" fill="rgb(100,100,190)" stroke-width="2" stroke="rgb(50,50,95)" />
-<text x="1525" y="109" style="font-size: 30px; writing-mode: tb; ">convolution 1 1 64 </text>
+<text x="1525" y="109" style="font-size: 30px; writing-mode: tb; ">convolution 1 1 32 </text>
 <rect x="1600" y="1" width="50" height="500" fill="rgb(100,190,100)" stroke-width="2" stroke="rgb(50,95,50)" />
 <text x="1625" y="191" style="font-size: 30px; writing-mode: tb; ">relu    </text>
 <rect x="1700" y="1" width="50" height="500" fill="rgb(100,100,100)" stroke-width="2" stroke="rgb(50,50,50)" />

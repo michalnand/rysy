@@ -1,6 +1,7 @@
 #include "convolution_layer_forward.cuh"
 
 #define TILE_MAX_SIZE ((unsigned int)32)
+#define MAX_FEATURE_MAP_COUNT ((unsigned int)512)
 
 __host__
 void cpu_convolution_forward_kernel(   float *output,
@@ -67,7 +68,7 @@ void cuda_convolution_forward_kernel(   float *output,
     unsigned int input_size_y = input_geometry.h - 2*k_half;
     unsigned int input_size_x = input_geometry.w - 2*k_half;
 
-    __shared__ float w_shared[512][kernel_size][kernel_size];
+    __shared__ float w_shared[MAX_FEATURE_MAP_COUNT][kernel_size][kernel_size];
     if ( (threadIdx.x < kernel_size) && (threadIdx.y < kernel_size) )
     for (unsigned int ch = 0; ch < input_geometry.d; ch++)
     {
@@ -114,6 +115,62 @@ void cuda_convolution_forward_kernel(   float *output,
         }
 
         unsigned int output_idx = (filter*input_geometry.h + y + k_half)*input_geometry.w + x + k_half;
+        atomicAdd(&output[output_idx], sum);
+    }
+}
+
+template<unsigned int kernel_size>
+__global__
+void cuda_convolution_forward_kernel_1d(    float *output,
+                                            float *input,
+                                            float *w,
+                                            float *bias,
+
+                                            sGeometry output_geometry,
+                                            sGeometry input_geometry,
+                                            sGeometry kernel_geometry
+                                        )
+{
+    unsigned int x      = threadIdx.x + blockIdx.x*blockDim.x;
+    unsigned int filter = threadIdx.y + blockIdx.y*blockDim.y;
+
+    unsigned int k_half = (kernel_size - 1)/2;
+    unsigned int input_size_x = input_geometry.w - 2*k_half;
+
+    __shared__ float w_shared[MAX_FEATURE_MAP_COUNT][kernel_size];
+    if (threadIdx.x < kernel_size)
+        for (unsigned int ch = 0; ch < input_geometry.d; ch++)
+        {
+            unsigned int w_ofs = kernel_size*ch + filter*kernel_size*input_geometry.d;
+            w_shared[ch][threadIdx.x] = w[w_ofs + threadIdx.x];
+        }
+
+    __syncthreads();
+
+
+    if (filter < output_geometry.d)
+    if (x < input_size_x)
+    {
+        float sum = bias[filter];
+
+        for (unsigned int ch = 0; ch < input_geometry.d; ch++)
+        {
+            unsigned int input_idx  = ch*input_geometry.w + x;
+
+            if (kernel_size == 1)
+            {
+                sum+= w_shared[ch][0]*input[input_idx];
+            }
+
+            if (kernel_size == 3)
+            {
+                sum+= w_shared[ch][0]*input[input_idx]; input_idx++;
+                sum+= w_shared[ch][1]*input[input_idx]; input_idx++;
+                sum+= w_shared[ch][2]*input[input_idx];
+            }
+        }
+
+        unsigned int output_idx = x + k_half + filter*input_geometry.w;
         atomicAdd(&output[output_idx], sum);
     }
 }
@@ -199,49 +256,77 @@ void convolution_layer_forward(   Tensor &output, Tensor &input,
 
 
     #ifdef NETWORK_USE_CUDA
-      output.clear();
+        output.clear();
 
-        dim3 block(16, 16, 1);
-        dim3 grid( (input_size_x      + block.x + 1)/block.x,
-                   (input_size_y      + block.y + 1)/block.y,
-                   (kernel_geometry.d + block.z + 1)/block.z );
 
-        unsigned int kernel_size = kernel_geometry.w;
 
-        switch (kernel_size)
+
+
+        if ((kernel_geometry.w == 1)&&(kernel_geometry.h == 1))
         {
-                  case 1:  cuda_convolution_forward_kernel<1><<<grid, block>>>( output.v,
-                                                                                input.v,
-                                                                                w.v,
-                                                                                bias.v,
+            dim3 block(16, 16, 1);
+            dim3 grid( (input_size_x      + block.x + 1)/block.x,
+                       (input_size_y      + block.y + 1)/block.y,
+                       (kernel_geometry.d + block.z + 1)/block.z );
 
-                                                                                output_geometry,
-                                                                                input_geometry,
-                                                                                kernel_geometry);
-                              break;
+            cuda_convolution_forward_kernel<1><<<grid, block>>>( output.v,
+                                                                          input.v,
+                                                                          w.v,
+                                                                          bias.v,
 
-                  case 3:  cuda_convolution_forward_kernel<3><<<grid, block>>>( output.v,
-                                                                                input.v,
-                                                                                w.v,
-                                                                                bias.v,
+                                                                          output_geometry,
+                                                                          input_geometry,
+                                                                          kernel_geometry);
+        }
+        else if ((kernel_geometry.w == 3)&&(kernel_geometry.h == 3))
+        {
+            dim3 block(16, 16, 1);
+            dim3 grid( (input_size_x      + block.x + 1)/block.x,
+                       (input_size_y      + block.y + 1)/block.y,
+                       (kernel_geometry.d + block.z + 1)/block.z );
 
-                                                                                output_geometry,
-                                                                                input_geometry,
-                                                                                kernel_geometry);
-                              break;
+            cuda_convolution_forward_kernel<3><<<grid, block>>>( output.v,
+                                                                          input.v,
+                                                                          w.v,
+                                                                          bias.v,
 
+                                                                          output_geometry,
+                                                                          input_geometry,
+                                                                          kernel_geometry);
+        }
+        /*
+        else if ((kernel_geometry.w == 3)&&(kernel_geometry.h == 1))
+        {
+            dim3 block(32, 8);
+            dim3 grid( (input_size_x      + block.x + 1)/block.x,
+                       (kernel_geometry.d + block.z + 1)/block.z );
 
-                  default:
-                          cuda_convolution_forward_kernel_any_size<<<grid, block>>>(
-                                                                                output.v,
-                                                                                input.v,
-                                                                                w.v,
-                                                                                bias.v,
+            cuda_convolution_forward_kernel_1d<3><<<grid, block>>>( output.v,
+                                                                    input.v,
+                                                                    w.v,
+                                                                    bias.v,
 
-                                                                                output_geometry,
-                                                                                input_geometry,
-                                                                                kernel_geometry);
-                            break;
+                                                                    output_geometry,
+                                                                    input_geometry,
+                                                                    kernel_geometry);
+        }
+        */
+        else
+        {
+            dim3 block(16, 16, 1);
+            dim3 grid( (input_size_x      + block.x + 1)/block.x,
+                       (input_size_y      + block.y + 1)/block.y,
+                       (kernel_geometry.d + block.z + 1)/block.z );
+
+            cuda_convolution_forward_kernel_any_size<<<grid, block>>>(
+                                                                        output.v,
+                                                                        input.v,
+                                                                        w.v,
+                                                                        bias.v,
+
+                                                                        output_geometry,
+                                                                        input_geometry,
+                                                                        kernel_geometry);
           }
 
           cudaDeviceSynchronize();
