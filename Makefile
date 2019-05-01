@@ -24,6 +24,7 @@ all:
 	cd examples/denoising_autoencoder && make -j4
 	cd examples/deployment_test && make -j4
 	cd examples/classification_test && make -j4
+	cd examples/1d_signal_test && make -j4
 
 
 clean:
@@ -49,3 +50,4 @@ clean:
 
 	cd examples/deployment_test && make clean
 	cd examples/classification_test && make clean
+	cd examples/1d_signal_test && make clean

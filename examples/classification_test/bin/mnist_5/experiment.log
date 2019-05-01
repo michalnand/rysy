@@ -13,16 +13,34 @@ training
 
 
 epoch [0 0] from [5 5]
-training time per iterations 1.217417[ms]
+training time per iterations 2.671917[ms]
 testing
 testing done
-network success rate top1 90.709999% 89.970001% 
-network success rate top5 99.120003% 98.949997% 
+network success rate top1 92.059998% 91.709999% 
+network success rate top5 99.360001% 99.339996% 
 saving best net in top 1
-best net saved to mnist_5/trained/, with success rate 90.709999%
+best net saved to mnist_5/trained/, with success rate 92.059998%
 
 
 
 epoch [0 1] from [5 5]
-training time per iterations 1.349250[ms]
+training time per iterations 2.415250[ms]
 testing
+testing done
+network success rate top1 92.760002% 92.320000% 
+network success rate top5 99.400002% 99.349998% 
+saving best net in top 1
+best net saved to mnist_5/trained/, with success rate 92.760002%
+
+
+
+epoch [0 2] from [5 5]
+training time per iterations 2.344417[ms]
+testing
+testing done
+network success rate top1 92.680000% 92.779999% 
+network success rate top5 99.419998% 99.430000% 
+
+
+
+epoch [0 3] from [5 5]

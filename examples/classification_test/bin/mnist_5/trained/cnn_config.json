@@ -55,6 +55,12 @@
 			"weights_file_name" : "mnist_5/trained/layer_1"
 		},
 		{
+			"geometry" : 
+			[
+				2,
+				1,
+				1
+			],
 			"input_geometry" : 
 			[
 				784,
@@ -63,17 +69,93 @@
 			],
 			"output_geometry" : 
 			[
-				784,
+				392,
 				1,
 				32
 			],
-			"type" : "dropout",
+			"type" : "max pooling",
 			"weights_file_name" : "mnist_5/trained/layer_2"
+		},
+		{
+			"geometry" : 
+			[
+				3,
+				1,
+				32
+			],
+			"input_geometry" : 
+			[
+				392,
+				1,
+				32
+			],
+			"output_geometry" : 
+			[
+				392,
+				1,
+				32
+			],
+			"type" : "convolution",
+			"weights_file_name" : "mnist_5/trained/layer_3"
 		},
 		{
 			"input_geometry" : 
 			[
-				784,
+				392,
+				1,
+				32
+			],
+			"output_geometry" : 
+			[
+				392,
+				1,
+				32
+			],
+			"type" : "relu",
+			"weights_file_name" : "mnist_5/trained/layer_4"
+		},
+		{
+			"geometry" : 
+			[
+				2,
+				1,
+				1
+			],
+			"input_geometry" : 
+			[
+				392,
+				1,
+				32
+			],
+			"output_geometry" : 
+			[
+				196,
+				1,
+				32
+			],
+			"type" : "max pooling",
+			"weights_file_name" : "mnist_5/trained/layer_5"
+		},
+		{
+			"input_geometry" : 
+			[
+				196,
+				1,
+				32
+			],
+			"output_geometry" : 
+			[
+				196,
+				1,
+				32
+			],
+			"type" : "dropout",
+			"weights_file_name" : "mnist_5/trained/layer_6"
+		},
+		{
+			"input_geometry" : 
+			[
+				196,
 				1,
 				32
 			],
@@ -84,7 +166,7 @@
 				10
 			],
 			"type" : "output",
-			"weights_file_name" : "mnist_5/trained/layer_3"
+			"weights_file_name" : "mnist_5/trained/layer_7"
 		}
 	],
 	"network_log_file_name" : "mnist_5/network.log",

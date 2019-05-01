@@ -34,6 +34,22 @@
           {
             "type"      : "relu"
           },
+          {
+            "type"      : "max pooling",
+            "geometry"  : [2, 1, 1]
+          },
+
+          {
+            "type"      : "convolution",
+            "geometry"  : [3, 1, 32]
+          },
+          {
+            "type"      : "relu"
+          },
+          {
+            "type"      : "max pooling",
+            "geometry"  : [2, 1, 1]
+          },
 
           {
             "type"      : "dropout"
