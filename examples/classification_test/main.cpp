@@ -39,7 +39,7 @@ int main()
                            "/home/michal/dataset/mnist/train-labels.idx1-ubyte",
                            "/home/michal/dataset/mnist/t10k-images.idx3-ubyte",
                            "/home/michal/dataset/mnist/t10k-labels.idx1-ubyte",
-                           false);
+                           true);
 
 
     JsonConfig parameters("experiments_mnist.json");

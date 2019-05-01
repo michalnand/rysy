@@ -153,25 +153,27 @@ void cuda_convolution_forward_kernel_1d(    float *output,
     {
         float sum = bias[filter];
 
+        unsigned int input_idx  = x;
+
         for (unsigned int ch = 0; ch < input_geometry.d; ch++)
         {
-            unsigned int input_idx  = ch*input_geometry.w + x;
-
             if (kernel_size == 1)
             {
-                sum+= w_shared[ch][0]*input[input_idx];
+                sum+= w_shared[ch][0]*input[input_idx]; input_idx++;
             }
 
             if (kernel_size == 3)
             {
                 sum+= w_shared[ch][0]*input[input_idx]; input_idx++;
                 sum+= w_shared[ch][1]*input[input_idx]; input_idx++;
-                sum+= w_shared[ch][2]*input[input_idx];
+                sum+= w_shared[ch][2]*input[input_idx]; input_idx++;
             }
+
+            input_idx+= input_geometry.w - kernel_size;
         }
 
         unsigned int output_idx = x + k_half + filter*input_geometry.w;
-        atomicAdd(&output[output_idx], sum);
+        output[output_idx]+= sum;
     }
 }
 
@@ -294,12 +296,11 @@ void convolution_layer_forward(   Tensor &output, Tensor &input,
                                                                           input_geometry,
                                                                           kernel_geometry);
         }
-        /*
         else if ((kernel_geometry.w == 3)&&(kernel_geometry.h == 1))
         {
-            dim3 block(32, 8);
+            dim3 block(16, 1);
             dim3 grid( (input_size_x      + block.x + 1)/block.x,
-                       (kernel_geometry.d + block.z + 1)/block.z );
+                       (kernel_geometry.d + block.y + 1)/block.y );
 
             cuda_convolution_forward_kernel_1d<3><<<grid, block>>>( output.v,
                                                                     input.v,
@@ -310,7 +311,6 @@ void convolution_layer_forward(   Tensor &output, Tensor &input,
                                                                     input_geometry,
                                                                     kernel_geometry);
         }
-        */
         else
         {
             dim3 block(16, 16, 1);
