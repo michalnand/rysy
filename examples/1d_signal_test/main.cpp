@@ -1,5 +1,6 @@
 #include <iostream>
 #include <dataset_line_camera.h>
+#include <dataset_signal.h>
 #include <classification_experiment.h>
 
 

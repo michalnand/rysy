@@ -89,7 +89,7 @@ std::vector<float> DatasetSignal::signal(float frequency, unsigned int length, f
 
     if (max > min)
     {
-        k = 2.0/(max - min);
+        k = 1.0/(max - min);
         q = 1.0 - k*max;
     }
 

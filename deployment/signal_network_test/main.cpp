@@ -1,4 +1,4 @@
-#include "LineCameraNet/LineCameraNet.h"
+#include "SignalNet/SignalNet.h"
 
 #include <iostream>
 #include <vector>
@@ -16,7 +16,7 @@ std::vector<nn_layer_t> float_to_nn_t(std::vector<float> input)
   }
 
   return result;
-} 
+}
 
 unsigned int argmax(std::vector<float> output)
 {
@@ -59,16 +59,17 @@ int main()
 {
     srand(time(NULL));
 
+
     unsigned int sensors_count  = 8;
     unsigned int pixels_count   = 128;
-    float noise_level           = 0.6;
+    float noise_level           = 0.4;
 
     DatasetLineCamera dataset(sensors_count, pixels_count, noise_level);
 
     dataset.export_h_testing("dataset.h", 100);
 
 
-    LineCameraNet nn;
+    SignalNet nn;
 
     std::cout << "input size   " << nn.input_size() << "\n";
     std::cout << "output size  " << nn.output_size() << "\n";

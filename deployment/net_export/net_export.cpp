@@ -253,6 +253,7 @@ int NetExport::process(std::string export_path, std::string network_prefix)
       input_geometry = output_geometry;
     }
 
+    /*
     if (layer["type"].asString() == "relu")
     {
       kernel_geometry.w = input_geometry.w;
@@ -277,6 +278,7 @@ int NetExport::process(std::string export_path, std::string network_prefix)
       layer_idx++;
       input_geometry = output_geometry;
     }
+    */
 
     if ((layer["type"].asString() == "max pooling")||(layer["type"].asString() == "max_pooling"))
     {

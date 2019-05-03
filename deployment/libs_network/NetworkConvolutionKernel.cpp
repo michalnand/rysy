@@ -62,11 +62,12 @@ void t_network_convolution_kernel(  nn_layer_t *output,
 
             nn_t result = (dot_result + bias_result)/1024;
 
+            //apply ReLU
             if (result > NETWORK_LAYER_OUTPUT_RANGE)
                 result = NETWORK_LAYER_OUTPUT_RANGE;
 
-            if (result < -NETWORK_LAYER_OUTPUT_RANGE)
-                result = -NETWORK_LAYER_OUTPUT_RANGE;
+            if (result < 0)
+                result = 0;
 
             unsigned int output_idx = (filter*in_height + y + k_half)*in_width + x + k_half;
             output[output_idx] = result;
@@ -123,12 +124,12 @@ void t_network_convolution_kernel_1d(   nn_layer_t *output,
 
             nn_t result = (dot_result + bias_result)/1024;
 
+            //apply ReLU
             if (result > NETWORK_LAYER_OUTPUT_RANGE)
                 result = NETWORK_LAYER_OUTPUT_RANGE;
-
-            if (result < -NETWORK_LAYER_OUTPUT_RANGE)
-                result = -NETWORK_LAYER_OUTPUT_RANGE;
-
+ 
+            if (result < 0)
+                result = 0;
 
             unsigned int output_idx = x + k_half + filter*in_width;
             output[output_idx] = result;

@@ -8,7 +8,7 @@ int main(int argc, char* argv[])
     std::cout << "usage: " << argv[0] << " trained_network_file" << " network_export_dir_name" << "\n";
     return 0;
   }
-
+ 
   std::string trained_network_file  = argv[1];
   std::string network_export_name       = argv[2];
 
