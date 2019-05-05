@@ -3,7 +3,7 @@
 #include <image_save.h>
 
 #include "layers/relu_layer.h"
-#include "layers/relu6_layer.h"
+#include "layers/saturated_leaky_relu_layer.h"
 #include "layers/leaky_relu_layer.h"
 
 #include "layers/fc_layer.h"
@@ -271,12 +271,12 @@ Layer* CNN::create_layer(Json::Value &parameters, sHyperparameters hyperparamete
     result = new ReluLayer(layer_input_geometry, layer_kernel_geometry, hyperparameters);
   }
 
-  if (type == "relu6")
+  if (type == "slrelu")
   {
     layer_kernel_geometry.w = parameters["geometry"][0].asInt();
     layer_kernel_geometry.h = parameters["geometry"][1].asInt();
     layer_kernel_geometry.d = parameters["geometry"][2].asInt();
-    result = new Relu6Layer(layer_input_geometry, layer_kernel_geometry, hyperparameters);
+    result = new SaturatedLeakyReluLayer(layer_input_geometry, layer_kernel_geometry, hyperparameters);
   }
 
   if (type == "leaky relu")

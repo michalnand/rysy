@@ -51,7 +51,7 @@
 				1,
 				4
 			],
-			"type" : "relu",
+			"type" : "leaky relu",
 			"weights_file_name" : "net_4/trained/layer_1"
 		},
 		{
@@ -111,7 +111,7 @@
 				1,
 				4
 			],
-			"type" : "relu",
+			"type" : "leaky relu",
 			"weights_file_name" : "net_4/trained/layer_4"
 		},
 		{
@@ -171,7 +171,7 @@
 				1,
 				8
 			],
-			"type" : "relu",
+			"type" : "leaky relu",
 			"weights_file_name" : "net_4/trained/layer_7"
 		},
 		{
@@ -231,7 +231,7 @@
 				1,
 				8
 			],
-			"type" : "relu",
+			"type" : "leaky relu",
 			"weights_file_name" : "net_4/trained/layer_10"
 		},
 		{

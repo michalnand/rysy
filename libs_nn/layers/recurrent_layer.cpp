@@ -1,6 +1,6 @@
 #include "recurrent_layer.h"
 #include "kernels/fc_layer.cuh"
-#include "kernels/relu6_layer.cuh"
+#include "kernels/saturated_leaky_relu_layer.cuh"
 
 #include "kernels/w_update.cuh"
 
@@ -124,7 +124,7 @@ void RecurrentLayer::forward(Tensor &output, Tensor &input)
 
     //compute output
     fc_layer_forward(fc_output, fc_input_concated[time_idx], w, bias);
-    relu_6_layer_forward(h[time_idx], fc_output);
+    saturated_leaky_relu_layer_forward(h[time_idx], fc_output);
 
     //state as output
     output.copy(h[time_idx]);
@@ -142,7 +142,7 @@ void RecurrentLayer::backward(LayerMemory &layer_mem_prev, LayerMemory &layer_me
     h_error[time_idx].add(layer_mem.error);
     for (unsigned int i = time_idx; i > 0; i--)
     {
-        relu_6_layer_backward(fc_error, h[i], h_error[i]);
+        saturated_leaky_relu_layer_backward(fc_error, h[i], h_error[i]);
 
         fc_layer_gradient(w_grad, h[i], fc_error);
         fc_layer_update_bias(bias, fc_error, hyperparameters.learning_rate);

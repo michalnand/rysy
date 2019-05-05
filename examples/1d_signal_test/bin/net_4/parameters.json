@@ -31,7 +31,7 @@
                 "geometry"  : [3, 1, 4]
             },
             {
-                "type"      : "relu"
+                "type"      : "leaky relu"
             },
             {
                 "type"      : "max pooling",
@@ -43,7 +43,7 @@
                 "geometry"  : [3, 1, 4]
             },
             {
-                "type"      : "relu"
+                "type"      : "leaky relu"
             },
             {
                 "type"      : "max pooling",
@@ -55,7 +55,7 @@
                 "geometry"  : [3, 1, 8]
             },
             {
-                "type"      : "relu"
+                "type"      : "leaky relu"
             },
             {
                 "type"      : "max pooling",
@@ -68,7 +68,7 @@
                 "geometry"  : [3, 1, 8]
             },
             {
-                "type"      : "relu"
+                "type"      : "leaky relu"
             },
             {
                 "type"      : "max pooling",
