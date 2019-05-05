@@ -1,6 +1,6 @@
 #include "leaky_relu_layer.cuh"
 
-#define LEAKY_RELU_CONST ((float)1.0/16.0)
+#define LEAKY_RELU_CONST ((float)1.0/64.0) 
 
 __host__
 void cpu_leaky_relu_forward_kernel(float *output, float *input, unsigned int size)
