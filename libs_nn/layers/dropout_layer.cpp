@@ -70,15 +70,16 @@ void DropoutLayer::copy_dropout(const DropoutLayer &other)
 
 void DropoutLayer::forward(Tensor &output, Tensor &input)
 {
-  if (is_training_mode())
-  {
-    noise.set_random(1.0);
-    dropout_layer_forward(output, input, noise, hyperparameters.dropout);
-  }
-  else
-  {
-    output.copy(input);
-  }
+    if (is_training_mode())
+    {
+        noise.set_random(1.0);
+        dropout_layer_forward(output, input, noise, hyperparameters.dropout);
+    }
+    else
+    {
+        output.copy(input);
+        output.mul(1.0 - hyperparameters.dropout);
+    }
 }
 
 void DropoutLayer::backward(LayerMemory &layer_mem_prev, LayerMemory &layer_mem, bool update_weights)
