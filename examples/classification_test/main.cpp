@@ -38,8 +38,7 @@ int main()
     DatasetMnist dataset ( "/home/michal/dataset/mnist/train-images.idx3-ubyte",
                            "/home/michal/dataset/mnist/train-labels.idx1-ubyte",
                            "/home/michal/dataset/mnist/t10k-images.idx3-ubyte",
-                           "/home/michal/dataset/mnist/t10k-labels.idx1-ubyte",
-                           true);
+                           "/home/michal/dataset/mnist/t10k-labels.idx1-ubyte");
 
 
     JsonConfig parameters("experiments_mnist.json");

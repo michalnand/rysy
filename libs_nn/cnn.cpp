@@ -16,6 +16,8 @@
 
 #include "layers/max_pooling_layer.h"
 #include "layers/unpooling_layer.h"
+#include "layers/average_pooling_layer.h"
+
 
 #include "layers/ode_convolution_layer.h"
 
@@ -400,6 +402,14 @@ Layer* CNN::create_layer(Json::Value &parameters, sHyperparameters hyperparamete
     layer_kernel_geometry.h = parameters["geometry"][1].asInt();
     layer_kernel_geometry.d = parameters["geometry"][2].asInt();
     result = new UnPoolingLayer(layer_input_geometry, layer_kernel_geometry, hyperparameters);
+  }
+
+  if ((type == "average pooling")||(type == "average_pooling"))
+  {
+    layer_kernel_geometry.w = parameters["geometry"][0].asInt();
+    layer_kernel_geometry.h = parameters["geometry"][1].asInt();
+    layer_kernel_geometry.d = parameters["geometry"][2].asInt();
+    result = new AveragePoolingLayer(layer_input_geometry, layer_kernel_geometry, hyperparameters);
   }
 
   if (result == nullptr)
