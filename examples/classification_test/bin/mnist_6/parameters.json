@@ -16,7 +16,7 @@
         "hyperparameters" :
         {
           "init_weight_range" : 0.0,
-          "learning_rate"     : 0.0005,
+          "learning_rate"     : 0.002,
           "lambda1"           : 0.0000001,
           "lambda2"           : 0.0000001,
           "dropout"           : 0.2,
@@ -41,7 +41,7 @@
 
           {
             "type"      : "convolution",
-            "geometry"  : [3, 3, 32]
+            "geometry"  : [3, 3, 16]
           },
           {
             "type"      : "relu"
@@ -66,13 +66,13 @@
             "type"      : "relu"
           },
 
+          {
+            "type"      : "dropout"
+          },
 
           {
             "type"      : "average pooling",
             "geometry"  : [7, 7, 1]
-          },
-          {
-            "type"      : "dropout"
           },
           {
             "type"      : "output"

@@ -5,7 +5,7 @@
 		"init_weight_range" : 0,
 		"lambda1" : 1.0000000116860974e-07,
 		"lambda2" : 1.0000000116860974e-07,
-		"learning_rate" : 0.00050000002374872565,
+		"learning_rate" : 0.0020000000949949026,
 		"minibatch_size" : 32
 	},
 	"input_geometry" : 
@@ -81,7 +81,7 @@
 			[
 				3,
 				3,
-				32
+				16
 			],
 			"input_geometry" : 
 			[
@@ -93,7 +93,7 @@
 			[
 				14,
 				14,
-				32
+				16
 			],
 			"type" : "convolution",
 			"weights_file_name" : "mnist_6/trained/layer_3"
@@ -103,13 +103,13 @@
 			[
 				14,
 				14,
-				32
+				16
 			],
 			"output_geometry" : 
 			[
 				14,
 				14,
-				32
+				16
 			],
 			"type" : "relu",
 			"weights_file_name" : "mnist_6/trained/layer_4"
@@ -125,13 +125,13 @@
 			[
 				14,
 				14,
-				32
+				16
 			],
 			"output_geometry" : 
 			[
 				7,
 				7,
-				32
+				16
 			],
 			"type" : "max pooling",
 			"weights_file_name" : "mnist_6/trained/layer_5"
@@ -147,7 +147,7 @@
 			[
 				7,
 				7,
-				32
+				16
 			],
 			"output_geometry" : 
 			[
@@ -213,6 +213,22 @@
 			"weights_file_name" : "mnist_6/trained/layer_9"
 		},
 		{
+			"input_geometry" : 
+			[
+				7,
+				7,
+				64
+			],
+			"output_geometry" : 
+			[
+				7,
+				7,
+				64
+			],
+			"type" : "dropout",
+			"weights_file_name" : "mnist_6/trained/layer_10"
+		},
+		{
 			"geometry" : 
 			[
 				7,
@@ -232,22 +248,6 @@
 				64
 			],
 			"type" : "average pooling",
-			"weights_file_name" : "mnist_6/trained/layer_10"
-		},
-		{
-			"input_geometry" : 
-			[
-				1,
-				1,
-				64
-			],
-			"output_geometry" : 
-			[
-				1,
-				1,
-				64
-			],
-			"type" : "dropout",
 			"weights_file_name" : "mnist_6/trained/layer_11"
 		},
 		{
