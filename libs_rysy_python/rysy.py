@@ -1724,6 +1724,9 @@ class RegressionCompare(_object):
     def get_error_average(self):
         return _rysy.RegressionCompare_get_error_average(self)
 
+    def get_error_average_euclidean(self):
+        return _rysy.RegressionCompare_get_error_average_euclidean(self)
+
     def get_error_std(self):
         return _rysy.RegressionCompare_get_error_std(self)
 

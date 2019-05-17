@@ -126,12 +126,17 @@ void RegressionCompare::process(int fixed_bars_count)
 
 float RegressionCompare::get_error_average()
 {
+    return h_error_summary.get_average();
+}
+
+float RegressionCompare::get_error_average_euclidean()
+{
     return h_error_summary_euclidean.get_average();
 }
 
 float RegressionCompare::get_error_std()
 {
-    return h_error_summary_euclidean.get_std();
+    return h_error_summary.get_std();
 }
 
 
@@ -163,8 +168,10 @@ Json::Value RegressionCompare::process_json_result()
     Json::Value result;
 
     result["summary"]["count"]          = count;
-    result["summary"]["error_average"]  = h_error_summary_euclidean.get_average();
-    result["summary"]["error_std"]      = h_error_summary_euclidean.get_std();
+    result["summary"]["error_euclidean_average"]  = h_error_summary_euclidean.get_average();
+    result["summary"]["error_euclidean_std"]      = h_error_summary_euclidean.get_std();
+    result["summary"]["error_average"]  = h_error_summary.get_average();
+    result["summary"]["error_std"]      = h_error_summary.get_std();
 
     for (unsigned int i = 0; i < h_required_summary.get_count(); i++)
     {

@@ -44,7 +44,9 @@ class RegressionCompare
     void process(int fixed_bars_count = -1);
 
     float get_error_average();
+    float get_error_average_euclidean();
     float get_error_std();
+    
 
     void save_text_file(std::string log_file_name_prefix);
     void save_json_file(std::string json_file_name);

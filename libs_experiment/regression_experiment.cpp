@@ -120,7 +120,7 @@ void RegressionExperiment::run()
         training_progress_log << compare_testing.get_error_average() << " " << compare_testing.get_error_std() << " " ;
         training_progress_log << compare_training.get_error_average() << " " << compare_training.get_error_std() << "\n";
 
-        float error_summary = compare_testing.get_error_average();
+        float error_summary = pow(compare_testing.get_error_average(), 2.0);
 
         if (best_error > error_summary)
         {
@@ -139,7 +139,7 @@ void RegressionExperiment::run()
           compare_training.save_json_file(result_training_dir + "best_net_result.json");
           compare_training.save_text_file(result_training_dir);
 
-          experiment_log << "best net saved to " << best_net << ", with error = " << best_error << ", std = " << compare_testing.get_error_std() << "\n";
+          experiment_log << "best net saved to " << best_net << ", with error = " << compare_testing.get_error_average() << ", std = " << compare_testing.get_error_std() << "\n";
 
           process_best();
         }
