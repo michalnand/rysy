@@ -15,7 +15,7 @@ class Histogram
 {
   private:
     unsigned int count;
-    float min, max, average;
+    float min, max, average, standard_deviation;
 
   private:
     std::vector<float> values;
@@ -44,9 +44,10 @@ class Histogram
     float get_max();
     float get_min();
     float get_average();
+    float get_std();
 
   private:
-    void find_range();
+    void compute_stats();
     void init_histogram();
     unsigned int find_nearest(float value);
 

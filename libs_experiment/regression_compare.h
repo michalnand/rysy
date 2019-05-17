@@ -13,21 +13,22 @@ class RegressionCompare
   private:
     unsigned int output_size;
 
-    std::vector<Histogram> h_required;
-    std::vector<Histogram> h_resulted;
-    std::vector<Histogram> h_error;
+    //full results - separated for each axis
+    std::vector<Histogram> h_required;  //target values histogram
+    std::vector<Histogram> h_resulted;  //computed values histogram
+    std::vector<Histogram> h_error;     //errors histogram
 
 
+    //full results - common for each axis
     Histogram h_required_summary;
     Histogram h_resulted_summary;
     Histogram h_error_summary;
-    Histogram h_error_squared;
+
+    //error computed euclidean distance of target and observed values
+    Histogram h_error_summary_euclidean;
 
     unsigned int count;
 
-    float error_average_squared ;
-    float error_min_squared     ;
-    float error_max_squared     ;
 
     Json::Value json_result;
 
@@ -37,16 +38,13 @@ class RegressionCompare
 
     virtual ~RegressionCompare();
 
-    void clear();
     void set_output_size(unsigned int output_size);
 
     void compare(std::vector<float> &required_value, std::vector<float> &output_value);
     void process(int fixed_bars_count = -1);
 
-    float get_error_average_squared();
-    float get_error_min_squared();
-    float get_error_max_squared();
-
+    float get_error_average();
+    float get_error_std();
 
     void save_text_file(std::string log_file_name_prefix);
     void save_json_file(std::string json_file_name);

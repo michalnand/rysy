@@ -1690,6 +1690,9 @@ class Histogram(_object):
 
     def get_average(self):
         return _rysy.Histogram_get_average(self)
+
+    def get_std(self):
+        return _rysy.Histogram_get_std(self)
 Histogram_swigregister = _rysy.Histogram_swigregister
 Histogram_swigregister(Histogram)
 
@@ -1709,9 +1712,6 @@ class RegressionCompare(_object):
     __swig_destroy__ = _rysy.delete_RegressionCompare
     __del__ = lambda self: None
 
-    def clear(self):
-        return _rysy.RegressionCompare_clear(self)
-
     def set_output_size(self, output_size):
         return _rysy.RegressionCompare_set_output_size(self, output_size)
 
@@ -1721,14 +1721,11 @@ class RegressionCompare(_object):
     def process(self, fixed_bars_count=-1):
         return _rysy.RegressionCompare_process(self, fixed_bars_count)
 
-    def get_error_average_squared(self):
-        return _rysy.RegressionCompare_get_error_average_squared(self)
+    def get_error_average(self):
+        return _rysy.RegressionCompare_get_error_average(self)
 
-    def get_error_min_squared(self):
-        return _rysy.RegressionCompare_get_error_min_squared(self)
-
-    def get_error_max_squared(self):
-        return _rysy.RegressionCompare_get_error_max_squared(self)
+    def get_error_std(self):
+        return _rysy.RegressionCompare_get_error_std(self)
 
     def save_text_file(self, log_file_name_prefix):
         return _rysy.RegressionCompare_save_text_file(self, log_file_name_prefix)

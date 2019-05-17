@@ -100,22 +100,27 @@ void RegressionExperiment::run()
         experiment_log << "training time per iterations " << timer.get_duration()/sub_epoch_iterations << "[ms]\n";
         experiment_log << "testing on " << dataset->get_testing_size() << " items\n";
 
-        output_valid = test(nn); 
+        output_valid = test(nn);
 
         experiment_log << "testing done\n";
 
-        experiment_log << "average error " << compare_testing.get_error_average_squared() << "\n";
-        experiment_log << "min error     " << compare_testing.get_error_min_squared() << "\n";
-        experiment_log << "max error     " << compare_testing.get_error_max_squared() << "\n";
+        experiment_log << "average error " << compare_testing.get_error_average() << "\n";
+        experiment_log << "standard deviation " << compare_testing.get_error_std() << "\n";
 
+        for (unsigned int i = 1; i <= 3; i++)
+        {
+            float average   = compare_testing.get_error_average();
+            float sigma     = compare_testing.get_error_std();
+            experiment_log << i << "sigma interval : " << average - sigma*i << ", " << average + sigma*i << "\n";
+        }
 
         float progress = epoch + sub_epoch*1.0/sub_epoch_size;
 
         training_progress_log << progress << " " << epoch << " " << sub_epoch << " ";
-        training_progress_log << compare_testing.get_error_average_squared() << " " << compare_testing.get_error_min_squared() << " " << compare_testing.get_error_max_squared() << " ";
-        training_progress_log << compare_training.get_error_average_squared() << " " << compare_training.get_error_min_squared() << " " << compare_training.get_error_max_squared() << "\n";
+        training_progress_log << compare_testing.get_error_average() << " " << compare_testing.get_error_std() << " " ;
+        training_progress_log << compare_training.get_error_average() << " " << compare_training.get_error_std() << "\n";
 
-        float error_summary = compare_testing.get_error_average_squared();
+        float error_summary = compare_testing.get_error_average();
 
         if (best_error > error_summary)
         {
@@ -134,7 +139,7 @@ void RegressionExperiment::run()
           compare_training.save_json_file(result_training_dir + "best_net_result.json");
           compare_training.save_text_file(result_training_dir);
 
-          experiment_log << "best net saved to " << best_net << ", with error " << best_error << "\n";
+          experiment_log << "best net saved to " << best_net << ", with error = " << best_error << ", std = " << compare_testing.get_error_std() << "\n";
 
           process_best();
         }
@@ -187,9 +192,6 @@ void RegressionExperiment::train_iterations(CNN &nn, unsigned int iterations)
 
 bool RegressionExperiment::test(CNN &nn)
 {
-    compare_testing.clear();
-    compare_training.clear();
-
     compare_testing.set_output_size(dataset->get_output_size());
     compare_training.set_output_size(dataset->get_output_size());
 

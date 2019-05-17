@@ -2,11 +2,11 @@
 
 #include <iostream>
 #include <fstream>
-
+#include <math.h>
 
 Histogram::Histogram()
 {
-  clear();
+    clear();
 }
 
 Histogram::~Histogram()
@@ -21,9 +21,10 @@ void Histogram::add(float value)
 
 void Histogram::clear()
 {
-  min = 0.0;
-  max = 0.0;
-  average = 0.0;
+  min                   = 0.0;
+  max                   = 0.0;
+  average               = 0.0;
+  standard_deviation    = 0.0;
   count = 0;
 
   values.clear();
@@ -33,33 +34,33 @@ void Histogram::clear()
 
 void Histogram::compute(unsigned int count)
 {
-  this->count = count;
+    this->count = count;
 
-  find_range();
-  init_histogram();
+    compute_stats();
+    init_histogram();
 
-  if (min >= max)
-  {
-    histogram[0].count = values.size();
-  }
-  else
-  {
-    for (unsigned int i = 0; i < values.size(); i++)
+    if (min >= max)
     {
-      unsigned int idx = find_nearest(values[i]);
-      histogram[idx].count++;
+        histogram[0].count = values.size();
     }
-  }
+    else
+    {
+        for (unsigned int i = 0; i < values.size(); i++)
+        {
+          unsigned int idx = find_nearest(values[i]);
+          histogram[idx].count++;
+        }
+    }
 
-  unsigned int cnt = 0;
-  for (unsigned int i = 0; i < histogram.size(); i++)
-    cnt+= histogram[i].count;
-
-  if (cnt > 0)
-  {
+    unsigned int cnt = 0;
     for (unsigned int i = 0; i < histogram.size(); i++)
-      histogram[i].normalised_count = histogram[i].count*1.0/cnt;
-  }
+        cnt+= histogram[i].count;
+
+    if (cnt > 0)
+    {
+        for (unsigned int i = 0; i < histogram.size(); i++)
+            histogram[i].normalised_count = histogram[i].count*1.0/cnt;
+    }
 
 }
 
@@ -81,29 +82,29 @@ std::vector<sHistogramItem> Histogram::get()
 
 std::string Histogram::asString()
 {
-  std::string result;
+    std::string result;
 
-  for (unsigned int i = 0; i < histogram.size(); i++)
-  {
-    result+= std::to_string(i) + " ";
-    result+= std::to_string(histogram[i].value) + " ";
-    result+= std::to_string(histogram[i].count) + " ";
-    result+= std::to_string(histogram[i].normalised_count) + "\n";
-  }
+    for (unsigned int i = 0; i < histogram.size(); i++)
+    {
+        result+= std::to_string(i) + " ";
+        result+= std::to_string(histogram[i].value) + " ";
+        result+= std::to_string(histogram[i].count) + " ";
+        result+= std::to_string(histogram[i].normalised_count) + "\n";
+    }
 
-  return result;
+    return result;
 }
 
 void Histogram::print()
 {
-  std::cout << asString() << "\n";
+    std::cout << asString() << "\n";
 }
 
 void Histogram::save(std::string file_name)
 {
-  std::ofstream file(file_name);
-  file << asString();
-  file.close();
+    std::ofstream file(file_name);
+    file << asString();
+    file.close();
 }
 
 float Histogram::get_max()
@@ -121,7 +122,12 @@ float Histogram::get_average()
   return average;
 }
 
-void Histogram::find_range()
+float Histogram::get_std()
+{
+    return standard_deviation;
+}
+
+void Histogram::compute_stats()
 {
   min = values[0];
   max = min;
@@ -140,6 +146,13 @@ void Histogram::find_range()
     sum+= values[i];
 
   average = sum/values.size();
+
+    double std_sum = 0.0;
+    for (unsigned int i = 0; i < values.size(); i++)
+        std_sum+= pow(values[i] - average, 2.0);
+
+    standard_deviation = sqrt(std_sum*1.0/values.size());
+
 }
 
 void Histogram::init_histogram()
@@ -152,7 +165,7 @@ void Histogram::init_histogram()
   if (max > min)
   {
     float tmp = histogram.size()-1;
-    k = (max - min)/tmp;  
+    k = (max - min)/tmp;
     q = min;
   }
 
