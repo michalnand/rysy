@@ -1724,11 +1724,14 @@ class RegressionCompare(_object):
     def get_error_average(self):
         return _rysy.RegressionCompare_get_error_average(self)
 
+    def get_error_std(self):
+        return _rysy.RegressionCompare_get_error_std(self)
+
     def get_error_average_euclidean(self):
         return _rysy.RegressionCompare_get_error_average_euclidean(self)
 
-    def get_error_std(self):
-        return _rysy.RegressionCompare_get_error_std(self)
+    def get_error_std_euclidean(self):
+        return _rysy.RegressionCompare_get_error_std_euclidean(self)
 
     def save_text_file(self, log_file_name_prefix):
         return _rysy.RegressionCompare_save_text_file(self, log_file_name_prefix)

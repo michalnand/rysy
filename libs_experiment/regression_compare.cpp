@@ -139,6 +139,11 @@ float RegressionCompare::get_error_std()
     return h_error_summary.get_std();
 }
 
+float RegressionCompare::get_error_std_euclidean()
+{
+    return h_error_summary_euclidean.get_std();
+}
+
 
 void RegressionCompare::save_text_file(std::string log_file_name_prefix)
 {
