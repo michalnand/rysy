@@ -10,8 +10,8 @@
     {
         "network_log_file_name" : "net_1/network.log",
 
-        "input_geometry"     : [128, 1, 1],
-        "output_geometry"    : [1, 1, 10],
+        "input_geometry"     : [256, 1, 3],
+        "output_geometry"    : [1, 1, 5],
 
         "hyperparameters" :
         {
@@ -27,19 +27,54 @@
         "layers"         :
         [
             {
-                "type"      : "fc",
-                "geometry"  : [1, 1, 256]
+                "type"      : "convolution",
+                "geometry"  : [3, 1, 8]
             },
             {
                 "type"      : "relu"
             },
             {
-                "type"      : "fc",
-                "geometry"  : [1, 1, 64]
+                "type"      : "max pooling",
+                "geometry"  : [2, 1, 1]
+            },
+
+            {
+                "type"      : "convolution",
+                "geometry"  : [3, 1, 8]
             },
             {
                 "type"      : "relu"
             },
+            {
+                "type"      : "max pooling",
+                "geometry"  : [2, 1, 1]
+            },
+
+            {
+                "type"      : "convolution",
+                "geometry"  : [3, 1, 8]
+            },
+            {
+                "type"      : "relu"
+            },
+            {
+                "type"      : "max pooling",
+                "geometry"  : [2, 1, 1]
+            },
+
+
+            {
+                "type"      : "convolution",
+                "geometry"  : [3, 1, 8]
+            },
+            {
+                "type"      : "relu"
+            },
+            {
+                "type"      : "max pooling",
+                "geometry"  : [2, 1, 1]
+            },
+
 
             {
                 "type"      : "dropout"

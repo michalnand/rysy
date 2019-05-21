@@ -6,12 +6,13 @@
 
 int main()
 {
-    unsigned int sensors_count  = 8;
-    unsigned int pixels_count   = 128;
-    float noise_level           = 0.6;
+    float noise_level           = 0.4;
 
-    DatasetLineCamera dataset(sensors_count, pixels_count, noise_level);
+    unsigned int classes  = 5;
+    unsigned int length   = 256;
+    unsigned int channels = 3;
 
+    DatasetSignal dataset(classes, length, channels, noise_level);
 
     JsonConfig parameters("experiments.json");
 
