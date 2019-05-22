@@ -1,7 +1,7 @@
 #include "convolution_layer_forward.cuh"
 
 #define TILE_MAX_SIZE ((unsigned int)32)
-#define MAX_FEATURE_MAP_COUNT ((unsigned int)512)
+#define MAX_FEATURE_MAP_COUNT ((unsigned int)1024)
 
 __host__
 void cpu_convolution_forward_kernel(   float *output,
