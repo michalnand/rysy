@@ -31,7 +31,7 @@ void net_test(DatasetInterface &dataset, std::string config_dir)
   }
 
   nn.unset_training_mode();
-}
+} 
 
 int main()
 {

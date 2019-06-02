@@ -1784,11 +1784,11 @@ class CNN(_object):
     def forward(self, *args):
         return _rysy.CNN_forward(self, *args)
 
-    def train_single_output(self, *args):
-        return _rysy.CNN_train_single_output(self, *args)
-
     def train(self, *args):
         return _rysy.CNN_train(self, *args)
+
+    def train_from_error(self, error):
+        return _rysy.CNN_train_from_error(self, error)
 
     def set_training_mode(self):
         return _rysy.CNN_set_training_mode(self)
@@ -1822,6 +1822,9 @@ class CNN(_object):
 
     def load_weights(self, file_name_prefix):
         return _rysy.CNN_load_weights(self, file_name_prefix)
+
+    def get_error_back(self):
+        return _rysy.CNN_get_error_back(self)
 CNN_swigregister = _rysy.CNN_swigregister
 CNN_swigregister(CNN)
 

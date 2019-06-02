@@ -1,3 +1,4 @@
+#include <iostream>
 #include "cnn.h"
 #include "svg_visualiser.h"
 #include <image_save.h>
@@ -5,6 +6,7 @@
 #include "layers/relu_layer.h"
 #include "layers/saturated_leaky_relu_layer.h"
 #include "layers/leaky_relu_layer.h"
+#include "layers/elu_layer.h"
 
 #include "layers/fc_layer.h"
 #include "layers/dense_fc_layer.h"
@@ -232,6 +234,7 @@ void CNN::init(Json::Value &json_config, sGeometry input_geometry_, sGeometry ou
 
   nn_input.init(input_geometry);
   nn_output.init(output_geometry);
+  nn_error.init(output_geometry);
   nn_required_output.init(output_geometry);
 
   unset_training_mode();
@@ -287,6 +290,14 @@ Layer* CNN::create_layer(Json::Value &parameters, sHyperparameters hyperparamete
     layer_kernel_geometry.h = parameters["geometry"][1].asInt();
     layer_kernel_geometry.d = parameters["geometry"][2].asInt();
     result = new LeakyReluLayer(layer_input_geometry, layer_kernel_geometry, hyperparameters);
+  }
+
+  if (type == "elu")
+  {
+    layer_kernel_geometry.w = parameters["geometry"][0].asInt();
+    layer_kernel_geometry.h = parameters["geometry"][1].asInt();
+    layer_kernel_geometry.d = parameters["geometry"][2].asInt();
+    result = new EluLayer(layer_input_geometry, layer_kernel_geometry, hyperparameters);
   }
 
   if (type == "fc")
@@ -449,12 +460,6 @@ void CNN::train(std::vector<float> &required_output, std::vector<float> &input)
   train(nn_required_output, nn_input);
 }
 
-void CNN::train_single_output(float required_output, unsigned int output_idx, std::vector<float> &input)
-{
-  nn_input.set_from_host(input);
-  train_single_output(required_output, output_idx, nn_input);
-}
-
 void CNN::train(std::vector<Tensor> &required_output, std::vector<Tensor> &input)
 {
   set_training_mode();
@@ -467,43 +472,16 @@ void CNN::train(std::vector<Tensor> &required_output, std::vector<Tensor> &input
   unset_training_mode();
 }
 
-void CNN::train(std::vector<std::vector<float>> &required_output, std::vector<std::vector<float>> &input)
-{
-  set_training_mode();
-
-  for (unsigned int i = 0; i < required_output.size(); i++)
-  {
-    nn_input.set_from_host(input[i]);
-    nn_required_output.set_from_host(required_output[i]);
-
-    train(nn_required_output, nn_input);
-  }
-
-  unset_training_mode();
-}
 
 void CNN::forward(Tensor &output, Tensor &input)
 {
-  for (unsigned int i = 0; i < layers.size(); i++)
-  {
-    if (i == 0)
-      layers[i]->forward(layer_memory[i]->output, input);
-
-    else
-      layers[i]->forward(layer_memory[i]->output, layer_memory[i-1]->output);
-  }
-
-  output.copy(layer_memory[layers.size()-1]->output);
-}
-
-void CNN::forward_training(Tensor &output, Tensor &input)
-{
-  input_layer_memory.output.copy(input);
+    input_layer_memory.output.copy(input);
 
   for (unsigned int i = 0; i < layers.size(); i++)
   {
     if (i == 0)
       layers[i]->forward(layer_memory[i]->output, input_layer_memory.output);
+
     else
       layers[i]->forward(layer_memory[i]->output, layer_memory[i-1]->output);
   }
@@ -512,64 +490,42 @@ void CNN::forward_training(Tensor &output, Tensor &input)
 }
 
 
+
 void CNN::train(Tensor &required_output, Tensor &input)
 {
-  forward_training(nn_output, input);
+  forward(nn_output, input);
 
-  unsigned int last_idx = layers.size()-1;
+  nn_error.copy(required_output);
+  nn_error.sub(nn_output);
 
 
-  layer_memory[last_idx]->error.copy(required_output);
-  layer_memory[last_idx]->error.sub(nn_output);
+  train_from_error(nn_error);
+} 
 
-  bool update_weights = false;
-  minibatch_counter++;
-
-  if (minibatch_counter >= hyperparameters.minibatch_size)
-  {
-    update_weights = true;
-    minibatch_counter = 0;
-  }
-
-  for (int i = last_idx; i>= 0; i--)
-  {
-    if (i == 0)
-      layers[i]->backward(input_layer_memory, *layer_memory[i], update_weights);
-    else
-      layers[i]->backward(*layer_memory[i-1], *layer_memory[i], update_weights);
-  }
-}
-
-void CNN::train_single_output(float required_output, unsigned int output_idx, Tensor &input)
+void CNN::train_from_error(Tensor &error)
 {
+    unsigned int last_idx = layers.size()-1;
 
-  forward_training(nn_output, input);
+    layer_memory[last_idx]->error.copy(error);
 
-  unsigned int last_idx = layers.size()-1;
+    bool update_weights = false;
+    minibatch_counter++;
 
-  float error = required_output - nn_output.get(0, 0, output_idx);
+    if (minibatch_counter >= hyperparameters.minibatch_size)
+    {
+      update_weights = true;
+      minibatch_counter = 0;
+    }
 
-  layer_memory[last_idx]->error.clear();
-  layer_memory[last_idx]->error.set(0, 0, output_idx, error);
-
-
-  bool update_weights = false;
-  minibatch_counter++;
-
-  if (minibatch_counter >= hyperparameters.minibatch_size)
-  {
-    update_weights = true;
-    minibatch_counter = 0;
-  }
-
-  for (int i = last_idx; i>= 0; i--)
-  {
-    if (i == 0)
-      layers[i]->backward(input_layer_memory, *layer_memory[i], update_weights);
-    else
-      layers[i]->backward(*layer_memory[i-1], *layer_memory[i], update_weights);
-  }
+    for (int i = last_idx; i>= 0; i--)
+    {
+      if (i == 0)
+        layers[i]->backward(input_layer_memory, *layer_memory[i], update_weights);
+      else
+        layers[i]->backward(*layer_memory[i-1], *layer_memory[i], update_weights);
+    }
 }
+
 
 
 void CNN::set_training_mode()
@@ -677,4 +633,9 @@ void CNN::load_weights(std::string file_name_prefix)
     std::string layer_file_name = file_name_prefix + "layer_" + std::to_string(layer);
     layers[layer]->load(layer_file_name);
   }
+}
+
+Tensor& CNN::get_error_back()
+{
+    return input_layer_memory.error;
 }

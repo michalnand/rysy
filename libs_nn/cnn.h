@@ -34,15 +34,12 @@ class CNN
   public:
     void forward(std::vector<float> &output, std::vector<float> &input);
     void train(std::vector<float> &required_output, std::vector<float> &input);
-    void train_single_output(float required_output, unsigned int output_idx, std::vector<float> &input);
 
     void forward(Tensor &output, Tensor &input);
     void train(Tensor &required_output, Tensor &input);
-    void train_single_output(float required_output, unsigned int output_idx, Tensor &input);
 
     void train(std::vector<Tensor> &required_output, std::vector<Tensor> &input);
-    void train(std::vector<std::vector<float>> &required_output, std::vector<std::vector<float>> &input);
-
+    void train_from_error(Tensor &error);
 
     void set_training_mode();
     void unset_training_mode();
@@ -70,9 +67,7 @@ class CNN
     void save(std::string file_name_prefix);
     void load_weights(std::string file_name_prefix);
 
-  protected:
-    void forward_training(Tensor &output, Tensor &input);
-
+    Tensor& get_error_back();
 
   protected:
     Json::Value json_parameters;
@@ -90,7 +85,7 @@ class CNN
     unsigned int minibatch_counter;
 
   protected:
-    Tensor nn_input, nn_output, nn_required_output;
+    Tensor nn_error, nn_input, nn_output, nn_required_output;
 
 
 };
