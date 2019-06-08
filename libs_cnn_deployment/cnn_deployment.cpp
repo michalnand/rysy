@@ -5,6 +5,7 @@
 #include <layer_convolution.h>
 #include <layer_max_pooling.h>
 #include <layer_output.h>
+#include <layer_softmax.h>
 
 #include <iostream>
 
@@ -109,6 +110,15 @@ void CNNDeployment::init(std::string json_file_name, sGeometry input_geometry)
             layer_->print();
             layers.push_back(layer_);
             layer_input_geometry = layer_->get_output_geometry();
+
+            if (layer["type"].asString() == "output")
+            {
+                LayerInterface *layer_ = new LayerSoftmax(layer, layer_input_geometry);
+
+                layer_->print();
+                layers.push_back(layer_);
+                layer_input_geometry = layer_->get_output_geometry();
+            }
         }
     }
 
