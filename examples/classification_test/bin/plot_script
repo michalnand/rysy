@@ -1,0 +1,26 @@
+set   autoscale                        # scale axes automatically
+unset log                              # remove any log-scaling
+unset label                            # remove any previous labels
+set xtic auto                         	# set xtics automatically
+set ytic auto                         # set ytics automatically
+set ztic auto
+
+
+set grid ytics lt 0.1 lw 0.1 lc rgb "#bbbbbb"
+set grid xtics lt 0.1 lw 0.1 lc rgb "#bbbbbb"
+
+set terminal png size 1024,768 enhanced font "Helvetica,20"
+set terminal png size 1920,1080 enhanced font "Helvetica,30"
+
+set key right bottom
+
+# set style fill solid 1.0
+
+
+set xlabel "epoch"
+
+set ylabel "accuracy [%]"
+set output 'testing_progress_summary_all.png'
+plot 'mnist_1/training_progress.log' using 1:4 title 'MyNet 3x3x32' with lines  lw 5 lc 'red', \
+     'mnist_0/training_progress.log' using 1:4 title 'LeNet1 3x3x8' with lines  lw 5 lc 'blue', \
+     'mnist_2/training_progress.log' using 1:4 title 'FC800-FC800' with lines  lw 5 lc 'green'
