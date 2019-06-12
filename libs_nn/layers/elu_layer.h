@@ -17,8 +17,8 @@ class EluLayer: public Layer
     EluLayer(sGeometry input_geometry, sGeometry kernel_geometry, sHyperparameters hyperparameters);
 
   protected:
-    void copy_relu(EluLayer &other);
-    void copy_relu(const EluLayer &other);
+    void copy_elu(EluLayer &other);
+    void copy_elu(const EluLayer &other);
 
   public:
 

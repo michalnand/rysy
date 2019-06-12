@@ -10,13 +10,13 @@ EluLayer::EluLayer()
 EluLayer::EluLayer(EluLayer& other)
         :Layer(other)
 {
-  copy_relu(other);
+  copy_elu(other);
 }
-
+ 
 EluLayer::EluLayer(const EluLayer& other)
         :Layer(other)
 {
-  copy_relu(other);
+  copy_elu(other);
 }
 
 EluLayer::~EluLayer()
@@ -27,14 +27,14 @@ EluLayer::~EluLayer()
 EluLayer& EluLayer::operator= (EluLayer& other)
 {
   copy(other);
-  copy_relu(other);
+  copy_elu(other);
   return *this;
 }
 
 EluLayer& EluLayer::operator= (const EluLayer& other)
 {
   copy(other);
-  copy_relu(other);
+  copy_elu(other);
   return *this;
 }
 
@@ -55,12 +55,12 @@ EluLayer::EluLayer(sGeometry input_geometry, sGeometry kernel_geometry, sHyperpa
   layer_name = "ELU";
 }
 
-void EluLayer::copy_relu(EluLayer &other)
+void EluLayer::copy_elu(EluLayer &other)
 {
   (void)other;
 }
 
-void EluLayer::copy_relu(const EluLayer &other)
+void EluLayer::copy_elu(const EluLayer &other)
 {
   (void)other;
 }
