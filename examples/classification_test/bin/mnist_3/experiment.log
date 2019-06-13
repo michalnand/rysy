@@ -35,3 +35,5 @@ best net saved to mnist_3/trained/, with success rate 97.010002%
 
 
 epoch [0 2] from [10 5]
+training time per iterations 1.983750[ms]
+testing
