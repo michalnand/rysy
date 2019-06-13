@@ -1,5 +1,5 @@
 #include "relu_layer.cuh"
- 
+
 __host__
 void cpu_relu_forward_kernel(float *output, float *input, unsigned int size)
 {
@@ -36,12 +36,8 @@ void relu_layer_forward(  Tensor &output, Tensor &input)
 
   #ifdef NETWORK_USE_CUDA
 
-    unsigned int block_size = 16;
-    if (size > 256)
-      block_size = 256;
-
-    dim3 block(block_size);
-    dim3 grid((size + block.x - 1)/block.x);
+    dim3 block(32);
+    dim3 grid((size + block.x + 1)/block.x);
 
     cuda_relu_forward_kernel<<<grid, block>>>(output.v, input.v, size);
     cudaDeviceSynchronize();
@@ -86,12 +82,8 @@ void relu_layer_backward( Tensor &error_back, Tensor &output, Tensor &error)
 
   #ifdef NETWORK_USE_CUDA
 
-      unsigned int block_size = 16;
-      if (size >= 256)
-        block_size = 256;
-
-      dim3 block(block_size);
-      dim3 grid((size + block.x - 1)/block.x);
+      dim3 block(32);
+      dim3 grid((size + block.x + 1)/block.x);
 
       cuda_relu_backward_kernel<<<grid, block>>>(error_back.v, error.v, output.v, size);
       cudaDeviceSynchronize();

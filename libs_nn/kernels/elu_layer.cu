@@ -1,6 +1,6 @@
 #include "elu_layer.cuh"
 
-#define ELU_ALPHA ((float)0.1)
+#define ELU_ALPHA ((float)1.0)
 
 __host__
 void cpu_elu_forward_kernel(float *output, float *input, unsigned int size)
@@ -9,7 +9,7 @@ void cpu_elu_forward_kernel(float *output, float *input, unsigned int size)
   {
     float tmp = input[idx];
 
-    if (tmp < 0.0)
+    if (tmp <= 0.0)
         tmp = ELU_ALPHA*(exp(tmp) - 1.0);
 
     output[idx] = tmp;
@@ -25,7 +25,7 @@ void cuda_elu_forward_kernel(float *output, float *input, unsigned int size)
   {
       float tmp = input[idx];
 
-      if (tmp < 0.0)
+      if (tmp <= 0.0)
           tmp = ELU_ALPHA*(exp(tmp) - 1.0);
 
     output[idx] = tmp;
@@ -38,12 +38,8 @@ void elu_layer_forward(  Tensor &output, Tensor &input)
 
   #ifdef NETWORK_USE_CUDA
 
-    unsigned int block_size = 16;
-    if (size > 256)
-      block_size = 256;
-
-    dim3 block(block_size);
-    dim3 grid((size + block.x - 1)/block.x);
+    dim3 block(32);
+    dim3 grid((size + block.x + 1)/block.x);
 
     cuda_elu_forward_kernel<<<grid, block>>>(output.v, input.v, size);
     cudaDeviceSynchronize();
@@ -64,7 +60,7 @@ void cpu_elu_backward_kernel(float *error_back, float *error, float *output, uns
     if (output[idx] > 0.0)
       error_back[idx] = error[idx];
     else
-      error_back[idx] = (output[idx] + ELU_ALPHA)*error_back[idx];
+      error_back[idx] = (output[idx] + ELU_ALPHA)*error[idx];
   }
 }
 
@@ -78,7 +74,7 @@ void cuda_elu_backward_kernel(float *error_back, float *error, float *output, un
       if (output[idx] > 0.0)
         error_back[idx] = error[idx];
       else
-        error_back[idx] = (output[idx] + ELU_ALPHA)*error_back[idx];
+        error_back[idx] = (output[idx] + ELU_ALPHA)*error[idx];
   }
 }
 
@@ -88,12 +84,8 @@ void elu_layer_backward( Tensor &error_back, Tensor &output, Tensor &error)
 
   #ifdef NETWORK_USE_CUDA
 
-      unsigned int block_size = 16;
-      if (size >= 256)
-        block_size = 256;
-
-      dim3 block(block_size);
-      dim3 grid((size + block.x - 1)/block.x);
+      dim3 block(32);
+      dim3 grid((size + block.x + 1)/block.x);
 
       cuda_elu_backward_kernel<<<grid, block>>>(error_back.v, error.v, output.v, size);
       cudaDeviceSynchronize();

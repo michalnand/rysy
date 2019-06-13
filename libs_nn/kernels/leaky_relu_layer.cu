@@ -1,6 +1,6 @@
 #include "leaky_relu_layer.cuh"
 
-#define LEAKY_RELU_CONST ((float)1.0/64.0) 
+#define LEAKY_RELU_CONST ((float)1.0/100.0)
 
 __host__
 void cpu_leaky_relu_forward_kernel(float *output, float *input, unsigned int size)
@@ -14,7 +14,7 @@ void cpu_leaky_relu_forward_kernel(float *output, float *input, unsigned int siz
 
     output[idx] = tmp;
   }
-} 
+}
 
 __global__
 void cuda_leaky_relu_forward_kernel(float *output, float *input, unsigned int size)
@@ -37,13 +37,8 @@ void leaky_relu_layer_forward(  Tensor &output, Tensor &input)
   unsigned int size = output.size();
 
   #ifdef NETWORK_USE_CUDA
-
-    unsigned int block_size = 16;
-    if (size > 256)
-      block_size = 256;
-
-    dim3 block(block_size);
-    dim3 grid((size + block.x - 1)/block.x);
+    dim3 block(32);
+    dim3 grid((size + block.x + 1)/block.x);
 
     cuda_leaky_relu_forward_kernel<<<grid, block>>>(output.v, input.v, size);
     cudaDeviceSynchronize();
@@ -87,13 +82,8 @@ void leaky_relu_layer_backward( Tensor &error_back, Tensor &output, Tensor &erro
   unsigned int size = output.size();
 
   #ifdef NETWORK_USE_CUDA
-
-      unsigned int block_size = 16;
-      if (size >= 256)
-        block_size = 256;
-
-      dim3 block(block_size);
-      dim3 grid((size + block.x - 1)/block.x);
+      dim3 block(32);
+      dim3 grid((size + block.x + 1)/block.x);
 
       cuda_leaky_relu_backward_kernel<<<grid, block>>>(error_back.v, error.v, output.v, size);
       cudaDeviceSynchronize();

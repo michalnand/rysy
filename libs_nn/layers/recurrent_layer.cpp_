@@ -1,6 +1,5 @@
 #include "recurrent_layer.h"
 #include "kernels/fc_layer.cuh"
-#include "kernels/saturated_leaky_relu_layer.cuh"
 
 #include "kernels/w_update.cuh"
 
