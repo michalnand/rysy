@@ -4,6 +4,8 @@
 #include <kernels/convolution_layer_backward.cuh>
 #include <kernels/solver_adam.cuh>
 
+#include <iostream>
+
 ConvolutionLayer::ConvolutionLayer()
         :Layer()
 {

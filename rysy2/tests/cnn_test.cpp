@@ -15,7 +15,7 @@ int main()
     cnn.add_layer("relu");
 
     cnn.add_layer("max_pooling", Shape(2, 2));
- 
+
     cnn.add_layer("convolution", Shape(3, 3, 32));
     cnn.add_layer("relu");
     cnn.add_layer("convolution", Shape(3, 3, 32));

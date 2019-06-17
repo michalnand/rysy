@@ -1,5 +1,6 @@
 #include <cnn.h>
 
+#include <iostream>
 #include <json_config.h>
 
 #include <layers/activation_elu_layer.h>
@@ -12,9 +13,10 @@
 
 #include <layers/max_pooling_layer.h>
 #include <layers/average_pooling_layer.h>
+#include <layers/unpooling_layer.h>
+
 #include <layers/dropout_layer.h>
 
-#include <iostream>
 
 
 CNN::CNN()
@@ -134,8 +136,14 @@ void CNN::copy(const CNN& other)
 
 void CNN::forward(Tensor &output, Tensor &input)
 {
-    this->output.clear();
+    l_output[0] = input;
 
+    for (unsigned int i = 0; i < layers.size(); i++)
+    {
+        layers[i]->forward(l_output[i+1], l_output[i]);
+    }
+
+    output = l_output[layers.size()];
 }
 
 void CNN::forward(std::vector<float> &output, std::vector<float> &input)
@@ -268,6 +276,11 @@ void CNN::init(Json::Value json_config, Shape input_shape, Shape output_shape)
     network_log << "output_shape = " << m_output_shape.w() << " " << m_output_shape.h() << " " << m_output_shape.d() << "\n";
     network_log << "\n\n";
 
+    output.init(this->m_output_shape);
+    required_output.init(this->m_output_shape);
+    input.init(this->m_input_shape);
+
+
     l_error.push_back(Tensor(input_shape));
     l_output.push_back(Tensor(input_shape));
 
@@ -330,6 +343,11 @@ Shape CNN::add_layer(std::string layer_type, Shape shape)
         layer = new AveragePoolingLayer(m_current_input_shape, parameters);
     }
     else
+    if ((layer_type == "unpooling")||(layer_type == "un pooling"))
+    {
+        layer = new UnPoolingLayer(m_current_input_shape, parameters);
+    }
+    else
     if (layer_type == "dropout")
     {
         layer = new DropoutLayer(m_current_input_shape, parameters);
@@ -357,7 +375,7 @@ std::string CNN::asString()
     std::string result;
     for (unsigned int i = 0; i < layers.size(); i++)
         result+= layers[i]->asString() + "\n";
- 
+
     result+= "\n\n";
     result+= "GFLOPS = " + std::to_string(m_total_flops/1000000000.0) + "\n";
     result+= "FLOPS = " + std::to_string(m_total_flops) + "\n";
