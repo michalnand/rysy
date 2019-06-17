@@ -94,6 +94,11 @@ unsigned int DatasetInterface::get_testing_count()
     return this->testing_output.size();
 }
 
+unsigned int DatasetInterface::get_classes_count()
+{
+    return this->output_shape.size();
+}
+
 void DatasetInterface::set_training_idx(unsigned int idx)
 {
     this->current_training_idx = idx%get_training_count();

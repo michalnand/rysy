@@ -32,6 +32,8 @@ class DatasetInterface
         unsigned int get_training_count();
         unsigned int get_testing_count();
 
+        unsigned int get_classes_count();
+
     public:
         virtual void set_training_idx(unsigned int idx);
         virtual void set_random_training_idx();
