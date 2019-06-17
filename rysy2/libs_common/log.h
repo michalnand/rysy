@@ -2,7 +2,7 @@
 #define _LOG_H_
 
 #include <string>
-#include "json_config.h"
+#include <json_config.h>
 
 class Log
 {

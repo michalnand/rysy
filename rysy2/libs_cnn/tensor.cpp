@@ -16,11 +16,13 @@ Tensor::Tensor()
 
 Tensor::Tensor(Tensor& other)
 {
+    v = nullptr;
     copy(other);
 }
 
 Tensor::Tensor(const Tensor& other)
 {
+    v = nullptr;
     copy(other);
 }
 
@@ -46,7 +48,7 @@ Tensor::~Tensor()
         #ifdef NETWORK_USE_CUDA
         cuda_float_allocator.free(v);
         #else
-        free(v);
+        delete[] v;
         #endif
 
         v = nullptr;

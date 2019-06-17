@@ -7,7 +7,7 @@
 
 Log::Log()
 {
-  file_name = "std_out_file_name";
+  file_name = "DEFAULT_std_out_file_name";
 }
 
 Log::Log(std::string file_name)
@@ -16,7 +16,7 @@ Log::Log(std::string file_name)
 }
 
 Log::~Log()
-{ 
+{
 
 }
 
@@ -31,7 +31,7 @@ void Log::set_output_file_name(std::string file_name)
 
 void Log::put_string(std::string str)
 {
-  if (file_name == "std_out_file_name")
+  if (file_name == "DEFAULT_std_out_file_name")
   {
     std::cout << str;
   }

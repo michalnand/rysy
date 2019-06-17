@@ -76,7 +76,7 @@ void FCLayer::forward(Tensor &output, Tensor &input)
 void FCLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights)
 {
     (void)output;
-    
+
     fc_layer_gradient(w_grad, input, error);
     fc_layer_update_bias(bias, error, learning_rate);
 
@@ -105,7 +105,7 @@ std::string FCLayer::asString()
 {
     std::string result;
 
-    result+= "FC\t";
+    result+= "FC\t\t";
     result+= "[" + std::to_string(m_input_shape.w()) + " " + std::to_string(m_input_shape.h()) + " " + std::to_string(m_input_shape.d()) + "]\t";
     result+= "[" + std::to_string(m_output_shape.w()) + " " + std::to_string(m_output_shape.h()) + " " + std::to_string(m_output_shape.d()) + "]\t";
     result+= "[" + std::to_string(get_trainable_parameters()) + " " + std::to_string(get_flops()) + "]\t";

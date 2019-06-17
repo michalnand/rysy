@@ -48,7 +48,7 @@ std::string ActivationEluLayer::asString()
 {
     std::string result;
 
-    result+= "ELU\t";
+    result+= "ELU\t\t";
     result+= "[" + std::to_string(m_input_shape.w()) + " " + std::to_string(m_input_shape.h()) + " " + std::to_string(m_input_shape.d()) + "]\t";
     result+= "[" + std::to_string(m_output_shape.w()) + " " + std::to_string(m_output_shape.h()) + " " + std::to_string(m_output_shape.d()) + "]\t";
     result+= "[" + std::to_string(get_trainable_parameters()) + " " + std::to_string(get_flops()) + "]\t";
@@ -67,7 +67,7 @@ void ActivationEluLayer::backward(Tensor &error_back, Tensor &error, Tensor &inp
     (void)update_weights;
 
     activation_elu_layer_backward(error_back, output, error);
-} 
+}
 
 
 void ActivationEluLayer::init_activation_elu_layer()
