@@ -1,6 +1,7 @@
 OUTPUT_NAME = libs_nn
 
 INC+= -I.
+INC+= -I../libs_common
 
 SRCS+= $(shell find . -name '*.cpp')
 SRCS_CUDA+= $(shell find . -name '*.cu')

@@ -10,7 +10,7 @@ class FCLayer final: public Layer
         FCLayer(FCLayer& other);
         FCLayer(const FCLayer& other);
 
-        FCLayer(Shape input_shape, Json::Value parameters, unsigned int max_time_steps = 1);
+        FCLayer(Shape input_shape, Json::Value parameters);
 
         virtual ~FCLayer();
 
@@ -30,12 +30,13 @@ class FCLayer final: public Layer
 
         bool has_weights() { return true;};
 
+        std::string asString();
+
     protected:
         void init_fc();
 
     protected:
-        Json::Value m_hyperparameters;
-        float learning_rate;
+        float learning_rate, lambda1, lambda2;
 
         Tensor w, bias;
         Tensor w_grad, m, v;

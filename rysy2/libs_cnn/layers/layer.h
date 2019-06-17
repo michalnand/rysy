@@ -13,12 +13,12 @@ class Layer
         Layer(Layer& other);
         Layer(const Layer& other);
 
-        Layer(Shape input_shape, Json::Value parameters, unsigned int max_time_steps = 1);
+        Layer(Shape input_shape, Json::Value parameters);
 
         virtual ~Layer();
 
-        Layer& operator= (Layer& other);
-        Layer& operator= (const Layer& other);
+        virtual Layer& operator= (Layer& other);
+        virtual Layer& operator= (const Layer& other);
 
     protected:
         void copy(Layer& other);
@@ -42,17 +42,20 @@ class Layer
 
         virtual bool has_weights() { return false;};
 
+        virtual std::string asString();
+
+        unsigned long int get_flops();
+        unsigned long int get_trainable_parameters();
 
     protected:
-        void init(Shape input_shape, Json::Value parameters, unsigned int max_time_steps = 1);
+        void init(Shape input_shape, Json::Value parameters);
 
     protected:
         Shape m_input_shape, m_output_shape;
-        unsigned int m_max_time_steps;
-
         Json::Value m_parameters;
-
         bool m_training_mode;
+
+        unsigned long int m_flops, m_trainable_parameters;
 };
 
 #endif

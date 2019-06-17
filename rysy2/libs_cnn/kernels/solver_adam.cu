@@ -64,6 +64,53 @@ void cuda_solver_adam_kernel(   float *w,
     }
 }
 
+
+
+__host__
+void cpu_regularization_kernel( float *w,
+                                unsigned int size,
+                                float lambda1,
+                                float lambda2 )
+{
+    for (unsigned int w_ptr = 0; w_ptr <size; w_ptr++)
+    {
+        float value = w[w_ptr];
+
+        if (value > 0.0)
+            value-= lambda1;
+        else
+            value+= lambda1;
+
+        value-= lambda2*value;
+
+        w[w_ptr] = value;
+    }
+}
+
+
+__global__
+void cuda_regularization_kernel(    float *w,
+                                    unsigned int size,
+                                    float lambda1,
+                                    float lambda2 )
+{
+    unsigned int w_ptr   = threadIdx.x + blockIdx.x*blockDim.x;
+
+    if (w_ptr < size)
+    {
+        float value = w[w_ptr];
+
+        if (value > 0.0)
+            value-= lambda1;
+        else
+            value+= lambda1;
+
+        value-= lambda2*value;
+
+        w[w_ptr] = value;
+    }
+}
+
 void solver_adam(   Tensor &w, Tensor &w_grad, Tensor &m, Tensor &v,
                     float learning_rate, float lambda1, float lambda2)
 {
@@ -74,42 +121,59 @@ void solver_adam(   Tensor &w, Tensor &w_grad, Tensor &m, Tensor &v,
     float epsilon   = 0.00000001;
 
     #ifdef NETWORK_USE_CUDA
+    {
+        dim3 block(16);
+        dim3 grid((size  + block.x + 1)/block.x);
 
-    dim3 block(16);
-    dim3 grid((size  + block.x + 1)/block.x);
+        cuda_solver_adam_kernel<<<grid, block>>>(  w.v,
+                                                w_grad.v,
+                                                size,
 
-    cuda_solver_adam_kernel<<<grid, block>>>(  w.v,
-                                            w_grad.v,
-                                            size,
+                                                m.v,
+                                                v.v,
 
-                                            m.v,
-                                            v.v,
+                                                learning_rate,
+                                                beta1,
+                                                beta2,
+                                                epsilon );
 
-                                            learning_rate,
-                                            beta1,
-                                            beta2,
-                                            epsilon );
+        cudaDeviceSynchronize();
+    }
+    #else
+    {
+        cpu_solver_adam_kernel(  w.v,
+                              w_grad.v,
+                              size,
 
-    cudaDeviceSynchronize();
+                              m.v,
+                              v.v,
 
-  #else
+                              learning_rate,
+                              beta1,
+                              beta2,
+                              epsilon );
+    }
 
-    cpu_solver_adam_kernel(  w.v,
-                          w_grad.v,
-                          size,
+    #endif
 
-                          m.v,
-                          v.v,
+    #ifdef NETWORK_USE_CUDA
+    {
+        dim3 block(16);
+        dim3 grid((size  + block.x + 1)/block.x);
 
-                          learning_rate,
-                          beta1,
-                          beta2,
-                          epsilon );
+        cuda_regularization_kernel<<<grid, block>>>(    w.v,
+                                                        size,
+                                                        lambda1,
+                                                        lambda2);
 
-  #endif
-
-    /*
-    w.regularization_l1(lambda1);
-    w.regularization_l2(lambda2);
-    */
+        cudaDeviceSynchronize();
+    }
+    #else
+    {
+        cpu_regularization_kernel(  w.v,
+                                    size,
+                                    lambda1,
+                                    lambda2);
+    }
+    #endif
 }

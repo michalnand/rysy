@@ -24,6 +24,12 @@ class Shape
         Shape& operator= (Shape& other);
         Shape& operator= (const Shape& other);
 
+        Shape& operator= (int other[]);
+        Shape& operator= (const int other[]);
+
+        Shape& operator= (unsigned int other[]);
+        Shape& operator= (const unsigned int other[]);
+
     protected:
         void copy(Shape& other);
         void copy(const Shape& other);

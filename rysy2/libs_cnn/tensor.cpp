@@ -4,6 +4,7 @@
 
 #include <string.h>
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 
 #include <math.h>
@@ -241,7 +242,7 @@ void Tensor::print()
         {
             for (unsigned int w_ = 0; w_ < w(); w_++)
             {
-                std::cout << tmp[ptr] << " ";
+                std::cout << std::setw(7) << std::setprecision(3) << tmp[ptr] << " ";
                 ptr++;
             }
             std::cout << "\n";
@@ -294,6 +295,58 @@ bool Tensor::is_valid()
             return false;
 
     return true;
+}
+
+void Tensor::add(Tensor &rhs)
+{
+    #ifdef NETWORK_USE_CUDA
+        cuda_tensor_add(v, rhs.v, size());
+    #else
+        for (unsigned int i = 0; i < size(); i++)
+            v[i]+= rhs.v[i];
+    #endif
+}
+
+void Tensor::sub(Tensor &rhs)
+{
+    #ifdef NETWORK_USE_CUDA
+        cuda_tensor_sub(v, rhs.v, size());
+    #else
+        for (unsigned int i = 0; i < size(); i++)
+            v[i]-= rhs.v[i];
+    #endif
+}
+
+void Tensor::mul(float value)
+{
+    #ifdef NETWORK_USE_CUDA
+        cuda_tensor_mul(v, value, size());
+    #else
+        for (unsigned int i = 0; i < size(); i++)
+            v[i]*= value;
+    #endif
+}
+
+void Tensor::concatenate(Tensor &ta, Tensor &tb)
+{
+    #ifdef NETWORK_USE_CUDA
+
+        cuda_float_allocator.device_to_device(v, ta.v, ta.size());
+        cuda_float_allocator.device_to_device(v + ta.size(), tb.v, tb.size());
+
+    #else
+        unsigned int ptr = 0;
+        for (unsigned int i = 0; i < ta.size(); i++)
+        {
+            v[ptr] = ta.v[i];
+            ptr++;
+        }
+        for (unsigned int i = 0; i < ta.size(); i++)
+        {
+            v[ptr] = tb.v[i];
+            ptr++;
+        }
+    #endif
 }
 
 

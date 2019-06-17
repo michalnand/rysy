@@ -6,9 +6,10 @@ Layer::Layer()
     this->m_input_shape.set(0, 0, 0);
     this->m_output_shape.set(0, 0, 0);
 
-    this->m_max_time_steps = 1;
-
     this->m_training_mode = false;
+
+    this->m_flops = 0;
+    this->m_trainable_parameters = 0;
 }
 
 
@@ -22,9 +23,9 @@ Layer::Layer(const Layer& other)
     copy(other);
 }
 
-Layer::Layer(Shape input_shape, Json::Value parameters, unsigned int max_time_steps)
+Layer::Layer(Shape input_shape, Json::Value parameters)
 {
-    init(input_shape, parameters, max_time_steps);
+    init(input_shape, parameters);
 }
 
 Layer::~Layer()
@@ -51,9 +52,10 @@ void Layer::copy(Layer& other)
     this->m_output_shape    = other.m_output_shape;
 
     this->m_parameters      = other.m_parameters;
-    this->m_max_time_steps  = other.m_max_time_steps;
-
     this->m_training_mode   = other.m_training_mode;
+
+    this->m_flops                   = other.m_flops;
+    this->m_trainable_parameters    =  other.m_trainable_parameters;
 }
 
 void Layer::copy(const Layer& other)
@@ -62,9 +64,10 @@ void Layer::copy(const Layer& other)
     this->m_output_shape    = other.m_output_shape;
 
     this->m_parameters      = other.m_parameters;
-    this->m_max_time_steps  = other.m_max_time_steps;
-
     this->m_training_mode   = other.m_training_mode;
+
+    this->m_flops           = other.m_flops;
+    this->m_trainable_parameters      =  other.m_trainable_parameters;
 }
 
 
@@ -119,13 +122,33 @@ void Layer::load(std::string file_name_prefix)
     (void)file_name_prefix;
 }
 
-void Layer::init(Shape input_shape, Json::Value parameters, unsigned int max_time_steps)
+std::string Layer::asString()
+{
+    std::string result;
+
+    result = "[INTERFACE]";
+
+    return result;
+}
+
+unsigned long int Layer::get_flops()
+{
+    return this->m_flops;
+}
+
+unsigned long int Layer::get_trainable_parameters()
+{
+    return this->m_trainable_parameters;
+}
+
+void Layer::init(Shape input_shape, Json::Value parameters)
 {
     this->m_input_shape = input_shape;
     this->m_output_shape.set(1, 1, 1);
 
     this->m_parameters = parameters;
-    this->m_max_time_steps = max_time_steps;
-
     this->m_training_mode = false;
+
+    this->m_flops = 0;
+    this->m_trainable_parameters = 0;
 }

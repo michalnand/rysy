@@ -46,6 +46,31 @@ Shape& Shape::operator= (const Shape& other)
     return *this;
 }
 
+Shape& Shape::operator= (int other[])
+{
+    set(other[0], other[1], other[2]);
+    return *this;
+}
+
+Shape& Shape::operator= (const int other[])
+{
+    set(other[0], other[1], other[2]);
+    return *this;
+}
+
+Shape& Shape::operator= (unsigned int other[])
+{
+    set(other[0], other[1], other[2]);
+    return *this;
+}
+
+Shape& Shape::operator= (const unsigned int other[])
+{
+    set(other[0], other[1], other[2]);
+    return *this;
+}
+
+
 
 void Shape::copy(Shape& other)
 {

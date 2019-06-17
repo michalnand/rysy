@@ -1,4 +1,5 @@
 #include <layers/fc_layer.h>
+
 #include <kernels/fc_layer.cuh>
 #include <kernels/solver_adam.cuh>
 
@@ -20,8 +21,8 @@ FCLayer::FCLayer(const FCLayer& other)
     copy_fc(other);
 }
 
-FCLayer::FCLayer(Shape input_shape, Json::Value parameters, unsigned int max_time_steps)
-        :Layer(input_shape, parameters, max_time_steps)
+FCLayer::FCLayer(Shape input_shape, Json::Value parameters)
+        :Layer(input_shape, parameters)
 {
     init_fc();
 }
@@ -48,14 +49,20 @@ FCLayer& FCLayer::operator= (const FCLayer& other)
 
 void FCLayer::copy_fc(FCLayer &other)
 {
-    this->m_hyperparameters = other.m_hyperparameters;
+    this->learning_rate     = other.learning_rate;
+    this->lambda1           = other.lambda1;
+    this->lambda2           = other.lambda2;
+
     this->w                 = other.w;
     this->bias              = other.bias;
 }
 
 void FCLayer::copy_fc(const FCLayer &other)
 {
-    this->m_hyperparameters = other.m_hyperparameters;
+    this->learning_rate     = other.learning_rate;
+    this->lambda1           = other.lambda1;
+    this->lambda2           = other.lambda2;
+
     this->w                 = other.w;
     this->bias              = other.bias;
 }
@@ -68,18 +75,18 @@ void FCLayer::forward(Tensor &output, Tensor &input)
 
 void FCLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights)
 {
-    (void)input;
+    (void)output;
     
-    fc_layer_gradient(w_grad, output, error);
+    fc_layer_gradient(w_grad, input, error);
     fc_layer_update_bias(bias, error, learning_rate);
 
      if (update_weights)
      {
-         solver_adam(w, w_grad, m, v, learning_rate);
+         solver_adam(w, w_grad, m, v, learning_rate, lambda1, lambda2);
          w_grad.clear();
      }
 
-     fc_layer_backward(error_back, output, error, w);
+     fc_layer_backward(error_back, input, error, w);
 }
 
 void FCLayer::save(std::string file_name_prefix)
@@ -92,6 +99,17 @@ void FCLayer::load(std::string file_name_prefix)
 {
     w.load(file_name_prefix + "_weights.bin");
     bias.load(file_name_prefix + "_bias.bin");
+}
+
+std::string FCLayer::asString()
+{
+    std::string result;
+
+    result+= "FC\t";
+    result+= "[" + std::to_string(m_input_shape.w()) + " " + std::to_string(m_input_shape.h()) + " " + std::to_string(m_input_shape.d()) + "]\t";
+    result+= "[" + std::to_string(m_output_shape.w()) + " " + std::to_string(m_output_shape.h()) + " " + std::to_string(m_output_shape.d()) + "]\t";
+    result+= "[" + std::to_string(get_trainable_parameters()) + " " + std::to_string(get_flops()) + "]\t";
+    return result;
 }
 
 void FCLayer::init_fc()
@@ -107,8 +125,9 @@ void FCLayer::init_fc()
     if (m_parameters["shape"].size() >= 3)
         d_ = m_parameters["shape"][2].asInt();
 
-    m_hyperparameters = m_parameters["hyperparameters"];
-
+    learning_rate   = m_parameters["hyperparameters"]["learning_rate"].asFloat();
+    lambda1         = m_parameters["hyperparameters"]["lambda1"].asFloat();
+    lambda2         = m_parameters["hyperparameters"]["lambda2"].asFloat();
 
     m_output_shape.set(1, 1, w_*h_*d_);
 
@@ -121,4 +140,7 @@ void FCLayer::init_fc()
 
     bias.init(1, 1, m_output_shape.size());
     bias.clear();
+
+    this->m_trainable_parameters    = w.size() + bias.size();
+    this->m_flops                   = (m_input_shape.size() + 1)*m_output_shape.size()*2;
 }

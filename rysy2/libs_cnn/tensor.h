@@ -65,6 +65,13 @@ class Tensor
 
         bool is_valid();
 
+    public:
+
+        void add(Tensor &rhs);
+        void sub(Tensor &rhs);
+        void mul(float value);
+        void concatenate(Tensor &ta, Tensor &tb);
+
     private:
         void init_size(Shape shape);
         unsigned int to_idx(unsigned int x, unsigned y, unsigned z);

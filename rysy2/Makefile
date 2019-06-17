@@ -1,4 +1,4 @@
-LIBS_PATH=$(HOME)/programming/rysy2
+LIBS_PATH=$(HOME)/libs/rysy/rysy2
 
 export LIBS_PATH
 
