@@ -1,0 +1,245 @@
+{
+	"hyperparameters" : 
+	{
+		"dropout" : 0.5,
+		"lambda1" : 0,
+		"lambda2" : 0,
+		"learning_rate" : 0.0020000000949949026,
+		"minibatch_size" : 32
+	},
+	"input_shape" : 
+	[
+		28,
+		28,
+		1
+	],
+	"layers" : 
+	[
+		{
+			"input_shape" : 
+			[
+				28,
+				28,
+				1
+			],
+			"output_shape" : 
+			[
+				28,
+				28,
+				32
+			],
+			"shape" : 
+			[
+				3,
+				3,
+				32
+			],
+			"type" : "convolution",
+			"weights_file_name" : "mnist_0/layer_0"
+		},
+		{
+			"input_shape" : 
+			[
+				28,
+				28,
+				32
+			],
+			"output_shape" : 
+			[
+				28,
+				28,
+				32
+			],
+			"shape" : 
+			[
+				0,
+				0,
+				0
+			],
+			"type" : "relu",
+			"weights_file_name" : "mnist_0/layer_1"
+		},
+		{
+			"input_shape" : 
+			[
+				28,
+				28,
+				32
+			],
+			"output_shape" : 
+			[
+				14,
+				14,
+				32
+			],
+			"shape" : 
+			[
+				2,
+				2,
+				1
+			],
+			"type" : "max_pooling",
+			"weights_file_name" : "mnist_0/layer_2"
+		},
+		{
+			"input_shape" : 
+			[
+				14,
+				14,
+				32
+			],
+			"output_shape" : 
+			[
+				14,
+				14,
+				32
+			],
+			"shape" : 
+			[
+				3,
+				3,
+				32
+			],
+			"type" : "convolution",
+			"weights_file_name" : "mnist_0/layer_3"
+		},
+		{
+			"input_shape" : 
+			[
+				14,
+				14,
+				32
+			],
+			"output_shape" : 
+			[
+				14,
+				14,
+				32
+			],
+			"shape" : 
+			[
+				0,
+				0,
+				0
+			],
+			"type" : "relu",
+			"weights_file_name" : "mnist_0/layer_4"
+		},
+		{
+			"input_shape" : 
+			[
+				14,
+				14,
+				32
+			],
+			"output_shape" : 
+			[
+				7,
+				7,
+				32
+			],
+			"shape" : 
+			[
+				2,
+				2,
+				1
+			],
+			"type" : "max_pooling",
+			"weights_file_name" : "mnist_0/layer_5"
+		},
+		{
+			"input_shape" : 
+			[
+				7,
+				7,
+				32
+			],
+			"output_shape" : 
+			[
+				7,
+				7,
+				32
+			],
+			"shape" : 
+			[
+				3,
+				3,
+				32
+			],
+			"type" : "convolution",
+			"weights_file_name" : "mnist_0/layer_6"
+		},
+		{
+			"input_shape" : 
+			[
+				7,
+				7,
+				32
+			],
+			"output_shape" : 
+			[
+				7,
+				7,
+				32
+			],
+			"shape" : 
+			[
+				0,
+				0,
+				0
+			],
+			"type" : "relu",
+			"weights_file_name" : "mnist_0/layer_7"
+		},
+		{
+			"input_shape" : 
+			[
+				7,
+				7,
+				32
+			],
+			"output_shape" : 
+			[
+				7,
+				7,
+				32
+			],
+			"shape" : 
+			[
+				0,
+				0,
+				0
+			],
+			"type" : "dropout",
+			"weights_file_name" : "mnist_0/layer_8"
+		},
+		{
+			"input_shape" : 
+			[
+				7,
+				7,
+				32
+			],
+			"output_shape" : 
+			[
+				1,
+				1,
+				10
+			],
+			"shape" : 
+			[
+				0,
+				0,
+				0
+			],
+			"type" : "output",
+			"weights_file_name" : "mnist_0/layer_9"
+		}
+	],
+	"output_shape" : 
+	[
+		1,
+		1,
+		10
+	]
+}

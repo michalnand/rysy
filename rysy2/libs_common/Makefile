@@ -1,7 +1,7 @@
 OUTPUT_NAME = libs_common
 
 INC+= -I.
-INC+= -I../libs_cnn
+INC+= -I../libs_nn
 INC+= -I../libs_common
 
 SRCS+= $(shell find . -name '*.cpp')

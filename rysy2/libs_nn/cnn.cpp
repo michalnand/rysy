@@ -549,8 +549,8 @@ Json::Value CNN::default_hyperparameters(float learning_rate)
     Json::Value result;
 
     result["learning_rate"]  = learning_rate;
-    result["lambda1"]        = learning_rate*0.001;
-    result["lambda2"]        = learning_rate*0.001;
+    result["lambda1"]        = learning_rate*0.01;
+    result["lambda2"]        = learning_rate*0.01;
     result["minibatch_size"] = 32;
     result["dropout"]        = 0.5;
 

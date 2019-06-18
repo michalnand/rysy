@@ -17,59 +17,70 @@ int main()
 
     std::cout << "\n\n\n\n";
 
-    CNN cnn(dataset.get_input_shape(), dataset.get_output_shape(), 0.001);
+    CNN cnn(dataset.get_input_shape(), dataset.get_output_shape(), 0.002);
 
-    cnn.add_layer("convolution", Shape(3, 3, 16));
-    cnn.add_layer("relu");
-    cnn.add_layer("convolution", Shape(3, 3, 16));
-    cnn.add_layer("relu");
-    cnn.add_layer("max_pooling", Shape(2, 2));
-    cnn.add_layer("convolution", Shape(3, 3, 32));
-    cnn.add_layer("relu");
+
     cnn.add_layer("convolution", Shape(3, 3, 32));
     cnn.add_layer("relu");
     cnn.add_layer("max_pooling", Shape(2, 2));
     cnn.add_layer("convolution", Shape(3, 3, 32));
     cnn.add_layer("relu");
+    cnn.add_layer("max_pooling", Shape(2, 2));
     cnn.add_layer("convolution", Shape(3, 3, 32));
     cnn.add_layer("relu");
     cnn.add_layer("dropout");
     cnn.add_layer("output");
+
+
 
     //print network info
     std::cout << cnn.asString() << "\n";
 
     //start training
     std::cout << "training\n";
-    cnn.train(dataset.get_training_output_all(), dataset.get_training_input_all(), 5);
 
-    cnn.save("mnist_0/");
+
 
 
     /*
     CNN cnn(std::string("mnist_0/network_config.json"));
     std::cout << cnn.asString() << "\n";
     */
-
-    std::cout << "testing\n";
-    ClassificationCompare compare(dataset.get_classes_count());
-
-    std::vector<float> nn_output(dataset.get_classes_count());
-    for (unsigned int item_idx = 0; item_idx < dataset.get_testing_count(); item_idx++)
+    unsigned int epoch_count = 10;
+    
+    float accuracy_result_best = 0.0;
+    for (unsigned int epoch = 0; epoch < epoch_count; epoch++)
     {
-        cnn.forward(nn_output, dataset.get_testing_input(item_idx));
-        compare.add(dataset.get_testing_output(item_idx), nn_output);
+        cnn.train(dataset.get_training_output_all(), dataset.get_training_input_all());
 
-        if (compare.is_nan_error())
+
+        std::cout << "testing\n";
+        ClassificationCompare compare(dataset.get_classes_count());
+
+        std::vector<float> nn_output(dataset.get_classes_count());
+        for (unsigned int item_idx = 0; item_idx < dataset.get_testing_count(); item_idx++)
         {
-            std::cout << "NaN error\n";
-            break;
+            cnn.forward(nn_output, dataset.get_testing_input(item_idx));
+            compare.add(dataset.get_testing_output(item_idx), nn_output);
+
+            if (compare.is_nan_error())
+            {
+                std::cout << "NaN error\n";
+                break;
+            }
+        }
+
+        compare.compute();
+
+        std::cout << compare.asString() << "\n";
+
+        if (compare.get_accuracy() > accuracy_result_best)
+        {
+            accuracy_result_best = compare.get_accuracy();
+            std::cout << "saving new best net with result = " << accuracy_result_best << "%\n";
+            cnn.save("mnist_0/");
         }
     }
-
-    compare.compute();
-
-    std::cout << compare.asString() << "\n";
 
 
     std::cout << "program done\n";

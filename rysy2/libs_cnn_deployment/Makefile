@@ -1,7 +1,7 @@
-OUTPUT_NAME = libs_dataset
+OUTPUT_NAME = libs_cnn_deployment
 
 INC+= -I.
-INC+= -I../libs_nn
+INC+= -I./kernels
 INC+= -I../libs_common
 
 SRCS+= $(shell find . -name '*.cpp')
