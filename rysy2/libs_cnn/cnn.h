@@ -15,7 +15,7 @@ class CNN
         CNN(CNN& other);
         CNN(const CNN& other);
 
-        CNN(std::string json_file_name, Shape input_shape = {0, 0, 0}, Shape output_shape = {0, 0, 0});
+        CNN(std::string network_config_dir, Shape input_shape = {0, 0, 0}, Shape output_shape = {0, 0, 0});
         CNN(Json::Value json_config, Shape input_shape = {0, 0, 0}, Shape output_shape = {0, 0, 0});
         CNN(Shape input_shape, Shape output_shape, float learning_rate = 0.001, float lambda1 = 0.0, float lambda2 = 0.0, float dropout = 0.5, unsigned int minibatch_size = 32);
 

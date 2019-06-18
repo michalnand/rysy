@@ -42,9 +42,9 @@ CNN::CNN(const CNN& other)
     copy(other);
 }
 
-CNN::CNN(std::string json_file_name, Shape input_shape, Shape output_shape)
+CNN::CNN(std::string network_config_dir, Shape input_shape, Shape output_shape)
 {
-    JsonConfig json(json_file_name);
+    JsonConfig json(network_config_dir + "network_config.json");
     init(json.result, input_shape, output_shape);
 }
 
@@ -297,6 +297,21 @@ void CNN::init(Json::Value json_config, Shape input_shape, Shape output_shape)
 
     network_log << "network init start\n\n";
 
+    if (input_shape.size() == 0)
+    {
+        this->m_input_shape.set(    json_config["input_shape"][0].asInt(),
+                                    json_config["input_shape"][1].asInt(),
+                                    json_config["input_shape"][2].asInt() );
+    }
+
+    if (output_shape.size() == 0)
+    {
+        this->m_output_shape.set(   json_config["output_shape"][0].asInt(),
+                                    json_config["output_shape"][1].asInt(),
+                                    json_config["output_shape"][2].asInt() );
+    }
+
+
     if (json_config["hyperparameters"]["learning_rate"] != Json::Value::null)
         m_hyperparameters["learning_rate"]     = json_config["hyperparameters"]["learning_rate"].asFloat();
     else
@@ -323,15 +338,15 @@ void CNN::init(Json::Value json_config, Shape input_shape, Shape output_shape)
         m_hyperparameters["minibatch_size"]  = default_hyperparameters()["minibatch_size"];
 
     network_log << "hyperparameters :\n";
-    network_log << "learning_rate  = " << m_hyperparameters["learning_rate"].asFloat() << "\n";
-    network_log << "lambda1        = " << m_hyperparameters["lambda1"].asFloat() << "\n";
-    network_log << "lambda2        = " << m_hyperparameters["lambda2"].asFloat() << "\n";
-    network_log << "dropout        = " << m_hyperparameters["dropout"].asFloat() << "\n";
-    network_log << "minibatch_size = " << m_hyperparameters["minibatch_size"].asInt() << "\n";
+    network_log << "learning_rate  = " << this->m_hyperparameters["learning_rate"].asFloat() << "\n";
+    network_log << "lambda1        = " << this->m_hyperparameters["lambda1"].asFloat() << "\n";
+    network_log << "lambda2        = " << this->m_hyperparameters["lambda2"].asFloat() << "\n";
+    network_log << "dropout        = " << this->m_hyperparameters["dropout"].asFloat() << "\n";
+    network_log << "minibatch_size = " << this->m_hyperparameters["minibatch_size"].asInt() << "\n";
     network_log << "\n\n";
 
-    network_log << "input_shape  = " << m_input_shape.w() << " " << m_input_shape.h() << " " << m_input_shape.d() << "\n";
-    network_log << "output_shape = " << m_output_shape.w() << " " << m_output_shape.h() << " " << m_output_shape.d() << "\n";
+    network_log << "input_shape  = " << this->m_input_shape.w() << " " << this->m_input_shape.h() << " " << this->m_input_shape.d() << "\n";
+    network_log << "output_shape = " << this->m_output_shape.w() << " " << this->m_output_shape.h() << " " << this->m_output_shape.d() << "\n";
     network_log << "\n\n";
 
 
@@ -352,26 +367,29 @@ void CNN::init(Json::Value json_config, Shape input_shape, Shape output_shape)
 
     this->m_parameters["hyperparameters"] = m_hyperparameters;
 
-    l_error.push_back(Tensor(input_shape));
-    l_output.push_back(Tensor(input_shape));
+    l_error.push_back(Tensor(this->m_input_shape));
+    l_output.push_back(Tensor(this->m_input_shape));
 
-    for (unsigned int i = 0; i < json_config["parameters"]["layers"].size(); i++)
+    m_current_input_shape = this->m_input_shape;
+
+    for (unsigned int i = 0; i < json_config["layers"].size(); i++)
     {
-        std::string layer_type = json_config["parameters"]["layers"][i]["type"].asString();
+        std::string layer_type = json_config["layers"][i]["type"].asString();
         Shape shape;
         shape.set(
-                    json_config["parameters"]["layers"][i]["shape"][0].asInt(),
-                    json_config["parameters"]["layers"][i]["shape"][1].asInt(),
-                    json_config["parameters"]["layers"][i]["shape"][2].asInt()
+                    json_config["layers"][i]["shape"][0].asInt(),
+                    json_config["layers"][i]["shape"][1].asInt(),
+                    json_config["layers"][i]["shape"][2].asInt()
                  );
 
-        std::string weights_file_name_prefix = json_config["parameters"]["layers"][i]["weights_file_name"].asString();
+        std::string weights_file_name_prefix = json_config["layers"][i]["weights_file_name"].asString();
 
         add_layer(layer_type, shape, weights_file_name_prefix);
+
+        m_current_input_shape = layers[layers.size()-1]->get_output_shape();
     }
 
-
-    m_current_input_shape = input_shape;
+    network_log << "\nnetwork init done\n";
 }
 
 

@@ -36,6 +36,10 @@ class ClassificationCompare
         std::string asString();
         Json::Value asJson();
 
+    public:
+        float get_accuracy();
+        std::vector<std::vector<unsigned int>> get_confusion_matrix();
+
     private:
         unsigned int class_idx(std::vector<float> &v);
         bool is_valid(std::vector<float> &v);

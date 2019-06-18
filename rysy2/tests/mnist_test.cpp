@@ -44,11 +44,15 @@ int main()
 
     std::cout << "training\n";
 
-    cnn.train(dataset.get_training_output_all(), dataset.get_training_input_all(), 2);
+    cnn.train(dataset.get_training_output_all(), dataset.get_training_input_all(), 5);
 
-    cnn.save("mnist_0/"); 
+    cnn.save("mnist_0/");
 
-
+    /*
+    CNN cnn(std::string("mnist_0/"));
+    std::cout << cnn.asString() << "\n";
+    */
+    
     std::cout << "testing\n";
     ClassificationCompare compare(dataset.get_classes_count());
 

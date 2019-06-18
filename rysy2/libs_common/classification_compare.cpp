@@ -107,13 +107,13 @@ int ClassificationCompare::add(std::vector<float> &target_output, std::vector<fl
     {
         this->nan_error = true;
         return -3;
-    } 
+    }
 
 
     unsigned int target     = class_idx(target_output);
     unsigned int predicted  = class_idx(predicted_output);
 
-    confusion_matrix[target][predicted]++;
+    confusion_matrix[predicted][target]++;
 
     return 0;
 }
@@ -146,8 +146,8 @@ void ClassificationCompare::compute()
         unsigned int class_sum = 0;
         for (unsigned int i = 0; i < this->classes_count; i++)
         {
-            class_sum+= this->confusion_matrix[j][i];
-        }
+            class_sum+= this->confusion_matrix[i][j];
+        } 
 
         float class_success_ = this->confusion_matrix[j][j]*100.0/(class_sum + eps);
 
@@ -203,6 +203,16 @@ Json::Value ClassificationCompare::asJson()
     result["accuracy"]      = accuracy;
 
     return result;
+}
+
+float ClassificationCompare::get_accuracy()
+{
+    return this->accuracy;
+}
+
+std::vector<std::vector<unsigned int>> ClassificationCompare::get_confusion_matrix()
+{
+    return this->confusion_matrix;
 }
 
 unsigned int ClassificationCompare::class_idx(std::vector<float> &v)
