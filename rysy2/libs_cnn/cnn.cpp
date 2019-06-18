@@ -42,9 +42,9 @@ CNN::CNN(const CNN& other)
     copy(other);
 }
 
-CNN::CNN(std::string network_config_dir, Shape input_shape, Shape output_shape)
+CNN::CNN(std::string network_config_file_name, Shape input_shape, Shape output_shape)
 {
-    JsonConfig json(network_config_dir + "network_config.json");
+    JsonConfig json(network_config_file_name);
     init(json.result, input_shape, output_shape);
 }
 

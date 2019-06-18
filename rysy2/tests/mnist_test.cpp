@@ -17,42 +17,40 @@ int main()
 
     std::cout << "\n\n\n\n";
 
-
     CNN cnn(dataset.get_input_shape(), dataset.get_output_shape(), 0.001);
 
-    cnn.add_layer("convolution", Shape(3, 3, 32));
+    cnn.add_layer("convolution", Shape(3, 3, 16));
     cnn.add_layer("relu");
-
+    cnn.add_layer("convolution", Shape(3, 3, 16));
+    cnn.add_layer("relu");
     cnn.add_layer("max_pooling", Shape(2, 2));
-
     cnn.add_layer("convolution", Shape(3, 3, 32));
     cnn.add_layer("relu");
-
+    cnn.add_layer("convolution", Shape(3, 3, 32));
+    cnn.add_layer("relu");
     cnn.add_layer("max_pooling", Shape(2, 2));
-
     cnn.add_layer("convolution", Shape(3, 3, 32));
     cnn.add_layer("relu");
-
+    cnn.add_layer("convolution", Shape(3, 3, 32));
+    cnn.add_layer("relu");
     cnn.add_layer("dropout");
-
     cnn.add_layer("output");
 
     //print network info
     std::cout << cnn.asString() << "\n";
 
     //start training
-
     std::cout << "training\n";
-
     cnn.train(dataset.get_training_output_all(), dataset.get_training_input_all(), 5);
 
     cnn.save("mnist_0/");
 
+
     /*
-    CNN cnn(std::string("mnist_0/"));
+    CNN cnn(std::string("mnist_0/network_config.json"));
     std::cout << cnn.asString() << "\n";
     */
-    
+
     std::cout << "testing\n";
     ClassificationCompare compare(dataset.get_classes_count());
 
