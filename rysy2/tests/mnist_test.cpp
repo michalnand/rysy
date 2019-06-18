@@ -2,6 +2,8 @@
 #include <dataset_mnist.h>
 #include <cnn.h>
 
+#include <classification_compare.h>
+#include <layers/fc_layer.h>
 
 int main()
 {
@@ -16,8 +18,7 @@ int main()
     std::cout << "\n\n\n\n";
 
 
-    CNN cnn(dataset.get_input_shape(), dataset.get_output_shape());
-
+    CNN cnn(dataset.get_input_shape(), dataset.get_output_shape(), 0.001);
 
     cnn.add_layer("convolution", Shape(3, 3, 32));
     cnn.add_layer("relu");
@@ -34,35 +35,39 @@ int main()
 
     cnn.add_layer("dropout");
 
-    //cnn.add_layer("average_pooling", Shape(7, 7));
-
     cnn.add_layer("output");
 
-
+    //print network info
     std::cout << cnn.asString() << "\n";
 
+    //start training
 
-    //classification(cnn, dataset, params);
-    cnn.train(dataset.get_training_input_all(), dataset.get_training_output_all());
+    std::cout << "training\n";
 
-    unsigned int output_size = dataset.get_output_shape().size();
-    std::vector<float> nn_output(output_size);
+    cnn.train(dataset.get_training_output_all(), dataset.get_training_input_all(), 2);
+
+    cnn.save("mnist_0/"); 
+
+
+    std::cout << "testing\n";
+    ClassificationCompare compare(dataset.get_classes_count());
+
+    std::vector<float> nn_output(dataset.get_classes_count());
     for (unsigned int item_idx = 0; item_idx < dataset.get_testing_count(); item_idx++)
     {
         cnn.forward(nn_output, dataset.get_testing_input(item_idx));
+        compare.add(dataset.get_testing_output(item_idx), nn_output);
 
-        if ((item_idx%10) == 0)
+        if (compare.is_nan_error())
         {
-            for (unsigned int i = 0; i < output_size; i++)
-                std::cout << dataset.get_testing_output(item_idx)[i] << " ";
-            std::cout << "\n";
-
-            for (unsigned int i = 0; i < output_size; i++)
-                std::cout << nn_output[i] << " ";
-
-            std::cout << "\n\n";
+            std::cout << "NaN error\n";
+            break;
         }
     }
+
+    compare.compute();
+
+    std::cout << compare.asString() << "\n";
 
 
     std::cout << "program done\n";

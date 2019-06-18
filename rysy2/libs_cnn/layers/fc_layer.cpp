@@ -3,6 +3,8 @@
 #include <kernels/fc_layer.cuh>
 #include <kernels/solver_adam.cuh>
 
+#include <iostream>
+
 FCLayer::FCLayer()
         :Layer()
 {
@@ -55,6 +57,10 @@ void FCLayer::copy_fc(FCLayer &other)
 
     this->w                 = other.w;
     this->bias              = other.bias;
+
+    this->w_grad            = other.w_grad;
+    this->m                 = other.m;
+    this->v                 = other.v;
 }
 
 void FCLayer::copy_fc(const FCLayer &other)
@@ -65,11 +71,39 @@ void FCLayer::copy_fc(const FCLayer &other)
 
     this->w                 = other.w;
     this->bias              = other.bias;
+
+    this->w_grad            = other.w_grad;
+    this->m                 = other.m;
+    this->v                 = other.v;
 }
 
 
 void FCLayer::forward(Tensor &output, Tensor &input)
 {
+    #ifdef RYSY_DEBUG
+
+    if (output.shape() != m_output_shape)
+    {
+        std::cout << "FCLayer::forward : inconsistent output shape ";
+        output.shape().print();
+        std::cout << " : ";
+        m_output_shape.print();
+        std::cout << "\n";
+        return;
+    }
+
+    if (input.shape() != m_input_shape)
+    {
+        std::cout << "FCLayer::forward : inconsistent input shape\n";
+        input.shape().print();
+        std::cout << " : ";
+        m_input_shape.print();
+        std::cout << "\n";
+        return;
+    }
+
+    #endif
+
     fc_layer_forward(output, input, w, bias);
 }
 
@@ -77,16 +111,60 @@ void FCLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor 
 {
     (void)output;
 
+    #ifdef RYSY_DEBUG
+
+    if (error_back.shape() != m_input_shape)
+    {
+        std::cout << "FCLayer::backward : inconsistent error_back shape\n";
+        error_back.shape().print();
+        std::cout << " : ";
+        m_input_shape.print();
+        std::cout << "\n";
+        return;
+    }
+
+    if (error.shape() != m_output_shape)
+    {
+        std::cout << "FCLayer::backward : inconsistent error shape\n";
+        error.shape().print();
+        std::cout << " : ";
+        m_output_shape.print();
+        std::cout << "\n";
+        return;
+    }
+
+    if (input.shape() != m_input_shape)
+    {
+        std::cout << "FCLayer::backward : inconsistent input shape\n";
+        input.shape().print();
+        std::cout << " : ";
+        m_input_shape.print();
+        std::cout << "\n";
+        return;
+    }
+
+    if (output.shape() != m_output_shape)
+    {
+        std::cout << "FCLayer::backward : inconsistent output shape\n";
+        output.shape().print();
+        std::cout << " : ";
+        m_output_shape.print();
+        std::cout << "\n";
+        return;
+    }
+
+    #endif
+
     fc_layer_gradient(w_grad, input, error);
     fc_layer_update_bias(bias, error, learning_rate);
 
-     if (update_weights)
-     {
-         solver_adam(w, w_grad, m, v, learning_rate, lambda1, lambda2);
-         w_grad.clear();
-     }
+    if (update_weights)
+    {
+        solver_adam(w, w_grad, m, v, learning_rate, lambda1, lambda2);
+        w_grad.clear();
+    }
 
-     fc_layer_backward(error_back, input, error, w);
+    fc_layer_backward(error_back, input, error, w);
 }
 
 void FCLayer::save(std::string file_name_prefix)

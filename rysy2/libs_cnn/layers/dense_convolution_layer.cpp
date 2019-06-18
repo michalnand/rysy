@@ -7,6 +7,8 @@
 #include <cuda_float_allocator.cuh>
 #include <cuda_tensor.cuh>
 
+#include <iostream>
+
 DenseConvolutionLayer::DenseConvolutionLayer()
         :Layer()
 {
@@ -82,6 +84,30 @@ void DenseConvolutionLayer::copy_dense_convolution(const DenseConvolutionLayer &
 
 void DenseConvolutionLayer::forward(Tensor &output, Tensor &input)
 {
+    #ifdef RYSY_DEBUG
+
+    if (output.shape() != m_output_shape)
+    {
+        std::cout << "DenseConvolutionLayer::forward : inconsistent output shape ";
+        output.shape().print();
+        std::cout << " : ";
+        m_output_shape.print();
+        std::cout << "\n";
+        return;
+    }
+
+    if (input.shape() != m_input_shape)
+    {
+        std::cout << "DenseConvolutionLayer::forward : inconsistent input shape\n";
+        input.shape().print();
+        std::cout << " : ";
+        m_input_shape.print();
+        std::cout << "\n";
+        return;
+    }
+
+    #endif
+
     convolution_layer_forward(m_conv_output, input, w, bias);
 
     output.concatenate(m_conv_output, input);
@@ -90,6 +116,50 @@ void DenseConvolutionLayer::forward(Tensor &output, Tensor &input)
 void DenseConvolutionLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights)
 {
     (void)output;
+
+    #ifdef RYSY_DEBUG
+
+    if (error_back.shape() != m_input_shape)
+    {
+        std::cout << "DenseConvolutionLayer::backward : inconsistent error_back shape\n";
+        error_back.shape().print();
+        std::cout << " : ";
+        m_input_shape.print();
+        std::cout << "\n";
+        return;
+    }
+
+    if (error.shape() != m_output_shape)
+    {
+        std::cout << "DenseConvolutionLayer::backward : inconsistent error shape\n";
+        error.shape().print();
+        std::cout << " : ";
+        m_output_shape.print();
+        std::cout << "\n";
+        return;
+    }
+
+    if (input.shape() != m_input_shape)
+    {
+        std::cout << "DenseConvolutionLayer::backward : inconsistent input shape\n";
+        input.shape().print();
+        std::cout << " : ";
+        m_input_shape.print();
+        std::cout << "\n";
+        return;
+    }
+
+    if (output.shape() != m_output_shape)
+    {
+        std::cout << "DenseConvolutionLayer::backward : inconsistent output shape\n";
+        output.shape().print();
+        std::cout << " : ";
+        m_output_shape.print();
+        std::cout << "\n";
+        return;
+    }
+
+    #endif
 
     cuda_float_allocator.device_to_device(m_error_convolution.v, error.v, m_error_convolution.size());
 

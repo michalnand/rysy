@@ -140,11 +140,22 @@ void Tensor::set_from_host(float *v)
     #else
         for (unsigned int i = 0; i < size(); i++)
             this->v[i] = v[i];
-    #endif
+    #endif 
 }
 
 void Tensor::set_from_host(std::vector<float> &v)
 {
+    #ifdef RYSY_DEBUG
+
+    if (v.size() != size())
+    {
+        std::cout << "Tensor::set_from_host inconsistent size ";
+        std::cout << v.size() << " : " << size() << "\n";
+        return;
+    }
+
+    #endif
+
     #ifdef NETWORK_USE_CUDA
         cuda_float_allocator.host_to_device(this->v, &v[0], size());
     #else
@@ -165,6 +176,18 @@ void Tensor::set_to_host(float *v)
 
 void Tensor::set_to_host(std::vector<float> &v)
 {
+    #ifdef RYSY_DEBUG
+
+    if (v.size() != size())
+    {
+        std::cout << "Tensor::set_to_host inconsistent size ";
+        std::cout << v.size() << " : " << size() << "\n";
+        return;
+    }
+
+    #endif
+
+
     #ifdef NETWORK_USE_CUDA
         cuda_float_allocator.device_to_host(&v[0], this->v, size());
     #else
@@ -301,6 +324,20 @@ bool Tensor::is_valid()
 
 void Tensor::add(Tensor &rhs)
 {
+    #ifdef RYSY_DEBUG
+
+    if (shape() != rhs.shape())
+    {
+        std::cout << "Tensor::add inconsistent tensors ";
+        shape().print();
+        std::cout << " : ";
+        rhs.shape().print();
+        std::cout << "\n";
+        return;
+    }
+
+    #endif
+
     #ifdef NETWORK_USE_CUDA
         cuda_tensor_add(v, rhs.v, size());
     #else
@@ -311,6 +348,20 @@ void Tensor::add(Tensor &rhs)
 
 void Tensor::sub(Tensor &rhs)
 {
+    #ifdef RYSY_DEBUG
+
+    if (shape() != rhs.shape())
+    {
+        std::cout << "Tensor::sub inconsistent tensors ";
+        shape().print();
+        std::cout << " : ";
+        rhs.shape().print();
+        std::cout << "\n";
+        return;
+    }
+
+    #endif
+
     #ifdef NETWORK_USE_CUDA
         cuda_tensor_sub(v, rhs.v, size());
     #else
@@ -331,6 +382,22 @@ void Tensor::mul(float value)
 
 void Tensor::concatenate(Tensor &ta, Tensor &tb)
 {
+    #ifdef RYSY_DEBUG
+
+    if (ta.size() + tb.size() != size())
+    {
+        std::cout << "Tensor::concatenate inconsistent size ";
+        ta.shape().print();
+        std::cout << " : ";
+        tb.shape().print();
+        std::cout << " : ";
+        shape().print();
+        std::cout << "\n";
+        return;
+    }
+
+    #endif
+
     #ifdef NETWORK_USE_CUDA
 
         cuda_float_allocator.device_to_device(v, ta.v, ta.size());
@@ -383,6 +450,19 @@ void Tensor::init_size(Shape shape)
 
 unsigned int Tensor::to_idx(unsigned int x, unsigned y, unsigned z)
 {
+    #ifdef RYSY_DEBUG
+
+    if (x >= w() || y >= h() || z >= d())
+    {
+        std::cout << "Tensor::to_idx out of range";
+
+        std::cout << x << " " << y << " " << z << " : ";
+        std::cout << w()-1 << " " << h()-1 << " " << d()-1 << "\n";
+        return 0;
+    }
+
+    #endif
+
     unsigned int result;
     result = (z*h() + y)*w() + x;
     return result;

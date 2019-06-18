@@ -2,6 +2,8 @@
 
 #include <kernels/max_pooling_layer.cuh>
 
+#include <iostream>
+
 MaxPoolingLayer::MaxPoolingLayer()
         :Layer()
 {
@@ -58,6 +60,30 @@ std::string MaxPoolingLayer::asString()
 
 void MaxPoolingLayer::forward(Tensor &output, Tensor &input)
 {
+    #ifdef RYSY_DEBUG
+
+    if (output.shape() != m_output_shape)
+    {
+        std::cout << "MaxPoolingLayer::forward : inconsistent output shape ";
+        output.shape().print();
+        std::cout << " : ";
+        m_output_shape.print();
+        std::cout << "\n";
+        return;
+    }
+
+    if (input.shape() != m_input_shape)
+    {
+        std::cout << "MaxPoolingLayer::forward : inconsistent input shape\n";
+        input.shape().print();
+        std::cout << " : ";
+        m_input_shape.print();
+        std::cout << "\n";
+        return;
+    }
+
+    #endif
+
     max_pooling_layer_forward(max_mask, output, input);
 }
 
@@ -66,6 +92,50 @@ void MaxPoolingLayer::backward(Tensor &error_back, Tensor &error, Tensor &input,
     (void)input;
     (void)output;
     (void)update_weights;
+
+    #ifdef RYSY_DEBUG
+
+    if (error_back.shape() != m_input_shape)
+    {
+        std::cout << "MaxPoolingLayer::backward : inconsistent error_back shape\n";
+        error_back.shape().print();
+        std::cout << " : ";
+        m_input_shape.print();
+        std::cout << "\n";
+        return;
+    }
+
+    if (error.shape() != m_output_shape)
+    {
+        std::cout << "MaxPoolingLayer::backward : inconsistent error shape\n";
+        error.shape().print();
+        std::cout << " : ";
+        m_output_shape.print();
+        std::cout << "\n";
+        return;
+    }
+
+    if (input.shape() != m_input_shape)
+    {
+        std::cout << "MaxPoolingLayer::backward : inconsistent input shape\n";
+        input.shape().print();
+        std::cout << " : ";
+        m_input_shape.print();
+        std::cout << "\n";
+        return;
+    }
+
+    if (output.shape() != m_output_shape)
+    {
+        std::cout << "MaxPoolingLayer::backward : inconsistent output shape\n";
+        output.shape().print();
+        std::cout << " : ";
+        m_output_shape.print();
+        std::cout << "\n";
+        return;
+    }
+
+    #endif
 
     max_pooling_layer_backward(error_back, error, max_mask);
 }

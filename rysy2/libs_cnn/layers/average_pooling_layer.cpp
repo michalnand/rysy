@@ -2,6 +2,8 @@
 
 #include <kernels/average_pooling_layer.cuh>
 
+#include <iostream>
+
 AveragePoolingLayer::AveragePoolingLayer()
         :Layer()
 {
@@ -58,6 +60,30 @@ std::string AveragePoolingLayer::asString()
 
 void AveragePoolingLayer::forward(Tensor &output, Tensor &input)
 {
+    #ifdef RYSY_DEBUG
+
+    if (output.shape() != m_output_shape)
+    {
+        std::cout << "AveragePoolingLayer::forward : inconsistent output shape ";
+        output.shape().print();
+        std::cout << " : ";
+        m_output_shape.print();
+        std::cout << "\n";
+        return;
+    }
+
+    if (input.shape() != m_input_shape)
+    {
+        std::cout << "AveragePoolingLayer::forward : inconsistent input shape\n";
+        input.shape().print();
+        std::cout << " : ";
+        m_input_shape.print();
+        std::cout << "\n";
+        return;
+    }
+
+    #endif
+
     average_pooling_layer_forward(output, input);
 }
 
@@ -66,6 +92,51 @@ void AveragePoolingLayer::backward(Tensor &error_back, Tensor &error, Tensor &in
     (void)input;
     (void)output;
     (void)update_weights;
+
+    #ifdef RYSY_DEBUG
+
+    if (error_back.shape() != m_input_shape)
+    {
+        std::cout << "AveragePoolingLayer::backward : inconsistent error_back shape\n";
+        error_back.shape().print();
+        std::cout << " : ";
+        m_input_shape.print();
+        std::cout << "\n";
+        return;
+    }
+
+    if (error.shape() != m_output_shape)
+    {
+        std::cout << "AveragePoolingLayer::backward : inconsistent error shape\n";
+        error.shape().print();
+        std::cout << " : ";
+        m_output_shape.print();
+        std::cout << "\n";
+        return;
+    }
+
+    if (input.shape() != m_input_shape)
+    {
+        std::cout << "AveragePoolingLayer::backward : inconsistent input shape\n";
+        input.shape().print();
+        std::cout << " : ";
+        m_input_shape.print();
+        std::cout << "\n";
+        return;
+    }
+
+    if (output.shape() != m_output_shape)
+    {
+        std::cout << "AveragePoolingLayer::backward : inconsistent output shape\n";
+        output.shape().print();
+        std::cout << " : ";
+        m_output_shape.print();
+        std::cout << "\n";
+        return;
+    }
+
+    #endif
+
 
     average_pooling_layer_backward(error_back, error);
 }

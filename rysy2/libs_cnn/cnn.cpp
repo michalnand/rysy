@@ -23,8 +23,10 @@ CNN::CNN()
 {
     this->m_hyperparameters = default_hyperparameters();
 
+
     this->training_mode       = false;
     this->minibatch_counter   = 0;
+    this->minibatch_size      = 32;
 
     this->m_total_flops = 0;
     this->m_total_trainable_parameters = 0;
@@ -92,6 +94,7 @@ void CNN::copy(CNN& other)
     this->m_output_shape    = other.m_output_shape;
 
     this->m_hyperparameters = other.m_hyperparameters;
+    this->m_parameters      = other.m_parameters;
 
     this->output            = other.output;
     this->required_output   = other.required_output;
@@ -104,6 +107,8 @@ void CNN::copy(CNN& other)
 
     this->training_mode     = other.training_mode;
     this->minibatch_counter = other.minibatch_counter;
+    this->minibatch_size    = other.minibatch_size;
+
 
     this->m_total_flops = other.m_total_flops;
     this->m_total_trainable_parameters = other.m_total_trainable_parameters;
@@ -115,6 +120,7 @@ void CNN::copy(const CNN& other)
     this->m_output_shape    = other.m_output_shape;
 
     this->m_hyperparameters = other.m_hyperparameters;
+    this->m_parameters      = other.m_parameters;
 
     this->output            = other.output;
     this->required_output   = other.required_output;
@@ -127,6 +133,7 @@ void CNN::copy(const CNN& other)
 
     this->training_mode     = other.training_mode;
     this->minibatch_counter = other.minibatch_counter;
+    this->minibatch_size    = other.minibatch_size;
 
     this->m_total_flops = other.m_total_flops;
     this->m_total_trainable_parameters = other.m_total_trainable_parameters;
@@ -164,7 +171,35 @@ void CNN::forward(std::vector<std::vector<float>> &output, std::vector<std::vect
 
 void CNN::train(Tensor &required_output, Tensor &input)
 {
+    unsigned int last_idx = l_output.size()-1;
+    l_output[0] = input;
 
+    forward(l_output[last_idx], l_output[0]);
+
+    this->error = required_output;
+    this->error.sub(l_output[last_idx]);
+
+    train_from_error(this->error);
+}
+
+void CNN::train_from_error(Tensor &error)
+{
+    bool update_weights = false;
+    minibatch_counter++;
+
+    if (minibatch_counter >= minibatch_size)
+    {
+        update_weights = true;
+        minibatch_counter = 0;
+    }
+
+    unsigned int last_idx = layers.size()-1;
+    l_error[last_idx + 1] = error;
+
+    for (int i = last_idx; i>= 0; i--)
+    {
+        layers[i]->backward(l_error[i], l_error[i + 1], l_output[i], l_output[i + 1], update_weights);
+    }
 }
 
 void CNN::train(std::vector<float> &required_output, std::vector<float> &input)
@@ -175,12 +210,25 @@ void CNN::train(std::vector<float> &required_output, std::vector<float> &input)
     train(this->required_output, this->input);
 }
 
-void CNN::train(std::vector<Tensor> &required_output, std::vector<Tensor> &input)
+void CNN::train(std::vector<Tensor> &required_output, std::vector<Tensor> &input, unsigned int epoch_count, bool verbose)
 {
-    auto indices = make_indices(required_output.size());
+    set_training_mode();
 
-    for (unsigned int i = 0; i < required_output.size(); i++)
-        train(required_output[indices[i]], input[indices[i]]);
+    for (unsigned int epoch = 0; epoch < epoch_count; epoch++)
+    {
+        auto indices = make_indices(required_output.size());
+
+        for (unsigned int i = 0; i < required_output.size(); i++)
+        {
+            train(required_output[indices[i]], input[indices[i]]);
+
+            if (verbose)
+                if ((i%1000) == 0)
+                    std::cout << "epoch " << epoch+1 << " from " << epoch_count << " done = " << i*100.0/required_output.size() << "%" << "\n";
+        }
+    }
+
+    unset_training_mode();
 }
 
 
@@ -211,12 +259,23 @@ void CNN::reset()
         layers[i]->reset();
 }
 
-void CNN::train(std::vector<std::vector<float>> &required_output, std::vector<std::vector<float>> &input)
+void CNN::train(std::vector<std::vector<float>> &required_output, std::vector<std::vector<float>> &input, unsigned int epoch_count, bool verbose)
 {
-    auto indices = make_indices(required_output.size());
+    set_training_mode();
+    for (unsigned int epoch = 0; epoch < epoch_count; epoch++)
+    {
+        auto indices = make_indices(required_output.size());
 
-    for (unsigned int i = 0; i < required_output.size(); i++)
-        train(required_output[indices[i]], input[indices[i]]);
+        for (unsigned int i = 0; i < required_output.size(); i++)
+        {
+            train(required_output[indices[i]], input[indices[i]]);
+
+            if (verbose)
+                if ((i%1000) == 0)
+                    std::cout << "epoch " << epoch+1 << " from " << epoch_count << " done = " << i*100.0/required_output.size() << "%" << "\n";
+        }
+    }
+    unset_training_mode();
 }
 
 void CNN::init(Json::Value json_config, Shape input_shape, Shape output_shape)
@@ -242,7 +301,6 @@ void CNN::init(Json::Value json_config, Shape input_shape, Shape output_shape)
         m_hyperparameters["learning_rate"]     = json_config["hyperparameters"]["learning_rate"].asFloat();
     else
         m_hyperparameters["learning_rate"] = default_hyperparameters()["learning_rate"];
-;
 
     if (json_config["hyperparameters"]["lambda1"] != Json::Value::null)
         m_hyperparameters["lambda1"]            = json_config["hyperparameters"]["lambda1"].asFloat();
@@ -276,19 +334,48 @@ void CNN::init(Json::Value json_config, Shape input_shape, Shape output_shape)
     network_log << "output_shape = " << m_output_shape.w() << " " << m_output_shape.h() << " " << m_output_shape.d() << "\n";
     network_log << "\n\n";
 
+
+    minibatch_size = m_hyperparameters["minibatch_size"].asInt();
+
     output.init(this->m_output_shape);
     required_output.init(this->m_output_shape);
     input.init(this->m_input_shape);
 
+    error.init(this->m_output_shape);
+
+    this->m_parameters["input_shape"][0]  = this->m_input_shape.w();
+    this->m_parameters["input_shape"][1]  = this->m_input_shape.h();
+    this->m_parameters["input_shape"][2]  = this->m_input_shape.d();
+    this->m_parameters["output_shape"][0] = this->m_output_shape.w();
+    this->m_parameters["output_shape"][1] = this->m_output_shape.h();
+    this->m_parameters["output_shape"][2] = this->m_output_shape.d();
+
+    this->m_parameters["hyperparameters"] = m_hyperparameters;
 
     l_error.push_back(Tensor(input_shape));
     l_output.push_back(Tensor(input_shape));
+
+    for (unsigned int i = 0; i < json_config["parameters"]["layers"].size(); i++)
+    {
+        std::string layer_type = json_config["parameters"]["layers"][i]["type"].asString();
+        Shape shape;
+        shape.set(
+                    json_config["parameters"]["layers"][i]["shape"][0].asInt(),
+                    json_config["parameters"]["layers"][i]["shape"][1].asInt(),
+                    json_config["parameters"]["layers"][i]["shape"][2].asInt()
+                 );
+
+        std::string weights_file_name_prefix = json_config["parameters"]["layers"][i]["weights_file_name"].asString();
+
+        add_layer(layer_type, shape, weights_file_name_prefix);
+    }
+
 
     m_current_input_shape = input_shape;
 }
 
 
-Shape CNN::add_layer(std::string layer_type, Shape shape)
+Shape CNN::add_layer(std::string layer_type, Shape shape, std::string weights_file_name_prefix)
 {
     Shape output_shape;
 
@@ -364,6 +451,25 @@ Shape CNN::add_layer(std::string layer_type, Shape shape)
 
     m_current_input_shape = output_shape;
 
+    if (weights_file_name_prefix.size() > 0)
+    {
+        layer->load(weights_file_name_prefix);
+    }
+
+    this->m_parameters["layers"][layer_idx]["type"] = layer_type;
+
+    this->m_parameters["layers"][layer_idx]["shape"][0] = shape.w();
+    this->m_parameters["layers"][layer_idx]["shape"][1] = shape.h();
+    this->m_parameters["layers"][layer_idx]["shape"][2] = shape.d();
+
+    this->m_parameters["layers"][layer_idx]["input_shape"][0]  = layers[layer_idx]->get_input_shape().w();
+    this->m_parameters["layers"][layer_idx]["input_shape"][1]  = layers[layer_idx]->get_input_shape().h();
+    this->m_parameters["layers"][layer_idx]["input_shape"][2]  = layers[layer_idx]->get_input_shape().d();
+
+    this->m_parameters["layers"][layer_idx]["output_shape"][0] = layers[layer_idx]->get_output_shape().w();
+    this->m_parameters["layers"][layer_idx]["output_shape"][1] = layers[layer_idx]->get_output_shape().h();
+    this->m_parameters["layers"][layer_idx]["output_shape"][2] = layers[layer_idx]->get_output_shape().d();
+
     m_total_flops+= layers[layer_idx]->get_flops();
     m_total_trainable_parameters+= layers[layer_idx]->get_trainable_parameters();
 
@@ -384,16 +490,31 @@ std::string CNN::asString()
     return result;
 }
 
+void CNN::save(std::string path)
+{
+    for (unsigned int i = 0; i < layers.size(); i++)
+    {
+        std::string weights_file_name_prefix = path + "layer_" + std::to_string(i);
+        this->m_parameters["layers"][i]["weights_file_name"] = weights_file_name_prefix;
+        layers[i]->save(weights_file_name_prefix);
+    }
+
+    JsonConfig json;
+    json.result = this->m_parameters;
+
+    json.save(path + "network_config.json");
+}
+
 std::vector<unsigned int> CNN::make_indices(unsigned int count)
 {
     std::vector<unsigned int> result(count);
-    for (unsigned int i = 0; i < result.size(); i++)
+    for (unsigned int i = 0; i < count; i++)
         result[i] = i;
 
-    for (unsigned int i = 0; i < result.size(); i++)
+    for (unsigned int i = 0; i < count; i++)
     {
         unsigned int idx_a = i;
-        unsigned int idx_b = rand()%result.size();
+        unsigned int idx_b = rand()%count;
 
         unsigned int tmp;
 

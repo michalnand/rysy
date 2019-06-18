@@ -2,6 +2,8 @@
 
 #include <kernels/unpooling_layer.cuh>
 
+#include <iostream>
+
 UnPoolingLayer::UnPoolingLayer()
         :Layer()
 {
@@ -58,6 +60,30 @@ std::string UnPoolingLayer::asString()
 
 void UnPoolingLayer::forward(Tensor &output, Tensor &input)
 {
+    #ifdef RYSY_DEBUG
+
+    if (output.shape() != m_output_shape)
+    {
+        std::cout << "UnPoolingLayer::forward : inconsistent output shape ";
+        output.shape().print();
+        std::cout << " : ";
+        m_output_shape.print();
+        std::cout << "\n";
+        return;
+    }
+
+    if (input.shape() != m_input_shape)
+    {
+        std::cout << "UnPoolingLayer::forward : inconsistent input shape\n";
+        input.shape().print();
+        std::cout << " : ";
+        m_input_shape.print();
+        std::cout << "\n";
+        return;
+    }
+
+    #endif
+
     unpooling_layer_forward(output, input);
 }
 
@@ -66,6 +92,51 @@ void UnPoolingLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, 
     (void)input;
     (void)output;
     (void)update_weights;
+
+
+    #ifdef RYSY_DEBUG
+
+    if (error_back.shape() != m_input_shape)
+    {
+        std::cout << "UnPoolingLayer::backward : inconsistent error_back shape\n";
+        error_back.shape().print();
+        std::cout << " : ";
+        m_input_shape.print();
+        std::cout << "\n";
+        return;
+    }
+
+    if (error.shape() != m_output_shape)
+    {
+        std::cout << "UnPoolingLayer::backward : inconsistent error shape\n";
+        error.shape().print();
+        std::cout << " : ";
+        m_output_shape.print();
+        std::cout << "\n";
+        return;
+    }
+
+    if (input.shape() != m_input_shape)
+    {
+        std::cout << "UnPoolingLayer::backward : inconsistent input shape\n";
+        input.shape().print();
+        std::cout << " : ";
+        m_input_shape.print();
+        std::cout << "\n";
+        return;
+    }
+
+    if (output.shape() != m_output_shape)
+    {
+        std::cout << "UnPoolingLayer::backward : inconsistent output shape\n";
+        output.shape().print();
+        std::cout << " : ";
+        m_output_shape.print();
+        std::cout << "\n";
+        return;
+    }
+
+    #endif
 
     unpooling_layer_backward(error_back, error);
 }

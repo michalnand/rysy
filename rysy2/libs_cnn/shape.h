@@ -55,6 +55,9 @@ class Shape
         bool operator ==(Shape &other);
         bool operator !=(Shape &other);
 
+        bool operator ==(const Shape &other);
+        bool operator !=(const Shape &other);
+
     private:
         sShape m_shape;
 };

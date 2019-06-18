@@ -39,8 +39,10 @@ class CNN
         void train(Tensor &required_output, Tensor &input);
         void train(std::vector<float> &required_output, std::vector<float> &input);
 
-        void train(std::vector<Tensor> &required_output, std::vector<Tensor> &input);
-        void train(std::vector<std::vector<float>> &required_output, std::vector<std::vector<float>> &input);
+        void train(std::vector<Tensor> &required_output, std::vector<Tensor> &input, unsigned int epoch_count = 1, bool verbose = true);
+        void train(std::vector<std::vector<float>> &required_output, std::vector<std::vector<float>> &input, unsigned int epoch_count = 1, bool verbose = true);
+
+        void train_from_error(Tensor &error);
 
     public:
         void set_training_mode();
@@ -49,8 +51,11 @@ class CNN
         void reset();
 
     public:
-        Shape add_layer(std::string layer_type, Shape input_shape = {0, 0, 0});
+        Shape add_layer(std::string layer_type, Shape input_shape = {0, 0, 0}, std::string weights_file_name_prefix = "");
         std::string asString();
+
+    public:
+        void save(std::string path);
 
     private:
         void init(Json::Value json_config, Shape input_shape, Shape output_shape);
@@ -62,17 +67,18 @@ class CNN
     private:
         Shape m_input_shape, m_output_shape, m_current_input_shape;
         Json::Value m_hyperparameters;
+        Json::Value m_parameters;
 
     private:
 
-        Tensor output, required_output, input;
+        Tensor output, required_output, input, error;
 
         std::vector<Layer*> layers;
 
         std::vector<Tensor> l_error, l_output;
 
         bool training_mode;
-        unsigned int minibatch_counter;
+        unsigned int minibatch_size, minibatch_counter;
 
         unsigned long int m_total_flops;
         unsigned long int m_total_trainable_parameters;

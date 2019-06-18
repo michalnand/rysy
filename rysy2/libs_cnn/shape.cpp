@@ -155,3 +155,32 @@ bool Shape::operator !=(Shape &other)
 
     return false;
 }
+
+
+bool Shape::operator ==(const Shape &other)
+{
+    if (w() != other.m_shape.w)
+        return false;
+
+    if (h() != other.m_shape.h)
+        return false;
+
+    if (d() != other.m_shape.d)
+        return false;
+
+    return true;
+}
+
+bool Shape::operator !=(const Shape &other)
+{
+    if (w() != other.m_shape.w)
+        return true;
+
+    if (h() != other.m_shape.h)
+        return true;
+
+    if (d() != other.m_shape.d)
+        return true;
+
+    return false;
+}
