@@ -7,8 +7,6 @@
 #include <dqn.h>
 int main()
 {
-    DQN dqn;
-
     std::string dataset_path = "/home/michal/dataset/mnist/";
 
     DatasetMnist dataset(   dataset_path + "train-images.idx3-ubyte",

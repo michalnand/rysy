@@ -159,7 +159,7 @@ unsigned int ExperienceReplayBuffer::size()
 
 
 void ExperienceReplayBuffer::print()
-{ 
+{
     for (unsigned int j = 0; j < current_ptr; j++)
     {
         std::cout << "s" << j << "\n";
@@ -198,4 +198,29 @@ float ExperienceReplayBuffer::clamp(float value, float min, float max)
         value = min;
 
     return value;
+}
+
+std::vector<std::vector<float>>& ExperienceReplayBuffer::get_state()
+{
+    return this->state;
+}
+
+std::vector<std::vector<float>>& ExperienceReplayBuffer::get_q_values()
+{
+    return this->q_values;
+}
+
+std::vector<unsigned int>& ExperienceReplayBuffer::get_action()
+{
+    return this->action;
+}
+
+std::vector<float>& ExperienceReplayBuffer::get_reward()
+{
+    return this->reward;
+}
+
+std::vector<bool>& ExperienceReplayBuffer::get_terminal()
+{
+    return this->terminal;
 }

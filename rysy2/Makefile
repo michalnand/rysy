@@ -10,6 +10,7 @@ all:
 	cd libs_dqn && make -j4
 
 	cd libs_cnn_deployment && make -j4
+	cd libs_rysy_python && make
 
 	cd tests && make -j4
 
@@ -22,5 +23,6 @@ clean:
 	cd libs_dqn && make clean
 
 	cd libs_cnn_deployment && make clean
+	cd libs_rysy_python && make clean
 
 	cd tests && make clean

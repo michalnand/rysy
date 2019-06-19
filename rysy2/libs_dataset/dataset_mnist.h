@@ -3,7 +3,7 @@
 
 #include <dataset_interface.h>
 
-class DatasetMnist final : public DatasetInterface
+class DatasetMnist : public DatasetInterface
 {
     public:
         DatasetMnist(   std::string training_data_file_name, std::string training_labels_file_name,
