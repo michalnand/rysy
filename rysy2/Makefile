@@ -7,6 +7,7 @@ all:
 	cd libs_common && make -j4
 	cd libs_dataset && make -j4
 	cd libs_experiment && make -j4
+	cd libs_dqn && make -j4
 
 	cd libs_cnn_deployment && make -j4
 
@@ -18,6 +19,7 @@ clean:
 	cd libs_common && make clean
 	cd libs_dataset && make clean
 	cd libs_experiment && make clean
+	cd libs_dqn && make clean
 
 	cd libs_cnn_deployment && make clean
 

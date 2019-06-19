@@ -70,6 +70,7 @@ class Tensor
         void sub(Tensor &rhs);
         void mul(float value);
         void concatenate(Tensor &ta, Tensor &tb);
+        void split(Tensor &ta, Tensor &tb);
 
     private:
         void init_size(Shape shape);

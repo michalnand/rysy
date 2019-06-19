@@ -41,7 +41,7 @@ class DenseConvolutionLayer final: public Layer
         Tensor w, bias;
         Tensor w_grad, m, v;
 
-        Tensor m_conv_output, m_error_convolution;
+        Tensor m_conv_output, m_error_convolution, m_error_direct;
 
         Shape m_kernel_shape;
 };

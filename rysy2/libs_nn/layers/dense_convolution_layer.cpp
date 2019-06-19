@@ -162,10 +162,11 @@ void DenseConvolutionLayer::backward(Tensor &error_back, Tensor &error, Tensor &
 
     #endif
 
-    cuda_float_allocator.device_to_device(m_error_convolution.v, error.v, m_error_convolution.size());
+    error.split(m_error_convolution, m_error_direct);
 
-    convolution_layer_gradient(w_grad, input, error);
-    convolution_layer_update_bias(bias, error, learning_rate);
+
+    convolution_layer_gradient(w_grad, input, m_error_convolution);
+    convolution_layer_update_bias(bias, m_error_convolution, learning_rate);
 
     if (update_weights)
     {
@@ -173,10 +174,9 @@ void DenseConvolutionLayer::backward(Tensor &error_back, Tensor &error, Tensor &
         w_grad.clear();
     }
 
-    convolution_layer_backward(error_back, input, error, w);
-    cuda_tensor_add(error_back.v, error.v + m_error_convolution.size(), error_back.size());
+    convolution_layer_backward(error_back, input, m_error_convolution, w);
 
-     //error_back.add()
+    error_back.add(m_error_direct);
 }
 
 void DenseConvolutionLayer::save(std::string file_name_prefix)
@@ -218,6 +218,9 @@ void DenseConvolutionLayer::init_dense_convolution()
 
     m_conv_output.init(m_input_shape.w(), m_input_shape.h(), kd);
     m_output_shape.set(m_input_shape.w(), m_input_shape.h(), m_input_shape.d() + kd);
+
+    m_error_convolution.init(m_input_shape.w(), m_input_shape.h(), kd);
+    m_error_direct.init(m_input_shape.w(), m_input_shape.h(), m_input_shape.d());
 
     w.init(kw, kh, kd*m_input_shape.d());
     w.set_random(sqrt(2.0/m_input_shape.size()));

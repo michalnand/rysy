@@ -413,6 +413,46 @@ void Tensor::concatenate(Tensor &ta, Tensor &tb)
 }
 
 
+
+void Tensor::split(Tensor &ta, Tensor &tb)
+{
+    #ifdef RYSY_DEBUG
+
+    if (ta.size() + tb.size() != size())
+    {
+        std::cout << "Tensor::split inconsistent size ";
+        ta.shape().print();
+        std::cout << " : ";
+        tb.shape().print();
+        std::cout << " : ";
+        shape().print();
+        std::cout << "\n";
+        return;
+    }
+
+    #endif
+
+    #ifdef NETWORK_USE_CUDA
+
+        cuda_float_allocator.device_to_device(ta.v, v, ta.size());
+        cuda_float_allocator.device_to_device(tb.v, v + ta.size(), tb.size());
+
+    #else
+        unsigned int ptr = 0;
+        for (unsigned int i = 0; i < ta.size(); i++)
+        {
+            va[i] = v[ptr];
+            ptr++;
+        }
+        for (unsigned int i = 0; i < tb.size(); i++)
+        {
+            vb[i] = v[ptr];
+            ptr++;
+        }
+    #endif
+}
+
+
 void Tensor::init_size(Shape shape)
 {
     if (shape != m_shape)

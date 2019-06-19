@@ -1,6 +1,6 @@
 #include "activation_elu_layer.cuh"
 
-#define ELU_ALPHA ((float)1.0)
+#define ELU_ALPHA ((float)0.1)
 
 __host__
 void cpu_activation_elu_forward_kernel(float *output, float *input, unsigned int size)

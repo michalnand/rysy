@@ -13,27 +13,22 @@ int main()
                             dataset_path + "t10k-images.idx3-ubyte",
                             dataset_path + "t10k-labels.idx1-ubyte");
 
-
-    std::cout << "\n\n\n\n";
-
-
     CNN cnn(dataset.get_input_shape(), dataset.get_output_shape(), 0.002);
 
 
     cnn.add_layer("convolution", Shape(3, 3, 16));
-    cnn.add_layer("elu");
+    cnn.add_layer("relu");
     cnn.add_layer("max_pooling", Shape(2, 2));
     cnn.add_layer("convolution", Shape(3, 3, 32));
-    cnn.add_layer("elu");
+    cnn.add_layer("relu");
     cnn.add_layer("max_pooling", Shape(2, 2));
     cnn.add_layer("convolution", Shape(3, 3, 32));
-    cnn.add_layer("elu");
+    cnn.add_layer("relu");
     cnn.add_layer("dropout");
     cnn.add_layer("output");
 
     //print network info
     cnn.print();
-
 
     //start training
     std::cout << "training\n";
