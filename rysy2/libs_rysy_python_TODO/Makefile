@@ -39,13 +39,12 @@ OBJS_CSWIG  = $(SRCS_SWIG:.i=.cxx)
 OBJS_SWIG 	= $(OBJS_CSWIG:.cxx=.oswig)
 
 
-OBJS_EXTERN+= $(shell find ~/libs/rysy/libs_common -name '*.o')
-OBJS_EXTERN+= $(shell find ~/libs/rysy/libs_experiment -name '*.o')
-OBJS_EXTERN+= $(shell find ~/libs/rysy/libs_nn -name '*.o')
-OBJS_EXTERN+= $(shell find ~/libs/rysy/libs_nn -name '*.oc')
-OBJS_EXTERN+= $(shell find ~/libs/rysy/libs_preprocessing -name '*.o')
-OBJS_EXTERN+= $(shell find ~/libs/rysy/libs_preprocessing -name '*.oc')
-OBJS_EXTERN+= $(shell find ~/libs/rysy/libs_dataset -name '*.o')
+OBJS_EXTERN+= $(shell find ~/libs/rysy/rysy2/libs_common -name '*.o')
+OBJS_EXTERN+= $(shell find ~/libs/rysy/rysy2/libs_dataset -name '*.o')
+OBJS_EXTERN+= $(shell find ~/libs/rysy/rysy2/libs_dqn -name '*.o')
+OBJS_EXTERN+= $(shell find ~/libs/rysy/rysy2/libs_experiment -name '*.o')
+OBJS_EXTERN+= $(shell find ~/libs/rysy/rysy2/libs_nn -name '*.o')
+OBJS_EXTERN+= $(shell find ~/libs/rysy/rysy2/libs_nn -name '*.oc')
 
 
 all: $(OBJS) $(OBJS_CUDA) $(OBJS_SWIG)
