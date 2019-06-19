@@ -214,6 +214,10 @@ void CNN::train(std::vector<Tensor> &required_output, std::vector<Tensor> &input
 {
     set_training_mode();
 
+    unsigned int result_print_count = required_output.size()/100;
+    if (result_print_count == 0)
+        result_print_count = 1;
+
     for (unsigned int epoch = 0; epoch < epoch_count; epoch++)
     {
         auto indices = make_indices(required_output.size());
@@ -223,7 +227,7 @@ void CNN::train(std::vector<Tensor> &required_output, std::vector<Tensor> &input
             train(required_output[indices[i]], input[indices[i]]);
 
             if (verbose)
-                if ((i%1000) == 0)
+                if ((i%result_print_count) == 0)
                     std::cout << "epoch " << epoch+1 << " from " << epoch_count << " done = " << i*100.0/required_output.size() << "%" << "\n";
         }
     }
@@ -262,6 +266,11 @@ void CNN::reset()
 void CNN::train(std::vector<std::vector<float>> &required_output, std::vector<std::vector<float>> &input, unsigned int epoch_count, bool verbose)
 {
     set_training_mode();
+
+    unsigned int result_print_count = required_output.size()/100;
+    if (result_print_count == 0)
+        result_print_count = 1;
+
     for (unsigned int epoch = 0; epoch < epoch_count; epoch++)
     {
         auto indices = make_indices(required_output.size());
@@ -271,7 +280,7 @@ void CNN::train(std::vector<std::vector<float>> &required_output, std::vector<st
             train(required_output[indices[i]], input[indices[i]]);
 
             if (verbose)
-                if ((i%1000) == 0)
+                if ((i%result_print_count) == 0)
                     std::cout << "epoch " << epoch+1 << " from " << epoch_count << " done = " << i*100.0/required_output.size() << "%" << "\n";
         }
     }
@@ -506,6 +515,11 @@ std::string CNN::asString()
     result+= "TRAINABLE PARAMETERS = " + std::to_string(m_total_trainable_parameters) + "\n";
 
     return result;
+}
+
+void CNN::print()
+{
+    std::cout << asString() << "\n";
 }
 
 void CNN::save(std::string path)

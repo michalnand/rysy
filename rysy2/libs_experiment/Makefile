@@ -1,4 +1,4 @@
-OUTPUT_NAME = libs_common
+OUTPUT_NAME = libs_experiment
 
 INC+= -I.
 INC+= -I../libs_nn

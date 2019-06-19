@@ -2,7 +2,10 @@ INC+= -I.
 INC+= -I$(LIBS_PATH)/libs_nn
 INC+= -I$(LIBS_PATH)/libs_dataset
 INC+= -I$(LIBS_PATH)/libs_common
+INC+= -I$(LIBS_PATH)/libs_experiment
 
+
+LIBS+= $(LIBS_PATH)/libs_experiment/libs_experiment.a
 LIBS+= $(LIBS_PATH)/libs_dataset/libs_dataset.a
 LIBS+= $(LIBS_PATH)/libs_nn/libs_nn.a
 LIBS+= $(LIBS_PATH)/libs_common/libs_common.a

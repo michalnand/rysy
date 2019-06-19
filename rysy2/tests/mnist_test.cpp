@@ -3,7 +3,6 @@
 #include <cnn.h>
 
 #include <classification_compare.h>
-#include <layers/fc_layer.h>
 
 int main()
 {
@@ -17,44 +16,34 @@ int main()
 
     std::cout << "\n\n\n\n";
 
+
     CNN cnn(dataset.get_input_shape(), dataset.get_output_shape(), 0.002);
 
 
-    cnn.add_layer("convolution", Shape(3, 3, 32));
-    cnn.add_layer("relu");
+    cnn.add_layer("convolution", Shape(3, 3, 16));
+    cnn.add_layer("elu");
     cnn.add_layer("max_pooling", Shape(2, 2));
     cnn.add_layer("convolution", Shape(3, 3, 32));
-    cnn.add_layer("relu");
+    cnn.add_layer("elu");
     cnn.add_layer("max_pooling", Shape(2, 2));
     cnn.add_layer("convolution", Shape(3, 3, 32));
-    cnn.add_layer("relu");
+    cnn.add_layer("elu");
     cnn.add_layer("dropout");
     cnn.add_layer("output");
 
-
-
     //print network info
-    std::cout << cnn.asString() << "\n";
+    cnn.print();
+
 
     //start training
     std::cout << "training\n";
 
-
-
-
-    /*
-    CNN cnn(std::string("mnist_0/network_config.json"));
-    std::cout << cnn.asString() << "\n";
-    */
     unsigned int epoch_count = 10;
-    
-    float accuracy_result_best = 0.0;
+
     for (unsigned int epoch = 0; epoch < epoch_count; epoch++)
     {
         cnn.train(dataset.get_training_output_all(), dataset.get_training_input_all());
 
-
-        std::cout << "testing\n";
         ClassificationCompare compare(dataset.get_classes_count());
 
         std::vector<float> nn_output(dataset.get_classes_count());
@@ -71,15 +60,7 @@ int main()
         }
 
         compare.compute();
-
         std::cout << compare.asString() << "\n";
-
-        if (compare.get_accuracy() > accuracy_result_best)
-        {
-            accuracy_result_best = compare.get_accuracy();
-            std::cout << "saving new best net with result = " << accuracy_result_best << "%\n";
-            cnn.save("mnist_0/");
-        }
     }
 
 

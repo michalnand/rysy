@@ -66,12 +66,12 @@ CNNDeployment& CNNDeployment::operator= (const CNNDeployment& other)
 
 void CNNDeployment::copy(CNNDeployment& other)
 {
-
+    (void)other;
 }
 
 void CNNDeployment::copy(const CNNDeployment& other)
 {
-
+    (void)other;
 }
 
 

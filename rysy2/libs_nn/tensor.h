@@ -51,7 +51,6 @@ class Tensor
         void clear();
 
         void set_random(float range);
-        void set_random_xavier();
 
     public:
         void  set(unsigned int x, unsigned y, unsigned z, float value);

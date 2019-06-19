@@ -8,6 +8,7 @@
 #include <cuda_tensor.cuh>
 
 #include <iostream>
+#include <math.h>
 
 DenseConvolutionLayer::DenseConvolutionLayer()
         :Layer()
@@ -219,7 +220,7 @@ void DenseConvolutionLayer::init_dense_convolution()
     m_output_shape.set(m_input_shape.w(), m_input_shape.h(), m_input_shape.d() + kd);
 
     w.init(kw, kh, kd*m_input_shape.d());
-    w.set_random_xavier();
+    w.set_random(sqrt(2.0/m_input_shape.size()));
 
     w_grad.init(w.shape());
     m.init(w.shape());

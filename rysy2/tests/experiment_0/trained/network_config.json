@@ -35,7 +35,7 @@
 				32
 			],
 			"type" : "convolution",
-			"weights_file_name" : "mnist_0/layer_0"
+			"weights_file_name" : "experiment_0/trained/layer_0"
 		},
 		{
 			"input_shape" : 
@@ -57,7 +57,7 @@
 				0
 			],
 			"type" : "relu",
-			"weights_file_name" : "mnist_0/layer_1"
+			"weights_file_name" : "experiment_0/trained/layer_1"
 		},
 		{
 			"input_shape" : 
@@ -76,10 +76,10 @@
 			[
 				2,
 				2,
-				1
+				0
 			],
 			"type" : "max_pooling",
-			"weights_file_name" : "mnist_0/layer_2"
+			"weights_file_name" : "experiment_0/trained/layer_2"
 		},
 		{
 			"input_shape" : 
@@ -101,7 +101,7 @@
 				32
 			],
 			"type" : "convolution",
-			"weights_file_name" : "mnist_0/layer_3"
+			"weights_file_name" : "experiment_0/trained/layer_3"
 		},
 		{
 			"input_shape" : 
@@ -123,7 +123,7 @@
 				0
 			],
 			"type" : "relu",
-			"weights_file_name" : "mnist_0/layer_4"
+			"weights_file_name" : "experiment_0/trained/layer_4"
 		},
 		{
 			"input_shape" : 
@@ -142,10 +142,10 @@
 			[
 				2,
 				2,
-				1
+				0
 			],
 			"type" : "max_pooling",
-			"weights_file_name" : "mnist_0/layer_5"
+			"weights_file_name" : "experiment_0/trained/layer_5"
 		},
 		{
 			"input_shape" : 
@@ -167,7 +167,7 @@
 				32
 			],
 			"type" : "convolution",
-			"weights_file_name" : "mnist_0/layer_6"
+			"weights_file_name" : "experiment_0/trained/layer_6"
 		},
 		{
 			"input_shape" : 
@@ -189,7 +189,7 @@
 				0
 			],
 			"type" : "relu",
-			"weights_file_name" : "mnist_0/layer_7"
+			"weights_file_name" : "experiment_0/trained/layer_7"
 		},
 		{
 			"input_shape" : 
@@ -211,7 +211,7 @@
 				0
 			],
 			"type" : "dropout",
-			"weights_file_name" : "mnist_0/layer_8"
+			"weights_file_name" : "experiment_0/trained/layer_8"
 		},
 		{
 			"input_shape" : 
@@ -233,7 +233,7 @@
 				0
 			],
 			"type" : "output",
-			"weights_file_name" : "mnist_0/layer_9"
+			"weights_file_name" : "experiment_0/trained/layer_9"
 		}
 	],
 	"output_shape" : 

@@ -76,12 +76,12 @@ LayerSoftmax& LayerSoftmax::operator= (const LayerSoftmax& other)
 
 void LayerSoftmax::copy(LayerSoftmax& other)
 {
-
+    (void)other;
 }
 
 void LayerSoftmax::copy(const LayerSoftmax& other)
 {
-
+    (void)other;
 }
 
 

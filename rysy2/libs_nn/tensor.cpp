@@ -140,7 +140,7 @@ void Tensor::set_from_host(float *v)
     #else
         for (unsigned int i = 0; i < size(); i++)
             this->v[i] = v[i];
-    #endif 
+    #endif
 }
 
 void Tensor::set_from_host(std::vector<float> &v)
@@ -224,12 +224,6 @@ void Tensor::set_random(float range)
         for (unsigned int i = 0; i < size(); i++)
             v[i] = range*((rand()%2000000)/1000000.0 - 1.0);
     #endif
-}
-
-void Tensor::set_random_xavier()
-{
-    float range = sqrt(2.0/size());
-    set_random(range);
 }
 
 void  Tensor::set(unsigned int x, unsigned y, unsigned z, float value)

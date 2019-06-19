@@ -53,6 +53,7 @@ class CNN
     public:
         Shape add_layer(std::string layer_type, Shape input_shape = {0, 0, 0}, std::string weights_file_name_prefix = "");
         std::string asString();
+        void print();
 
     public:
         void save(std::string path);

@@ -4,6 +4,7 @@
 #include <kernels/solver_adam.cuh>
 
 #include <iostream>
+#include <math.h>
 
 FCLayer::FCLayer()
         :Layer()
@@ -183,7 +184,7 @@ std::string FCLayer::asString()
 {
     std::string result;
 
-    result+= "FC\t\t";
+    result+= "FC\t\t\t";
     result+= "[" + std::to_string(m_input_shape.w()) + " " + std::to_string(m_input_shape.h()) + " " + std::to_string(m_input_shape.d()) + "]\t";
     result+= "[" + std::to_string(m_output_shape.w()) + " " + std::to_string(m_output_shape.h()) + " " + std::to_string(m_output_shape.d()) + "]\t";
     result+= "[" + std::to_string(get_trainable_parameters()) + " " + std::to_string(get_flops()) + "]\t";
@@ -210,7 +211,7 @@ void FCLayer::init_fc()
     m_output_shape.set(1, 1, w_*h_*d_);
 
     w.init(m_input_shape.size(), m_output_shape.size(), 1);
-    w.set_random_xavier();
+    w.set_random(sqrt(2.0/m_input_shape.size()));
 
     w_grad.init(w.shape());
     m.init(w.shape());
