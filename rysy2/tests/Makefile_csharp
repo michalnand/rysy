@@ -5,11 +5,11 @@ LIBS = $(shell find ../libs_rysy_csharp/ -name '*.cs')
 
 SRCS = $(shell find -name '*.cs')
 
-ELFS = $(SRCS:.cs=.elf_cs)
+ELFS = $(SRCS:.cs=.exe)
 
 all: $(ELFS)
 
-%.elf_cs: %.cs
+%.exe: %.cs
 	$(MCS) -out:$@ $< $(LIBS)
 
 

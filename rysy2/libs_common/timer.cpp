@@ -5,7 +5,6 @@
 #include <chrono>
 #include <ratio>
 
-class Timer timer;
 
 Timer::Timer()
 {

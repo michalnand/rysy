@@ -26,6 +26,4 @@ class Timer
 };
 
 
-extern class Timer timer;
-
 #endif

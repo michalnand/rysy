@@ -5,20 +5,6 @@
 %include <std_vector.i>
 %include <std_string.i>
 
-%template(VectorChar) std::vector<char>;
-%template(VectorUnsignedChar) std::vector<unsigned char>;
-%template(VectorInt) std::vector<int>;
-%template(VectorUnsignedInt) std::vector<unsigned int>;
-%template(VectorFloat) std::vector<float>;
-%template(VectorDouble) std::vector<double>;
-
-%template(MatrixInt) std::vector<std::vector<int>>;
-%template(MatrixUnsignedInt) std::vector<std::vector<unsigned int>>;
-
-%template(MatrixFloat) std::vector<std::vector<float>>;
-%template(MatrixDouble) std::vector<std::vector<double>>;
-
-
 %{
 #include <string>
 #include <vector>
@@ -46,6 +32,8 @@
 
 #include <dqn.h>
 #include <experience_replay_buffer.h>
+
+#include <rysy_cs.h>
 %}
 
 
@@ -70,3 +58,5 @@
 
 %include <dqn.h>
 %include <experience_replay_buffer.h>
+
+%include <rysy_cs.h>

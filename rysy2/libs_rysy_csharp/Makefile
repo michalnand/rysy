@@ -1,4 +1,4 @@
-OUTPUT_NAME = rysy_cs
+OUTPUT_NAME = rysy
 
 INC+= -I.
 INC+= -I$(LIBS_PATH)/libs_nn
@@ -19,8 +19,6 @@ OBJDUMP = objdump
 SIZE = size
 ARCHIVE = ar
 
-
-SWIG_FLAGS = $(-csharp)
 
 CFLAGS+= -O2 -Os -fPIC -s -Wall -Wextra -pedantic -std=c++17 $(INC)
 
@@ -48,7 +46,7 @@ OBJS_EXTERN+= $(shell find ~/libs/rysy/rysy2/libs_dqn -name '*.o')
 
 
 all: $(OBJS) $(OBJS_CUDA) $(OBJS_SWIG)
-	 $(CC) -shared -fPIC $(SWIG_FLAGS) -o $(OUTPUT_NAME).so $(OBJS) $(OBJS_EXTERN) $(OBJS_SWIG) $(LDFLAGS)
+	 $(CC) -shared -fPIC $(SWIG_FLAGS) -o $(OUTPUT_NAME) $(OBJS) $(OBJS_EXTERN) $(OBJS_SWIG) $(LDFLAGS)
 
 
 
@@ -60,7 +58,7 @@ all: $(OBJS) $(OBJS_CUDA) $(OBJS_SWIG)
 
 
 %.cxx: %.i
-	$(SWIG) -csharp -c++ $(INC) -o $@ $<
+	$(SWIG) -c++ -csharp $(INC) -o $@ $<
 
 %.oswig: %.cxx
 	$(CC) -c -fPIC $(INC) $(SWIG_FLAGS) $< -o $@
@@ -69,4 +67,5 @@ clean:
 	rm $(OBJS) -f
 	rm $(OBJS_CSWIG) -f
 	rm $(OBJS_SWIG) -f
+	rm $(OUTPUT_NAME) -f
 	rm $(CSSRCS) -f

@@ -28,5 +28,23 @@
 #include <dqn.h>
 #include <experience_replay_buffer.h>
 
+typedef std::vector<char> VectorChar;
+typedef std::vector<unsigned char> VectorUnsignedChar;
+typedef std::vector<int> VectorInt;
+typedef std::vector<unsigned int> VectorUnsignedInt;
+typedef std::vector<float> VectorFloat;
+typedef std::vector<double> VectorDouble;
+
+typedef std::vector<std::vector<int>> MatrixInt;
+typedef std::vector<std::vector<unsigned int>> MatrixUnsignedInt;
+
+typedef std::vector<std::vector<float>> MatrixFloat;
+typedef std::vector<std::vector<double>> MatrixDouble;
+
+typedef std::string String;
+
+
+std::vector<float> VectorFloatCreate(unsigned int size = 0);
+
 
 #endif

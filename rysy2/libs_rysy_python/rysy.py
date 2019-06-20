@@ -1472,7 +1472,6 @@ class Batch(_object):
         return _rysy.Batch_get_output_all(self)
 Batch_swigregister = _rysy.Batch_swigregister
 Batch_swigregister(Batch)
-cvar = _rysy.cvar
 
 class DatasetImages(_object):
     __swig_setmethods__ = {}
