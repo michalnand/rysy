@@ -6,10 +6,10 @@ namespace ConsoleApplication
     {
         public static void Main(string[] args)
         {
-            String dataset_path = "/home/michal/dataset/mnist/";
+            var dataset_path = "/home/michal/dataset/mnist/";
 
             //load dataset
-            DatasetMnist dataset = new DatasetMnist(dataset_path + "train-images.idx3-ubyte",
+            var dataset = new DatasetMnist(dataset_path + "train-images.idx3-ubyte",
                                                     dataset_path + "train-labels.idx1-ubyte",
                                                     dataset_path + "t10k-images.idx3-ubyte",
                                                     dataset_path + "t10k-labels.idx1-ubyte");
@@ -20,7 +20,7 @@ namespace ConsoleApplication
             C3x3x16 - P2x2 - C3x3x32 - P2x2 - C3x3x32 - FC10
             */
 
-            CNN cnn = new CNN(dataset.get_input_shape(), dataset.get_output_shape(), (float)0.0025);
+            var cnn = new CNN(dataset.get_input_shape(), dataset.get_output_shape(), (float)0.0025);
 
             cnn.add_layer("convolution", new Shape(3, 3, 16));
             cnn.add_layer("elu");
@@ -42,10 +42,10 @@ namespace ConsoleApplication
 
             // test network response on whole testing dataset items
 
-            ClassificationCompare compare = new ClassificationCompare(dataset.get_classes_count());
+            var compare = new ClassificationCompare(dataset.get_classes_count());
 
             //neural network output - vector of floats
-            SWIGTYPE_p_std__vectorT_float_t nn_output = rysy.VectorFloatCreate(dataset.get_classes_count());
+            var nn_output = rysy.VectorFloatCreate(dataset.get_classes_count());
 
             //for all testing items
             for (uint item_idx = 0; item_idx < dataset.get_testing_count(); item_idx++)
