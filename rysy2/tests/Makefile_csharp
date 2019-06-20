@@ -1,0 +1,18 @@
+MCS = mono-csc
+FLAGS =
+
+LIBS = $(shell find ../libs_rysy_csharp/ -name '*.cs')
+
+SRCS = $(shell find -name '*.cs')
+
+ELFS = $(SRCS:.cs=.elf_cs)
+
+all: $(ELFS)
+
+%.elf_cs: %.cs
+	$(MCS) -out:$@ $< $(LIBS)
+
+
+clean:
+	rm $(OBJS) -f
+	rm $(ELFS) -f

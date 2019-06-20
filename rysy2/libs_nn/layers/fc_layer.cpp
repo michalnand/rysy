@@ -55,6 +55,8 @@ void FCLayer::copy_fc(FCLayer &other)
     this->learning_rate     = other.learning_rate;
     this->lambda1           = other.lambda1;
     this->lambda2           = other.lambda2;
+    this->gradient_clip     = other.gradient_clip;
+
 
     this->w                 = other.w;
     this->bias              = other.bias;
@@ -69,6 +71,8 @@ void FCLayer::copy_fc(const FCLayer &other)
     this->learning_rate     = other.learning_rate;
     this->lambda1           = other.lambda1;
     this->lambda2           = other.lambda2;
+    this->gradient_clip     = other.gradient_clip;
+
 
     this->w                 = other.w;
     this->bias              = other.bias;
@@ -161,7 +165,7 @@ void FCLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor 
 
     if (update_weights)
     {
-        solver_adam(w, w_grad, m, v, learning_rate, lambda1, lambda2);
+        solver_adam(w, w_grad, m, v, learning_rate, lambda1, lambda2, gradient_clip);
         w_grad.clear();
     }
 
@@ -207,6 +211,7 @@ void FCLayer::init_fc()
     learning_rate   = m_parameters["hyperparameters"]["learning_rate"].asFloat();
     lambda1         = m_parameters["hyperparameters"]["lambda1"].asFloat();
     lambda2         = m_parameters["hyperparameters"]["lambda2"].asFloat();
+    gradient_clip   = m_parameters["hyperparameters"]["gradient_clip"].asFloat();
 
     m_output_shape.set(1, 1, w_*h_*d_);
 

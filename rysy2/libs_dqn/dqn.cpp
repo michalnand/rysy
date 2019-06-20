@@ -1,5 +1,5 @@
 #include <dqn.h>
-
+#include <iostream>
 
 DQN::DQN()
 {
@@ -127,5 +127,21 @@ void DQN::train()
 
     experience_replay_buffer.compute(gamma);
 
-    cnn->train(experience_replay_buffer.get_q_values(), experience_replay_buffer.get_state());
+    cnn->train(experience_replay_buffer.get_q_values(), experience_replay_buffer.get_state(), 1, false);
+}
+
+void DQN::print()
+{
+    cnn->print();
+}
+
+
+void DQN::save(std::string path)
+{
+    cnn->save(path);
+}
+
+void DQN::load_weights(std::string file_name_prefix)
+{
+    cnn->load_weights(file_name_prefix);
 }

@@ -1,6 +1,5 @@
 #include "solver_adam.cuh"
 
-
 __host__
 void cpu_solver_adam_kernel( float *w,
                           float *w_grad,
@@ -12,11 +11,17 @@ void cpu_solver_adam_kernel( float *w,
                           float learning_rate,
                           float beta1,
                           float beta2,
-                          float epsilon)
+                          float epsilon,
+                          float gradient_clip)
 {
     for (unsigned int w_ptr = 0; w_ptr <size; w_ptr++)
     {
         float w_dif = w_grad[w_ptr];
+
+        if (w_dif > gradient_clip)
+            w_dif = gradient_clip;
+        if (w_dif < -gradient_clip)
+            w_dif = -gradient_clip;
 
         m[w_ptr] = beta1*m[w_ptr] + (1.0 - beta1)*w_dif;
         v[w_ptr] = beta2*v[w_ptr] + (1.0 - beta2)*w_dif*w_dif;
@@ -43,13 +48,19 @@ void cuda_solver_adam_kernel(   float *w,
                                 float learning_rate,
                                 float beta1,
                                 float beta2,
-                                float epsilon)
+                                float epsilon,
+                                float gradient_clip)
 {
     unsigned int w_ptr   = threadIdx.x + blockIdx.x*blockDim.x;
 
     if (w_ptr < size)
     {
         float w_dif = w_grad[w_ptr];
+
+        if (w_dif > gradient_clip)
+            w_dif = gradient_clip;
+        if (w_dif < -gradient_clip)
+            w_dif = -gradient_clip;
 
         m[w_ptr] = beta1*m[w_ptr] + (1.0 - beta1)*w_dif;
         v[w_ptr] = beta2*v[w_ptr] + (1.0 - beta2)*w_dif*w_dif;
@@ -70,7 +81,8 @@ __host__
 void cpu_regularization_kernel( float *w,
                                 unsigned int size,
                                 float lambda1,
-                                float lambda2 )
+                                float lambda2,
+                                float gradient_clip )
 {
     for (unsigned int w_ptr = 0; w_ptr <size; w_ptr++)
     {
@@ -112,7 +124,7 @@ void cuda_regularization_kernel(    float *w,
 }
 
 void solver_adam(   Tensor &w, Tensor &w_grad, Tensor &m, Tensor &v,
-                    float learning_rate, float lambda1, float lambda2)
+                    float learning_rate, float lambda1, float lambda2, float gradient_clip)
 {
     unsigned int size = w.size();
 
@@ -135,7 +147,8 @@ void solver_adam(   Tensor &w, Tensor &w_grad, Tensor &m, Tensor &v,
                                                 learning_rate,
                                                 beta1,
                                                 beta2,
-                                                epsilon );
+                                                epsilon,
+                                                gradient_clip);
 
         cudaDeviceSynchronize();
     }
@@ -151,7 +164,8 @@ void solver_adam(   Tensor &w, Tensor &w_grad, Tensor &m, Tensor &v,
                               learning_rate,
                               beta1,
                               beta2,
-                              epsilon );
+                              epsilon,
+                              gradient_clip);
     }
 
     #endif

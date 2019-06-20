@@ -13,7 +13,7 @@ create example network
 C3x3x16 - P2x2 - C3x3x32 - P2x2 - C3x3x32 - FC10
 '''
 
-cnn = CNN(dataset.get_input_shape(), dataset.get_output_shape(), 0.002)
+cnn = CNN(dataset.get_input_shape(), dataset.get_output_shape(), 0.0025)
 
 cnn.add_layer("convolution", Shape(3, 3, 16))
 cnn.add_layer("elu")
@@ -28,8 +28,9 @@ cnn.add_layer("output")
 
 cnn._print()
 
-#train network - one epoch
-cnn.train(dataset.get_training_output_all(), dataset.get_training_input_all())
+#train network - set epoch count
+epoch_count = 10
+cnn.train(dataset.get_training_output_all(), dataset.get_training_input_all(), epoch_count)
 
 
 #test network response on whole testing dataset items

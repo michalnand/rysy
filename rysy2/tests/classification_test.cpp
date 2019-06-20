@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+#include <experience_replay_buffer.h>
+
 int main()
 {
     std::string dataset_path = "/home/michal/dataset/mnist/";
@@ -15,6 +17,5 @@ int main()
     ClassificationExperiment experiment(dataset, "experiment_0/", "network_config.json");
 
     experiment.run();
-
     std::cout << "program done\n";
 }

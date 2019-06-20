@@ -52,7 +52,7 @@ void JsonConfig::save(std::string file_name)
     json_file.close();
 }
 
-Json::Value JsonConfig::get_result()
+Json::Value JsonConfig::get()
 {
     return result;
 }

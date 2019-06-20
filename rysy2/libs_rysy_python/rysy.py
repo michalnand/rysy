@@ -1378,8 +1378,8 @@ class JsonConfig(_object):
     def save(self, file_name):
         return _rysy.JsonConfig_save(self, file_name)
 
-    def get_result(self):
-        return _rysy.JsonConfig_get_result(self)
+    def get(self):
+        return _rysy.JsonConfig_get(self)
 JsonConfig_swigregister = _rysy.JsonConfig_swigregister
 JsonConfig_swigregister(JsonConfig)
 
@@ -1703,6 +1703,9 @@ class CNN(_object):
 
     def save(self, path):
         return _rysy.CNN_save(self, path)
+
+    def load_weights(self, file_name_prefix):
+        return _rysy.CNN_load_weights(self, file_name_prefix)
 CNN_swigregister = _rysy.CNN_swigregister
 CNN_swigregister(CNN)
 
@@ -1908,6 +1911,15 @@ class DQN(_object):
 
     def train(self):
         return _rysy.DQN_train(self)
+
+    def _print(self):
+        return _rysy.DQN__print(self)
+
+    def save(self, path):
+        return _rysy.DQN_save(self, path)
+
+    def load_weights(self, file_name_prefix):
+        return _rysy.DQN_load_weights(self, file_name_prefix)
 DQN_swigregister = _rysy.DQN_swigregister
 DQN_swigregister(DQN)
 

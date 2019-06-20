@@ -74,17 +74,18 @@ void ExperienceReplayBuffer::init(unsigned int buffer_size, unsigned int state_s
     this->reward.resize(buffer_size);
     this->terminal.resize(buffer_size);
 
+
     for (unsigned int j = 0; j < this->buffer_size; j++)
     {
         this->state[j].resize(state_size);
-        for (unsigned int i = 0; i < state_size; j++)
+        for (unsigned int i = 0; i < state_size; i++)
             this->state[j][i] = 0.0;
     }
 
     for (unsigned int j = 0; j < this->buffer_size; j++)
     {
         this->q_values[j].resize(actions_count);
-        for (unsigned int i = 0; i < actions_count; j++)
+        for (unsigned int i = 0; i < actions_count; i++)
             this->q_values[j][i] = 0.0;
     }
 
@@ -128,7 +129,10 @@ bool ExperienceReplayBuffer::is_full()
 
 void ExperienceReplayBuffer::compute(float gamma_value, float clamp_value)
 {
-    int move_idx = current_ptr - 1;
+    int move_idx = current_ptr - 2;
+
+    for (unsigned int j = 0; j < size(); j++)
+        reward[j] = clamp(reward[j], -1.0, 1.0);
 
     while (move_idx >= 0)
     {
@@ -138,12 +142,16 @@ void ExperienceReplayBuffer::compute(float gamma_value, float clamp_value)
         if (terminal[move_idx])
             gamma = 0.0;
 
-        q_values[move_idx][action_idx] = reward[move_idx] + gamma*max(q_values[move_idx + 1]);
+        float q_new = reward[move_idx] + gamma*max(q_values[move_idx + 1]);
+
+        q_new = clamp(q_new, -clamp_value, clamp_value);
+
+        q_values[move_idx][action_idx] = q_new;
 
         move_idx--;
     }
 
-    for (unsigned int j = 0; j < q_values.size(); j++)
+    for (unsigned int j = 0; j < size(); j++)
     {
         for (unsigned int i = 0; i < q_values[j].size(); i++)
             q_values[j][i] = clamp(q_values[j][i], -clamp_value, clamp_value);
@@ -160,13 +168,13 @@ unsigned int ExperienceReplayBuffer::size()
 
 void ExperienceReplayBuffer::print()
 {
-    for (unsigned int j = 0; j < current_ptr; j++)
+    for (unsigned int j = 0; j < size(); j++)
     {
         std::cout << "s" << j << "\n";
 
         std::cout << "q_values = ";
         for (unsigned int i = 0; i < q_values[j].size(); i++)
-            std::cout << q_values[j][i];
+            std::cout << q_values[j][i] << " ";
         std::cout << "\n";
 
         std::cout << "action   = " << action[j] << "\n";

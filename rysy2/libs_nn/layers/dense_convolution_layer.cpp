@@ -59,6 +59,8 @@ void DenseConvolutionLayer::copy_dense_convolution(DenseConvolutionLayer &other)
     this->learning_rate     = other.learning_rate;
     this->lambda1           = other.lambda1;
     this->lambda2           = other.lambda2;
+    this->gradient_clip     = other.gradient_clip;
+
 
     this->w                 = other.w;
     this->bias              = other.bias;
@@ -73,6 +75,8 @@ void DenseConvolutionLayer::copy_dense_convolution(const DenseConvolutionLayer &
     this->learning_rate     = other.learning_rate;
     this->lambda1           = other.lambda1;
     this->lambda2           = other.lambda2;
+    this->gradient_clip     = other.gradient_clip;
+
 
     this->w                 = other.w;
     this->bias              = other.bias;
@@ -170,7 +174,7 @@ void DenseConvolutionLayer::backward(Tensor &error_back, Tensor &error, Tensor &
 
     if (update_weights)
     {
-        solver_adam(w, w_grad, m, v, learning_rate, lambda1, lambda2);
+        solver_adam(w, w_grad, m, v, learning_rate, lambda1, lambda2, gradient_clip);
         w_grad.clear();
     }
 
@@ -215,6 +219,8 @@ void DenseConvolutionLayer::init_dense_convolution()
     learning_rate   = m_parameters["hyperparameters"]["learning_rate"].asFloat();
     lambda1         = m_parameters["hyperparameters"]["lambda1"].asFloat();
     lambda2         = m_parameters["hyperparameters"]["lambda2"].asFloat();
+    gradient_clip   = m_parameters["hyperparameters"]["gradient_clip"].asFloat();
+
 
     m_conv_output.init(m_input_shape.w(), m_input_shape.h(), kd);
     m_output_shape.set(m_input_shape.w(), m_input_shape.h(), m_input_shape.d() + kd);

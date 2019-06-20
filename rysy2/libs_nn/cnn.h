@@ -17,7 +17,7 @@ class CNN
 
         CNN(std::string network_config_file_name, Shape input_shape = {0, 0, 0}, Shape output_shape = {0, 0, 0});
         CNN(Json::Value json_config, Shape input_shape = {0, 0, 0}, Shape output_shape = {0, 0, 0});
-        CNN(Shape input_shape, Shape output_shape, float learning_rate = 0.001, float lambda1 = 0.0, float lambda2 = 0.0, float dropout = 0.5, unsigned int minibatch_size = 32);
+        CNN(Shape input_shape, Shape output_shape, float learning_rate = 0.001, float lambda1 = 0.000001, float lambda2 = 0.000001, float gradient_clip = 10.0, float dropout = 0.5, unsigned int minibatch_size = 32);
 
         virtual ~CNN();
 
@@ -57,6 +57,7 @@ class CNN
 
     public:
         void save(std::string path);
+        void load_weights(std::string file_name_prefix);
 
     private:
         void init(Json::Value json_config, Shape input_shape, Shape output_shape);

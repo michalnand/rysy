@@ -36,7 +36,7 @@ class FCLayer final: public Layer
         void init_fc();
 
     protected:
-        float learning_rate, lambda1, lambda2;
+        float learning_rate, lambda1, lambda2, gradient_clip;
 
         Tensor w, bias;
         Tensor w_grad, m, v;

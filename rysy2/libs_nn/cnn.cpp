@@ -53,7 +53,7 @@ CNN::CNN(Json::Value json_config, Shape input_shape, Shape output_shape)
     init(json_config, input_shape, output_shape);
 }
 
-CNN::CNN(Shape input_shape, Shape output_shape, float learning_rate, float lambda1, float lambda2, float dropout, unsigned int minibatch_size)
+CNN::CNN(Shape input_shape, Shape output_shape, float learning_rate, float lambda1, float lambda2, float gradient_clip, float dropout, unsigned int minibatch_size)
 {
     Json::Value parameters;
 
@@ -61,6 +61,7 @@ CNN::CNN(Shape input_shape, Shape output_shape, float learning_rate, float lambd
     parameters["hyperparameters"]["learning_rate"] = learning_rate;
     parameters["hyperparameters"]["lambda1"] = lambda1;
     parameters["hyperparameters"]["lambda2"] = lambda2;
+    parameters["hyperparameters"]["gradient_clip"] = gradient_clip;
     parameters["hyperparameters"]["dropout"] = dropout;
     parameters["hyperparameters"]["minibatch_size"] = minibatch_size;
 
@@ -336,6 +337,12 @@ void CNN::init(Json::Value json_config, Shape input_shape, Shape output_shape)
     else
         m_hyperparameters["lambda2"] = default_hyperparameters()["lambda2"];
 
+
+    if (json_config["hyperparameters"]["gradient_clip"] != Json::Value::null)
+        m_hyperparameters["gradient_clip"]            = json_config["hyperparameters"]["gradient_clip"].asFloat();
+    else
+        m_hyperparameters["gradient_clip"] = default_hyperparameters()["gradient_clip"];
+
     if (json_config["hyperparameters"]["dropout"] != Json::Value::null)
         m_hyperparameters["dropout"]            = json_config["hyperparameters"]["dropout"].asFloat();
     else
@@ -346,10 +353,12 @@ void CNN::init(Json::Value json_config, Shape input_shape, Shape output_shape)
     else
         m_hyperparameters["minibatch_size"]  = default_hyperparameters()["minibatch_size"];
 
+
     network_log << "hyperparameters :\n";
     network_log << "learning_rate  = " << this->m_hyperparameters["learning_rate"].asFloat() << "\n";
     network_log << "lambda1        = " << this->m_hyperparameters["lambda1"].asFloat() << "\n";
     network_log << "lambda2        = " << this->m_hyperparameters["lambda2"].asFloat() << "\n";
+    network_log << "gradient_clip  = " << this->m_hyperparameters["gradient_clip"].asFloat() << "\n";
     network_log << "dropout        = " << this->m_hyperparameters["dropout"].asFloat() << "\n";
     network_log << "minibatch_size = " << this->m_hyperparameters["minibatch_size"].asInt() << "\n";
     network_log << "\n\n";
@@ -537,6 +546,15 @@ void CNN::save(std::string path)
     json.save(path + "network_config.json");
 }
 
+void CNN::load_weights(std::string file_name_prefix)
+{
+    for (unsigned int layer = 0; layer < layers.size(); layer++)
+    {
+      std::string layer_file_name = file_name_prefix + "layer_" + std::to_string(layer);
+      layers[layer]->load(layer_file_name);
+    }
+}
+
 std::vector<unsigned int> CNN::make_indices(unsigned int count)
 {
     std::vector<unsigned int> result(count);
@@ -563,8 +581,9 @@ Json::Value CNN::default_hyperparameters(float learning_rate)
     Json::Value result;
 
     result["learning_rate"]  = learning_rate;
-    result["lambda1"]        = learning_rate*0.01;
-    result["lambda2"]        = learning_rate*0.01;
+    result["lambda1"]        = learning_rate*0.001;
+    result["lambda2"]        = learning_rate*0.001;
+    result["gradient_clip"]  = 10.0;
     result["minibatch_size"] = 32;
     result["dropout"]        = 0.5;
 

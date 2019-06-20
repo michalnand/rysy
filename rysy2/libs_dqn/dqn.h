@@ -32,6 +32,11 @@ class DQN
         bool is_full();
         void train();
 
+    public:
+        void print();
+        void save(std::string path);
+        void load_weights(std::string file_name_prefix);
+
     protected:
         CNN *cnn;
 

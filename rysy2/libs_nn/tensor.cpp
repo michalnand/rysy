@@ -298,6 +298,10 @@ void Tensor::load(std::string file_name)
 
         set_from_host(tmp);
     }
+    else
+    {
+        std::cout << "Tensor::load file opening error : " << file_name << "\n";
+    }
 }
 
 bool Tensor::is_valid()

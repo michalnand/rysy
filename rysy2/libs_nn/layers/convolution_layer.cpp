@@ -56,6 +56,7 @@ void ConvolutionLayer::copy_convolution(ConvolutionLayer &other)
     this->learning_rate     = other.learning_rate;
     this->lambda1           = other.lambda1;
     this->lambda2           = other.lambda2;
+    this->gradient_clip     = other.gradient_clip;
 
     this->w                 = other.w;
     this->bias              = other.bias;
@@ -68,6 +69,7 @@ void ConvolutionLayer::copy_convolution(const ConvolutionLayer &other)
     this->learning_rate     = other.learning_rate;
     this->lambda1           = other.lambda1;
     this->lambda2           = other.lambda2;
+    this->gradient_clip     = other.gradient_clip;
 
     this->w                 = other.w;
     this->bias              = other.bias;
@@ -158,7 +160,7 @@ void ConvolutionLayer::backward(Tensor &error_back, Tensor &error, Tensor &input
 
     if (update_weights)
     {
-        solver_adam(w, w_grad, m, v, learning_rate, lambda1, lambda2);
+        solver_adam(w, w_grad, m, v, learning_rate, lambda1, lambda2, gradient_clip);
         w_grad.clear();
      }
 
@@ -201,6 +203,7 @@ void ConvolutionLayer::init_convolution()
     learning_rate   = m_parameters["hyperparameters"]["learning_rate"].asFloat();
     lambda1         = m_parameters["hyperparameters"]["lambda1"].asFloat();
     lambda2         = m_parameters["hyperparameters"]["lambda2"].asFloat();
+    gradient_clip   = m_parameters["hyperparameters"]["gradient_clip"].asFloat();
 
 
     m_output_shape.set(m_input_shape.w(), m_input_shape.h(), kd);
