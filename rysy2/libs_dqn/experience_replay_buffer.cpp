@@ -146,8 +146,6 @@ void ExperienceReplayBuffer::compute(float gamma, float clamp_value)
         q_new = clamp(q_new, -clamp_value, clamp_value);
 
         q_values[move_idx][action_idx] = q_new;
-
-        move_idx--;
     }
 
     for (unsigned int j = 0; j < size(); j++)
