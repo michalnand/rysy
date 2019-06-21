@@ -132,7 +132,7 @@ void ExperienceReplayBuffer::compute(float gamma_value, float clamp_value)
     int move_idx = current_ptr - 2;
 
     for (unsigned int j = 0; j < size(); j++)
-        reward[j] = clamp(reward[j], -1.0, 1.0);
+        reward[j] = clamp(reward[j], -clamp_value, clamp_value);
 
     while (move_idx >= 0)
     {
