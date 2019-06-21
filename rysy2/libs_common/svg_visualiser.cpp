@@ -146,9 +146,15 @@ void SVGVisualiser::process(std::string image_file_name, Shape input_shape)
             if (json_config["layers"][layer]["shape"][0].asInt() != 0)
             {
               std::string shape = " ";
-              shape+= json_config["layers"][layer]["shape"][0].asString() + " ";
-              shape+= json_config["layers"][layer]["shape"][1].asString() + " ";
-              shape+= json_config["layers"][layer]["shape"][2].asString() + " ";
+
+              if (json_config["layers"][layer]["shape"][0].asInt() > 0)
+                shape+= json_config["layers"][layer]["shape"][0].asString() + " ";
+
+              if (json_config["layers"][layer]["shape"][1].asInt() > 0)
+                shape+= json_config["layers"][layer]["shape"][1].asString() + " ";
+
+              if (json_config["layers"][layer]["shape"][2].asInt() > 0)
+                shape+= json_config["layers"][layer]["shape"][2].asString() + " ";
               layer_name+= shape;
             }
         }

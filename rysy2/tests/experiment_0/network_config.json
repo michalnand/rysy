@@ -11,20 +11,13 @@
     "layers" :
     [
         {
-            "type" : "dense convolution",
-            "shape" : [3, 3, 8]
+            "type" : "convolution",
+            "shape" : [3, 3, 32]
         },
         {
             "type" : "elu"
         },
         {
-            "type" : "dense convolution",
-            "shape" : [3, 3, 8]
-        },
-        {
-            "type" : "relu"
-        },
-        {
             "type" : "max_pooling",
             "shape" : [2, 2]
         },
@@ -35,20 +28,19 @@
             "shape" : [3, 3, 32]
         },
         {
-            "type" : "relu"
+            "type" : "elu"
         },
         {
             "type" : "max_pooling",
             "shape" : [2, 2]
         },
 
-
         {
             "type" : "convolution",
             "shape" : [3, 3, 32]
         },
         {
-            "type" : "relu"
+            "type" : "elu"
         },
 
         {
