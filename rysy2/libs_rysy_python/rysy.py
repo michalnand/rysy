@@ -1914,6 +1914,9 @@ class DQN(_object):
     def _print(self):
         return _rysy.DQN__print(self)
 
+    def print_buffer(self):
+        return _rysy.DQN_print_buffer(self)
+
     def save(self, path):
         return _rysy.DQN_save(self, path)
 

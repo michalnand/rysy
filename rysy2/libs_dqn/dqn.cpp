@@ -135,6 +135,11 @@ void DQN::print()
     cnn->print();
 }
 
+void DQN::print_buffer()
+{
+    experience_replay_buffer.print();
+}
+
 
 void DQN::save(std::string path)
 {

@@ -814,6 +814,9 @@ class rysyPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQN_print")]
   public static extern void DQN_print(global::System.Runtime.InteropServices.HandleRef jarg1);
 
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQN_print_buffer")]
+  public static extern void DQN_print_buffer(global::System.Runtime.InteropServices.HandleRef jarg1);
+
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQN_save")]
   public static extern void DQN_save(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 

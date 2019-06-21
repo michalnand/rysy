@@ -128,6 +128,10 @@ public class DQN : global::System.IDisposable {
     rysyPINVOKE.DQN_print(swigCPtr);
   }
 
+  public void print_buffer() {
+    rysyPINVOKE.DQN_print_buffer(swigCPtr);
+  }
+
   public void save(string path) {
     rysyPINVOKE.DQN_save(swigCPtr, path);
     if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
