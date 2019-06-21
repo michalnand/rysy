@@ -126,7 +126,6 @@ bool ExperienceReplayBuffer::is_full()
         return true;
 }
 
-
 void ExperienceReplayBuffer::compute(float gamma, float clamp_value)
 {
     for (unsigned int j = 0; j < size(); j++)
@@ -162,7 +161,6 @@ unsigned int ExperienceReplayBuffer::size()
     return q_values.size();
 }
 
-
 void ExperienceReplayBuffer::print()
 {
     for (unsigned int j = 0; j < size(); j++)
@@ -181,7 +179,6 @@ void ExperienceReplayBuffer::print()
         std::cout << "\n\n\n\n";
     }
 }
-
 
 float ExperienceReplayBuffer::max(std::vector<float>& v)
 {

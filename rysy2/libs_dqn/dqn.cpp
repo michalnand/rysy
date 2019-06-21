@@ -122,7 +122,7 @@ bool DQN::is_full()
 
 void DQN::train()
 {
-    if (is_full() == false)
+    if (experience_replay_buffer.is_full() == false)
         return;
 
     experience_replay_buffer.compute(gamma);
