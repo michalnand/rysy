@@ -17,7 +17,7 @@
 
 #include <layers/dropout_layer.h>
 
-
+#include <svg_visualiser.h>
 
 CNN::CNN()
 {
@@ -544,6 +544,10 @@ void CNN::save(std::string path)
     json.result = this->m_parameters;
 
     json.save(path + "network_config.json");
+
+    SVGVisualiser svg_visualiser(path + "network_config.json");
+
+    svg_visualiser.process(path + "network.swg");
 }
 
 void CNN::load_weights(std::string file_name_prefix)
