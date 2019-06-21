@@ -18,7 +18,7 @@ void SVGVisualiser::init(Json::Value &json_config_)
   this->json_config = json_config_;
 }
 
-void SVGVisualiser::process(std::string image_file_name)
+void SVGVisualiser::process(std::string image_file_name, Shape input_shape)
 {
   int layer_width  = 50;
   int layer_height = 500;
@@ -26,7 +26,12 @@ void SVGVisualiser::process(std::string image_file_name)
   int layer_offset_y = 0;
   int layer_offset_x = 0;
 
-  unsigned int width = layer_width*2*(1+json_config["layers"].size());
+  float layer_spacing = 1.8;
+
+  if (json_config["layers"].size() > 16)
+    layer_spacing = 1.3;
+
+  unsigned int width = layer_width*layer_spacing*(1+json_config["layers"].size());
   unsigned int height = layer_height;
 
   svg.add_header(width, height);
@@ -35,7 +40,7 @@ void SVGVisualiser::process(std::string image_file_name)
   for (int layer = -1; layer < (int)json_config["layers"].size(); layer++)
   {
     int y = 1 + layer_offset_y;
-    int x = (layer + 1)*(layer_width*2) + layer_offset_x;
+    int x = (layer + 1)*(layer_width*layer_spacing) + layer_offset_x;
 
     int r = 100;
     int g = 100;
@@ -62,9 +67,9 @@ void SVGVisualiser::process(std::string image_file_name)
 
       std::string layer_name = "input ";
 
-      layer_name+= json_config["shape"][0].asString() + " ";
-      layer_name+= json_config["shape"][1].asString() + " ";
-      layer_name+= json_config["shape"][2].asString() + " ";
+      layer_name+= std::to_string(input_shape.w()) + " ";
+      layer_name+= std::to_string(input_shape.h()) + " ";
+      layer_name+= std::to_string(input_shape.d()) + " ";
 
                     svg.add_text(x + layer_width/2, y + layer_height/2 - font_size*layer_name.size()/4, layer_name,
                             font_size,
@@ -83,14 +88,14 @@ void SVGVisualiser::process(std::string image_file_name)
 
         if ((layer_type == "dense convolution")||(layer_type == "dense_convolution"))
         {
-          r = 190;
-          g = 190;
-          b = 80;
+          r = 120;
+          g = 80;
+          b = 190;
         }
 
-        if (layer_type == "fc")
+        if ((layer_type == "fc")||(layer_type == "output"))
         {
-          r = 80;
+          r = 190;
           g = 190;
           b = 80;
         }
@@ -101,7 +106,7 @@ void SVGVisualiser::process(std::string image_file_name)
              (layer_type == "average_pooling") ||
              (layer_type == "unpooling"))
         {
-          r = 190;
+          r = 80;
           g = 190;
           b = 80;
         }

@@ -547,7 +547,7 @@ void CNN::save(std::string path)
 
     SVGVisualiser svg_visualiser(path + "network_config.json");
 
-    svg_visualiser.process(path + "network.swg");
+    svg_visualiser.process(path + "network.swg", m_input_shape);
 }
 
 void CNN::load_weights(std::string file_name_prefix)
