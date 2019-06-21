@@ -127,22 +127,21 @@ bool ExperienceReplayBuffer::is_full()
 }
 
 
-void ExperienceReplayBuffer::compute(float gamma_value, float clamp_value)
+void ExperienceReplayBuffer::compute(float gamma, float clamp_value)
 {
-    int move_idx = current_ptr - 2;
-
     for (unsigned int j = 0; j < size(); j++)
         reward[j] = clamp(reward[j], -clamp_value, clamp_value);
 
-    while (move_idx >= 0)
+    for (int move_idx = current_ptr - 2; move_idx >= 0; move_idx--)
     {
         unsigned int action_idx = action[move_idx];
 
-        float gamma = gamma_value;
-        if (terminal[move_idx])
-            gamma = 0.0;
+        float q_new;
 
-        float q_new = reward[move_idx] + gamma*max(q_values[move_idx + 1]);
+        if (terminal[move_idx])
+            q_new = reward[move_idx];
+        else
+            q_new = reward[move_idx] + gamma*max(q_values[move_idx + 1]);
 
         q_new = clamp(q_new, -clamp_value, clamp_value);
 

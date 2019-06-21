@@ -70,12 +70,12 @@ public class ExperienceReplayBuffer : global::System.IDisposable {
     return ret;
   }
 
-  public void compute(float gamma_value, float clamp_value) {
-    rysyPINVOKE.ExperienceReplayBuffer_compute__SWIG_0(swigCPtr, gamma_value, clamp_value);
+  public void compute(float gamma, float clamp_value) {
+    rysyPINVOKE.ExperienceReplayBuffer_compute__SWIG_0(swigCPtr, gamma, clamp_value);
   }
 
-  public void compute(float gamma_value) {
-    rysyPINVOKE.ExperienceReplayBuffer_compute__SWIG_1(swigCPtr, gamma_value);
+  public void compute(float gamma) {
+    rysyPINVOKE.ExperienceReplayBuffer_compute__SWIG_1(swigCPtr, gamma);
   }
 
   public void compute() {

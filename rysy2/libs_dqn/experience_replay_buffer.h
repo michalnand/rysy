@@ -28,7 +28,7 @@ class ExperienceReplayBuffer
         bool add(std::vector<float> &state, std::vector<float> &q_values, unsigned int action, float reward, bool terminal = false);
         bool is_full();
 
-        void compute(float gamma_value = 0.99, float clamp_value = 10.0);
+        void compute(float gamma = 0.99, float clamp_value = 10.0);
 
         unsigned int size();
         void print();

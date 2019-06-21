@@ -1950,8 +1950,8 @@ class ExperienceReplayBuffer(_object):
     def is_full(self):
         return _rysy.ExperienceReplayBuffer_is_full(self)
 
-    def compute(self, gamma_value=0.99, clamp_value=10.0):
-        return _rysy.ExperienceReplayBuffer_compute(self, gamma_value, clamp_value)
+    def compute(self, gamma=0.99, clamp_value=10.0):
+        return _rysy.ExperienceReplayBuffer_compute(self, gamma, clamp_value)
 
     def size(self):
         return _rysy.ExperienceReplayBuffer_size(self)
