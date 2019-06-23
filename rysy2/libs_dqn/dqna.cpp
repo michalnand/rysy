@@ -190,8 +190,38 @@ void DQNA::train()
         //compute features
         features_network->forward(t_features_output, t_state);
 
+        //compute q values
+        q_network->forward(t_q_values, t_features_output);
+
+
+        //compute q_values error as difference between target and computed q_values
+        t_q_values_error.set_from_host(experience_replay_buffer.get_q_values()[item_idx]);
+        t_q_values_error.sub(t_q_values);
+
+        //train q_network
+        q_network->train_from_error(t_q_values_error);
+
+
+        //use error from q_network
+        t_features_error = q_network->get_error_back();
+        features_network->train_from_error(t_features_error);
+    }
+
+    /*
+    for (unsigned int i = 0; i < indices.size(); i++)
+    {
+        unsigned int item_idx = indices[i];
+
+        //obatin original state from buffer
+        t_state.set_from_host(experience_replay_buffer.get_state()[item_idx]);
+
+        //compute features
+        features_network->forward(t_features_output, t_state);
+
         //compute autoencoder output -> reconstructed state
         reconstruction_network->forward(t_reconstructed_state, t_features_output);
+
+        //compute q values
         q_network->forward(t_q_values, t_features_output);
 
         //compute reconstruction error as difference between target state and reconstruction output
@@ -214,6 +244,7 @@ void DQNA::train()
         t_features_error.add(reconstruction_network->get_error_back());
         features_network->train_from_error(t_features_error);
     }
+    */
 
     features_network->unset_training_mode();
     reconstruction_network->unset_training_mode();
