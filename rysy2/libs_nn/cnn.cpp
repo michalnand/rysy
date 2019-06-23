@@ -140,7 +140,15 @@ void CNN::copy(const CNN& other)
     this->m_total_trainable_parameters = other.m_total_trainable_parameters;
 }
 
+Shape CNN::get_input_shape()
+{
+    return this->m_input_shape;
+}
 
+Shape CNN::get_output_shape()
+{
+    return this->m_output_shape;
+}
 
 void CNN::forward(Tensor &output, Tensor &input)
 {
@@ -201,6 +209,11 @@ void CNN::train_from_error(Tensor &error)
     {
         layers[i]->backward(l_error[i], l_error[i + 1], l_output[i], l_output[i + 1], update_weights);
     }
+}
+
+Tensor& CNN::get_error_back()
+{
+    return l_error[0];
 }
 
 void CNN::train(std::vector<float> &required_output, std::vector<float> &input)
@@ -354,18 +367,6 @@ void CNN::init(Json::Value json_config, Shape input_shape, Shape output_shape)
         m_hyperparameters["minibatch_size"]  = default_hyperparameters()["minibatch_size"];
 
 
-    network_log << "hyperparameters :\n";
-    network_log << "learning_rate  = " << this->m_hyperparameters["learning_rate"].asFloat() << "\n";
-    network_log << "lambda1        = " << this->m_hyperparameters["lambda1"].asFloat() << "\n";
-    network_log << "lambda2        = " << this->m_hyperparameters["lambda2"].asFloat() << "\n";
-    network_log << "gradient_clip  = " << this->m_hyperparameters["gradient_clip"].asFloat() << "\n";
-    network_log << "dropout        = " << this->m_hyperparameters["dropout"].asFloat() << "\n";
-    network_log << "minibatch_size = " << this->m_hyperparameters["minibatch_size"].asInt() << "\n";
-    network_log << "\n\n";
-
-    network_log << "input_shape  = " << this->m_input_shape.w() << " " << this->m_input_shape.h() << " " << this->m_input_shape.d() << "\n";
-    network_log << "output_shape = " << this->m_output_shape.w() << " " << this->m_output_shape.h() << " " << this->m_output_shape.d() << "\n";
-    network_log << "\n\n";
 
 
     minibatch_size = m_hyperparameters["minibatch_size"].asInt();
@@ -373,7 +374,6 @@ void CNN::init(Json::Value json_config, Shape input_shape, Shape output_shape)
     output.init(this->m_output_shape);
     required_output.init(this->m_output_shape);
     input.init(this->m_input_shape);
-
     error.init(this->m_output_shape);
 
     this->m_parameters["input_shape"][0]  = this->m_input_shape.w();
@@ -406,6 +406,34 @@ void CNN::init(Json::Value json_config, Shape input_shape, Shape output_shape)
 
         m_current_input_shape = layers[layers.size()-1]->get_output_shape();
     }
+
+    if (this->m_output_shape.size() == 0)
+    {
+        this->m_output_shape = m_current_input_shape;
+
+        output.init(this->m_output_shape);
+        required_output.init(this->m_output_shape);
+        input.init(this->m_input_shape);
+        error.init(this->m_output_shape);
+
+        this->m_parameters["output_shape"][0] = this->m_output_shape.w();
+        this->m_parameters["output_shape"][1] = this->m_output_shape.h();
+        this->m_parameters["output_shape"][2] = this->m_output_shape.d();
+    }
+
+
+    network_log << "hyperparameters :\n";
+    network_log << "learning_rate  = " << this->m_hyperparameters["learning_rate"].asFloat() << "\n";
+    network_log << "lambda1        = " << this->m_hyperparameters["lambda1"].asFloat() << "\n";
+    network_log << "lambda2        = " << this->m_hyperparameters["lambda2"].asFloat() << "\n";
+    network_log << "gradient_clip  = " << this->m_hyperparameters["gradient_clip"].asFloat() << "\n";
+    network_log << "dropout        = " << this->m_hyperparameters["dropout"].asFloat() << "\n";
+    network_log << "minibatch_size = " << this->m_hyperparameters["minibatch_size"].asInt() << "\n";
+    network_log << "\n\n";
+
+    network_log << "input_shape  = " << this->m_input_shape.w() << " " << this->m_input_shape.h() << " " << this->m_input_shape.d() << "\n";
+    network_log << "output_shape = " << this->m_output_shape.w() << " " << this->m_output_shape.h() << " " << this->m_output_shape.d() << "\n";
+    network_log << "\n\n";
 
     network_log << "\nnetwork init done\n";
 }
@@ -547,7 +575,7 @@ void CNN::save(std::string path)
 
     SVGVisualiser svg_visualiser(path + "network_config.json");
 
-    svg_visualiser.process(path + "network.swg", m_input_shape);
+    svg_visualiser.process(path + "network.svg", m_input_shape);
 }
 
 void CNN::load_weights(std::string file_name_prefix)

@@ -142,7 +142,7 @@ void ClassificationExperiment::run()
             if (compare_testing.get_accuracy() > accuracy_result_best)
             {
                 accuracy_result_best = compare_testing.get_accuracy();
-                
+
                 experiment_log << "saving new best net with result = " << accuracy_result_best << "%\n";
                 cnn.save(best_network_saving_folder);
 
@@ -171,10 +171,13 @@ void ClassificationExperiment::run()
                 training_best.result = compare_training.asJson();
                 training_best.save(experiment_dir + "training_best.json");
 
+                process_best();
             }
 
             experiment_log << s_delimiter;
         }
+
+    experiment_log << "training done\n";
 }
 
 std::string ClassificationExperiment::delimiter()
@@ -186,4 +189,9 @@ std::string ClassificationExperiment::delimiter()
     result+= "\n\n\n\n\n";
 
     return result;
+}
+
+void ClassificationExperiment::process_best()
+{
+
 }

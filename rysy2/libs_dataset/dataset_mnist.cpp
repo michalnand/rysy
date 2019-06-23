@@ -113,7 +113,7 @@ int DatasetMnist::load(    std::vector<std::vector<float>> &input, std::vector<s
     fclose(f_data);
     fclose(f_labels);
 
-    std::cout << "loading done\n";
+    std::cout << "loading MNIST done\n";
 
     return 0;
 }

@@ -13,15 +13,15 @@ class ClassificationExperiment
 
         void run();
 
+    protected:
+        virtual void process_best();
+
     private:
         std::string delimiter();
 
-    private:
+    protected:
         DatasetInterface *dataset;
-
         std::string experiment_dir, network_config_file;
-
-
 };
 
 #endif

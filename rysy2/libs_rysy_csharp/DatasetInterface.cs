@@ -147,4 +147,8 @@ public class DatasetInterface : global::System.IDisposable {
     rysyPINVOKE.DatasetInterface_print(swigCPtr);
   }
 
+  public void clear() {
+    rysyPINVOKE.DatasetInterface_clear(swigCPtr);
+  }
+
 }

@@ -98,6 +98,16 @@ public class CNN : global::System.IDisposable {
     if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
   }
 
+  public Shape get_input_shape() {
+    Shape ret = new Shape(rysyPINVOKE.CNN_get_input_shape(swigCPtr), true);
+    return ret;
+  }
+
+  public Shape get_output_shape() {
+    Shape ret = new Shape(rysyPINVOKE.CNN_get_output_shape(swigCPtr), true);
+    return ret;
+  }
+
   public void forward(Tensor output, Tensor input) {
     rysyPINVOKE.CNN_forward__SWIG_0(swigCPtr, Tensor.getCPtr(output), Tensor.getCPtr(input));
     if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
@@ -156,6 +166,11 @@ public class CNN : global::System.IDisposable {
   public void train_from_error(Tensor error) {
     rysyPINVOKE.CNN_train_from_error(swigCPtr, Tensor.getCPtr(error));
     if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
+  }
+
+  public Tensor get_error_back() {
+    Tensor ret = new Tensor(rysyPINVOKE.CNN_get_error_back(swigCPtr), false);
+    return ret;
   }
 
   public void set_training_mode() {

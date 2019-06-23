@@ -61,6 +61,9 @@ class DatasetInterface
     public:
         void print();
 
+    public:
+        void clear();
+
     protected:
         Shape input_shape, output_shape;
         unsigned int current_training_idx;

@@ -109,6 +109,11 @@ int ClassificationCompare::add(std::vector<float> &target_output, std::vector<fl
         return -3;
     }
 
+    if (this->nan_error)
+    {
+        return -4;
+    }
+
 
     unsigned int target     = class_idx(target_output);
     unsigned int predicted  = class_idx(predicted_output);
@@ -147,7 +152,7 @@ void ClassificationCompare::compute()
         for (unsigned int i = 0; i < this->classes_count; i++)
         {
             class_sum+= this->confusion_matrix[i][j];
-        } 
+        }
 
         float class_success_ = this->confusion_matrix[j][j]*100.0/(class_sum + eps);
 

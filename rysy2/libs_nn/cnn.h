@@ -28,6 +28,10 @@ class CNN
         void copy(CNN& other);
         void copy(const CNN& other);
 
+    public:
+        Shape get_input_shape();
+        Shape get_output_shape();
+
 
     public:
         void forward(Tensor &output, Tensor &input);
@@ -43,6 +47,7 @@ class CNN
         void train(std::vector<std::vector<float>> &required_output, std::vector<std::vector<float>> &input, unsigned int epoch_count = 1, bool verbose = true);
 
         void train_from_error(Tensor &error);
+        Tensor& get_error_back();
 
     public:
         void set_training_mode();

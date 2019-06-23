@@ -412,6 +412,9 @@ class rysyPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DatasetInterface_print")]
   public static extern void DatasetInterface_print(global::System.Runtime.InteropServices.HandleRef jarg1);
 
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DatasetInterface_clear")]
+  public static extern void DatasetInterface_clear(global::System.Runtime.InteropServices.HandleRef jarg1);
+
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_DatasetMnist")]
   public static extern global::System.IntPtr new_DatasetMnist(string jarg1, string jarg2, string jarg3, string jarg4);
 
@@ -511,6 +514,12 @@ class rysyPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_delete_CNN")]
   public static extern void delete_CNN(global::System.Runtime.InteropServices.HandleRef jarg1);
 
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_get_input_shape")]
+  public static extern global::System.IntPtr CNN_get_input_shape(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_get_output_shape")]
+  public static extern global::System.IntPtr CNN_get_output_shape(global::System.Runtime.InteropServices.HandleRef jarg1);
+
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_forward__SWIG_0")]
   public static extern void CNN_forward__SWIG_0(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
 
@@ -546,6 +555,9 @@ class rysyPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_train_from_error")]
   public static extern void CNN_train_from_error(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_get_error_back")]
+  public static extern global::System.IntPtr CNN_get_error_back(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_set_training_mode")]
   public static extern void CNN_set_training_mode(global::System.Runtime.InteropServices.HandleRef jarg1);
@@ -822,6 +834,51 @@ class rysyPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQN_load_weights")]
   public static extern void DQN_load_weights(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_DQNA__SWIG_0")]
+  public static extern global::System.IntPtr new_DQNA__SWIG_0();
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_DQNA__SWIG_1")]
+  public static extern global::System.IntPtr new_DQNA__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2, float jarg3, uint jarg4, string jarg5, string jarg6, string jarg7);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_DQNA__SWIG_2")]
+  public static extern global::System.IntPtr new_DQNA__SWIG_2(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_delete_DQNA")]
+  public static extern void delete_DQNA(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQNA_init")]
+  public static extern void DQNA_init(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, uint jarg3, float jarg4, uint jarg5, string jarg6, string jarg7, string jarg8);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQNA_forward")]
+  public static extern global::System.IntPtr DQNA_forward(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQNA_get_q_values")]
+  public static extern global::System.IntPtr DQNA_get_q_values(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQNA_add__SWIG_0")]
+  public static extern bool DQNA_add__SWIG_0(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, uint jarg4, float jarg5, bool jarg6);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQNA_add__SWIG_1")]
+  public static extern bool DQNA_add__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, uint jarg4, float jarg5);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQNA_is_full")]
+  public static extern bool DQNA_is_full(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQNA_train")]
+  public static extern void DQNA_train(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQNA_print")]
+  public static extern void DQNA_print(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQNA_print_buffer")]
+  public static extern void DQNA_print_buffer(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQNA_save")]
+  public static extern void DQNA_save(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQNA_load_weights")]
+  public static extern void DQNA_load_weights(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_ExperienceReplayBuffer__SWIG_0")]
   public static extern global::System.IntPtr new_ExperienceReplayBuffer__SWIG_0();

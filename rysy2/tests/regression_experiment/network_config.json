@@ -1,0 +1,80 @@
+{
+    "hyperparameters" :
+    {
+        "dropout"           : 0.1,
+        "lambda1"           : 0,
+        "lambda2"           : 0,
+        "learning_rate"     : 0.002,
+        "minibatch_size"    : 32
+    },
+
+    "layers" :
+    [
+        {
+            "type" : "convolution",
+            "shape" : [3, 3, 32]
+        },
+        {
+            "type" : "elu"
+        },
+        {
+            "type" : "max_pooling",
+            "shape" : [2, 2]
+        },
+
+
+        {
+            "type" : "convolution",
+            "shape" : [3, 3, 32]
+        },
+        {
+            "type" : "elu"
+        },
+        {
+            "type" : "max_pooling",
+            "shape" : [2, 2]
+        },
+
+        {
+            "type" : "convolution",
+            "shape" : [3, 3, 32]
+        },
+        {
+            "type" : "elu"
+        },
+
+        {
+            "type" : "dropout"
+        },
+
+
+        {
+            "type" : "unpooling",
+            "shape" : [2, 2]
+        },
+        {
+            "type" : "convolution",
+            "shape" : [3, 3, 32]
+        },
+        {
+            "type" : "elu"
+        },
+
+
+        {
+            "type" : "unpooling",
+            "shape" : [2, 2]
+        },
+        {
+            "type" : "convolution",
+            "shape" : [3, 3, 32]
+        },
+        {
+            "type" : "elu"
+        },
+        {
+            "type" : "convolution",
+            "shape" : [1, 1, 1]
+        }
+    ]
+}

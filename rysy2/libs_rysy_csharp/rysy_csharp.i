@@ -31,6 +31,7 @@
 #include <tensor.h>
 
 #include <dqn.h>
+#include <dqna.h>
 #include <experience_replay_buffer.h>
 
 #include <rysy_cs.h>
@@ -57,6 +58,7 @@
 %include <tensor.h>
 
 %include <dqn.h>
+%include <dqna.h>
 %include <experience_replay_buffer.h>
 
 %include <rysy_cs.h>

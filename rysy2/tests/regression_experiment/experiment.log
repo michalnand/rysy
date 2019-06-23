@@ -1,0 +1,133 @@
+regression experiment start
+
+training_items_count 60000
+testing_items_count  10000
+epoch_count          10
+batch_size           10000
+batches_per_epoch    6
+input_shape  [28 28 1]
+output_shape [28 28 1]
+network_config_file  regression_experiment/network_config.json
+====================================================================================================
+
+
+
+
+initialising batch with size 10000  required memory 62.720001[MB]
+batch init done
+
+
+initialising network from file regression_experiment/network_config.json
+network init done
+network init result : 
+CONVOLUTION	[28 28 1]	[3 3 32]	[28 28 32]	[320 225792]	
+ELU		[28 28 32]	[28 28 32]	[0 50176]	
+MAX POOLING	[28 28 32]	[14 14 32]	[0 50176]	
+CONVOLUTION	[14 14 32]	[3 3 32]	[14 14 32]	[9248 1806336]	
+ELU		[14 14 32]	[14 14 32]	[0 12544]	
+MAX POOLING	[14 14 32]	[7 7 32]	[0 12544]	
+CONVOLUTION	[7 7 32]	[3 3 32]	[7 7 32]	[9248 451584]	
+ELU		[7 7 32]	[7 7 32]	[0 3136]	
+DROPOUT		[7 7 32]	[7 7 32]	[0 3136]	
+UNPOOLING	[7 7 32]	[14 14 32]	[0 50176]	
+CONVOLUTION	[14 14 32]	[3 3 32]	[14 14 32]	[9248 1806336]	
+ELU		[14 14 32]	[14 14 32]	[0 12544]	
+UNPOOLING	[14 14 32]	[28 28 32]	[0 200704]	
+CONVOLUTION	[28 28 32]	[3 3 32]	[28 28 32]	[9248 7225344]	
+ELU		[28 28 32]	[28 28 32]	[0 50176]	
+CONVOLUTION	[28 28 32]	[1 1 1]	[28 28 1]	[33 25088]	
+
+
+GFLOPS = 0.011986
+FLOPS = 11985792
+TRAINABLE PARAMETERS = 37345
+
+====================================================================================================
+
+
+
+
+
+
+starting training
+
+creating batch 0
+training epoch 0 batch id0 done = 0.000000[%]
+
+testing on testing
+testing on training
+testing error_average_euclidean 3.426625
+testing error_std 0.124280
+saving new best net with result = 3.426625
+====================================================================================================
+
+
+
+
+creating batch 1
+training epoch 0 batch id1 done = 1.666667[%]
+
+testing on testing
+testing on training
+testing error_average_euclidean 3.332192
+testing error_std 0.115985
+saving new best net with result = 3.332192
+====================================================================================================
+
+
+
+
+creating batch 2
+training epoch 0 batch id2 done = 3.333333[%]
+
+testing on testing
+testing on training
+testing error_average_euclidean 3.102575
+testing error_std 0.112580
+saving new best net with result = 3.102575
+====================================================================================================
+
+
+
+
+creating batch 3
+training epoch 0 batch id3 done = 5.000000[%]
+
+testing on testing
+testing on training
+testing error_average_euclidean 3.033037
+testing error_std 0.110211
+saving new best net with result = 3.033037
+====================================================================================================
+
+
+
+
+creating batch 4
+training epoch 0 batch id4 done = 6.666667[%]
+
+testing on testing
+testing on training
+testing error_average_euclidean 2.993356
+testing error_std 0.108576
+saving new best net with result = 2.993356
+====================================================================================================
+
+
+
+
+creating batch 5
+training epoch 0 batch id5 done = 8.333333[%]
+
+testing on testing
+testing on training
+testing error_average_euclidean 3.171180
+testing error_std 0.107493
+====================================================================================================
+
+
+
+
+creating batch 0
+training epoch 1 batch id0 done = 10.000000[%]
+

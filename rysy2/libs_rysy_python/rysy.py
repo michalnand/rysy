@@ -1566,6 +1566,9 @@ class DatasetInterface(_object):
 
     def _print(self):
         return _rysy.DatasetInterface__print(self)
+
+    def clear(self):
+        return _rysy.DatasetInterface_clear(self)
 DatasetInterface_swigregister = _rysy.DatasetInterface_swigregister
 DatasetInterface_swigregister(DatasetInterface)
 
@@ -1670,6 +1673,12 @@ class CNN(_object):
     __swig_destroy__ = _rysy.delete_CNN
     __del__ = lambda self: None
 
+    def get_input_shape(self):
+        return _rysy.CNN_get_input_shape(self)
+
+    def get_output_shape(self):
+        return _rysy.CNN_get_output_shape(self)
+
     def forward(self, *args):
         return _rysy.CNN_forward(self, *args)
 
@@ -1678,6 +1687,9 @@ class CNN(_object):
 
     def train_from_error(self, error):
         return _rysy.CNN_train_from_error(self, error)
+
+    def get_error_back(self):
+        return _rysy.CNN_get_error_back(self)
 
     def set_training_mode(self):
         return _rysy.CNN_set_training_mode(self)
@@ -1924,6 +1936,54 @@ class DQN(_object):
         return _rysy.DQN_load_weights(self, file_name_prefix)
 DQN_swigregister = _rysy.DQN_swigregister
 DQN_swigregister(DQN)
+
+class DQNA(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, DQNA, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, DQNA, name)
+    __repr__ = _swig_repr
+
+    def __init__(self, *args):
+        this = _rysy.new_DQNA(*args)
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _rysy.delete_DQNA
+    __del__ = lambda self: None
+
+    def init(self, state_shape, actions_count, gamma, replay_buffer_size, features_network_config_file_name, reconstruction_network_config_file_name, q_network_config_file_name):
+        return _rysy.DQNA_init(self, state_shape, actions_count, gamma, replay_buffer_size, features_network_config_file_name, reconstruction_network_config_file_name, q_network_config_file_name)
+
+    def forward(self, state):
+        return _rysy.DQNA_forward(self, state)
+
+    def get_q_values(self):
+        return _rysy.DQNA_get_q_values(self)
+
+    def add(self, state, q_values, action, reward, terminal=False):
+        return _rysy.DQNA_add(self, state, q_values, action, reward, terminal)
+
+    def is_full(self):
+        return _rysy.DQNA_is_full(self)
+
+    def train(self):
+        return _rysy.DQNA_train(self)
+
+    def _print(self):
+        return _rysy.DQNA__print(self)
+
+    def print_buffer(self):
+        return _rysy.DQNA_print_buffer(self)
+
+    def save(self, path):
+        return _rysy.DQNA_save(self, path)
+
+    def load_weights(self, file_name_prefix):
+        return _rysy.DQNA_load_weights(self, file_name_prefix)
+DQNA_swigregister = _rysy.DQNA_swigregister
+DQNA_swigregister(DQNA)
 
 class ExperienceReplayBuffer(_object):
     __swig_setmethods__ = {}

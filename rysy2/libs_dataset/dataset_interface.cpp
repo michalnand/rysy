@@ -12,7 +12,7 @@ DatasetInterface::DatasetInterface(DatasetInterface& other)
     srand(time(NULL));
     copy(other);
 }
-
+ 
 DatasetInterface::DatasetInterface(const DatasetInterface& other)
 {
     srand(time(NULL));
@@ -178,4 +178,28 @@ void DatasetInterface::print()
     std::cout << "output_shape = " << output_shape.w() << " " << output_shape.h() << " " << output_shape.d() << "\n";
     std::cout << "training_count = " << get_training_count() << "\n";
     std::cout << "testing_count  = " << get_testing_count() << "\n";
+}
+
+void DatasetInterface::clear()
+{
+    for (unsigned int i = 0; i < training_input.size(); i++)
+        training_input[i].clear();
+    training_input.clear();
+
+    for (unsigned int i = 0; i < training_output.size(); i++)
+        training_output[i].clear();
+    training_output.clear();
+
+
+    for (unsigned int i = 0; i < testing_input.size(); i++)
+        testing_input[i].clear();
+    testing_input.clear();
+
+    for (unsigned int i = 0; i < testing_output.size(); i++)
+        testing_output[i].clear();
+    testing_output.clear();
+
+
+    this->input_shape.set(0, 0, 0);
+    this->output_shape.set(0, 0, 0);
 }

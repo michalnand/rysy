@@ -44,6 +44,7 @@
 #include <tensor.h>
 
 #include <dqn.h>
+#include <dqna.h>
 #include <experience_replay_buffer.h>
 %}
 
@@ -68,4 +69,5 @@
 %include <tensor.h>
 
 %include <dqn.h>
+%include <dqna.h>
 %include <experience_replay_buffer.h>
