@@ -214,16 +214,16 @@ void DQNA::train()
 
         //train features network
         //use summed error from q_network and reconstruction_network
-        /*
         t_features_error = q_network->get_error_back();
         t_features_error.add(reconstruction_network->get_error_back());
         features_network->train_from_error(t_features_error);
-        */
 
+        /*
         t_features_error = reconstruction_network->get_error_back();
         t_features_error.mul(0.1);
         t_features_error.add(q_network->get_error_back());
         features_network->train_from_error(t_features_error);
+        */
     }
 
 
