@@ -65,6 +65,13 @@ class DatasetInterface
         void clear();
 
     protected:
+        void normalise_mat(std::vector<std::vector<float>> &mat);
+
+    public:
+        void normalise_input();
+        void normalise_output();
+
+    protected:
         Shape input_shape, output_shape;
         unsigned int current_training_idx;
 

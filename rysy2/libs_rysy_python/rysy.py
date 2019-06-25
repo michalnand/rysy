@@ -1569,6 +1569,12 @@ class DatasetInterface(_object):
 
     def clear(self):
         return _rysy.DatasetInterface_clear(self)
+
+    def normalise_input(self):
+        return _rysy.DatasetInterface_normalise_input(self)
+
+    def normalise_output(self):
+        return _rysy.DatasetInterface_normalise_output(self)
 DatasetInterface_swigregister = _rysy.DatasetInterface_swigregister
 DatasetInterface_swigregister(DatasetInterface)
 

@@ -415,6 +415,12 @@ class rysyPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DatasetInterface_clear")]
   public static extern void DatasetInterface_clear(global::System.Runtime.InteropServices.HandleRef jarg1);
 
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DatasetInterface_normalise_input")]
+  public static extern void DatasetInterface_normalise_input(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DatasetInterface_normalise_output")]
+  public static extern void DatasetInterface_normalise_output(global::System.Runtime.InteropServices.HandleRef jarg1);
+
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_DatasetMnist")]
   public static extern global::System.IntPtr new_DatasetMnist(string jarg1, string jarg2, string jarg3, string jarg4);
 

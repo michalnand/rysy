@@ -39,8 +39,9 @@ DatasetImages::DatasetImages(std::string json_config_file_name)
         load(json.result["dataset testing"], classes_count, 4, 1.0);
     }
 
+    normalise_input();
 
-  print();
+    print();
 }
 
 DatasetImages::~DatasetImages()
@@ -92,7 +93,7 @@ void DatasetImages::load_dir(std::string path, unsigned int class_id, unsigned i
         if ( (extension == ".png") || (extension == ".jpg"))
         {
 
-            ImageLoad image(image_file_name, grayscale, true);
+            ImageLoad image(image_file_name, grayscale, false);
 
             if ((image.width() == input_shape.w()) && (image.width() == input_shape.h()))
             {

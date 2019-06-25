@@ -151,4 +151,12 @@ public class DatasetInterface : global::System.IDisposable {
     rysyPINVOKE.DatasetInterface_clear(swigCPtr);
   }
 
+  public void normalise_input() {
+    rysyPINVOKE.DatasetInterface_normalise_input(swigCPtr);
+  }
+
+  public void normalise_output() {
+    rysyPINVOKE.DatasetInterface_normalise_output(swigCPtr);
+  }
+
 }

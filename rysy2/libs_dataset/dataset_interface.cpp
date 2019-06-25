@@ -12,7 +12,7 @@ DatasetInterface::DatasetInterface(DatasetInterface& other)
     srand(time(NULL));
     copy(other);
 }
- 
+
 DatasetInterface::DatasetInterface(const DatasetInterface& other)
 {
     srand(time(NULL));
@@ -202,4 +202,45 @@ void DatasetInterface::clear()
 
     this->input_shape.set(0, 0, 0);
     this->output_shape.set(0, 0, 0);
+}
+
+void DatasetInterface::normalise_mat(std::vector<std::vector<float>> &mat)
+{
+    float max = mat[0][0];
+    float min = max;
+
+    for (unsigned int j = 0; j < mat.size(); j++)
+        for (unsigned int i = 0; i < mat[j].size(); i++)
+        {
+            if (mat[j][i] > max)
+                max = mat[j][i];
+
+            if (mat[j][i] < min)
+                min = mat[j][i];
+        }
+
+    float k = 0.0;
+    float q = 0.0;
+
+    if (max > min)
+    {
+        k = (1.0 - 0.0)/(max - min);
+        q = 1.0 - k*max;
+    }
+
+    for (unsigned int j = 0; j < mat.size(); j++)
+        for (unsigned int i = 0; i < mat[j].size(); i++)
+            mat[j][i] = k*mat[j][i] + q;
+}
+
+void DatasetInterface::normalise_input()
+{
+    normalise_mat(training_input);
+    normalise_mat(testing_input);
+}
+
+void DatasetInterface::normalise_output()
+{
+    normalise_mat(training_output);
+    normalise_mat(testing_output);
 }

@@ -2,10 +2,10 @@ from rysy import *
 
 #load dataset
 dataset_path = "/home/michal/dataset/mnist/"
-dataset = DatasetMnist(dataset_path + "train-images.idx3-ubyte",
-                            dataset_path + "train-labels.idx1-ubyte",
-                            dataset_path + "t10k-images.idx3-ubyte",
-                            dataset_path + "t10k-labels.idx1-ubyte")
+dataset = DatasetMnist(dataset_path + "train-images-idx3-ubyte",
+                            dataset_path + "train-labels-idx1-ubyte",
+                            dataset_path + "t10k-images-idx3-ubyte",
+                            dataset_path + "t10k-labels-idx1-ubyte")
 
 '''
 create example network
@@ -29,7 +29,7 @@ cnn.add_layer("output")
 cnn._print()
 
 #train network - set epoch count
-epoch_count = 10
+epoch_count = 1
 cnn.train(dataset.get_training_output_all(), dataset.get_training_input_all(), epoch_count)
 
 
