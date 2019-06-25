@@ -1473,24 +1473,6 @@ class Batch(_object):
 Batch_swigregister = _rysy.Batch_swigregister
 Batch_swigregister(Batch)
 
-class DatasetImages(_object):
-    __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(self, DatasetImages, name, value)
-    __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, DatasetImages, name)
-    __repr__ = _swig_repr
-
-    def __init__(self, json_config_file_name):
-        this = _rysy.new_DatasetImages(json_config_file_name)
-        try:
-            self.this.append(this)
-        except __builtin__.Exception:
-            self.this = this
-    __swig_destroy__ = _rysy.delete_DatasetImages
-    __del__ = lambda self: None
-DatasetImages_swigregister = _rysy.DatasetImages_swigregister
-DatasetImages_swigregister(DatasetImages)
-
 class DatasetInterface(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, DatasetInterface, name, value)
@@ -1600,6 +1582,28 @@ class DatasetMnist(DatasetInterface):
 DatasetMnist_swigregister = _rysy.DatasetMnist_swigregister
 DatasetMnist_swigregister(DatasetMnist)
 
+class DatasetImages(DatasetInterface):
+    __swig_setmethods__ = {}
+    for _s in [DatasetInterface]:
+        __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
+    __setattr__ = lambda self, name, value: _swig_setattr(self, DatasetImages, name, value)
+    __swig_getmethods__ = {}
+    for _s in [DatasetInterface]:
+        __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
+    __getattr__ = lambda self, name: _swig_getattr(self, DatasetImages, name)
+    __repr__ = _swig_repr
+
+    def __init__(self, json_config_file_name):
+        this = _rysy.new_DatasetImages(json_config_file_name)
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _rysy.delete_DatasetImages
+    __del__ = lambda self: None
+DatasetImages_swigregister = _rysy.DatasetImages_swigregister
+DatasetImages_swigregister(DatasetImages)
+
 class ClassificationCompare(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, ClassificationCompare, name, value)
@@ -1662,69 +1666,6 @@ class ClassificationExperiment(_object):
         return _rysy.ClassificationExperiment_run(self)
 ClassificationExperiment_swigregister = _rysy.ClassificationExperiment_swigregister
 ClassificationExperiment_swigregister(ClassificationExperiment)
-
-class CNN(_object):
-    __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(self, CNN, name, value)
-    __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, CNN, name)
-    __repr__ = _swig_repr
-
-    def __init__(self, *args):
-        this = _rysy.new_CNN(*args)
-        try:
-            self.this.append(this)
-        except __builtin__.Exception:
-            self.this = this
-    __swig_destroy__ = _rysy.delete_CNN
-    __del__ = lambda self: None
-
-    def get_input_shape(self):
-        return _rysy.CNN_get_input_shape(self)
-
-    def get_output_shape(self):
-        return _rysy.CNN_get_output_shape(self)
-
-    def forward(self, *args):
-        return _rysy.CNN_forward(self, *args)
-
-    def train(self, *args):
-        return _rysy.CNN_train(self, *args)
-
-    def train_from_error(self, error):
-        return _rysy.CNN_train_from_error(self, error)
-
-    def get_error_back(self):
-        return _rysy.CNN_get_error_back(self)
-
-    def set_training_mode(self):
-        return _rysy.CNN_set_training_mode(self)
-
-    def unset_training_mode(self):
-        return _rysy.CNN_unset_training_mode(self)
-
-    def is_training_mode(self):
-        return _rysy.CNN_is_training_mode(self)
-
-    def reset(self):
-        return _rysy.CNN_reset(self)
-
-    def add_layer(self, *args):
-        return _rysy.CNN_add_layer(self, *args)
-
-    def asString(self):
-        return _rysy.CNN_asString(self)
-
-    def _print(self):
-        return _rysy.CNN__print(self)
-
-    def save(self, path):
-        return _rysy.CNN_save(self, path)
-
-    def load_weights(self, file_name_prefix):
-        return _rysy.CNN_load_weights(self, file_name_prefix)
-CNN_swigregister = _rysy.CNN_swigregister
-CNN_swigregister(CNN)
 
 class sShape(_object):
     __swig_setmethods__ = {}
@@ -1892,6 +1833,120 @@ class Tensor(_object):
 Tensor_swigregister = _rysy.Tensor_swigregister
 Tensor_swigregister(Tensor)
 
+class CNN(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, CNN, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, CNN, name)
+    __repr__ = _swig_repr
+
+    def __init__(self, *args):
+        this = _rysy.new_CNN(*args)
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _rysy.delete_CNN
+    __del__ = lambda self: None
+
+    def get_input_shape(self):
+        return _rysy.CNN_get_input_shape(self)
+
+    def get_output_shape(self):
+        return _rysy.CNN_get_output_shape(self)
+
+    def forward(self, *args):
+        return _rysy.CNN_forward(self, *args)
+
+    def train(self, *args):
+        return _rysy.CNN_train(self, *args)
+
+    def train_from_error(self, error):
+        return _rysy.CNN_train_from_error(self, error)
+
+    def get_error_back(self):
+        return _rysy.CNN_get_error_back(self)
+
+    def set_training_mode(self):
+        return _rysy.CNN_set_training_mode(self)
+
+    def unset_training_mode(self):
+        return _rysy.CNN_unset_training_mode(self)
+
+    def is_training_mode(self):
+        return _rysy.CNN_is_training_mode(self)
+
+    def reset(self):
+        return _rysy.CNN_reset(self)
+
+    def add_layer(self, *args):
+        return _rysy.CNN_add_layer(self, *args)
+
+    def asString(self):
+        return _rysy.CNN_asString(self)
+
+    def _print(self):
+        return _rysy.CNN__print(self)
+
+    def save(self, path):
+        return _rysy.CNN_save(self, path)
+
+    def load_weights(self, file_name_prefix):
+        return _rysy.CNN_load_weights(self, file_name_prefix)
+CNN_swigregister = _rysy.CNN_swigregister
+CNN_swigregister(CNN)
+
+class ExperienceReplayBuffer(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, ExperienceReplayBuffer, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, ExperienceReplayBuffer, name)
+    __repr__ = _swig_repr
+
+    def __init__(self, *args):
+        this = _rysy.new_ExperienceReplayBuffer(*args)
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _rysy.delete_ExperienceReplayBuffer
+    __del__ = lambda self: None
+
+    def init(self, buffer_size, state_size, actions_count):
+        return _rysy.ExperienceReplayBuffer_init(self, buffer_size, state_size, actions_count)
+
+    def add(self, state, q_values, action, reward, terminal=False):
+        return _rysy.ExperienceReplayBuffer_add(self, state, q_values, action, reward, terminal)
+
+    def is_full(self):
+        return _rysy.ExperienceReplayBuffer_is_full(self)
+
+    def compute(self, gamma=0.99, clamp_value=10.0):
+        return _rysy.ExperienceReplayBuffer_compute(self, gamma, clamp_value)
+
+    def size(self):
+        return _rysy.ExperienceReplayBuffer_size(self)
+
+    def _print(self):
+        return _rysy.ExperienceReplayBuffer__print(self)
+
+    def get_state(self):
+        return _rysy.ExperienceReplayBuffer_get_state(self)
+
+    def get_q_values(self):
+        return _rysy.ExperienceReplayBuffer_get_q_values(self)
+
+    def get_action(self):
+        return _rysy.ExperienceReplayBuffer_get_action(self)
+
+    def get_reward(self):
+        return _rysy.ExperienceReplayBuffer_get_reward(self)
+
+    def get_terminal(self):
+        return _rysy.ExperienceReplayBuffer_get_terminal(self)
+ExperienceReplayBuffer_swigregister = _rysy.ExperienceReplayBuffer_swigregister
+ExperienceReplayBuffer_swigregister(ExperienceReplayBuffer)
+
 class DQN(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, DQN, name, value)
@@ -1990,57 +2045,6 @@ class DQNA(_object):
         return _rysy.DQNA_load_weights(self, file_name_prefix)
 DQNA_swigregister = _rysy.DQNA_swigregister
 DQNA_swigregister(DQNA)
-
-class ExperienceReplayBuffer(_object):
-    __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(self, ExperienceReplayBuffer, name, value)
-    __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, ExperienceReplayBuffer, name)
-    __repr__ = _swig_repr
-
-    def __init__(self, *args):
-        this = _rysy.new_ExperienceReplayBuffer(*args)
-        try:
-            self.this.append(this)
-        except __builtin__.Exception:
-            self.this = this
-    __swig_destroy__ = _rysy.delete_ExperienceReplayBuffer
-    __del__ = lambda self: None
-
-    def init(self, buffer_size, state_size, actions_count):
-        return _rysy.ExperienceReplayBuffer_init(self, buffer_size, state_size, actions_count)
-
-    def add(self, state, q_values, action, reward, terminal=False):
-        return _rysy.ExperienceReplayBuffer_add(self, state, q_values, action, reward, terminal)
-
-    def is_full(self):
-        return _rysy.ExperienceReplayBuffer_is_full(self)
-
-    def compute(self, gamma=0.99, clamp_value=10.0):
-        return _rysy.ExperienceReplayBuffer_compute(self, gamma, clamp_value)
-
-    def size(self):
-        return _rysy.ExperienceReplayBuffer_size(self)
-
-    def _print(self):
-        return _rysy.ExperienceReplayBuffer__print(self)
-
-    def get_state(self):
-        return _rysy.ExperienceReplayBuffer_get_state(self)
-
-    def get_q_values(self):
-        return _rysy.ExperienceReplayBuffer_get_q_values(self)
-
-    def get_action(self):
-        return _rysy.ExperienceReplayBuffer_get_action(self)
-
-    def get_reward(self):
-        return _rysy.ExperienceReplayBuffer_get_reward(self)
-
-    def get_terminal(self):
-        return _rysy.ExperienceReplayBuffer_get_terminal(self)
-ExperienceReplayBuffer_swigregister = _rysy.ExperienceReplayBuffer_swigregister
-ExperienceReplayBuffer_swigregister(ExperienceReplayBuffer)
 
 # This file is compatible with both classic and new-style classes.
 

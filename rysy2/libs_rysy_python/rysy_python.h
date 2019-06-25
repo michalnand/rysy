@@ -13,21 +13,21 @@
 #include <timer.h>
 
 #include <batch.h>
-#include <dataset_images.h>
 #include <dataset_interface.h>
+#include <dataset_images.h>
 #include <dataset_mnist.h>
 
 #include <classification_compare.h>
 #include <classification_experiment.h>
 
-#include <cnn.h>
-#include <config.h>
 #include <shape.h>
 #include <tensor.h>
+#include <cnn.h>
+#include <config.h>
 
+#include <experience_replay_buffer.h>
 #include <dqn.h>
 #include <dqna.h>
-#include <experience_replay_buffer.h>
 
 
 #endif
