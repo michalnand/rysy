@@ -9,9 +9,12 @@ all:
 	cd libs_experiment && make -j4
 	cd libs_dqn && make -j4
 
+	cd libs_embedded_export && make -j4
+
 	cd libs_cnn_deployment && make -j4
 	cd libs_rysy_python && make
 	cd libs_rysy_csharp && make
+
 
 	cd tests && make -j4
 
@@ -22,6 +25,8 @@ clean:
 	cd libs_dataset && make clean
 	cd libs_experiment && make clean
 	cd libs_dqn && make clean
+
+	cd libs_embedded_export && make clean
 
 	cd libs_cnn_deployment && make clean
 	cd libs_rysy_python && make clean
