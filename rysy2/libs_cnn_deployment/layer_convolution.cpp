@@ -54,7 +54,7 @@ LayerConvolution::LayerConvolution(Json::Value json, sShape input_shape)
 
     this->json = json;
 
-    std::string weights_file_name   = this->json["weights_file_name"].asString() + "_weight.bin";
+    std::string weights_file_name   = this->json["weights_file_name"].asString() + "_weights.bin";
     std::string bias_file_name      = this->json["weights_file_name"].asString() + "_bias.bin";
 
     unsigned int weights_size   = this->kernel_shape.w*this->kernel_shape.h*this->kernel_shape.d*this->input_shape.d;
@@ -66,6 +66,17 @@ LayerConvolution::LayerConvolution(Json::Value json, sShape input_shape)
 
     cuda_float_allocator.load_from_file(this->weights, weights_file_name, weights_size);
     cuda_float_allocator.load_from_file(this->bias, bias_file_name, bias_size);
+
+    std::cout << "\n\n\n\n\n";
+    std::cout << "creating convolution layer\n";
+    std::cout << this->kernel_shape.w << " " << this->kernel_shape.h << " " << this->kernel_shape.d << "\n";
+    std::cout << this->input_shape.w << " " << this->input_shape.h << " " << this->input_shape.d << "\n";
+    std::cout << this->output_shape.w << " " << this->output_shape.h << " " << this->output_shape.d << "\n";
+
+    std::cout << weights_file_name << "\n";
+    std::cout << bias_file_name << "\n";
+
+    std::cout << "\n\n\n\n\n";
 }
 
 LayerConvolution::~LayerConvolution()

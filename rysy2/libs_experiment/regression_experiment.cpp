@@ -5,7 +5,7 @@
 #include <cnn.h>
 #include <regression_compare.h>
 
-#include <vector_to_image.h>
+#include <tensor_to_image.h>
 
 RegressionExperiment::RegressionExperiment(DatasetInterface &dataset, std::string experiment_dir, std::string network_config_file)
 {
@@ -186,12 +186,12 @@ void RegressionExperiment::process_best(CNN &cnn)
 
         cnn.forward(nn_output, input);
 
-        VectorToImage v_input(input, dataset->get_input_shape());
-        VectorToImage v_target(dataset->get_testing_output(item_idx), dataset->get_output_shape());
-        VectorToImage v_computed(nn_output, dataset->get_output_shape());
+        TensorToImage v_input(dataset->get_input_shape());
+        TensorToImage v_target(dataset->get_output_shape());
+        TensorToImage v_computed(dataset->get_output_shape());
 
-        v_input.save(experiment_dir + "output/" + std::to_string(item_idx) + "_0_input.png");
-        v_target.save(experiment_dir + "output/" + std::to_string(item_idx) + "_1_target.png");
-        v_computed.save(experiment_dir + "output/" + std::to_string(item_idx) + "_2_computed.png");
+        v_input.save(input, experiment_dir + "output/" + std::to_string(item_idx) + "_0_input.png");
+        v_target.save(dataset->get_testing_output(item_idx), experiment_dir + "output/" + std::to_string(item_idx) + "_1_target.png");
+        v_computed.save(nn_output,experiment_dir + "output/" + std::to_string(item_idx) + "_2_computed.png");
     }
 }

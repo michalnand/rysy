@@ -227,4 +227,19 @@ public class CNN : global::System.IDisposable {
     if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
   }
 
+  public uint get_layer_output_size() {
+    uint ret = rysyPINVOKE.CNN_get_layer_output_size(swigCPtr);
+    return ret;
+  }
+
+  public Tensor get_layer_output(uint layer_idx) {
+    Tensor ret = new Tensor(rysyPINVOKE.CNN_get_layer_output(swigCPtr, layer_idx), false);
+    return ret;
+  }
+
+  public bool get_layer_weights_flag(uint layer_idx) {
+    bool ret = rysyPINVOKE.CNN_get_layer_weights_flag(swigCPtr, layer_idx);
+    return ret;
+  }
+
 }

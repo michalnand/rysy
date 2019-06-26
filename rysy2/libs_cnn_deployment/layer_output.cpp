@@ -54,7 +54,7 @@ LayerOutput::LayerOutput(Json::Value json, sShape input_shape)
 
     this->json = json;
 
-    std::string weights_file_name   = this->json["weights_file_name"].asString() + "_weight.bin";
+    std::string weights_file_name   = this->json["weights_file_name"].asString() + "_weights.bin";
     std::string bias_file_name      = this->json["weights_file_name"].asString() + "_bias.bin";
 
     unsigned int weights_size   = this->kernel_shape.w*this->kernel_shape.h*this->kernel_shape.d*this->input_shape.d;

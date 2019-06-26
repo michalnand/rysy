@@ -621,3 +621,19 @@ Json::Value CNN::default_hyperparameters(float learning_rate)
 
     return result;
 }
+
+
+unsigned int CNN::get_layer_output_size()
+{
+    return l_output.size();
+}
+
+Tensor& CNN::get_layer_output(unsigned int layer_idx)
+{
+    return l_output[layer_idx];
+}
+
+bool CNN::get_layer_weights_flag(unsigned int layer_idx)
+{
+    return layers[layer_idx]->has_weights();
+}

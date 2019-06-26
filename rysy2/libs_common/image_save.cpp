@@ -36,7 +36,7 @@ void ImageSave::save(std::string file_name, std::vector<float> &v)
   output_image->save(file_name.c_str());
 }
 
-void ImageSave::show(std::vector<float> &v)
+void ImageSave::show(std::vector<float> &v, std::string window_name)
 {
   vector_to_image(v);
 
@@ -44,7 +44,7 @@ void ImageSave::show(std::vector<float> &v)
   if (image_display != nullptr)
     delete image_display;
 
-  image_display = new cimg_library::CImgDisplay(*output_image, "image", 0);
+  image_display = new cimg_library::CImgDisplay(*output_image, window_name.c_str(), 0);
 }
 
 
@@ -53,7 +53,7 @@ void ImageSave::vector_to_image(std::vector<float> v)
   std::vector<float> pixel(3);
 
   normalise(v, 0, 255);
- 
+
   if (m_grayscale)
   {
     for (unsigned int y = 0; y < m_height; y++)

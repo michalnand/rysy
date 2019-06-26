@@ -1347,8 +1347,8 @@ class ImageSave(_object):
     def save(self, file_name, v):
         return _rysy.ImageSave_save(self, file_name, v)
 
-    def show(self, v):
-        return _rysy.ImageSave_show(self, v)
+    def show(self, *args):
+        return _rysy.ImageSave_show(self, *args)
 ImageSave_swigregister = _rysy.ImageSave_swigregister
 ImageSave_swigregister(ImageSave)
 
@@ -1560,28 +1560,6 @@ class DatasetInterface(_object):
 DatasetInterface_swigregister = _rysy.DatasetInterface_swigregister
 DatasetInterface_swigregister(DatasetInterface)
 
-class DatasetMnist(DatasetInterface):
-    __swig_setmethods__ = {}
-    for _s in [DatasetInterface]:
-        __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
-    __setattr__ = lambda self, name, value: _swig_setattr(self, DatasetMnist, name, value)
-    __swig_getmethods__ = {}
-    for _s in [DatasetInterface]:
-        __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
-    __getattr__ = lambda self, name: _swig_getattr(self, DatasetMnist, name)
-    __repr__ = _swig_repr
-
-    def __init__(self, training_data_file_name, training_labels_file_name, testing_data_file_name, testing_labels_file_name):
-        this = _rysy.new_DatasetMnist(training_data_file_name, training_labels_file_name, testing_data_file_name, testing_labels_file_name)
-        try:
-            self.this.append(this)
-        except __builtin__.Exception:
-            self.this = this
-    __swig_destroy__ = _rysy.delete_DatasetMnist
-    __del__ = lambda self: None
-DatasetMnist_swigregister = _rysy.DatasetMnist_swigregister
-DatasetMnist_swigregister(DatasetMnist)
-
 class DatasetImages(DatasetInterface):
     __swig_setmethods__ = {}
     for _s in [DatasetInterface]:
@@ -1603,6 +1581,28 @@ class DatasetImages(DatasetInterface):
     __del__ = lambda self: None
 DatasetImages_swigregister = _rysy.DatasetImages_swigregister
 DatasetImages_swigregister(DatasetImages)
+
+class DatasetMnist(DatasetInterface):
+    __swig_setmethods__ = {}
+    for _s in [DatasetInterface]:
+        __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
+    __setattr__ = lambda self, name, value: _swig_setattr(self, DatasetMnist, name, value)
+    __swig_getmethods__ = {}
+    for _s in [DatasetInterface]:
+        __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
+    __getattr__ = lambda self, name: _swig_getattr(self, DatasetMnist, name)
+    __repr__ = _swig_repr
+
+    def __init__(self, training_data_file_name, training_labels_file_name, testing_data_file_name, testing_labels_file_name):
+        this = _rysy.new_DatasetMnist(training_data_file_name, training_labels_file_name, testing_data_file_name, testing_labels_file_name)
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _rysy.delete_DatasetMnist
+    __del__ = lambda self: None
+DatasetMnist_swigregister = _rysy.DatasetMnist_swigregister
+DatasetMnist_swigregister(DatasetMnist)
 
 class ClassificationCompare(_object):
     __swig_setmethods__ = {}
@@ -1893,8 +1893,41 @@ class CNN(_object):
 
     def load_weights(self, file_name_prefix):
         return _rysy.CNN_load_weights(self, file_name_prefix)
+
+    def get_layer_output_size(self):
+        return _rysy.CNN_get_layer_output_size(self)
+
+    def get_layer_output(self, layer_idx):
+        return _rysy.CNN_get_layer_output(self, layer_idx)
+
+    def get_layer_weights_flag(self, layer_idx):
+        return _rysy.CNN_get_layer_weights_flag(self, layer_idx)
 CNN_swigregister = _rysy.CNN_swigregister
 CNN_swigregister(CNN)
+
+class CNNVisualisation(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, CNNVisualisation, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, CNNVisualisation, name)
+    __repr__ = _swig_repr
+
+    def __init__(self, nn):
+        this = _rysy.new_CNNVisualisation(nn)
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _rysy.delete_CNNVisualisation
+    __del__ = lambda self: None
+
+    def process(self):
+        return _rysy.CNNVisualisation_process(self)
+
+    def save(self, file_name_prefix):
+        return _rysy.CNNVisualisation_save(self, file_name_prefix)
+CNNVisualisation_swigregister = _rysy.CNNVisualisation_swigregister
+CNNVisualisation_swigregister(CNNVisualisation)
 
 class ExperienceReplayBuffer(_object):
     __swig_setmethods__ = {}

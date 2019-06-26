@@ -6,6 +6,8 @@
 #include <jsoncpp/json/json.h>
 #include <jsoncpp/json/value.h>
 
+#include <config.h>
+
 #include <image_load.h>
 #include <image_save.h>
 #include <json_config.h>
@@ -23,7 +25,7 @@
 #include <shape.h>
 #include <tensor.h>
 #include <cnn.h>
-#include <config.h>
+#include <cnn_visualisation.h>
 
 #include <experience_replay_buffer.h>
 #include <dqn.h>
