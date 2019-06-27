@@ -1,5 +1,7 @@
 from rysy import *
 
+print("starting")
+
 #load dataset
 dataset_path = "/home/michal/dataset/mnist/"
 dataset = DatasetMnist(dataset_path + "train-images-idx3-ubyte",

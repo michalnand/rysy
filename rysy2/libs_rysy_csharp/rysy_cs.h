@@ -29,6 +29,10 @@
 #include <dqna.h>
 #include <experience_replay_buffer.h>
 
+#include <layer_export.h>
+#include <embedded_network_test.h>
+#include <embedded_network_export.h>
+
 typedef std::vector<char> VectorChar;
 typedef std::vector<unsigned char> VectorUnsignedChar;
 typedef std::vector<int> VectorInt;

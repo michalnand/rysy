@@ -2079,6 +2079,51 @@ class DQNA(_object):
 DQNA_swigregister = _rysy.DQNA_swigregister
 DQNA_swigregister(DQNA)
 
+class LayerExport(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, LayerExport, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, LayerExport, name)
+    __repr__ = _swig_repr
+
+    def __init__(self, export_path, json, layer_prefix, input_shape, output_shape):
+        this = _rysy.new_LayerExport(export_path, json, layer_prefix, input_shape, output_shape)
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _rysy.delete_LayerExport
+    __del__ = lambda self: None
+
+    def get(self):
+        return _rysy.LayerExport_get(self)
+
+    def save(self):
+        return _rysy.LayerExport_save(self)
+LayerExport_swigregister = _rysy.LayerExport_swigregister
+LayerExport_swigregister(LayerExport)
+
+class EmbeddedNetworkTest(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, EmbeddedNetworkTest, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, EmbeddedNetworkTest, name)
+    __repr__ = _swig_repr
+
+    def __init__(self, dataset, nn):
+        this = _rysy.new_EmbeddedNetworkTest(dataset, nn)
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _rysy.delete_EmbeddedNetworkTest
+    __del__ = lambda self: None
+
+    def process(self):
+        return _rysy.EmbeddedNetworkTest_process(self)
+EmbeddedNetworkTest_swigregister = _rysy.EmbeddedNetworkTest_swigregister
+EmbeddedNetworkTest_swigregister(EmbeddedNetworkTest)
+
 class EmbeddedNetworkExport(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, EmbeddedNetworkExport, name, value)

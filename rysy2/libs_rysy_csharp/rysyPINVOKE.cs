@@ -964,6 +964,27 @@ class rysyPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQNA_load_weights")]
   public static extern void DQNA_load_weights(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_LayerExport")]
+  public static extern global::System.IntPtr new_LayerExport(string jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, string jarg3, global::System.Runtime.InteropServices.HandleRef jarg4, global::System.Runtime.InteropServices.HandleRef jarg5);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_delete_LayerExport")]
+  public static extern void delete_LayerExport(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_LayerExport_get")]
+  public static extern global::System.IntPtr LayerExport_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_LayerExport_save")]
+  public static extern void LayerExport_save(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_EmbeddedNetworkTest")]
+  public static extern global::System.IntPtr new_EmbeddedNetworkTest(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_delete_EmbeddedNetworkTest")]
+  public static extern void delete_EmbeddedNetworkTest(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_EmbeddedNetworkTest_process")]
+  public static extern float EmbeddedNetworkTest_process(global::System.Runtime.InteropServices.HandleRef jarg1);
+
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_EmbeddedNetworkExport")]
   public static extern global::System.IntPtr new_EmbeddedNetworkExport(string jarg1);
 

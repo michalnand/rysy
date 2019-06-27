@@ -11,8 +11,8 @@ all:
 
 	cd libs_embedded_export && make -j4
 	cd libs_embedded_network && make -j4
-
 	cd libs_cnn_deployment && make -j4
+
 	cd libs_rysy_python && make
 	cd libs_rysy_csharp && make
 
@@ -29,8 +29,8 @@ clean:
 
 	cd libs_embedded_export && make clean
 	cd libs_embedded_network && make clean
-
 	cd libs_cnn_deployment && make clean
+
 	cd libs_rysy_python && make clean
 	cd libs_rysy_csharp && make clean
 

@@ -31,6 +31,8 @@
 #include <dqn.h>
 #include <dqna.h>
 
+#include <layer_export.h>
+#include <embedded_network_test.h>
 #include <embedded_network_export.h>
 
 #endif

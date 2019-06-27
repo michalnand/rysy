@@ -7,6 +7,7 @@ INC+= -I$(LIBS_PATH)/libs_common
 INC+= -I$(LIBS_PATH)/libs_experiment
 INC+= -I$(LIBS_PATH)/libs_dqn
 INC+= -I$(LIBS_PATH)/libs_embedded_export
+INC+= -I$(LIBS_PATH)/libs_embedded_network
 
 SRCS+= $(shell find . -name '*.cpp')
 SRCS_SWIG+= $(shell find . -name '*.i')
@@ -45,6 +46,7 @@ OBJS_EXTERN+= $(shell find ~/libs/rysy/rysy2/libs_nn -name '*.oc')
 OBJS_EXTERN+= $(shell find ~/libs/rysy/rysy2/libs_common -name '*.o')
 OBJS_EXTERN+= $(shell find ~/libs/rysy/rysy2/libs_dqn -name '*.o')
 OBJS_EXTERN+= $(shell find ~/libs/rysy/rysy2/libs_embedded_export -name '*.o')
+OBJS_EXTERN+= $(shell find ~/libs/rysy/rysy2/libs_embedded_network -name '*.o')
 
 
 all: $(OBJS) $(OBJS_CUDA) $(OBJS_SWIG)
