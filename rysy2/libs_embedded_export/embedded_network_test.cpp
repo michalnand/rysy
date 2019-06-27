@@ -6,9 +6,7 @@ EmbeddedNetworkTest::EmbeddedNetworkTest(DatasetInterface &dataset, EmbeddedNet 
 {
     this->dataset   = &dataset;
     this->nn        = &nn;
-
-
-    io_scaling = 127.0;
+    this->io_scaling = 255.0;
 }
 
 
@@ -48,17 +46,29 @@ std::vector<nn_layer_t> EmbeddedNetworkTest::vfloat_to_nn_layer_t(std::vector<fl
 {
     std::vector<nn_layer_t> result(v.size());
 
+    float max = v[0];
+    float min = max;
+
     for (unsigned int i = 0; i < v.size(); i++)
     {
-        float tmp = v[i]*io_scaling*0.5;
+        if (v[i] > max)
+            max = v[i];
 
-        if (tmp > io_scaling)
-            tmp = io_scaling;
-        if (tmp < -io_scaling)
-            tmp = -io_scaling;
-
-        result[i] = tmp;
+        if (v[i] < min)
+            min = v[i];
     }
+
+    float k = 0.0;
+    float q = 0.0;
+
+    if (max > min)
+    {
+        k = (io_scaling - 0.0)*(max - min);
+        q = 0.0 - k*min;
+    }
+
+    for (unsigned int i = 0; i < v.size(); i++)
+        result[i] = k*v[i] + q;
 
     return result;
 }
@@ -67,15 +77,14 @@ std::vector<float> EmbeddedNetworkTest::get_network_output(nn_layer_t* network_o
 {
     std::vector<float> result(size);
 
-
     for (unsigned int i = 0; i < size; i++)
     {
         float tmp = network_output[i]/io_scaling;
 
-        if (tmp > io_scaling)
-            tmp = io_scaling;
-        if (tmp < -io_scaling)
-            tmp = -io_scaling;
+        if (tmp > 1.0)
+            tmp = 1.0;
+        if (tmp < -1.0)
+            tmp = -1.0;
 
         result[i] = tmp;
     }

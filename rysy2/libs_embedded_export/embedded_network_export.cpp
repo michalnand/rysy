@@ -215,33 +215,6 @@ int EmbeddedNetworkExport::process(std::string export_path, std::string network_
       input_shape = output_shape;
     }
 
-    /*
-    if (layer["type"].asString() == "relu")
-    {
-      shape.w = input_shape.w;
-      shape.h = input_shape.h;
-      shape.d = input_shape.d;
-
-      output_shape = input_shape;
-
-      std::string layer_prefix = "layer_" + std::to_string(layer_idx);
-      LayerExport layer_export(export_path, layer, layer_prefix, input_shape, output_shape);
-
-      network_config_cpp_headers+= "#include \"" + layer_prefix +".h\"\n";
-
-      std::string s_shape = layer_prefix + "_shape";
-      std::string s_input_shape  = layer_prefix + "_input_shape";
-      std::string s_output_shape = layer_prefix + "_output_shape";
-
-      network_config_cpp+= "\t\tlayers[" + std::to_string(layer_idx)+"] = ";
-      network_config_cpp+= "new NetReluLayer(" + s_shape + "," + s_input_shape + "," + s_output_shape + ");";
-      network_config_cpp+= "\n";
-
-      layer_idx++;
-      input_shape = output_shape;
-    }
-    */
-
     if ((layer["type"].asString() == "max pooling")||(layer["type"].asString() == "max_pooling"))
     {
       shape.w = layer["shape"][0].asInt();

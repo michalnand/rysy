@@ -5,10 +5,9 @@
 #include <EmbeddedNetLayer.h>
 
 #include <EmbeddedNetFcLayer.h>
-#include <EmbeddedNetReluLayer.h>
-
 #include <EmbeddedNetConvolutionLayer.h>
 #include <EmbeddedNetDenseConvolutionLayer.h>
+
 #include <EmbeddedNetMaxPoolingLayer.h>
 
 class EmbeddedNet
