@@ -48,6 +48,8 @@
 #include <experience_replay_buffer.h>
 #include <dqn.h>
 #include <dqna.h>
+
+#include <embedded_network_export.h>
 %}
 
 
@@ -75,3 +77,5 @@
 %include <experience_replay_buffer.h>
 %include <dqn.h>
 %include <dqna.h>
+
+%include <embedded_network_export.h>

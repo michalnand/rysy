@@ -10,14 +10,14 @@
 
 class EmbeddedNetworkExport
 {
-  private:
-    Json::Value json_parameters;
+    private:
+        Json::Value json_parameters;
 
-  public:
-    EmbeddedNetworkExport(std::string trained_config_file_name);
-    virtual ~EmbeddedNetworkExport();
+    public:
+        EmbeddedNetworkExport(std::string trained_config_file_name);
+        virtual ~EmbeddedNetworkExport();
 
-    int process(std::string export_path, std::string network_prefix);
+        int process(std::string export_path, std::string network_prefix);
 };
 
 

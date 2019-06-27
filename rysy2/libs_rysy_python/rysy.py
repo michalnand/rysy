@@ -2079,6 +2079,27 @@ class DQNA(_object):
 DQNA_swigregister = _rysy.DQNA_swigregister
 DQNA_swigregister(DQNA)
 
+class EmbeddedNetworkExport(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, EmbeddedNetworkExport, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, EmbeddedNetworkExport, name)
+    __repr__ = _swig_repr
+
+    def __init__(self, trained_config_file_name):
+        this = _rysy.new_EmbeddedNetworkExport(trained_config_file_name)
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _rysy.delete_EmbeddedNetworkExport
+    __del__ = lambda self: None
+
+    def process(self, export_path, network_prefix):
+        return _rysy.EmbeddedNetworkExport_process(self, export_path, network_prefix)
+EmbeddedNetworkExport_swigregister = _rysy.EmbeddedNetworkExport_swigregister
+EmbeddedNetworkExport_swigregister(EmbeddedNetworkExport)
+
 # This file is compatible with both classic and new-style classes.
 
 

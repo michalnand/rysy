@@ -9,8 +9,8 @@
 LayerExport::LayerExport( std::string export_path,
                           Json::Value &json,
                           std::string layer_prefix,
-                          sShape input_shape,
-                          sShape output_shape)
+                          sEmbeddedNetShape input_shape,
+                          sEmbeddedNetShape output_shape)
 {
   this->layer_prefix = layer_prefix;
   this->json = json;
@@ -38,14 +38,14 @@ void LayerExport::process()
 {
   std::string weights_path = json["weights_file_name"].asString();
 
-  sShape shape;
+  sEmbeddedNetShape shape;
 
 
   shape.w = json["shape"][0].asInt();
   shape.h = json["shape"][1].asInt();
   shape.d = json["shape"][2].asInt();
 
-  if ((shape.w == 0)||(shape.h == 0)||(shape.d == 0))
+  if ((shape.w == 0)&&(shape.h == 0)&&(shape.d == 0))
   {
     shape = input_shape;
   }
@@ -53,30 +53,30 @@ void LayerExport::process()
   result+= "#ifndef _LAYER_" + layer_prefix + "_H_\n";
   result+= "#define _LAYER_" + layer_prefix + "_H_\n";
   result+= "\n\n";
-  result+= "#include <NetworkConfig.h>\n";
+  result+= "#include <EmbeddedNetConfig.h>\n";
   result+= "\n\n";
 
   result+= "#define " + layer_prefix + "_type " + "\"" + json["type"].asString() + "\"\n";
 
   result+= "\n";
 
-  result+= "const sShape " + layer_prefix + "_input_shape = {";
+  result+= "const sEmbeddedNetShape " + layer_prefix + "_input_shape = {";
   result+= std::to_string(input_shape.w) + ", ";
   result+= std::to_string(input_shape.h) + ", ";
   result+= std::to_string(input_shape.d) + "};\n";
 
-  result+= "const sShape " + layer_prefix + "_output_shape = {";
+  result+= "const sEmbeddedNetShape " + layer_prefix + "_output_shape = {";
   result+= std::to_string(output_shape.w) + ", ";
   result+= std::to_string(output_shape.h) + ", ";
   result+= std::to_string(output_shape.d) + "};\n";
 
-  result+= "const sShape " + layer_prefix + "_shape = {";
+  result+= "const sEmbeddedNetShape " + layer_prefix + "_shape = {";
   result+= std::to_string(shape.w) + ", ";
   result+= std::to_string(shape.h) + ", ";
   result+= std::to_string(shape.d) + "};\n";
 
   result+= "\n";
-  raw_float_to_array(result, layer_prefix+"_weights", weights_path+"_weight.bin");
+  raw_float_to_array(result, layer_prefix+"_weights", weights_path+"_weights.bin");
 
   result+= "\n\n\n";
   raw_float_to_array(result, layer_prefix+"_bias", weights_path+"_bias.bin");

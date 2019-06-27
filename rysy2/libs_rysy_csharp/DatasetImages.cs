@@ -9,12 +9,10 @@
 //------------------------------------------------------------------------------
 
 
-public class DatasetImages : global::System.IDisposable {
+public class DatasetImages : DatasetInterface {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
-  protected bool swigCMemOwn;
 
-  internal DatasetImages(global::System.IntPtr cPtr, bool cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
+  internal DatasetImages(global::System.IntPtr cPtr, bool cMemoryOwn) : base(rysyPINVOKE.DatasetImages_SWIGUpcast(cPtr), cMemoryOwn) {
     swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
   }
 
@@ -26,7 +24,7 @@ public class DatasetImages : global::System.IDisposable {
     Dispose();
   }
 
-  public virtual void Dispose() {
+  public override void Dispose() {
     lock(this) {
       if (swigCPtr.Handle != global::System.IntPtr.Zero) {
         if (swigCMemOwn) {
@@ -36,6 +34,7 @@ public class DatasetImages : global::System.IDisposable {
         swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
       }
       global::System.GC.SuppressFinalize(this);
+      base.Dispose();
     }
   }
 

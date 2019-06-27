@@ -4,14 +4,14 @@
 #include <string>
 #include <json_config.h>
 
-#include <shape.h>
+#include <EmbeddedNetConfig.h>
 
 class LayerExport
 {
   private:
     Json::Value json;
-    sShape input_shape;
-    sShape output_shape;
+    sEmbeddedNetShape input_shape;
+    sEmbeddedNetShape output_shape;
 
     std::string layer_prefix;
     std::string result;
@@ -21,8 +21,8 @@ class LayerExport
     LayerExport(  std::string export_path,
                   Json::Value &json,
                   std::string layer_prefix,
-                  sShape input_shape,
-                  sShape output_shape);
+                  sEmbeddedNetShape input_shape,
+                  sEmbeddedNetShape output_shape);
     virtual ~LayerExport();
 
     std::string& get()

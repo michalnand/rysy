@@ -337,12 +337,6 @@ class rysyPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_Batch_get_output_all")]
   public static extern global::System.IntPtr Batch_get_output_all(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_DatasetImages")]
-  public static extern global::System.IntPtr new_DatasetImages(string jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_delete_DatasetImages")]
-  public static extern void delete_DatasetImages(global::System.Runtime.InteropServices.HandleRef jarg1);
-
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_DatasetInterface__SWIG_0")]
   public static extern global::System.IntPtr new_DatasetInterface__SWIG_0();
 
@@ -424,6 +418,12 @@ class rysyPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DatasetInterface_normalise_output")]
   public static extern void DatasetInterface_normalise_output(global::System.Runtime.InteropServices.HandleRef jarg1);
 
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_DatasetImages")]
+  public static extern global::System.IntPtr new_DatasetImages(string jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_delete_DatasetImages")]
+  public static extern void delete_DatasetImages(global::System.Runtime.InteropServices.HandleRef jarg1);
+
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_DatasetMnist")]
   public static extern global::System.IntPtr new_DatasetMnist(string jarg1, string jarg2, string jarg3, string jarg4);
 
@@ -474,141 +474,6 @@ class rysyPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ClassificationExperiment_run")]
   public static extern void ClassificationExperiment_run(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_CNN__SWIG_0")]
-  public static extern global::System.IntPtr new_CNN__SWIG_0();
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_CNN__SWIG_1")]
-  public static extern global::System.IntPtr new_CNN__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_CNN__SWIG_3")]
-  public static extern global::System.IntPtr new_CNN__SWIG_3(string jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_CNN__SWIG_4")]
-  public static extern global::System.IntPtr new_CNN__SWIG_4(string jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_CNN__SWIG_5")]
-  public static extern global::System.IntPtr new_CNN__SWIG_5(string jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_CNN__SWIG_6")]
-  public static extern global::System.IntPtr new_CNN__SWIG_6(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_CNN__SWIG_7")]
-  public static extern global::System.IntPtr new_CNN__SWIG_7(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_CNN__SWIG_8")]
-  public static extern global::System.IntPtr new_CNN__SWIG_8(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_CNN__SWIG_9")]
-  public static extern global::System.IntPtr new_CNN__SWIG_9(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, float jarg3, float jarg4, float jarg5, float jarg6, float jarg7, uint jarg8);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_CNN__SWIG_10")]
-  public static extern global::System.IntPtr new_CNN__SWIG_10(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, float jarg3, float jarg4, float jarg5, float jarg6, float jarg7);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_CNN__SWIG_11")]
-  public static extern global::System.IntPtr new_CNN__SWIG_11(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, float jarg3, float jarg4, float jarg5, float jarg6);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_CNN__SWIG_12")]
-  public static extern global::System.IntPtr new_CNN__SWIG_12(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, float jarg3, float jarg4, float jarg5);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_CNN__SWIG_13")]
-  public static extern global::System.IntPtr new_CNN__SWIG_13(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, float jarg3, float jarg4);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_CNN__SWIG_14")]
-  public static extern global::System.IntPtr new_CNN__SWIG_14(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, float jarg3);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_CNN__SWIG_15")]
-  public static extern global::System.IntPtr new_CNN__SWIG_15(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_delete_CNN")]
-  public static extern void delete_CNN(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_get_input_shape")]
-  public static extern global::System.IntPtr CNN_get_input_shape(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_get_output_shape")]
-  public static extern global::System.IntPtr CNN_get_output_shape(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_forward__SWIG_0")]
-  public static extern void CNN_forward__SWIG_0(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_forward__SWIG_1")]
-  public static extern void CNN_forward__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_forward__SWIG_2")]
-  public static extern void CNN_forward__SWIG_2(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_train__SWIG_0")]
-  public static extern void CNN_train__SWIG_0(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_train__SWIG_1")]
-  public static extern void CNN_train__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_train__SWIG_2")]
-  public static extern void CNN_train__SWIG_2(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, uint jarg4, bool jarg5);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_train__SWIG_3")]
-  public static extern void CNN_train__SWIG_3(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, uint jarg4);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_train__SWIG_4")]
-  public static extern void CNN_train__SWIG_4(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_train__SWIG_5")]
-  public static extern void CNN_train__SWIG_5(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, uint jarg4, bool jarg5);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_train__SWIG_6")]
-  public static extern void CNN_train__SWIG_6(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, uint jarg4);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_train__SWIG_7")]
-  public static extern void CNN_train__SWIG_7(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_train_from_error")]
-  public static extern void CNN_train_from_error(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_get_error_back")]
-  public static extern global::System.IntPtr CNN_get_error_back(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_set_training_mode")]
-  public static extern void CNN_set_training_mode(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_unset_training_mode")]
-  public static extern void CNN_unset_training_mode(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_is_training_mode")]
-  public static extern bool CNN_is_training_mode(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_reset")]
-  public static extern void CNN_reset(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_add_layer__SWIG_0")]
-  public static extern global::System.IntPtr CNN_add_layer__SWIG_0(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, string jarg4);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_add_layer__SWIG_1")]
-  public static extern global::System.IntPtr CNN_add_layer__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_add_layer__SWIG_2")]
-  public static extern global::System.IntPtr CNN_add_layer__SWIG_2(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_asString")]
-  public static extern string CNN_asString(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_print")]
-  public static extern void CNN_print(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_save")]
-  public static extern void CNN_save(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_load_weights")]
-  public static extern void CNN_load_weights(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_get_layer_output_size")]
-  public static extern uint CNN_get_layer_output_size(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_get_layer_output")]
-  public static extern global::System.IntPtr CNN_get_layer_output(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_get_layer_weights_flag")]
-  public static extern bool CNN_get_layer_weights_flag(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_sShape_w_set")]
   public static extern void sShape_w_set(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2);
@@ -784,6 +649,207 @@ class rysyPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_Tensor_v_get")]
   public static extern global::System.IntPtr Tensor_v_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_CNN__SWIG_0")]
+  public static extern global::System.IntPtr new_CNN__SWIG_0();
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_CNN__SWIG_1")]
+  public static extern global::System.IntPtr new_CNN__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_CNN__SWIG_3")]
+  public static extern global::System.IntPtr new_CNN__SWIG_3(string jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_CNN__SWIG_4")]
+  public static extern global::System.IntPtr new_CNN__SWIG_4(string jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_CNN__SWIG_5")]
+  public static extern global::System.IntPtr new_CNN__SWIG_5(string jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_CNN__SWIG_6")]
+  public static extern global::System.IntPtr new_CNN__SWIG_6(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_CNN__SWIG_7")]
+  public static extern global::System.IntPtr new_CNN__SWIG_7(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_CNN__SWIG_8")]
+  public static extern global::System.IntPtr new_CNN__SWIG_8(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_CNN__SWIG_9")]
+  public static extern global::System.IntPtr new_CNN__SWIG_9(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, float jarg3, float jarg4, float jarg5, float jarg6, float jarg7, uint jarg8);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_CNN__SWIG_10")]
+  public static extern global::System.IntPtr new_CNN__SWIG_10(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, float jarg3, float jarg4, float jarg5, float jarg6, float jarg7);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_CNN__SWIG_11")]
+  public static extern global::System.IntPtr new_CNN__SWIG_11(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, float jarg3, float jarg4, float jarg5, float jarg6);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_CNN__SWIG_12")]
+  public static extern global::System.IntPtr new_CNN__SWIG_12(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, float jarg3, float jarg4, float jarg5);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_CNN__SWIG_13")]
+  public static extern global::System.IntPtr new_CNN__SWIG_13(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, float jarg3, float jarg4);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_CNN__SWIG_14")]
+  public static extern global::System.IntPtr new_CNN__SWIG_14(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, float jarg3);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_CNN__SWIG_15")]
+  public static extern global::System.IntPtr new_CNN__SWIG_15(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_delete_CNN")]
+  public static extern void delete_CNN(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_get_input_shape")]
+  public static extern global::System.IntPtr CNN_get_input_shape(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_get_output_shape")]
+  public static extern global::System.IntPtr CNN_get_output_shape(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_forward__SWIG_0")]
+  public static extern void CNN_forward__SWIG_0(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_forward__SWIG_1")]
+  public static extern void CNN_forward__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_forward__SWIG_2")]
+  public static extern void CNN_forward__SWIG_2(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_train__SWIG_0")]
+  public static extern void CNN_train__SWIG_0(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_train__SWIG_1")]
+  public static extern void CNN_train__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_train__SWIG_2")]
+  public static extern void CNN_train__SWIG_2(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, uint jarg4, bool jarg5);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_train__SWIG_3")]
+  public static extern void CNN_train__SWIG_3(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, uint jarg4);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_train__SWIG_4")]
+  public static extern void CNN_train__SWIG_4(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_train__SWIG_5")]
+  public static extern void CNN_train__SWIG_5(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, uint jarg4, bool jarg5);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_train__SWIG_6")]
+  public static extern void CNN_train__SWIG_6(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, uint jarg4);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_train__SWIG_7")]
+  public static extern void CNN_train__SWIG_7(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_train_from_error")]
+  public static extern void CNN_train_from_error(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_get_error_back")]
+  public static extern global::System.IntPtr CNN_get_error_back(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_set_training_mode")]
+  public static extern void CNN_set_training_mode(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_unset_training_mode")]
+  public static extern void CNN_unset_training_mode(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_is_training_mode")]
+  public static extern bool CNN_is_training_mode(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_reset")]
+  public static extern void CNN_reset(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_add_layer__SWIG_0")]
+  public static extern global::System.IntPtr CNN_add_layer__SWIG_0(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, string jarg4);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_add_layer__SWIG_1")]
+  public static extern global::System.IntPtr CNN_add_layer__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_add_layer__SWIG_2")]
+  public static extern global::System.IntPtr CNN_add_layer__SWIG_2(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_asString")]
+  public static extern string CNN_asString(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_print")]
+  public static extern void CNN_print(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_save")]
+  public static extern void CNN_save(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_load_weights")]
+  public static extern void CNN_load_weights(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_get_layer_output_size")]
+  public static extern uint CNN_get_layer_output_size(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_get_layer_output")]
+  public static extern global::System.IntPtr CNN_get_layer_output(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_get_layer_weights_flag")]
+  public static extern bool CNN_get_layer_weights_flag(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_CNNVisualisation")]
+  public static extern global::System.IntPtr new_CNNVisualisation(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_delete_CNNVisualisation")]
+  public static extern void delete_CNNVisualisation(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNNVisualisation_process")]
+  public static extern void CNNVisualisation_process(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNNVisualisation_save")]
+  public static extern void CNNVisualisation_save(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_ExperienceReplayBuffer__SWIG_0")]
+  public static extern global::System.IntPtr new_ExperienceReplayBuffer__SWIG_0();
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_ExperienceReplayBuffer__SWIG_1")]
+  public static extern global::System.IntPtr new_ExperienceReplayBuffer__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_ExperienceReplayBuffer__SWIG_3")]
+  public static extern global::System.IntPtr new_ExperienceReplayBuffer__SWIG_3(uint jarg1, uint jarg2, uint jarg3);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_delete_ExperienceReplayBuffer")]
+  public static extern void delete_ExperienceReplayBuffer(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_init")]
+  public static extern void ExperienceReplayBuffer_init(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2, uint jarg3, uint jarg4);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_add__SWIG_0")]
+  public static extern bool ExperienceReplayBuffer_add__SWIG_0(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, uint jarg4, float jarg5, bool jarg6);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_add__SWIG_1")]
+  public static extern bool ExperienceReplayBuffer_add__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, uint jarg4, float jarg5);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_is_full")]
+  public static extern bool ExperienceReplayBuffer_is_full(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_compute__SWIG_0")]
+  public static extern void ExperienceReplayBuffer_compute__SWIG_0(global::System.Runtime.InteropServices.HandleRef jarg1, float jarg2, float jarg3);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_compute__SWIG_1")]
+  public static extern void ExperienceReplayBuffer_compute__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, float jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_compute__SWIG_2")]
+  public static extern void ExperienceReplayBuffer_compute__SWIG_2(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_size")]
+  public static extern uint ExperienceReplayBuffer_size(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_print")]
+  public static extern void ExperienceReplayBuffer_print(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_get_state")]
+  public static extern global::System.IntPtr ExperienceReplayBuffer_get_state(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_get_q_values")]
+  public static extern global::System.IntPtr ExperienceReplayBuffer_get_q_values(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_get_action")]
+  public static extern global::System.IntPtr ExperienceReplayBuffer_get_action(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_get_reward")]
+  public static extern global::System.IntPtr ExperienceReplayBuffer_get_reward(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_get_terminal")]
+  public static extern global::System.IntPtr ExperienceReplayBuffer_get_terminal(global::System.Runtime.InteropServices.HandleRef jarg1);
+
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_DQN__SWIG_0")]
   public static extern global::System.IntPtr new_DQN__SWIG_0();
 
@@ -898,65 +964,23 @@ class rysyPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQNA_load_weights")]
   public static extern void DQNA_load_weights(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_ExperienceReplayBuffer__SWIG_0")]
-  public static extern global::System.IntPtr new_ExperienceReplayBuffer__SWIG_0();
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_EmbeddedNetworkExport")]
+  public static extern global::System.IntPtr new_EmbeddedNetworkExport(string jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_ExperienceReplayBuffer__SWIG_1")]
-  public static extern global::System.IntPtr new_ExperienceReplayBuffer__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1);
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_delete_EmbeddedNetworkExport")]
+  public static extern void delete_EmbeddedNetworkExport(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_ExperienceReplayBuffer__SWIG_3")]
-  public static extern global::System.IntPtr new_ExperienceReplayBuffer__SWIG_3(uint jarg1, uint jarg2, uint jarg3);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_delete_ExperienceReplayBuffer")]
-  public static extern void delete_ExperienceReplayBuffer(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_init")]
-  public static extern void ExperienceReplayBuffer_init(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2, uint jarg3, uint jarg4);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_add__SWIG_0")]
-  public static extern bool ExperienceReplayBuffer_add__SWIG_0(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, uint jarg4, float jarg5, bool jarg6);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_add__SWIG_1")]
-  public static extern bool ExperienceReplayBuffer_add__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, uint jarg4, float jarg5);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_is_full")]
-  public static extern bool ExperienceReplayBuffer_is_full(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_compute__SWIG_0")]
-  public static extern void ExperienceReplayBuffer_compute__SWIG_0(global::System.Runtime.InteropServices.HandleRef jarg1, float jarg2, float jarg3);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_compute__SWIG_1")]
-  public static extern void ExperienceReplayBuffer_compute__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, float jarg2);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_compute__SWIG_2")]
-  public static extern void ExperienceReplayBuffer_compute__SWIG_2(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_size")]
-  public static extern uint ExperienceReplayBuffer_size(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_print")]
-  public static extern void ExperienceReplayBuffer_print(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_get_state")]
-  public static extern global::System.IntPtr ExperienceReplayBuffer_get_state(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_get_q_values")]
-  public static extern global::System.IntPtr ExperienceReplayBuffer_get_q_values(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_get_action")]
-  public static extern global::System.IntPtr ExperienceReplayBuffer_get_action(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_get_reward")]
-  public static extern global::System.IntPtr ExperienceReplayBuffer_get_reward(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_get_terminal")]
-  public static extern global::System.IntPtr ExperienceReplayBuffer_get_terminal(global::System.Runtime.InteropServices.HandleRef jarg1);
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_EmbeddedNetworkExport_process")]
+  public static extern int EmbeddedNetworkExport_process(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, string jarg3);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_VectorFloatCreate__SWIG_0")]
   public static extern global::System.IntPtr VectorFloatCreate__SWIG_0(uint jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_VectorFloatCreate__SWIG_1")]
   public static extern global::System.IntPtr VectorFloatCreate__SWIG_1();
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DatasetImages_SWIGUpcast")]
+  public static extern global::System.IntPtr DatasetImages_SWIGUpcast(global::System.IntPtr jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DatasetMnist_SWIGUpcast")]
   public static extern global::System.IntPtr DatasetMnist_SWIGUpcast(global::System.IntPtr jarg1);

@@ -3,6 +3,9 @@ OUTPUT_NAME = libs_embedded_export
 INC+= -I.
 INC+= -I../libs_nn
 INC+= -I../libs_common
+INC+= -I../libs_dataset
+INC+= -I../libs_experiment
+INC+= -I../libs_embedded_network
 
 SRCS+= $(shell find . -name '*.cpp')
 SRCS_CUDA+= $(shell find . -name '*.cu')
