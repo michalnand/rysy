@@ -1620,8 +1620,8 @@ class ClassificationCompare(_object):
     __swig_destroy__ = _rysy.delete_ClassificationCompare
     __del__ = lambda self: None
 
-    def init(self, classes_count):
-        return _rysy.ClassificationCompare_init(self, classes_count)
+    def init(self, classes_count, top_n_count=1):
+        return _rysy.ClassificationCompare_init(self, classes_count, top_n_count)
 
     def add(self, target_output, predicted_output):
         return _rysy.ClassificationCompare_add(self, target_output, predicted_output)

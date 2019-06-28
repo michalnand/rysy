@@ -5,6 +5,9 @@
 #include <dataset_interface.h>
 #include <cnn.h>
 
+#include <classification_compare.h>
+
+
 class ClassificationExperiment
 {
     public:
@@ -22,6 +25,10 @@ class ClassificationExperiment
     protected:
         DatasetInterface *dataset;
         std::string experiment_dir, network_config_file;
+
+    protected:
+        ClassificationCompare compare_training, compare_training_top5;
+        ClassificationCompare compare_testing, compare_testing_top5;
 };
 
 #endif

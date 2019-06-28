@@ -3,7 +3,6 @@
 
 #include <batch.h>
 #include <cnn.h>
-#include <classification_compare.h>
 
 
 
@@ -95,48 +94,71 @@ void ClassificationExperiment::run()
 
             experiment_log << "testing on testing\n";
 
-            ClassificationCompare compare_testing(dataset->get_classes_count());
+            compare_testing.init(dataset->get_classes_count());
+            compare_testing_top5.init(dataset->get_classes_count(), 5);
 
             std::vector<float> nn_output(dataset->get_classes_count());
 
             for (unsigned int item_idx = 0; item_idx < dataset->get_testing_count(); item_idx++)
             {
                 cnn.forward(nn_output, dataset->get_testing_input(item_idx));
-                compare_testing.add(dataset->get_testing_output(item_idx), nn_output);
 
-                if (compare_testing.is_nan_error())
+                int compare_testing_result = compare_testing.add(dataset->get_testing_output(item_idx), nn_output);
+                int compare_testing_top_5_result = compare_testing_top5.add(dataset->get_testing_output(item_idx), nn_output);
+
+                if (compare_testing_result != 0)
                 {
-                    experiment_log << "NaN error\n";
+                    experiment_log << "compare testing error " << compare_testing_result << "\n";
+                    break;
+                }
+
+                if (compare_testing_top_5_result != 0)
+                {
+                    experiment_log << "compare testing TOP5 error " << compare_testing_top_5_result << "\n";
                     break;
                 }
             }
             compare_testing.compute();
+            compare_testing_top5.compute();
 
 
             experiment_log << "testing on training\n";
 
-            ClassificationCompare compare_training(dataset->get_classes_count());
+            compare_training.init(dataset->get_classes_count());
+            compare_training_top5.init(dataset->get_classes_count(), 5);
 
             for (unsigned int item_idx = 0; item_idx < dataset->get_testing_count(); item_idx++)
             {
                 dataset->set_random_training_idx();
 
                 cnn.forward(nn_output, dataset->get_training_input());
-                compare_training.add(dataset->get_training_output(), nn_output);
 
-                if (compare_training.is_nan_error())
+                int compare_training_result = compare_training.add(dataset->get_training_output(), nn_output);
+                int compare_training_top_5_result = compare_training_top5.add(dataset->get_training_output(), nn_output);
+
+                if (compare_training_result != 0)
                 {
-                    experiment_log << "NaN error\n";
+                    experiment_log << "compare training error " << compare_training_result << "\n";
+                    break;
+                }
+
+                if (compare_training_top_5_result != 0)
+                {
+                    experiment_log << "compare training TOP5 error " << compare_training_top_5_result << "\n";
                     break;
                 }
             }
             compare_training.compute();
+            compare_training_top5.compute();
 
 
             experiment_log << "testing accuracy " << compare_testing.get_accuracy() << "[%]\n";
-            experiment_log << "training accuracy   " << compare_training.get_accuracy() << "[%]\n";
+            experiment_log << "testing accuracy TOP 5 " << compare_testing_top5.get_accuracy() << "[%]\n";
 
-            progress_log << epoch << " " << batch_id << " " << training_done << " " << compare_testing.get_accuracy() << " " << compare_training.get_accuracy() << "\n";
+            experiment_log << "training accuracy   " << compare_training.get_accuracy() << "[%]\n";
+            experiment_log << "training accuracy TOP 5 " << compare_training_top5.get_accuracy() << "[%]\n";
+
+            progress_log << epoch << " " << batch_id << " " << training_done << " " << compare_testing.get_accuracy() << " " << compare_training.get_accuracy() << " " << compare_testing_top5.get_accuracy() << " " << compare_training_top5.get_accuracy() << "\n";
 
 
             if (compare_testing.get_accuracy() > accuracy_result_best)
@@ -149,7 +171,10 @@ void ClassificationExperiment::run()
                 Log confussion_matrix_log(experiment_dir + "confussion_matrix.log");
 
                 confussion_matrix_log << "testing accuracy " << compare_testing.get_accuracy() << "[%]\n";
+                confussion_matrix_log << "testing accuracy TOP 5 " << compare_testing_top5.get_accuracy() << "[%]\n";
                 confussion_matrix_log << "training accuracy   " << compare_training.get_accuracy() << "[%]\n";
+                confussion_matrix_log << "training accuracy TOP 5 " << compare_training_top5.get_accuracy() << "[%]\n";
+
                 confussion_matrix_log << "\n\n\n";
 
                 std::string test_cm = compare_testing.asString();
@@ -163,6 +188,17 @@ void ClassificationExperiment::run()
                 confussion_matrix_log << s_delimiter;
 
 
+                std::string test_cm_top_5 = compare_testing_top5.asString();
+                confussion_matrix_log << "TESTING TOP 5 confussion matrix : \n\n";
+                confussion_matrix_log << test_cm_top_5;
+                confussion_matrix_log << s_delimiter;
+
+                std::string train_cm_top_5 = compare_training_top5.asString();
+                confussion_matrix_log << "TRAINING TOP 5 confussion matrix : \n\n";
+                confussion_matrix_log << train_cm_top_5;
+                confussion_matrix_log << s_delimiter;
+
+
                 JsonConfig testing_best;
                 testing_best.result = compare_testing.asJson();
                 testing_best.save(experiment_dir + "testing_best.json");
@@ -170,6 +206,14 @@ void ClassificationExperiment::run()
                 JsonConfig training_best;
                 training_best.result = compare_training.asJson();
                 training_best.save(experiment_dir + "training_best.json");
+
+                JsonConfig testing_best_top_5;
+                testing_best_top_5.result = compare_testing_top5.asJson();
+                testing_best_top_5.save(experiment_dir + "testing_best_top_5.json");
+
+                JsonConfig training_best_top5;
+                training_best_top5.result = compare_training_top5.asJson();
+                training_best_top5.save(experiment_dir + "training_best_top5.json");
 
                 process_best();
             }

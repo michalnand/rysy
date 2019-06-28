@@ -437,13 +437,19 @@ class rysyPINVOKE {
   public static extern global::System.IntPtr new_ClassificationCompare__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_ClassificationCompare__SWIG_3")]
-  public static extern global::System.IntPtr new_ClassificationCompare__SWIG_3(uint jarg1);
+  public static extern global::System.IntPtr new_ClassificationCompare__SWIG_3(uint jarg1, uint jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_ClassificationCompare__SWIG_4")]
+  public static extern global::System.IntPtr new_ClassificationCompare__SWIG_4(uint jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_delete_ClassificationCompare")]
   public static extern void delete_ClassificationCompare(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ClassificationCompare_init")]
-  public static extern void ClassificationCompare_init(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2);
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ClassificationCompare_init__SWIG_0")]
+  public static extern void ClassificationCompare_init__SWIG_0(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2, uint jarg3);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ClassificationCompare_init__SWIG_1")]
+  public static extern void ClassificationCompare_init__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ClassificationCompare_add")]
   public static extern int ClassificationCompare_add(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);

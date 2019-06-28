@@ -13,7 +13,7 @@ class ClassificationCompare
         ClassificationCompare(ClassificationCompare& other);
         ClassificationCompare(const ClassificationCompare& other);
 
-        ClassificationCompare(unsigned int classes_count);
+        ClassificationCompare(unsigned int classes_count, unsigned int top_n_count = 1);
 
         virtual ~ClassificationCompare();
 
@@ -26,7 +26,7 @@ class ClassificationCompare
 
 
     public:
-        void init(unsigned int classes_count);
+        void init(unsigned int classes_count, unsigned int top_n_count = 1);
         int add(std::vector<float> &target_output, std::vector<float> &predicted_output);
         void compute();
 
@@ -44,6 +44,8 @@ class ClassificationCompare
         unsigned int class_idx(std::vector<float> &v);
         bool is_valid(std::vector<float> &v);
 
+        std::vector<unsigned int> get_top_n(std::vector<float> &confidence, unsigned int top_n_count);
+        bool not_in(std::vector<unsigned int> &vect, unsigned int value);
 
     private:
         unsigned int classes_count;
@@ -56,6 +58,7 @@ class ClassificationCompare
         float accuracy;
 
         bool nan_error;
+        unsigned int top_n_count;
 };
 
 #endif

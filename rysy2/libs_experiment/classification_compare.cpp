@@ -21,9 +21,9 @@ ClassificationCompare::ClassificationCompare(const ClassificationCompare& other)
     copy(other);
 }
 
-ClassificationCompare::ClassificationCompare(unsigned int classes_count)
+ClassificationCompare::ClassificationCompare(unsigned int classes_count, unsigned int top_n_count)
 {
-    init(classes_count);
+    init(classes_count, top_n_count);
 }
 
 ClassificationCompare::~ClassificationCompare()
@@ -52,6 +52,8 @@ void ClassificationCompare::copy(ClassificationCompare& other)
     this->total_count       = other.total_count;
     this->accuracy          = other.accuracy;
     this->nan_error         = other.nan_error;
+
+    this->top_n_count       = other.top_n_count;
 }
 
 void ClassificationCompare::copy(const ClassificationCompare& other)
@@ -62,9 +64,11 @@ void ClassificationCompare::copy(const ClassificationCompare& other)
     this->total_count       = other.total_count;
     this->accuracy          = other.accuracy;
     this->nan_error         = other.nan_error;
+
+    this->top_n_count     = other.top_n_count;
 }
 
-void ClassificationCompare::init(unsigned int classes_count)
+void ClassificationCompare::init(unsigned int classes_count, unsigned int top_n_count)
 {
     this->classes_count = classes_count;
 
@@ -87,6 +91,8 @@ void ClassificationCompare::init(unsigned int classes_count)
     this->accuracy        = 0;
 
     this->nan_error = false;
+
+    this->top_n_count = top_n_count;
 }
 
 int ClassificationCompare::add(std::vector<float> &target_output, std::vector<float> &predicted_output)
@@ -114,11 +120,37 @@ int ClassificationCompare::add(std::vector<float> &target_output, std::vector<fl
         return -4;
     }
 
+    if (top_n_count == 1)
+    {
+        unsigned int target     = class_idx(target_output);
+        unsigned int predicted  = class_idx(predicted_output);
 
-    unsigned int target     = class_idx(target_output);
-    unsigned int predicted  = class_idx(predicted_output);
+        confusion_matrix[predicted][target]++;
+    }
+    else
+    {
+        unsigned int target = class_idx(target_output);
+        auto top_n_result   = get_top_n(predicted_output, top_n_count);
 
-    confusion_matrix[predicted][target]++;
+        bool correct = false;
+        for (unsigned int i = 0; i < top_n_result.size(); i++)
+        {
+            unsigned int predicted = top_n_result[i];
+            if (predicted == target)
+            {
+                confusion_matrix[predicted][target]++;
+                correct = true;
+                break;
+            }
+        }
+
+        if (correct != true)
+        {
+            unsigned int predicted = top_n_result[0];
+            confusion_matrix[predicted][target]++;
+        }
+
+    }
 
     return 0;
 }
@@ -243,4 +275,39 @@ bool ClassificationCompare::is_valid(std::vector<float> &v)
             return false;
 
     return true;
+}
+
+
+
+
+std::vector<unsigned int> ClassificationCompare::get_top_n(std::vector<float> &confidence, unsigned int top_n_count)
+{
+  std::vector<unsigned int> result;
+
+  for (unsigned int j = 0; j < top_n_count; j++)
+  {
+    float max = -1000000000.0;
+    unsigned int max_idx = 0;
+
+    for (unsigned int i = 0; i < confidence.size(); i++)
+      if (confidence[i] > max)
+      if (not_in(result, i))
+      {
+        max = confidence[i];
+        max_idx = i;
+      }
+
+    result.push_back(max_idx);
+  }
+
+  return result;
+}
+
+bool ClassificationCompare::not_in(std::vector<unsigned int> &vect, unsigned int value)
+{
+  for (unsigned int i = 0; i < vect.size(); i++)
+    if (value == vect[i])
+      return false;
+
+  return true;
 }

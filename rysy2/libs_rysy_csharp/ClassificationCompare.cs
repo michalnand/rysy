@@ -46,11 +46,18 @@ public class ClassificationCompare : global::System.IDisposable {
     if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
   }
 
-  public ClassificationCompare(uint classes_count) : this(rysyPINVOKE.new_ClassificationCompare__SWIG_3(classes_count), true) {
+  public ClassificationCompare(uint classes_count, uint top_n_count) : this(rysyPINVOKE.new_ClassificationCompare__SWIG_3(classes_count, top_n_count), true) {
+  }
+
+  public ClassificationCompare(uint classes_count) : this(rysyPINVOKE.new_ClassificationCompare__SWIG_4(classes_count), true) {
+  }
+
+  public void init(uint classes_count, uint top_n_count) {
+    rysyPINVOKE.ClassificationCompare_init__SWIG_0(swigCPtr, classes_count, top_n_count);
   }
 
   public void init(uint classes_count) {
-    rysyPINVOKE.ClassificationCompare_init(swigCPtr, classes_count);
+    rysyPINVOKE.ClassificationCompare_init__SWIG_1(swigCPtr, classes_count);
   }
 
   public int add(SWIGTYPE_p_std__vectorT_float_t target_output, SWIGTYPE_p_std__vectorT_float_t predicted_output) {
