@@ -60,17 +60,17 @@ public class DatasetInterface : global::System.IDisposable {
     return ret;
   }
 
-  public uint get_training_count() {
+  public virtual uint get_training_count() {
     uint ret = rysyPINVOKE.DatasetInterface_get_training_count(swigCPtr);
     return ret;
   }
 
-  public uint get_testing_count() {
+  public virtual uint get_testing_count() {
     uint ret = rysyPINVOKE.DatasetInterface_get_testing_count(swigCPtr);
     return ret;
   }
 
-  public uint get_classes_count() {
+  public virtual uint get_classes_count() {
     uint ret = rysyPINVOKE.DatasetInterface_get_classes_count(swigCPtr);
     return ret;
   }

@@ -29,10 +29,10 @@ class DatasetInterface
         Shape get_input_shape();
         Shape get_output_shape();
 
-        unsigned int get_training_count();
-        unsigned int get_testing_count();
+        virtual unsigned int get_training_count();
+        virtual unsigned int get_testing_count();
 
-        unsigned int get_classes_count();
+        virtual unsigned int get_classes_count();
 
     public:
         virtual void set_training_idx(unsigned int idx);
