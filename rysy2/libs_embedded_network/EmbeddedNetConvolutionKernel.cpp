@@ -383,8 +383,6 @@ void t_network_convolution_kernel(  nn_layer_t *output,
 }
 */
 
-#include <iostream>
-
 void network_convolution_kernel(  nn_layer_t *output,
                                   nn_layer_t *input,
                                   nn_weight_t *w,
