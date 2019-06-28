@@ -1643,6 +1643,9 @@ class ClassificationCompare(_object):
 
     def get_confusion_matrix(self):
         return _rysy.ClassificationCompare_get_confusion_matrix(self)
+
+    def get_class_success_rate(self):
+        return _rysy.ClassificationCompare_get_class_success_rate(self)
 ClassificationCompare_swigregister = _rysy.ClassificationCompare_swigregister
 ClassificationCompare_swigregister(ClassificationCompare)
 

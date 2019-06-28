@@ -95,4 +95,9 @@ public class ClassificationCompare : global::System.IDisposable {
     return ret;
   }
 
+  public SWIGTYPE_p_std__vectorT_float_t get_class_success_rate() {
+    SWIGTYPE_p_std__vectorT_float_t ret = new SWIGTYPE_p_std__vectorT_float_t(rysyPINVOKE.ClassificationCompare_get_class_success_rate(swigCPtr), true);
+    return ret;
+  }
+
 }

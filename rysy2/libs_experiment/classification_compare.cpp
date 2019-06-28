@@ -252,6 +252,11 @@ std::vector<std::vector<unsigned int>> ClassificationCompare::get_confusion_matr
     return this->confusion_matrix;
 }
 
+std::vector<float> ClassificationCompare::get_class_success_rate()
+{
+    return class_success;
+}
+
 unsigned int ClassificationCompare::class_idx(std::vector<float> &v)
 {
     unsigned int result = 0;

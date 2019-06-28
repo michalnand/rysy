@@ -472,6 +472,9 @@ class rysyPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ClassificationCompare_get_confusion_matrix")]
   public static extern global::System.IntPtr ClassificationCompare_get_confusion_matrix(global::System.Runtime.InteropServices.HandleRef jarg1);
 
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ClassificationCompare_get_class_success_rate")]
+  public static extern global::System.IntPtr ClassificationCompare_get_class_success_rate(global::System.Runtime.InteropServices.HandleRef jarg1);
+
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_ClassificationExperiment")]
   public static extern global::System.IntPtr new_ClassificationExperiment(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, string jarg3);
 

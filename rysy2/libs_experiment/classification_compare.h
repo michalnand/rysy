@@ -39,6 +39,7 @@ class ClassificationCompare
     public:
         float get_accuracy();
         std::vector<std::vector<unsigned int>> get_confusion_matrix();
+        std::vector<float> get_class_success_rate();
 
     private:
         unsigned int class_idx(std::vector<float> &v);
