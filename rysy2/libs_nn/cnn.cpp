@@ -477,6 +477,7 @@ Shape CNN::add_layer(std::string layer_type, Shape shape, std::string weights_fi
     {
         layer = new FCLayer(m_current_input_shape, parameters);
     }
+    else
     if (layer_type == "output")
     {
         parameters["shape"][0] = m_output_shape.w();
