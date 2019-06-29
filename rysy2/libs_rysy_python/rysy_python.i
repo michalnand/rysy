@@ -48,6 +48,7 @@
 #include <experience_replay_buffer.h>
 #include <dqn.h>
 #include <dqna.h>
+#include <stacked_state.h>
 
 #include <layer_export.h>
 #include <embedded_network_test.h>
@@ -79,6 +80,7 @@
 %include <experience_replay_buffer.h>
 %include <dqn.h>
 %include <dqna.h>
+%include <stacked_state.h>
 
 %include <layer_export.h>
 %include <embedded_network_test.h>

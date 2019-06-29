@@ -2082,6 +2082,48 @@ class DQNA(_object):
 DQNA_swigregister = _rysy.DQNA_swigregister
 DQNA_swigregister(DQNA)
 
+class StackedState(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, StackedState, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, StackedState, name)
+    __repr__ = _swig_repr
+
+    def __init__(self, *args):
+        this = _rysy.new_StackedState(*args)
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _rysy.delete_StackedState
+    __del__ = lambda self: None
+
+    def init(self, input_shape, frames):
+        return _rysy.StackedState_init(self, input_shape, frames)
+
+    def shape(self):
+        return _rysy.StackedState_shape(self)
+
+    def set(self, x, y, z, v):
+        return _rysy.StackedState_set(self, x, y, z, v)
+
+    def get(self, *args):
+        return _rysy.StackedState_get(self, *args)
+
+    def next_frame(self):
+        return _rysy.StackedState_next_frame(self)
+
+    def clear(self):
+        return _rysy.StackedState_clear(self)
+
+    def _print(self):
+        return _rysy.StackedState__print(self)
+
+    def random(self):
+        return _rysy.StackedState_random(self)
+StackedState_swigregister = _rysy.StackedState_swigregister
+StackedState_swigregister(StackedState)
+
 class LayerExport(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, LayerExport, name, value)
