@@ -1604,6 +1604,28 @@ class DatasetMnist(DatasetInterface):
 DatasetMnist_swigregister = _rysy.DatasetMnist_swigregister
 DatasetMnist_swigregister(DatasetMnist)
 
+class DatasetMnistRNN(DatasetInterface):
+    __swig_setmethods__ = {}
+    for _s in [DatasetInterface]:
+        __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
+    __setattr__ = lambda self, name, value: _swig_setattr(self, DatasetMnistRNN, name, value)
+    __swig_getmethods__ = {}
+    for _s in [DatasetInterface]:
+        __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
+    __getattr__ = lambda self, name: _swig_getattr(self, DatasetMnistRNN, name)
+    __repr__ = _swig_repr
+
+    def __init__(self, training_data_file_name, training_labels_file_name, testing_data_file_name, testing_labels_file_name):
+        this = _rysy.new_DatasetMnistRNN(training_data_file_name, training_labels_file_name, testing_data_file_name, testing_labels_file_name)
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _rysy.delete_DatasetMnistRNN
+    __del__ = lambda self: None
+DatasetMnistRNN_swigregister = _rysy.DatasetMnistRNN_swigregister
+DatasetMnistRNN_swigregister(DatasetMnistRNN)
+
 class ClassificationCompare(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, ClassificationCompare, name, value)
@@ -1688,6 +1710,10 @@ class sShape(_object):
     __swig_getmethods__["d"] = _rysy.sShape_d_get
     if _newclass:
         d = _swig_property(_rysy.sShape_d_get, _rysy.sShape_d_set)
+    __swig_setmethods__["t"] = _rysy.sShape_t_set
+    __swig_getmethods__["t"] = _rysy.sShape_t_get
+    if _newclass:
+        t = _swig_property(_rysy.sShape_t_get, _rysy.sShape_t_set)
 
     def __init__(self):
         this = _rysy.new_sShape()
@@ -1724,6 +1750,9 @@ class Shape(_object):
 
     def d(self):
         return _rysy.Shape_d(self)
+
+    def t(self):
+        return _rysy.Shape_t(self)
 
     def get(self):
         return _rysy.Shape_get(self)
@@ -1770,6 +1799,9 @@ class Tensor(_object):
     def d(self):
         return _rysy.Tensor_d(self)
 
+    def t(self):
+        return _rysy.Tensor_t(self)
+
     def size(self):
         return _rysy.Tensor_size(self)
 
@@ -1797,11 +1829,11 @@ class Tensor(_object):
     def set_random(self, range):
         return _rysy.Tensor_set_random(self, range)
 
-    def set(self, x, y, z, value):
-        return _rysy.Tensor_set(self, x, y, z, value)
+    def set(self, x, y, z, t, value):
+        return _rysy.Tensor_set(self, x, y, z, t, value)
 
-    def get(self, x, y, z):
-        return _rysy.Tensor_get(self, x, y, z)
+    def get(self, x, y, z, t):
+        return _rysy.Tensor_get(self, x, y, z, t)
 
     def _print(self):
         return _rysy.Tensor__print(self)

@@ -69,6 +69,16 @@ public class sShape : global::System.IDisposable {
     } 
   }
 
+  public uint t {
+    set {
+      rysyPINVOKE.sShape_t_set(swigCPtr, value);
+    } 
+    get {
+      uint ret = rysyPINVOKE.sShape_t_get(swigCPtr);
+      return ret;
+    } 
+  }
+
   public sShape() : this(rysyPINVOKE.new_sShape(), true) {
   }
 

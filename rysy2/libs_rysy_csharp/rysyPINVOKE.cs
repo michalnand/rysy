@@ -502,6 +502,12 @@ class rysyPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_sShape_d_get")]
   public static extern uint sShape_d_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_sShape_t_set")]
+  public static extern void sShape_t_set(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_sShape_t_get")]
+  public static extern uint sShape_t_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_sShape")]
   public static extern global::System.IntPtr new_sShape();
 
@@ -518,13 +524,16 @@ class rysyPINVOKE {
   public static extern global::System.IntPtr new_Shape__SWIG_3(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_Shape__SWIG_4")]
-  public static extern global::System.IntPtr new_Shape__SWIG_4(uint jarg1, uint jarg2, uint jarg3);
+  public static extern global::System.IntPtr new_Shape__SWIG_4(uint jarg1, uint jarg2, uint jarg3, uint jarg4);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_Shape__SWIG_5")]
-  public static extern global::System.IntPtr new_Shape__SWIG_5(uint jarg1, uint jarg2);
+  public static extern global::System.IntPtr new_Shape__SWIG_5(uint jarg1, uint jarg2, uint jarg3);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_Shape__SWIG_6")]
-  public static extern global::System.IntPtr new_Shape__SWIG_6(uint jarg1);
+  public static extern global::System.IntPtr new_Shape__SWIG_6(uint jarg1, uint jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_Shape__SWIG_7")]
+  public static extern global::System.IntPtr new_Shape__SWIG_7(uint jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_delete_Shape")]
   public static extern void delete_Shape(global::System.Runtime.InteropServices.HandleRef jarg1);
@@ -538,6 +547,9 @@ class rysyPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_Shape_d")]
   public static extern uint Shape_d(global::System.Runtime.InteropServices.HandleRef jarg1);
 
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_Shape_t")]
+  public static extern uint Shape_t(global::System.Runtime.InteropServices.HandleRef jarg1);
+
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_Shape_get")]
   public static extern global::System.IntPtr Shape_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
@@ -545,13 +557,16 @@ class rysyPINVOKE {
   public static extern void Shape_set__SWIG_0(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_Shape_set__SWIG_1")]
-  public static extern void Shape_set__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2, uint jarg3, uint jarg4);
+  public static extern void Shape_set__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2, uint jarg3, uint jarg4, uint jarg5);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_Shape_set__SWIG_2")]
-  public static extern void Shape_set__SWIG_2(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2, uint jarg3);
+  public static extern void Shape_set__SWIG_2(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2, uint jarg3, uint jarg4);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_Shape_set__SWIG_3")]
-  public static extern void Shape_set__SWIG_3(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2);
+  public static extern void Shape_set__SWIG_3(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2, uint jarg3);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_Shape_set__SWIG_4")]
+  public static extern void Shape_set__SWIG_4(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_Shape_size")]
   public static extern uint Shape_size(global::System.Runtime.InteropServices.HandleRef jarg1);
@@ -566,10 +581,13 @@ class rysyPINVOKE {
   public static extern global::System.IntPtr new_Tensor__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_Tensor__SWIG_3")]
-  public static extern global::System.IntPtr new_Tensor__SWIG_3(uint jarg1, uint jarg2, uint jarg3);
+  public static extern global::System.IntPtr new_Tensor__SWIG_3(uint jarg1, uint jarg2, uint jarg3, uint jarg4);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_Tensor__SWIG_4")]
-  public static extern global::System.IntPtr new_Tensor__SWIG_4(global::System.Runtime.InteropServices.HandleRef jarg1);
+  public static extern global::System.IntPtr new_Tensor__SWIG_4(uint jarg1, uint jarg2, uint jarg3);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_Tensor__SWIG_5")]
+  public static extern global::System.IntPtr new_Tensor__SWIG_5(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_delete_Tensor")]
   public static extern void delete_Tensor(global::System.Runtime.InteropServices.HandleRef jarg1);
@@ -583,6 +601,9 @@ class rysyPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_Tensor_d")]
   public static extern uint Tensor_d(global::System.Runtime.InteropServices.HandleRef jarg1);
 
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_Tensor_t")]
+  public static extern uint Tensor_t(global::System.Runtime.InteropServices.HandleRef jarg1);
+
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_Tensor_size")]
   public static extern uint Tensor_size(global::System.Runtime.InteropServices.HandleRef jarg1);
 
@@ -593,10 +614,13 @@ class rysyPINVOKE {
   public static extern global::System.IntPtr Tensor_shape_struct(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_Tensor_init__SWIG_0")]
-  public static extern void Tensor_init__SWIG_0(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2, uint jarg3, uint jarg4);
+  public static extern void Tensor_init__SWIG_0(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2, uint jarg3, uint jarg4, uint jarg5);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_Tensor_init__SWIG_1")]
-  public static extern void Tensor_init__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
+  public static extern void Tensor_init__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2, uint jarg3, uint jarg4);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_Tensor_init__SWIG_2")]
+  public static extern void Tensor_init__SWIG_2(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_Tensor_set_from_host__SWIG_0")]
   public static extern void Tensor_set_from_host__SWIG_0(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
@@ -620,10 +644,10 @@ class rysyPINVOKE {
   public static extern void Tensor_set_random(global::System.Runtime.InteropServices.HandleRef jarg1, float jarg2);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_Tensor_set")]
-  public static extern void Tensor_set(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2, uint jarg3, uint jarg4, float jarg5);
+  public static extern void Tensor_set(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2, uint jarg3, uint jarg4, uint jarg5, float jarg6);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_Tensor_get")]
-  public static extern float Tensor_get(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2, uint jarg3, uint jarg4);
+  public static extern float Tensor_get(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2, uint jarg3, uint jarg4, uint jarg5);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_Tensor_print")]
   public static extern void Tensor_print(global::System.Runtime.InteropServices.HandleRef jarg1);

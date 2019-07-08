@@ -6,6 +6,7 @@ Shape::Shape()
     this->m_shape.w = 0;
     this->m_shape.h = 0;
     this->m_shape.d = 0;
+    this->m_shape.t = 0;
 }
 
 Shape::Shape(Shape& other)
@@ -23,9 +24,9 @@ Shape::Shape(sShape shape)
     set(shape);
 }
 
-Shape::Shape(unsigned int width, unsigned int height, unsigned int depth)
+Shape::Shape(unsigned int width, unsigned int height, unsigned int depth, unsigned int time)
 {
-    set(width, height, depth);
+    set(width, height, depth, time);
 }
 
 
@@ -48,25 +49,25 @@ Shape& Shape::operator= (const Shape& other)
 
 Shape& Shape::operator= (int other[])
 {
-    set(other[0], other[1], other[2]);
+    set(other[0], other[1], other[2], other[3]);
     return *this;
 }
 
 Shape& Shape::operator= (const int other[])
 {
-    set(other[0], other[1], other[2]);
+    set(other[0], other[1], other[2], other[3]);
     return *this;
 }
 
 Shape& Shape::operator= (unsigned int other[])
 {
-    set(other[0], other[1], other[2]);
+    set(other[0], other[1], other[2], other[3]);
     return *this;
 }
 
 Shape& Shape::operator= (const unsigned int other[])
 {
-    set(other[0], other[1], other[2]);
+    set(other[0], other[1], other[2], other[3]);
     return *this;
 }
 
@@ -97,6 +98,11 @@ unsigned int Shape::d()
     return this->m_shape.d;
 }
 
+unsigned int Shape::t()
+{
+    return this->m_shape.t;
+}
+
 sShape Shape::get()
 {
     return this->m_shape;
@@ -108,17 +114,18 @@ void Shape::set(sShape shape)
     this->m_shape = shape;
 }
 
-void Shape::set(unsigned int width, unsigned int height, unsigned int depth)
+void Shape::set(unsigned int width, unsigned int height, unsigned int depth, unsigned int time)
 {
     this->m_shape.w = width;
     this->m_shape.h = height;
     this->m_shape.d = depth;
+    this->m_shape.t = time;
 }
 
 
 unsigned int Shape::size()
 {
-    return this->m_shape.w*this->m_shape.h*this->m_shape.d;
+    return this->m_shape.w*this->m_shape.h*this->m_shape.d*this->m_shape.t;
 }
 
 void Shape::print()
@@ -126,6 +133,7 @@ void Shape::print()
     std::cout << w() << " ";
     std::cout << h() << " ";
     std::cout << d() << " ";
+    std::cout << t() << " ";
 }
 
 bool Shape::operator ==(Shape &other)
@@ -137,6 +145,9 @@ bool Shape::operator ==(Shape &other)
         return false;
 
     if (d() != other.d())
+        return false;
+
+    if (t() != other.t())
         return false;
 
     return true;
@@ -151,6 +162,9 @@ bool Shape::operator !=(Shape &other)
         return true;
 
     if (d() != other.d())
+        return true;
+
+    if (t() != other.t())
         return true;
 
     return false;
@@ -168,6 +182,9 @@ bool Shape::operator ==(const Shape &other)
     if (d() != other.m_shape.d)
         return false;
 
+    if (t() != other.m_shape.t)
+        return false;
+
     return true;
 }
 
@@ -180,6 +197,9 @@ bool Shape::operator !=(const Shape &other)
         return true;
 
     if (d() != other.m_shape.d)
+        return true;
+
+    if (t() != other.m_shape.t)
         return true;
 
     return false;

@@ -50,13 +50,16 @@ public class Shape : global::System.IDisposable {
     if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
   }
 
-  public Shape(uint width, uint height, uint depth) : this(rysyPINVOKE.new_Shape__SWIG_4(width, height, depth), true) {
+  public Shape(uint width, uint height, uint depth, uint time) : this(rysyPINVOKE.new_Shape__SWIG_4(width, height, depth, time), true) {
   }
 
-  public Shape(uint width, uint height) : this(rysyPINVOKE.new_Shape__SWIG_5(width, height), true) {
+  public Shape(uint width, uint height, uint depth) : this(rysyPINVOKE.new_Shape__SWIG_5(width, height, depth), true) {
   }
 
-  public Shape(uint width) : this(rysyPINVOKE.new_Shape__SWIG_6(width), true) {
+  public Shape(uint width, uint height) : this(rysyPINVOKE.new_Shape__SWIG_6(width, height), true) {
+  }
+
+  public Shape(uint width) : this(rysyPINVOKE.new_Shape__SWIG_7(width), true) {
   }
 
   public uint w() {
@@ -74,6 +77,11 @@ public class Shape : global::System.IDisposable {
     return ret;
   }
 
+  public uint t() {
+    uint ret = rysyPINVOKE.Shape_t(swigCPtr);
+    return ret;
+  }
+
   public sShape get() {
     sShape ret = new sShape(rysyPINVOKE.Shape_get(swigCPtr), true);
     return ret;
@@ -84,16 +92,20 @@ public class Shape : global::System.IDisposable {
     if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
   }
 
+  public void set(uint width, uint height, uint depth, uint time) {
+    rysyPINVOKE.Shape_set__SWIG_1(swigCPtr, width, height, depth, time);
+  }
+
   public void set(uint width, uint height, uint depth) {
-    rysyPINVOKE.Shape_set__SWIG_1(swigCPtr, width, height, depth);
+    rysyPINVOKE.Shape_set__SWIG_2(swigCPtr, width, height, depth);
   }
 
   public void set(uint width, uint height) {
-    rysyPINVOKE.Shape_set__SWIG_2(swigCPtr, width, height);
+    rysyPINVOKE.Shape_set__SWIG_3(swigCPtr, width, height);
   }
 
   public void set(uint width) {
-    rysyPINVOKE.Shape_set__SWIG_3(swigCPtr, width);
+    rysyPINVOKE.Shape_set__SWIG_4(swigCPtr, width);
   }
 
   public uint size() {

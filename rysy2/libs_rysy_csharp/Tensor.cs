@@ -46,10 +46,13 @@ public class Tensor : global::System.IDisposable {
     if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
   }
 
-  public Tensor(uint width, uint height, uint depth) : this(rysyPINVOKE.new_Tensor__SWIG_3(width, height, depth), true) {
+  public Tensor(uint width, uint height, uint depth, uint time) : this(rysyPINVOKE.new_Tensor__SWIG_3(width, height, depth, time), true) {
   }
 
-  public Tensor(Shape shape) : this(rysyPINVOKE.new_Tensor__SWIG_4(Shape.getCPtr(shape)), true) {
+  public Tensor(uint width, uint height, uint depth) : this(rysyPINVOKE.new_Tensor__SWIG_4(width, height, depth), true) {
+  }
+
+  public Tensor(Shape shape) : this(rysyPINVOKE.new_Tensor__SWIG_5(Shape.getCPtr(shape)), true) {
     if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
   }
 
@@ -68,6 +71,11 @@ public class Tensor : global::System.IDisposable {
     return ret;
   }
 
+  public uint t() {
+    uint ret = rysyPINVOKE.Tensor_t(swigCPtr);
+    return ret;
+  }
+
   public uint size() {
     uint ret = rysyPINVOKE.Tensor_size(swigCPtr);
     return ret;
@@ -83,12 +91,16 @@ public class Tensor : global::System.IDisposable {
     return ret;
   }
 
+  public void init(uint width, uint height, uint depth, uint time) {
+    rysyPINVOKE.Tensor_init__SWIG_0(swigCPtr, width, height, depth, time);
+  }
+
   public void init(uint width, uint height, uint depth) {
-    rysyPINVOKE.Tensor_init__SWIG_0(swigCPtr, width, height, depth);
+    rysyPINVOKE.Tensor_init__SWIG_1(swigCPtr, width, height, depth);
   }
 
   public void init(Shape shape) {
-    rysyPINVOKE.Tensor_init__SWIG_1(swigCPtr, Shape.getCPtr(shape));
+    rysyPINVOKE.Tensor_init__SWIG_2(swigCPtr, Shape.getCPtr(shape));
     if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
   }
 
@@ -122,12 +134,12 @@ public class Tensor : global::System.IDisposable {
     rysyPINVOKE.Tensor_set_random(swigCPtr, range);
   }
 
-  public void set(uint x, uint y, uint z, float value) {
-    rysyPINVOKE.Tensor_set(swigCPtr, x, y, z, value);
+  public void set(uint x, uint y, uint z, uint t, float value) {
+    rysyPINVOKE.Tensor_set(swigCPtr, x, y, z, t, value);
   }
 
-  public float get(uint x, uint y, uint z) {
-    float ret = rysyPINVOKE.Tensor_get(swigCPtr, x, y, z);
+  public float get(uint x, uint y, uint z, uint t) {
+    float ret = rysyPINVOKE.Tensor_get(swigCPtr, x, y, z, t);
     return ret;
   }
 

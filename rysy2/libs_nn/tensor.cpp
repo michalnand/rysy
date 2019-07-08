@@ -26,11 +26,11 @@ Tensor::Tensor(const Tensor& other)
     copy(other);
 }
 
-Tensor::Tensor(unsigned int width, unsigned int height, unsigned int depth)
+Tensor::Tensor(unsigned int width, unsigned int height, unsigned int depth, unsigned int time)
 {
     v = nullptr;
 
-    Shape newshape(width, height, depth);
+    Shape newshape(width, height, depth, time);
     init(newshape);
 }
 
@@ -107,6 +107,11 @@ unsigned int Tensor::d()
     return this->m_shape.d();
 }
 
+unsigned int Tensor::t()
+{
+    return this->m_shape.t();
+}
+
 unsigned int Tensor::size()
 {
     return this->m_shape.size();
@@ -122,9 +127,9 @@ sShape Tensor::shape_struct()
     return this->m_shape.get();
 }
 
-void Tensor::init(unsigned int width, unsigned int height, unsigned int depth)
+void Tensor::init(unsigned int width, unsigned int height, unsigned int depth, unsigned int time)
 {
-    Shape newshape(width, height, depth);
+    Shape newshape(width, height, depth, time);
     init_size(newshape);
 }
 
@@ -226,9 +231,9 @@ void Tensor::set_random(float range)
     #endif
 }
 
-void  Tensor::set(unsigned int x, unsigned y, unsigned z, float value)
+void  Tensor::set(unsigned int x, unsigned y, unsigned z, unsigned int t, float value)
 {
-    unsigned int idx = to_idx(x, y, z);
+    unsigned int idx = to_idx(x, y, z, t);
 
     #ifdef NETWORK_USE_CUDA
         cuda_tensor_set_element(v, value, idx);
@@ -237,9 +242,9 @@ void  Tensor::set(unsigned int x, unsigned y, unsigned z, float value)
     #endif
 }
 
-float Tensor::get(unsigned int x, unsigned y, unsigned z)
+float Tensor::get(unsigned int x, unsigned int y, unsigned int z, unsigned int t)
 {
-    unsigned int idx = to_idx(x, y, z);
+    unsigned int idx = to_idx(x, y, z, t);
 
     #ifdef NETWORK_USE_CUDA
         return cuda_tensor_get_element(v, idx);
@@ -255,19 +260,22 @@ void Tensor::print()
 
     unsigned int ptr = 0;
 
-    for (unsigned int d_ = 0; d_ < d(); d_++)
+    for (unsigned int t_ = 0; t_ < t(); t_++) 
     {
-        for (unsigned int h_ = 0; h_ < h(); h_++)
+        for (unsigned int d_ = 0; d_ < d(); d_++)
         {
-            for (unsigned int w_ = 0; w_ < w(); w_++)
+            for (unsigned int h_ = 0; h_ < h(); h_++)
             {
-                std::cout << std::setw(7) << std::setprecision(3) << tmp[ptr] << " ";
-                ptr++;
+                for (unsigned int w_ = 0; w_ < w(); w_++)
+                {
+                    std::cout << std::setw(7) << std::setprecision(3) << tmp[ptr] << " ";
+                    ptr++;
+                }
+                std::cout << "\n";
             }
             std::cout << "\n";
         }
         std::cout << "\n";
-
     }
 
     std::cout << "\n";
@@ -486,22 +494,22 @@ void Tensor::init_size(Shape shape)
 }
 
 
-unsigned int Tensor::to_idx(unsigned int x, unsigned y, unsigned z)
+unsigned int Tensor::to_idx(unsigned int x, unsigned int y, unsigned int z, unsigned int t_)
 {
     #ifdef RYSY_DEBUG
 
-    if (x >= w() || y >= h() || z >= d())
+    if (x >= w() || y >= h() || z >= d() || t_ >= t())
     {
         std::cout << "Tensor::to_idx out of range";
 
-        std::cout << x << " " << y << " " << z << " : ";
-        std::cout << w()-1 << " " << h()-1 << " " << d()-1 << "\n";
+        std::cout << x << " " << y << " " << z << " : " << t_ << " : ";
+        std::cout << w()-1 << " " << h()-1 << " " << d()-1 << t()-1 << "\n";
         return 0;
     }
 
     #endif
 
     unsigned int result;
-    result = (z*h() + y)*w() + x;
+    result = ((t_*d() + z)*h() + y)*w() + x;
     return result;
 }

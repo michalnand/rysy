@@ -14,7 +14,7 @@ class Tensor
         Tensor(Tensor& other);
         Tensor(const Tensor& other);
 
-        Tensor(unsigned int width, unsigned int height, unsigned int depth);
+        Tensor(unsigned int width, unsigned int height, unsigned int depth, unsigned int time = 1);
         Tensor(Shape shape);
 
         virtual ~Tensor();
@@ -30,13 +30,14 @@ class Tensor
         unsigned int w();
         unsigned int h();
         unsigned int d();
+        unsigned int t();
         unsigned int size();
 
         Shape shape();
         sShape shape_struct();
 
     public:
-        void init(unsigned int width, unsigned int height, unsigned int depth);
+        void init(unsigned int width, unsigned int height, unsigned int depth, unsigned int time = 1);
         void init(Shape shape);
 
     public:
@@ -53,8 +54,8 @@ class Tensor
         void set_random(float range);
 
     public:
-        void  set(unsigned int x, unsigned y, unsigned z, float value);
-        float get(unsigned int x, unsigned y, unsigned z);
+        void  set(unsigned int x, unsigned int y, unsigned int z, unsigned int t, float value);
+        float get(unsigned int x, unsigned int y, unsigned int z, unsigned int t);
 
     public:
         void print();
@@ -74,7 +75,7 @@ class Tensor
 
     private:
         void init_size(Shape shape);
-        unsigned int to_idx(unsigned int x, unsigned y, unsigned z);
+        unsigned int to_idx(unsigned int x, unsigned int y, unsigned int z, unsigned int t_);
 
 
     private:

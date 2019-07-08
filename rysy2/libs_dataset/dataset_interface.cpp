@@ -174,8 +174,8 @@ void DatasetInterface::add_testing(std::vector<float>& input, std::vector<float>
 
 void DatasetInterface::print()
 {
-    std::cout << "input_shape  = " << input_shape.w() << " " << input_shape.h() << " " << input_shape.d() << "\n";
-    std::cout << "output_shape = " << output_shape.w() << " " << output_shape.h() << " " << output_shape.d() << "\n";
+    std::cout << "input_shape  = " << input_shape.w() << " " << input_shape.h() << " " << input_shape.d() << " " << input_shape.t() << "\n";
+    std::cout << "output_shape = " << output_shape.w() << " " << output_shape.h() << " " << output_shape.d() << " " << output_shape.t() << "\n";
     std::cout << "training_count = " << get_training_count() << "\n";
     std::cout << "testing_count  = " << get_testing_count() << "\n";
 }

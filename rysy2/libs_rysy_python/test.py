@@ -1,7 +1,5 @@
 from rysy import *
 
-print("starting")
-
 #load dataset
 dataset_path = "/home/michal/dataset/mnist/"
 dataset = DatasetMnist(dataset_path + "train-images-idx3-ubyte",
@@ -15,7 +13,11 @@ create example network
 C3x3x16 - P2x2 - C3x3x32 - P2x2 - C3x3x32 - FC10
 '''
 
-cnn = CNN(dataset.get_input_shape(), dataset.get_output_shape(), 0.0025)
+input_shape = dataset.get_input_shape()
+output_shape = dataset.get_output_shape()
+
+
+cnn = CNN(input_shape, output_shape, 0.0025)
 
 cnn.add_layer("convolution", Shape(3, 3, 16))
 cnn.add_layer("elu")

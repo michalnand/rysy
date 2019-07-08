@@ -35,7 +35,7 @@ int shape_test()
         for (unsigned int h = 0; h < ta.h(); h++)
         for (unsigned int w = 0; w < ta.w(); w++)
         {
-            float v = ta.get(w, h, d);
+            float v = ta.get(w, h, d, 0);
             float err = v - const_value;
             if (err < 0.0)
                 err = -err;

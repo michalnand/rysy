@@ -36,6 +36,7 @@
 #include <dataset_interface.h>
 #include <dataset_images.h>
 #include <dataset_mnist.h>
+#include <dataset_mnist_rnn.h>
 
 #include <classification_compare.h>
 #include <classification_experiment.h>
@@ -68,6 +69,7 @@
 %include <dataset_interface.h>
 %include <dataset_images.h>
 %include <dataset_mnist.h>
+%include <dataset_mnist_rnn.h>
 
 %include <classification_compare.h>
 %include <classification_experiment.h>

@@ -4,7 +4,7 @@
 
 struct sShape
 {
-    unsigned int w, h, d;
+    unsigned int w, h, d, t;
 };
 
 
@@ -16,7 +16,7 @@ class Shape
         Shape(const Shape& other);
 
         Shape(sShape shape);
-        Shape(unsigned int width, unsigned int height = 1, unsigned int depth = 1);
+        Shape(unsigned int width, unsigned int height = 1, unsigned int depth = 1, unsigned int time = 1);
 
 
         virtual ~Shape();
@@ -38,12 +38,13 @@ class Shape
         unsigned int w();
         unsigned int h();
         unsigned int d();
+        unsigned int t();
 
         sShape get();
 
     public:
         void set(sShape shape);
-        void set(unsigned int width, unsigned int height = 1, unsigned int depth = 1);
+        void set(unsigned int width, unsigned int height = 1, unsigned int depth = 1, unsigned int time = 1);
 
     public:
         unsigned int size();
