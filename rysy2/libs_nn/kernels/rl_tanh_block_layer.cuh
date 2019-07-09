@@ -6,11 +6,13 @@
 void rl_tanh_block_layer_forward(  Tensor &output, Tensor &inputx, Tensor &inputh,
                              Tensor &wx, Tensor &wh, Tensor &bias);
 
-void rl_tanh_block_layer_backward(    Tensor &error_back_x, Tensor &error_back_h,
-                                Tensor &inputx, Tensor &inputh,
-                                Tensor &output, Tensor &error,
-                                Tensor &wx, Tensor &wh);
+void rl_tanh_block_layer_backward(  Tensor &error_back_x, Tensor &error_back_h,
+                                    Tensor &inputx, Tensor &inputh,
+                                    Tensor &output, Tensor &error,
+                                    Tensor &wx, Tensor &wh);
 
-void rl_tanh_block_layer_gradient(Tensor &wx_grad, Tensor &wh_grad, Tensor &inputx, Tensor &inputh, Tensor &output, Tensor &error);
+void rl_tanh_block_layer_gradient(  Tensor &wx_grad, Tensor &wh_grad,
+                                    Tensor &inputx, Tensor &inputh,
+                                    Tensor &output, Tensor &error, Tensor &error_h);
 
 #endif

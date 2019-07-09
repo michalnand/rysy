@@ -234,6 +234,7 @@ void cpu_rl_tanh_block_gradient_kernel(     float *wx_grad,
 
                                             float *output,
                                             float *error,
+                                            float *error_h,
 
                                             unsigned int input_x_size,
                                             unsigned int input_h_size,
@@ -241,7 +242,7 @@ void cpu_rl_tanh_block_gradient_kernel(     float *wx_grad,
 {
     for (unsigned int neuron_idx = 0; neuron_idx < output_size; neuron_idx++)
     {
-        float error_der = (1.0 - output[neuron_idx]*output[neuron_idx])*error[neuron_idx];
+        float error_der = (1.0 - output[neuron_idx]*output[neuron_idx])*(error[neuron_idx] + error_h[neuron_idx]);
 
         unsigned int wx_ofs = neuron_idx*input_x_size;
         unsigned int wh_ofs = neuron_idx*input_h_size;
@@ -269,6 +270,7 @@ void cuda_rl_tanh_block_gradient_kernel(    float *wx_grad,
 
                                             float *output,
                                             float *error,
+                                            float *error_h,
 
                                             unsigned int input_x_size,
                                             unsigned int input_h_size,
@@ -278,7 +280,7 @@ void cuda_rl_tanh_block_gradient_kernel(    float *wx_grad,
 
     if (neuron_idx < output_size)
     {
-        float error_der = (1.0 - output[neuron_idx]*output[neuron_idx])*error[neuron_idx];
+        float error_der = (1.0 - output[neuron_idx]*output[neuron_idx])*(error[neuron_idx] + error_h[neuron_idx]);
 
         unsigned int wx_ofs = neuron_idx*input_x_size;
         unsigned int wh_ofs = neuron_idx*input_h_size;
@@ -297,7 +299,7 @@ void cuda_rl_tanh_block_gradient_kernel(    float *wx_grad,
     }
 }
 
-void rl_tanh_block_layer_gradient(Tensor &wx_grad, Tensor &wh_grad, Tensor &inputx, Tensor &inputh, Tensor &output, Tensor &error)
+void rl_tanh_block_layer_gradient(Tensor &wx_grad, Tensor &wh_grad, Tensor &inputx, Tensor &inputh, Tensor &output, Tensor &error, Tensor &error_h)
 {
     unsigned int input_x_size = inputx.size();
     unsigned int input_h_size = inputh.size();
@@ -317,6 +319,7 @@ void rl_tanh_block_layer_gradient(Tensor &wx_grad, Tensor &wh_grad, Tensor &inpu
 
                                                                 output.v,
                                                                 error.v,
+                                                                error_h.v,
 
                                                                 input_x_size,
                                                                 input_h_size,
@@ -334,6 +337,7 @@ void rl_tanh_block_layer_gradient(Tensor &wx_grad, Tensor &wh_grad, Tensor &inpu
 
                                                                 output.v,
                                                                 error.v,
+                                                                error_h.v,
 
                                                                 input_x_size,
                                                                 input_h_size,

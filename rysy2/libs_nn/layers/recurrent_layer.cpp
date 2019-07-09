@@ -145,8 +145,8 @@ void RecurrentLayer::forward(Tensor &output, Tensor &input)
 
     if (time_step_idx < time_sequence_length)
     {
-        rl_tanh_block_layer_forward(output, input, h[time_step_idx], wx, wh, bias);
-        h[time_step_idx + 1] = output;
+        rl_tanh_block_layer_forward(h[time_step_idx + 1], input, h[time_step_idx], wx, wh, bias);
+        output = h[time_step_idx + 1];
         time_step_idx++;
     }
     #ifdef RYSY_DEBUG
@@ -203,7 +203,7 @@ void RecurrentLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, 
 
     #endif
 
-    rl_tanh_block_layer_gradient(wx_grad, wh_grad, input, h[time_step_idx], output, error);
+    rl_tanh_block_layer_gradient(wx_grad, wh_grad, input, h[time_step_idx-1], output, error, error_h[time_step_idx-1]);
 
     fc_layer_update_bias(bias, error, learning_rate);
 
@@ -217,9 +217,11 @@ void RecurrentLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, 
     }
 
     rl_tanh_block_layer_backward(   error_back, error_h[time_step_idx-1],
-                                    input, h[time_step_idx],
+                                    input, h[time_step_idx-1],
                                     output, error,
                                     wx, wh);
+
+    time_step_idx--;
 }
 
 void RecurrentLayer::save(std::string file_name_prefix)
