@@ -70,8 +70,13 @@ class Tensor
         void add(Tensor &rhs);
         void sub(Tensor &rhs);
         void mul(float value);
+
         void concatenate(Tensor &ta, Tensor &tb);
         void split(Tensor &ta, Tensor &tb);
+
+        void concatenate_time_sequence(std::vector<Tensor> &source, unsigned max_time_steps = 0);
+        void split_time_sequence(std::vector<Tensor> &dest);
+
 
     private:
         void init_size(Shape shape);

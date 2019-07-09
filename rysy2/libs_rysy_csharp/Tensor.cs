@@ -186,6 +186,21 @@ public class Tensor : global::System.IDisposable {
     if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
   }
 
+  public void concatenate_time_sequence(SWIGTYPE_p_std__vectorT_Tensor_t source, uint max_time_steps) {
+    rysyPINVOKE.Tensor_concatenate_time_sequence__SWIG_0(swigCPtr, SWIGTYPE_p_std__vectorT_Tensor_t.getCPtr(source), max_time_steps);
+    if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
+  }
+
+  public void concatenate_time_sequence(SWIGTYPE_p_std__vectorT_Tensor_t source) {
+    rysyPINVOKE.Tensor_concatenate_time_sequence__SWIG_1(swigCPtr, SWIGTYPE_p_std__vectorT_Tensor_t.getCPtr(source));
+    if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
+  }
+
+  public void split_time_sequence(SWIGTYPE_p_std__vectorT_Tensor_t dest) {
+    rysyPINVOKE.Tensor_split_time_sequence(swigCPtr, SWIGTYPE_p_std__vectorT_Tensor_t.getCPtr(dest));
+    if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
+  }
+
   public SWIGTYPE_p_float v {
     set {
       rysyPINVOKE.Tensor_v_set(swigCPtr, SWIGTYPE_p_float.getCPtr(value));

@@ -1861,6 +1861,12 @@ class Tensor(_object):
 
     def split(self, ta, tb):
         return _rysy.Tensor_split(self, ta, tb)
+
+    def concatenate_time_sequence(self, source, max_time_steps=0):
+        return _rysy.Tensor_concatenate_time_sequence(self, source, max_time_steps)
+
+    def split_time_sequence(self, dest):
+        return _rysy.Tensor_split_time_sequence(self, dest)
     __swig_setmethods__["v"] = _rysy.Tensor_v_set
     __swig_getmethods__["v"] = _rysy.Tensor_v_get
     if _newclass:
@@ -1939,6 +1945,78 @@ class CNN(_object):
         return _rysy.CNN_get_layer_weights_flag(self, layer_idx)
 CNN_swigregister = _rysy.CNN_swigregister
 CNN_swigregister(CNN)
+
+class RNN(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, RNN, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, RNN, name)
+    __repr__ = _swig_repr
+
+    def __init__(self, *args):
+        this = _rysy.new_RNN(*args)
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _rysy.delete_RNN
+    __del__ = lambda self: None
+
+    def get_input_shape(self):
+        return _rysy.RNN_get_input_shape(self)
+
+    def get_output_shape(self):
+        return _rysy.RNN_get_output_shape(self)
+
+    def forward(self, *args):
+        return _rysy.RNN_forward(self, *args)
+
+    def train(self, *args):
+        return _rysy.RNN_train(self, *args)
+
+    def train_from_error(self, error):
+        return _rysy.RNN_train_from_error(self, error)
+
+    def get_error_back(self):
+        return _rysy.RNN_get_error_back(self)
+
+    def set_training_mode(self):
+        return _rysy.RNN_set_training_mode(self)
+
+    def unset_training_mode(self):
+        return _rysy.RNN_unset_training_mode(self)
+
+    def is_training_mode(self):
+        return _rysy.RNN_is_training_mode(self)
+
+    def reset(self):
+        return _rysy.RNN_reset(self)
+
+    def add_layer(self, *args):
+        return _rysy.RNN_add_layer(self, *args)
+
+    def asString(self):
+        return _rysy.RNN_asString(self)
+
+    def _print(self):
+        return _rysy.RNN__print(self)
+
+    def save(self, path):
+        return _rysy.RNN_save(self, path)
+
+    def load_weights(self, file_name_prefix):
+        return _rysy.RNN_load_weights(self, file_name_prefix)
+
+    def get_layer_output_size(self):
+        return _rysy.RNN_get_layer_output_size(self)
+
+    def get_layer_output(self, layer_idx):
+        return _rysy.RNN_get_layer_output(self, layer_idx)
+
+    def get_layer_weights_flag(self, layer_idx):
+        return _rysy.RNN_get_layer_weights_flag(self, layer_idx)
+RNN_swigregister = _rysy.RNN_swigregister
+RNN_swigregister(RNN)
 
 class CNNVisualisation(_object):
     __swig_setmethods__ = {}

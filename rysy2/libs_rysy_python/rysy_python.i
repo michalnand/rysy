@@ -44,6 +44,7 @@
 #include <shape.h>
 #include <tensor.h>
 #include <cnn.h>
+#include <rnn.h>
 #include <cnn_visualisation.h>
 
 #include <experience_replay_buffer.h>
@@ -77,6 +78,7 @@
 %include <shape.h>
 %include <tensor.h>
 %include <cnn.h>
+%include <rnn.h>
 %include <cnn_visualisation.h>
 
 %include <experience_replay_buffer.h>

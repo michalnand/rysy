@@ -155,7 +155,7 @@ void Tensor::set_from_host(std::vector<float> &v)
     if (v.size() != size())
     {
         std::cout << "Tensor::set_from_host inconsistent size ";
-        std::cout << v.size() << " : " << size() << "\n";
+        std::cout << v.size() << " : expecting " << size() << "\n";
         return;
     }
 
@@ -186,7 +186,7 @@ void Tensor::set_to_host(std::vector<float> &v)
     if (v.size() != size())
     {
         std::cout << "Tensor::set_to_host inconsistent size ";
-        std::cout << v.size() << " : " << size() << "\n";
+        std::cout << v.size() << " : expecting " << size() << "\n";
         return;
     }
 
@@ -260,7 +260,7 @@ void Tensor::print()
 
     unsigned int ptr = 0;
 
-    for (unsigned int t_ = 0; t_ < t(); t_++) 
+    for (unsigned int t_ = 0; t_ < t(); t_++)
     {
         for (unsigned int d_ = 0; d_ < d(); d_++)
         {
@@ -336,7 +336,7 @@ void Tensor::add(Tensor &rhs)
     {
         std::cout << "Tensor::add inconsistent tensors ";
         shape().print();
-        std::cout << " : ";
+        std::cout << " : expecting ";
         rhs.shape().print();
         std::cout << "\n";
         return;
@@ -360,7 +360,7 @@ void Tensor::sub(Tensor &rhs)
     {
         std::cout << "Tensor::sub inconsistent tensors ";
         shape().print();
-        std::cout << " : ";
+        std::cout << " : expecting ";
         rhs.shape().print();
         std::cout << "\n";
         return;
@@ -396,7 +396,7 @@ void Tensor::concatenate(Tensor &ta, Tensor &tb)
         ta.shape().print();
         std::cout << " : ";
         tb.shape().print();
-        std::cout << " : ";
+        std::cout << " : expecting ";
         shape().print();
         std::cout << "\n";
         return;
@@ -436,7 +436,7 @@ void Tensor::split(Tensor &ta, Tensor &tb)
         ta.shape().print();
         std::cout << " : ";
         tb.shape().print();
-        std::cout << " : ";
+        std::cout << " : expecting ";
         shape().print();
         std::cout << "\n";
         return;
@@ -462,6 +462,88 @@ void Tensor::split(Tensor &ta, Tensor &tb)
             ptr++;
         }
     #endif
+}
+
+
+void Tensor::concatenate_time_sequence(std::vector<Tensor> &source, unsigned int max_time_steps)
+{
+    #ifdef RYSY_DEBUG
+
+    if (max_time_steps == 0 && source.size() == t())
+    {
+        std::cout << "Tensor::concatenate_time_sequence inconsistent time sequence length :";
+        std::cout << source.size() << " expecting : " << t() << "\n";
+        return;
+    }
+
+    for (unsigned int i = 0; i < source.size(); i++)
+    {
+        if ((source[i].w() != w()) || (source[i].h() != h()) || (source[i].d() != d()))
+        {
+            std::cout << "Tensor::concatenate_time_sequence inconsistent shape :";
+            std::cout << source[i].shape().w() << " " << source[i].shape().h() << " " << source[i].shape().d() << " " << " expecting : " << w() << " " << h() << " " << d() << "\n";
+            return;
+        }
+    }
+
+    #endif
+
+    //concatenate source tensors into v
+    unsigned int offset = 0;
+    for (unsigned int i = 0; i < source.size(); i++)
+    {
+        #ifdef NETWORK_USE_CUDA
+
+            cuda_float_allocator.device_to_device(v + offset, source[i].v, source[i].size());
+
+        #else
+            unsigned int ptr = offset;
+            for (unsigned int i = 0; i < source[i].size(); i++)
+            {
+                v[ptr] = dest[i].v;
+                ptr++;
+            }
+        #endif
+
+        offset+= source[i].size();
+    }
+}
+
+void Tensor::split_time_sequence(std::vector<Tensor> &dest)
+{
+    //re-init length, if incosistent
+    if (dest.size() != t())
+    {
+        dest.resize(t());
+    }
+
+    //re-init tensors if shape doesn't match
+    Shape target_shape(w(), h(), d());
+    for (unsigned int i = 0; i < dest.size(); i++)
+        if (dest[i].shape() != target_shape)
+        {
+            dest[i].init(target_shape);
+        }
+
+    //split tensor into dest
+    unsigned int offset = 0;
+    for (unsigned int i = 0; i < dest.size(); i++)
+    {
+        #ifdef NETWORK_USE_CUDA
+
+            cuda_float_allocator.device_to_device(dest[i].v, v + offset, target_shape.size());
+
+        #else
+            unsigned int ptr = offset;
+            for (unsigned int i = 0; i < target_shape.size(); i++)
+            {
+                dest[i].v = v[ptr];
+                ptr++;
+            }
+        #endif
+
+        offset+= target_shape.size();
+    }
 }
 
 
