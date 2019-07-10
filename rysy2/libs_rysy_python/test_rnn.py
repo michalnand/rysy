@@ -12,14 +12,8 @@ output_shape = dataset.get_output_shape()
 cnn = RNN(input_shape, output_shape, 0.001)
 
 
-cnn.add_layer("recurrent", Shape(1, 1, 128))
-
-'''
-cnn.add_layer("fc", Shape(1, 1, 64))
-cnn.add_layer("elu")
-cnn.add_layer("fc", Shape(1, 1, 64))
-cnn.add_layer("elu")
-'''
+cnn.add_layer("recurrent", Shape(1, 1, 64))
+cnn.add_layer("recurrent", Shape(1, 1, 64))
 cnn.add_layer("output")
 
 cnn._print()
@@ -30,7 +24,7 @@ cnn._print()
 
 #train network - set epoch count
 
-for epoch in range(0, 1):
+for epoch in range(0, 5):
     print("\n\n\nEPOCH = ", epoch, "\n")
     cnn.train(dataset.get_training_output_all(), dataset.get_training_input_all(), 1)
 

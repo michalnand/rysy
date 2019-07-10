@@ -2,11 +2,11 @@
 
 DatasetTest::DatasetTest(unsigned int mode)
 {
-    unsigned int classes_count  = 4;
+    unsigned int classes_count  = 8;
     unsigned int training_count = 50000;
     unsigned int testing_count  = 2000;
 
-    unsigned int sequence_legth  = classes_count*3;
+    unsigned int sequence_legth  = classes_count*2;
 
     if (mode == DATASET_TEST_MODE_NORMAL)
         set_input_shape(Shape(sequence_legth, 1, 1, 1));
