@@ -58,7 +58,7 @@ RNN::RNN(Json::Value json_config, Shape input_shape, Shape output_shape)
     init(json_config, input_shape, output_shape);
 }
 
-RNN::RNN(Shape input_shape, Shape output_shape, float learning_rate, float lambda1, float lambda2, float gradient_clip, float dropout, unsigned int minibatch_size, unsigned int time_sequence_length)
+RNN::RNN(Shape input_shape, Shape output_shape, float learning_rate, float lambda1, float lambda2, float gradient_clip, float dropout, unsigned int minibatch_size)
 {
     Json::Value parameters;
 
@@ -188,18 +188,16 @@ void RNN::forward(Tensor &output, Tensor &input)
         time_step_idx++;
     }
 
+    //RNN mode many to one, save only the last one
+    if (output.t() == 1)
+    {
+        output = nn_output[time_step_idx-1];
+    }
     //RNN mode many to many
-    if (output.t() == input.t())
+    else
     {
         output.concatenate_time_sequence(nn_output, time_step_idx);
     }
-    else
-    //RNN mode many to one, save only the last one
-    {
-        output = nn_output[time_sequence_length-1];
-    }
-
-    output.print();
 }
 
 void RNN::forward(std::vector<float> &output, std::vector<float> &input)
@@ -222,47 +220,53 @@ void RNN::train(Tensor &required_output, Tensor &input)
 {
     forward(output, input);
 
-    //RNN mode many to many
-    if (required_output.t() == input.t())
+    //RNN mode many to one, error only the last one
+    if (output.t() == 1)
     {
-        this->error = required_output;
-        this->error.sub(output);
+        //clear all
+        for (unsigned int t = 0; t < nn_error.size(); t++)
+            nn_error[t].clear();
+
+        //fill only last one
+        nn_error[nn_error.size()-1] = required_output;
+        nn_error[nn_error.size()-1].sub(nn_output[nn_output.size()-1]);
     }
-    //RNN mode many to one, compute error only from last
+    //RNN mode many to many
     else
     {
-        this->error.clear();
+        //split required output to nn_error sequence
+        required_output.split_time_sequence(nn_error);
+
+        //compute error from nn_output
+        for (unsigned int t = 0; t < time_sequence_length; t++)
+            nn_error[t].sub(nn_output[t]);
     }
 
-    /*
-    unsigned int last_idx = l_output.size()-1;
-    this->error = required_output;
-    this->error.sub(l_output[last_idx]);
 
-    train_from_error(this->error);
-    */
+    train_from_error(this->nn_error);
 }
 
-void RNN::train_from_error(Tensor &error)
+void RNN::train_from_error(std::vector<Tensor> &nn_error)
 {
-    /*
     bool update_weights = false;
     minibatch_counter++;
 
     if (minibatch_counter >= minibatch_size)
     {
-        update_weights = true;
-        minibatch_counter = 0;
+        update_weights      = true;
+        minibatch_counter   = 0;
     }
 
-    unsigned int last_idx = layers.size()-1;
-    l_error[last_idx + 1] = error;
-
-    for (int i = last_idx; i>= 0; i--)
+    for (int t = time_sequence_length-1; t >= 0; t--)
     {
-        layers[i]->backward(l_error[i], l_error[i + 1], l_output[i], l_output[i + 1], update_weights);
+        unsigned int last_idx = layers.size()-1;
+        l_error[t][last_idx + 1] = nn_error[t];
+
+        for (int l = last_idx; l>= 0; l--)
+        {
+            layers[l]->backward(l_error[t][l], l_error[t][l + 1], l_output[t][l], l_output[t][l + 1], update_weights);
+        }
     }
-    */
 }
 
 Tensor& RNN::get_error_back()
@@ -448,10 +452,13 @@ void RNN::init(Json::Value json_config, Shape input_shape, Shape output_shape)
 
     nn_input.resize(this->time_sequence_length);
     nn_output.resize(this->time_sequence_length);
+    nn_error.resize(this->time_sequence_length);
+
     for (unsigned int t = 0; t < this->time_sequence_length; t++)
     {
         nn_input[t].init(this->m_input_shape.w(), this->m_input_shape.h(), this->m_input_shape.d());
         nn_output[t].init(this->m_output_shape.w(), this->m_output_shape.h(), this->m_output_shape.d());
+        nn_error[t].init(this->m_output_shape.w(), this->m_output_shape.h(), this->m_output_shape.d());
     }
 
     l_error.resize(this->time_sequence_length);
@@ -495,10 +502,7 @@ void RNN::init(Json::Value json_config, Shape input_shape, Shape output_shape)
         this->m_parameters["output_shape"][1] = this->m_output_shape.h();
         this->m_parameters["output_shape"][2] = this->m_output_shape.d();
         this->m_parameters["output_shape"][3] = this->m_output_shape.t();
-
     }
-
-
 
 
     network_log << "hyperparameters :\n";

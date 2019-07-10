@@ -1,5 +1,9 @@
 #include "rl_tanh_block_layer.cuh"
 
+
+#define RL_BLOCK_ACTIVATION(x)                  tanh(x)
+#define RL_BLOCK_ACTIVATION_DERIVATIVE(x)       (1.0 - x*x)
+
 __host__
 void cpu_rl_tanh_block_forward_kernel(      float *output,
                                             float *inputx,
@@ -25,7 +29,7 @@ void cpu_rl_tanh_block_forward_kernel(      float *output,
         for (unsigned int i = 0; i < input_h_size; i++)
             sum+= wh[i + wh_ofs]*inputh[i];
 
-        output[neuron_idx] = tanh(sum);
+        output[neuron_idx] = RL_BLOCK_ACTIVATION(sum);
     }
 }
 
@@ -56,7 +60,7 @@ void cuda_rl_tanh_block_forward_kernel(     float *output,
         for (unsigned int i = 0; i < input_h_size; i++)
             sum+= wh[i + wh_ofs]*inputh[i];
 
-        output[neuron_idx] = tanh(sum);
+        output[neuron_idx] = RL_BLOCK_ACTIVATION(sum);
     }
 }
 
@@ -70,7 +74,7 @@ void rl_tanh_block_layer_forward(   Tensor &output, Tensor &inputx, Tensor &inpu
 
     #ifdef NETWORK_USE_CUDA
 
-        dim3 block(32);
+        dim3 block(16);
         dim3 grid((output_size  + block.x + 1)/block.x);
 
         cuda_rl_tanh_block_forward_kernel<<<grid, block>>>(   output.v,
@@ -102,80 +106,63 @@ void rl_tanh_block_layer_forward(   Tensor &output, Tensor &inputx, Tensor &inpu
 }
 
 
+
+
+
 __host__
-void cpu_rl_tanh_block_backward_kernel(     float *error_back_x,
-                                            float *error_back_h,
-                                            float *inputx,
-                                            float *inputh,
+void cpu_rl_tanh_block_backward_kernel(    float *error_back,
                                             float *output,
                                             float *error,
 
-                                            float *wx,
-                                            float *wh,
+                                            float *weights,
 
-                                            unsigned int input_x_size,
-                                            unsigned int input_h_size,
+                                            unsigned int input_size,
                                             unsigned int output_size )
 {
-    for (unsigned int neuron_idx = 0; neuron_idx < output_size; neuron_idx++)
+    for (unsigned int input_idx = 0; input_idx < input_size; input_idx++)
     {
-        float error_der = (1.0 - output[neuron_idx]*output[neuron_idx])*error[neuron_idx];
-
-        unsigned int wx_ofs = neuron_idx*input_x_size;
-        unsigned int wh_ofs = neuron_idx*input_h_size;
-
-        for (unsigned int i = 0; i < input_x_size; i++)
+        unsigned int w_ofs = 0;
+        float sum = 0.0;
+        for (unsigned int i = 0; i < output_size; i++)
         {
-            float error_back = wx[i + wx_ofs]*error_der;
-            error_back_x[i]+= error_back;
+            float err = error[i]*RL_BLOCK_ACTIVATION_DERIVATIVE(output[i]);
+            sum+= weights[w_ofs + input_idx]*err;
+            w_ofs+= input_size;
         }
 
-        for (unsigned int i = 0; i < input_h_size; i++)
-        {
-            float error_back = wh[i + wh_ofs]*error_der;
-            error_back_h[i]+= error_back;
-        }
+        error_back[input_idx] = sum;
     }
 }
 
 
 __global__
-void cuda_rl_tanh_block_backward_kernel(    float *error_back_x,
-                                            float *error_back_h,
-                                            float *inputx,
-                                            float *inputh,
+void cuda_rl_tanh_block_backward_kernel(    float *error_back,
                                             float *output,
                                             float *error,
 
-                                            float *wx,
-                                            float *wh,
+                                            float *weights,
 
-                                            unsigned int input_x_size,
-                                            unsigned int input_h_size,
+                                            unsigned int input_size,
                                             unsigned int output_size )
 {
-    unsigned int neuron_idx        = threadIdx.x + blockIdx.x*blockDim.x;
+    unsigned int input_idx        = threadIdx.x + blockIdx.x*blockDim.x;
 
-    if (neuron_idx < output_size)
+    if (input_idx < input_size)
     {
-        float error_der = (1.0 - output[neuron_idx]*output[neuron_idx])*error[neuron_idx];
-
-        unsigned int wx_ofs = neuron_idx*input_x_size;
-        unsigned int wh_ofs = neuron_idx*input_h_size;
-
-        for (unsigned int i = 0; i < input_x_size; i++)
+        unsigned int w_ofs = 0;
+        float sum = 0.0;
+        for (unsigned int i = 0; i < output_size; i++)
         {
-            float error_back = wx[i + wx_ofs]*error_der;
-            atomicAdd(&error_back_x[i], error_back);
+            float err = error[i]*RL_BLOCK_ACTIVATION_DERIVATIVE(output[i]);
+            sum+= weights[w_ofs + input_idx]*err;
+            w_ofs+= input_size;
         }
 
-        for (unsigned int i = 0; i < input_h_size; i++)
-        {
-            float error_back = wh[i + wh_ofs]*error_der;
-            atomicAdd(&error_back_h[i], error_back);
-        }
+        error_back[input_idx] = sum;
     }
 }
+
+
 
 void rl_tanh_block_layer_backward(Tensor &error_back_x, Tensor &error_back_h, Tensor &inputx, Tensor &inputh, Tensor &output, Tensor &error, Tensor &wx, Tensor &wh)
 {
@@ -183,121 +170,103 @@ void rl_tanh_block_layer_backward(Tensor &error_back_x, Tensor &error_back_h, Te
     unsigned int input_h_size = inputh.size();
     unsigned int output_size  = output.size();
 
-    error_back_x.clear();
-    error_back_h.clear();
-
     #ifdef NETWORK_USE_CUDA
 
-        dim3 block(32);
-        dim3 grid((output_size  + block.x + 1)/block.x);
+        {
+            dim3 block(16);
+            dim3 grid((input_x_size  + block.x + 1)/block.x);
 
-        cuda_rl_tanh_block_backward_kernel<<<grid, block>>>(    error_back_x.v,
-                                                                error_back_h.v,
-                                                                inputx.v,
-                                                                inputh.v,
-                                                                output.v,
-                                                                error.v,
-                                                                wx.v,
-                                                                wh.v,
 
-                                                                input_x_size,
-                                                                input_h_size,
-                                                                output_size
-                                                             );
-        cudaDeviceSynchronize();
+            cuda_rl_tanh_block_backward_kernel<<<grid, block>>> (   error_back_x.v,
+                                                                    output.v,
+                                                                    error.v,
+                                                                    wx.v,
+
+                                                                    input_x_size,
+                                                                    output_size);
+
+
+            cudaDeviceSynchronize();
+        }
+        {
+            dim3 block(16);
+            dim3 grid((input_h_size  + block.x + 1)/block.x);
+
+
+            cuda_rl_tanh_block_backward_kernel<<<grid, block>>> (   error_back_h.v,
+                                                                    output.v,
+                                                                    error.v,
+                                                                    wh.v,
+
+                                                                    input_h_size,
+                                                                    output_size);
+
+
+            cudaDeviceSynchronize();
+        }
 
     #else
+        cpu_rl_tanh_block_backward_kernel( error_back_x.v,
+                                           output.v,
+                                           error.v,
+                                           wx.v,
 
-        cpu_rl_tanh_block_backward_kernel(                      error_back_x.v,
-                                                                error_back_h.v,
-                                                                inputx.v,
-                                                                inputh.v,
-                                                                output.v,
-                                                                error.v,
-                                                                wx.v,
-                                                                wh.v,
+                                           input_x_size,
+                                           output_size);
 
-                                                                input_x_size,
-                                                                input_h_size,
-                                                                output_size
-                                                            );
+        cpu_rl_tanh_block_backward_kernel( error_back_h.v,
+                                           output.v,
+                                           error.v,
+                                           wh.v,
+
+                                           input_h_size,
+                                           output_size);
+
     #endif
 }
 
 
+
 __host__
-void cpu_rl_tanh_block_gradient_kernel(     float *wx_grad,
-                                            float *wh_grad,
-
-                                            float *inputx,
-                                            float *inputh,
-
+void cpu_rl_tanh_block_gradient_kernel(    float *w_grad,
+                                            float *input,
                                             float *output,
                                             float *error,
-                                            float *error_h,
 
-                                            unsigned int input_x_size,
-                                            unsigned int input_h_size,
+                                            unsigned int input_size,
                                             unsigned int output_size)
 {
-    for (unsigned int neuron_idx = 0; neuron_idx < output_size; neuron_idx++)
+    for (unsigned int output_idx = 0; output_idx < output_size; output_idx++)
     {
-        float error_der = (1.0 - output[neuron_idx]*output[neuron_idx])*(error[neuron_idx] + error_h[neuron_idx]);
+        unsigned int w_ofs = output_idx*input_size;
+        float err = error[output_idx]*RL_BLOCK_ACTIVATION_DERIVATIVE(output[output_idx]);
 
-        unsigned int wx_ofs = neuron_idx*input_x_size;
-        unsigned int wh_ofs = neuron_idx*input_h_size;
-
-        for (unsigned int i = 0; i < input_x_size; i++)
-        {
-            float w_grad = inputx[i]*error_der;
-            wx_grad[i + wx_ofs] = w_grad;
-        }
-
-        for (unsigned int i = 0; i < input_h_size; i++)
-        {
-            float w_grad = inputh[i]*error_der;
-            wh_grad[i + wh_ofs] = w_grad;
-        }
+        for (unsigned int i = 0; i < input_size; i++)
+            w_grad[w_ofs + i]+= err*input[i];
     }
 }
 
 __global__
-void cuda_rl_tanh_block_gradient_kernel(    float *wx_grad,
-                                            float *wh_grad,
-
-                                            float *inputx,
-                                            float *inputh,
-
+void cuda_rl_tanh_block_gradient_kernel(    float *w_grad,
+                                            float *input,
                                             float *output,
                                             float *error,
-                                            float *error_h,
 
-                                            unsigned int input_x_size,
-                                            unsigned int input_h_size,
+                                            unsigned int input_size,
                                             unsigned int output_size)
 {
-    unsigned int neuron_idx        = threadIdx.x + blockIdx.x*blockDim.x;
+    unsigned int output_idx        = threadIdx.x + blockIdx.x*blockDim.x;
 
-    if (neuron_idx < output_size)
+    if (output_idx < output_size)
     {
-        float error_der = (1.0 - output[neuron_idx]*output[neuron_idx])*(error[neuron_idx] + error_h[neuron_idx]);
+        unsigned int w_ofs = output_idx*input_size;
+        float err = error[output_idx]*RL_BLOCK_ACTIVATION_DERIVATIVE(output[output_idx]);
 
-        unsigned int wx_ofs = neuron_idx*input_x_size;
-        unsigned int wh_ofs = neuron_idx*input_h_size;
-
-        for (unsigned int i = 0; i < input_x_size; i++)
-        {
-            float w_grad = inputx[i]*error_der;
-            atomicAdd(&wx_grad[i + wx_ofs], w_grad);
-        }
-
-        for (unsigned int i = 0; i < input_h_size; i++)
-        {
-            float w_grad = inputh[i]*error_der;
-            atomicAdd(&wh_grad[i + wh_ofs], w_grad);
-        }
+        for (unsigned int i = 0; i < input_size; i++)
+            w_grad[w_ofs + i]+= err*input[i];
     }
 }
+
 
 void rl_tanh_block_layer_gradient(Tensor &wx_grad, Tensor &wh_grad, Tensor &inputx, Tensor &inputh, Tensor &output, Tensor &error, Tensor &error_h)
 {
@@ -308,41 +277,103 @@ void rl_tanh_block_layer_gradient(Tensor &wx_grad, Tensor &wh_grad, Tensor &inpu
 
     #ifdef NETWORK_USE_CUDA
 
-        dim3 block(32);
+        dim3 block(16);
         dim3 grid((output_size  + block.x + 1)/block.x);
 
-        cuda_rl_tanh_block_gradient_kernel<<<grid, block>>>(    wx_grad.v,
-                                                                wh_grad.v,
+        cuda_rl_tanh_block_gradient_kernel<<<grid, block>>>( wx_grad.v,
+                                                             inputx.v,
+                                                             output.v,
+                                                             error.v,
 
-                                                                inputx.v,
-                                                                inputh.v,
+                                                             input_x_size,
+                                                             output_size );
+        cudaDeviceSynchronize();
 
-                                                                output.v,
-                                                                error.v,
-                                                                error_h.v,
 
-                                                                input_x_size,
-                                                                input_h_size,
-                                                                output_size
-                                                             );
+        cuda_rl_tanh_block_gradient_kernel<<<grid, block>>>( wh_grad.v,
+                                                             inputh.v,
+                                                             output.v,
+                                                             error.v,
+
+                                                             input_h_size,
+                                                             output_size );
         cudaDeviceSynchronize();
 
     #else
 
-        cpu_rl_tanh_block_gradient_kernel(                      wx_grad.v,
-                                                                wh_grad.v,
 
-                                                                inputx.v,
-                                                                inputh.v,
+        cpu_rl_tanh_block_gradient_kernel(                   wx_grad.v,
+                                                             inputx.v,
+                                                             output.v,
+                                                             error.v,
 
+                                                             input_x_size,
+                                                             output_size );
+
+
+        cpu_rl_tanh_block_gradient_kernel(                   wh_grad.v,
+                                                             inputh.v,
+                                                             output.v,
+                                                             error.v,
+
+                                                             input_h_size,
+                                                             output_size );
+
+
+
+    #endif
+}
+
+
+__host__
+void cpu_rl_tanh_block_update_bias_kernel(float *bias, float *output, float *error, float learning_rate, unsigned int output_size)
+{
+    for (unsigned int output_idx = 0; output_idx < output_size; output_idx++)
+    {
+        float err = error[output_idx]*RL_BLOCK_ACTIVATION_DERIVATIVE(output[output_idx]);
+
+        bias[output_idx]+= learning_rate*err;
+    }
+}
+
+__global__
+void cuda_rl_tanh_block_update_bias_kernel(float *bias, float *output, float *error, float learning_rate, unsigned int output_size)
+{
+    unsigned int output_idx        = threadIdx.x + blockIdx.x*blockDim.x;
+
+    if (output_idx < output_size)
+    {
+        float err = error[output_idx]*RL_BLOCK_ACTIVATION_DERIVATIVE(output[output_idx]);
+
+        bias[output_idx]+= learning_rate*err;
+    }
+}
+
+void rl_tanh_block_layer_update_bias(Tensor &bias, Tensor &output, Tensor &error, float learning_rate)
+{
+    unsigned int output_size  = output.size();
+
+    #ifdef NETWORK_USE_CUDA
+
+        dim3 block(16);
+        dim3 grid((output_size  + block.x + 1)/block.x);
+
+        cuda_rl_tanh_block_update_bias_kernel<<<grid, block>>>( bias.v,
                                                                 output.v,
                                                                 error.v,
-                                                                error_h.v,
 
-                                                                input_x_size,
-                                                                input_h_size,
-                                                                output_size
-                                                         );
+                                                                learning_rate,
+                                                                output_size );
+        cudaDeviceSynchronize();
+
+    #else
+
+        cpu_rl_tanh_block_update_bias_kernel(                   bias.v,
+                                                                output.v,
+                                                                error.v,
+
+                                                                learning_rate,
+                                                                output_size );
 
     #endif
 }

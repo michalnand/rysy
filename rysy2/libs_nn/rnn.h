@@ -16,7 +16,7 @@ class RNN
 
         RNN(std::string network_config_file_name, Shape input_shape = {0, 0, 0}, Shape output_shape = {0, 0, 0});
         RNN(Json::Value json_config, Shape input_shape = {0, 0, 0}, Shape output_shape = {0, 0, 0});
-        RNN(Shape input_shape, Shape output_shape, float learning_rate = 0.001, float lambda1 = 0.000001, float lambda2 = 0.000001, float gradient_clip = 10.0, float dropout = 0.5, unsigned int minibatch_size = 32, unsigned int time_sequence_length = 1);
+        RNN(Shape input_shape, Shape output_shape, float learning_rate = 0.001, float lambda1 = 0.000001, float lambda2 = 0.000001, float gradient_clip = 10.0, float dropout = 0.5, unsigned int minibatch_size = 32);
 
         virtual ~RNN();
 
@@ -45,7 +45,7 @@ class RNN
         void train(std::vector<Tensor> &required_output, std::vector<Tensor> &input, unsigned int epoch_count = 1, bool verbose = true);
         void train(std::vector<std::vector<float>> &required_output, std::vector<std::vector<float>> &input, unsigned int epoch_count = 1, bool verbose = true);
 
-        void train_from_error(Tensor &error);
+        void train_from_error(std::vector<Tensor> &nn_error);
         Tensor& get_error_back();
 
     public:
@@ -87,7 +87,7 @@ class RNN
 
         std::vector<std::vector<Tensor>> l_error, l_output;
 
-        std::vector<Tensor> nn_input, nn_output;
+        std::vector<Tensor> nn_input, nn_output, nn_error;
 
 
         bool training_mode;

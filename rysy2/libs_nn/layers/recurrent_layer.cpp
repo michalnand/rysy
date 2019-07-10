@@ -1,6 +1,5 @@
 #include <layers/recurrent_layer.h>
 
-#include <kernels/fc_layer.cuh>
 #include <kernels/rl_tanh_block_layer.cuh>
 
 #include <kernels/solver_adam.cuh>
@@ -203,9 +202,11 @@ void RecurrentLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, 
 
     #endif
 
-    rl_tanh_block_layer_gradient(wx_grad, wh_grad, input, h[time_step_idx-1], output, error, error_h[time_step_idx-1]);
+    time_step_idx--;
 
-    fc_layer_update_bias(bias, error, learning_rate);
+    rl_tanh_block_layer_gradient(wx_grad, wh_grad, input, h[time_step_idx], output, error, error_h[time_step_idx+1]);
+
+    rl_tanh_block_layer_update_bias(bias, output, error, learning_rate);
 
     if (update_weights)
     {
@@ -216,12 +217,11 @@ void RecurrentLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, 
         wh_grad.clear();
     }
 
-    rl_tanh_block_layer_backward(   error_back, error_h[time_step_idx-1],
-                                    input, h[time_step_idx-1],
+    rl_tanh_block_layer_backward(   error_back, error_h[time_step_idx],
+                                    input, h[time_step_idx],
                                     output, error,
                                     wx, wh);
 
-    time_step_idx--;
 }
 
 void RecurrentLayer::save(std::string file_name_prefix)

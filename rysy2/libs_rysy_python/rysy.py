@@ -1626,6 +1626,28 @@ class DatasetMnistRNN(DatasetInterface):
 DatasetMnistRNN_swigregister = _rysy.DatasetMnistRNN_swigregister
 DatasetMnistRNN_swigregister(DatasetMnistRNN)
 
+class DatasetTest(DatasetInterface):
+    __swig_setmethods__ = {}
+    for _s in [DatasetInterface]:
+        __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
+    __setattr__ = lambda self, name, value: _swig_setattr(self, DatasetTest, name, value)
+    __swig_getmethods__ = {}
+    for _s in [DatasetInterface]:
+        __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
+    __getattr__ = lambda self, name: _swig_getattr(self, DatasetTest, name)
+    __repr__ = _swig_repr
+
+    def __init__(self, *args):
+        this = _rysy.new_DatasetTest(*args)
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _rysy.delete_DatasetTest
+    __del__ = lambda self: None
+DatasetTest_swigregister = _rysy.DatasetTest_swigregister
+DatasetTest_swigregister(DatasetTest)
+
 class ClassificationCompare(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, ClassificationCompare, name, value)
@@ -1974,8 +1996,8 @@ class RNN(_object):
     def train(self, *args):
         return _rysy.RNN_train(self, *args)
 
-    def train_from_error(self, error):
-        return _rysy.RNN_train_from_error(self, error)
+    def train_from_error(self, nn_error):
+        return _rysy.RNN_train_from_error(self, nn_error)
 
     def get_error_back(self):
         return _rysy.RNN_get_error_back(self)

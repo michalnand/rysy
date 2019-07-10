@@ -15,7 +15,7 @@ LayerSoftmax::LayerSoftmax(LayerSoftmax& other)
 {
     copy(other);
 }
-
+ 
 LayerSoftmax::LayerSoftmax(const LayerSoftmax& other)
                  :LayerInterface(other)
 {

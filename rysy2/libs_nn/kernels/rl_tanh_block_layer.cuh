@@ -15,4 +15,7 @@ void rl_tanh_block_layer_gradient(  Tensor &wx_grad, Tensor &wh_grad,
                                     Tensor &inputx, Tensor &inputh,
                                     Tensor &output, Tensor &error, Tensor &error_h);
 
+
+void rl_tanh_block_layer_update_bias(Tensor &bias, Tensor &output, Tensor &error, float learning_rate);
+
 #endif

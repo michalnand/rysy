@@ -128,6 +128,25 @@ void solver_adam(   Tensor &w, Tensor &w_grad, Tensor &m, Tensor &v,
 {
     unsigned int size = w.size();
 
+    /*
+    {
+        std::vector<float> d_grad(size);
+        w_grad.set_to_host(d_grad);
+
+        float max = d_grad[0];
+        float min = d_grad[0];
+        for (unsigned int i = 0; i < d_grad.size(); i++)
+        {
+            if (d_grad[i] > max)
+                max = d_grad[i];
+            if (d_grad[i] < min)
+                min = d_grad[i];
+        }
+
+        std::cout << "GRADIENT " << min << " " << max << "\n";
+    }
+    */
+    
     float beta1     = 0.9;
     float beta2     = 0.999;
     float epsilon   = 0.00000001;
