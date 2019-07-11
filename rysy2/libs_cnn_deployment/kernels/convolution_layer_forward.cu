@@ -115,7 +115,7 @@ void cuda_convolution_forward_kernel(   float *output,
     unsigned int x      = threadIdx.x + blockIdx.x*blockDim.x;
     unsigned int y      = threadIdx.y + blockIdx.y*blockDim.y;
     unsigned int filter = threadIdx.z + blockIdx.z*blockDim.z;
- 
+
     unsigned int k_half = (kernel_size - 1)/2;
 
     if (filter < output_geometry.d)
