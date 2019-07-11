@@ -18,7 +18,7 @@ SIZE = size
 ARCHIVE = ar
 
 # DEGUBFLAGS = -g -pg
-
+ 
 CFLAGS = $(DEGUBFLAGS) -O2 -Os -fPIC -s -Wall -Wextra -pedantic -std=c++11 $(INC)
 CUDAFLAGS = -Xptxas -O3 -arch=sm_50 -D_FORCE_INLINES -ccbin=$(CXX) -Xcompiler -fPIC -std=c++11 $(INC)
 

@@ -4,11 +4,11 @@
 
 #include "../cuda_float_allocator.cuh"
 
-#define TILE_SIZE           ((unsigned int)32)
+#define TILE_SIZE           ((unsigned int)16)
 #define KERNEL_MAX_SIZE     ((unsigned int)3)
 #define SHARED_SIZE         (TILE_SIZE + KERNEL_MAX_SIZE - 1)
 
-
+/*
 template<unsigned int kernel_size>
 __global__
 void cuda_convolution_forward_kernel(   float *output,
@@ -85,7 +85,7 @@ void cuda_convolution_forward_kernel(   float *output,
         output[output_idx] = sum;
     }
 }
-
+*/
 
 /*
 __float2half(x)
@@ -94,36 +94,38 @@ __hadd(a, b)
 __hmul(a, b)
 */
 
-/*
+
+#define get_input_idx(ch, y, x) ((ch*input_geometry.h + y)*input_geometry.w + x)
+
 template<unsigned int kernel_size>
 __global__
 void cuda_convolution_forward_kernel(   float *output,
-                                        float *input,
-                                        float *w,
-                                        float *bias,
+                                        const float *input,
+                                        const float *w,
+                                        const float *bias,
 
-                                        sShape output_geometry,
-                                        sShape input_geometry,
-                                        sShape kernel_geometry
+                                        const sShape output_geometry,
+                                        const sShape input_geometry,
+                                        const sShape kernel_geometry,
+
+                                        const unsigned int input_size_x,
+                                        const unsigned int input_size_y
                                     )
 {
     unsigned int x      = threadIdx.x + blockIdx.x*blockDim.x;
     unsigned int y      = threadIdx.y + blockIdx.y*blockDim.y;
-    unsigned int z      = threadIdx.z + blockIdx.z*blockDim.z;
-
-    unsigned int filter = z;
-
+    unsigned int filter = threadIdx.z + blockIdx.z*blockDim.z;
+ 
     unsigned int k_half = (kernel_size - 1)/2;
-    unsigned int input_size_y = input_geometry.h - 2*k_half;
-    unsigned int input_size_x = input_geometry.w - 2*k_half;
 
-
-    __shared__ float w_shared[kernel_size][kernel_size];
-    __shared__ float input_shared[SHARED_SIZE][SHARED_SIZE];
-
-    if ((filter < output_geometry.d) && (y < input_size_y) && (x < input_size_x))
+    if (filter < output_geometry.d)
+    if (y < input_size_y)
+    if (x < input_size_x)
     {
-        float sum = bias[filter];
+        __shared__ float w_shared[kernel_size][kernel_size];
+        __shared__ float input_shared[SHARED_SIZE][SHARED_SIZE];
+
+        float activation = bias[filter];
 
         for (unsigned int ch = 0; ch < input_geometry.d; ch++)
         {
@@ -134,48 +136,65 @@ void cuda_convolution_forward_kernel(   float *output,
                 w_shared[threadIdx.y][threadIdx.x] = w[w_ofs + threadIdx.y*kernel_size + threadIdx.x];
             }
 
+            unsigned int idx = get_input_idx(ch, y + 1, x + 0);
 
-            if ((threadIdx.y < TILE_SIZE) && (threadIdx.x < TILE_SIZE))
+            input_shared[threadIdx.y + 1][threadIdx.x + 0] = input[idx]; idx++;
+            input_shared[threadIdx.y + 1][threadIdx.x + 1] = input[idx]; idx++;
+            input_shared[threadIdx.y + 1][threadIdx.x + 2] = input[idx];
+
+            if (threadIdx.y == 0)
             {
-                unsigned int input_idx  = (ch*input_geometry.h + y + 1)*input_geometry.w + x + 1;
-                input_shared[threadIdx.y + 1][threadIdx.x + 1] = input[input_idx];
+                unsigned int idx = get_input_idx(ch, y + 0, x + 0);
+                input_shared[0][threadIdx.x + 0] = input[idx]; idx++;
+                input_shared[0][threadIdx.x + 1] = input[idx]; idx++;
+                input_shared[0][threadIdx.x + 2] = input[idx];
             }
+            else
+            if (threadIdx.y == TILE_SIZE-1)
+            {
+                unsigned int idx = get_input_idx(ch, y + 2, x + 0);
+
+                input_shared[TILE_SIZE-1 + 2][threadIdx.x + 0] = input[idx]; idx++;
+                input_shared[TILE_SIZE-1 + 2][threadIdx.x + 1] = input[idx]; idx++;
+                input_shared[TILE_SIZE-1 + 2][threadIdx.x + 2] = input[idx];
+            }
+
+
 
             __syncthreads();
 
 
             if (kernel_size == 1)
             {
-                sum+= w_shared[0][0]*input_shared[threadIdx.y][threadIdx.x];
+                activation+= w_shared[0][0] * input_shared[threadIdx.y][threadIdx.x];
             }
 
             if (kernel_size == 3)
             {
-                sum+= w_shared[0][0]*input_shared[threadIdx.y + 0][threadIdx.x + 0];
-                sum+= w_shared[0][1]*input_shared[threadIdx.y + 0][threadIdx.x + 1];
-                sum+= w_shared[0][2]*input_shared[threadIdx.y + 0][threadIdx.x + 2];
+                activation+= w_shared[0][0] * input_shared[threadIdx.y + 0][threadIdx.x + 0];
+                activation+= w_shared[0][1] * input_shared[threadIdx.y + 0][threadIdx.x + 1];
+                activation+= w_shared[0][2] * input_shared[threadIdx.y + 0][threadIdx.x + 2];
 
-                sum+= w_shared[1][0]*input_shared[threadIdx.y + 1][threadIdx.x + 0];
-                sum+= w_shared[1][1]*input_shared[threadIdx.y + 1][threadIdx.x + 1];
-                sum+= w_shared[1][2]*input_shared[threadIdx.y + 1][threadIdx.x + 2];
+                activation+= w_shared[1][0] * input_shared[threadIdx.y + 1][threadIdx.x + 0];
+                activation+= w_shared[1][1] * input_shared[threadIdx.y + 1][threadIdx.x + 1];
+                activation+= w_shared[1][2] * input_shared[threadIdx.y + 1][threadIdx.x + 2];
 
-                sum+= w_shared[2][0]*input_shared[threadIdx.y + 2][threadIdx.x + 0];
-                sum+= w_shared[2][1]*input_shared[threadIdx.y + 2][threadIdx.x + 1];
-                sum+= w_shared[2][2]*input_shared[threadIdx.y + 2][threadIdx.x + 2];
+                activation+= w_shared[2][0] * input_shared[threadIdx.y + 2][threadIdx.x + 0];
+                activation+= w_shared[2][1] * input_shared[threadIdx.y + 2][threadIdx.x + 1];
+                activation+= w_shared[2][2] * input_shared[threadIdx.y + 2][threadIdx.x + 2];
             }
 
             __syncthreads();
         }
 
         //ReLU
-        if (sum < 0.0)
-            sum = 0.0;
+        if (activation < 0.0)
+            activation = 0.0;
 
         unsigned int output_idx = (filter*input_geometry.h + y + k_half)*input_geometry.w + x + k_half;
-        output[output_idx] = sum;
+        output[output_idx] = activation;
     }
 }
-*/
 
 
 
@@ -248,6 +267,9 @@ void convolution_layer_forward( float *output, float *input,
 
     if ((kernel_size == 1) || (kernel_size == 3))
     {
+        unsigned int input_size_x = input_geometry.w - 2*((kernel_size - 1)/2);
+        unsigned int input_size_y = input_geometry.h - 2*((kernel_size - 1)/2);
+
         dim3 block(TILE_SIZE, TILE_SIZE, 1);
         dim3 grid(  (input_size_x      + block.x + 1)/block.x,
                     (input_size_y      + block.y + 1)/block.y,
@@ -260,7 +282,9 @@ void convolution_layer_forward( float *output, float *input,
                                                                  bias,
                                                                  output_geometry,
                                                                  input_geometry,
-                                                                 kernel_geometry);
+                                                                 kernel_geometry,
+                                                                 input_size_x,
+                                                                 input_size_y);
         if (kernel_size == 3)
             cuda_convolution_forward_kernel<3><<<grid, block>>>( output,
                                                                  input,
@@ -268,7 +292,9 @@ void convolution_layer_forward( float *output, float *input,
                                                                  bias,
                                                                  output_geometry,
                                                                  input_geometry,
-                                                                 kernel_geometry);
+                                                                 kernel_geometry,
+                                                                 input_size_x,
+                                                                 input_size_y);
     }
     else
     {

@@ -9,7 +9,7 @@ CudaFloatAllocator cuda_float_allocator;
 
 CudaFloatAllocator::CudaFloatAllocator()
 {
-
+    cudaDeviceSetCacheConfig(cudaFuncCachePreferL1);
 }
 
 CudaFloatAllocator::~CudaFloatAllocator()
