@@ -16,9 +16,9 @@ void cuda_convolution_forward_kernel(   float *output,
                                         float *w,
                                         float *bias,
 
-                                        sShape output_geometry,
-                                        sShape input_geometry,
-                                        sShape kernel_geometry
+                                        sShape output_shape,
+                                        sShape input_shape,
+                                        sShape kernel_shape
                                     )
 {
     unsigned int x      = threadIdx.x + blockIdx.x*blockDim.x;
@@ -28,18 +28,18 @@ void cuda_convolution_forward_kernel(   float *output,
     unsigned int filter = z;
 
     unsigned int k_half = (kernel_size - 1)/2;
-    unsigned int input_size_y = input_geometry.h - 2*k_half;
-    unsigned int input_size_x = input_geometry.w - 2*k_half;
+    unsigned int input_size_y = input_shape.h - 2*k_half;
+    unsigned int input_size_x = input_shape.w - 2*k_half;
 
     __shared__ float w_shared[kernel_size][kernel_size];
 
-    if ((filter < output_geometry.d) && (y < input_size_y) && (x < input_size_x))
+    if ((filter < output_shape.d) && (y < input_size_y) && (x < input_size_x))
     {
         float sum = bias[filter];
 
-        for (unsigned int ch = 0; ch < input_geometry.d; ch++)
+        for (unsigned int ch = 0; ch < input_shape.d; ch++)
         {
-            unsigned int offset = filter*kernel_size*kernel_size*input_geometry.d;
+            unsigned int offset = filter*kernel_size*kernel_size*input_shape.d;
             if ( (threadIdx.x < kernel_size) && (threadIdx.y < kernel_size) )
             {
                 unsigned int w_ofs = kernel_size*kernel_size*ch + offset;
@@ -48,12 +48,12 @@ void cuda_convolution_forward_kernel(   float *output,
 
             __syncthreads();
 
-            unsigned int input_idx  = (ch*input_geometry.h + y)*input_geometry.w + x;
+            unsigned int input_idx  = (ch*input_shape.h + y)*input_shape.w + x;
 
             if (kernel_size == 1)
             {
                 sum+= w_shared[0][0]*input[input_idx];
-                input_idx+= input_geometry.w;
+                input_idx+= input_shape.w;
             }
 
             if (kernel_size == 3)
@@ -61,17 +61,17 @@ void cuda_convolution_forward_kernel(   float *output,
                 sum+= w_shared[0][0]*input[input_idx++];
                 sum+= w_shared[0][1]*input[input_idx++];
                 sum+= w_shared[0][2]*input[input_idx++];
-                input_idx+= input_geometry.w - kernel_size;
+                input_idx+= input_shape.w - kernel_size;
 
                 sum+= w_shared[1][0]*input[input_idx++];
                 sum+= w_shared[1][1]*input[input_idx++];
                 sum+= w_shared[1][2]*input[input_idx++];
-                input_idx+= input_geometry.w - kernel_size;
+                input_idx+= input_shape.w - kernel_size;
 
                 sum+= w_shared[2][0]*input[input_idx++];
                 sum+= w_shared[2][1]*input[input_idx++];
                 sum+= w_shared[2][2]*input[input_idx++];
-                input_idx+= input_geometry.w - kernel_size;
+                input_idx+= input_shape.w - kernel_size;
             }
 
             __syncthreads();
@@ -81,7 +81,7 @@ void cuda_convolution_forward_kernel(   float *output,
         if (sum < 0.0)
             sum = 0.0;
 
-        unsigned int output_idx = (filter*input_geometry.h + y + k_half)*input_geometry.w + x + k_half;
+        unsigned int output_idx = (filter*input_shape.h + y + k_half)*input_shape.w + x + k_half;
         output[output_idx] = sum;
     }
 }
@@ -95,7 +95,7 @@ __hmul(a, b)
 */
 
 
-#define get_input_idx(ch, y, x) ((ch*input_geometry.h + y)*input_geometry.w + x)
+#define get_input_idx(ch, y, x) ((ch*input_shape.h + y)*input_shape.w + x)
 
 template<unsigned int kernel_size>
 __global__
@@ -104,9 +104,9 @@ void cuda_convolution_forward_kernel(   float *output,
                                         const float *w,
                                         const float *bias,
 
-                                        const sShape output_geometry,
-                                        const sShape input_geometry,
-                                        const sShape kernel_geometry,
+                                        const sShape output_shape,
+                                        const sShape input_shape,
+                                        const sShape kernel_shape,
 
                                         const unsigned int input_size_x,
                                         const unsigned int input_size_y
@@ -118,7 +118,7 @@ void cuda_convolution_forward_kernel(   float *output,
 
     unsigned int k_half = (kernel_size - 1)/2;
 
-    if (filter < output_geometry.d)
+    if (filter < output_shape.d)
     if (y < input_size_y)
     if (x < input_size_x)
     {
@@ -127,9 +127,9 @@ void cuda_convolution_forward_kernel(   float *output,
 
         float activation = bias[filter];
 
-        for (unsigned int ch = 0; ch < input_geometry.d; ch++)
+        for (unsigned int ch = 0; ch < input_shape.d; ch++)
         {
-            unsigned int offset = filter*kernel_size*kernel_size*input_geometry.d;
+            unsigned int offset = filter*kernel_size*kernel_size*input_shape.d;
             if ( (threadIdx.x < kernel_size) && (threadIdx.y < kernel_size) )
             {
                 unsigned int w_ofs = kernel_size*kernel_size*ch + offset;
@@ -191,7 +191,7 @@ void cuda_convolution_forward_kernel(   float *output,
         if (activation < 0.0)
             activation = 0.0;
 
-        unsigned int output_idx = (filter*input_geometry.h + y + k_half)*input_geometry.w + x + k_half;
+        unsigned int output_idx = (filter*input_shape.h + y + k_half)*input_shape.w + x + k_half;
         output[output_idx] = activation;
     }
 }
@@ -204,9 +204,9 @@ void cuda_convolution_forward_kernel_any_size(  float *output,
                                                 float *w,
                                                 float *bias,
 
-                                                sShape output_geometry,
-                                                sShape input_geometry,
-                                                sShape kernel_geometry )
+                                                sShape output_shape,
+                                                sShape input_shape,
+                                                sShape kernel_shape )
 {
     unsigned int x      = threadIdx.x + blockIdx.x*blockDim.x;
     unsigned int y      = threadIdx.y + blockIdx.y*blockDim.y;
@@ -214,39 +214,39 @@ void cuda_convolution_forward_kernel_any_size(  float *output,
 
     unsigned int filter = z;
 
-    unsigned int k_half_h = (kernel_geometry.h - 1)/2;
-    unsigned int k_half_w = (kernel_geometry.w - 1)/2;
+    unsigned int k_half_h = (kernel_shape.h - 1)/2;
+    unsigned int k_half_w = (kernel_shape.w - 1)/2;
 
-    unsigned int input_size_y = input_geometry.h - 2*k_half_h;
-    unsigned int input_size_x = input_geometry.w - 2*k_half_w;
+    unsigned int input_size_y = input_shape.h - 2*k_half_h;
+    unsigned int input_size_x = input_shape.w - 2*k_half_w;
 
-    if (filter < output_geometry.d)
+    if (filter < output_shape.d)
     if (y < input_size_y)
     if (x < input_size_x)
     {
         float sum = bias[filter];
 
-        for (unsigned int ch = 0; ch < input_geometry.d; ch++)
+        for (unsigned int ch = 0; ch < input_shape.d; ch++)
         {
-            unsigned int filter_idx = (filter*input_geometry.d + ch)*kernel_geometry.h*kernel_geometry.w;
-            unsigned int input_idx  = (ch*input_geometry.h + y)*input_geometry.w + x;
+            unsigned int filter_idx = (filter*input_shape.d + ch)*kernel_shape.h*kernel_shape.w;
+            unsigned int input_idx  = (ch*input_shape.h + y)*input_shape.w + x;
 
-            for (unsigned int ky = 0; ky < kernel_geometry.h; ky++)
+            for (unsigned int ky = 0; ky < kernel_shape.h; ky++)
             {
-                for (unsigned int kx = 0; kx < kernel_geometry.w; kx++)
+                for (unsigned int kx = 0; kx < kernel_shape.w; kx++)
                 {
-                    unsigned int input_idx = (ch*input_geometry.h + y + ky)*input_geometry.w + x + kx;
+                    unsigned int input_idx = (ch*input_shape.h + y + ky)*input_shape.w + x + kx;
                     sum+= w[filter_idx]*input[input_idx];
                     filter_idx++;
                     input_idx++;
                 }
 
-                input_idx+= input_geometry.w - kernel_geometry.w;
+                input_idx+= input_shape.w - kernel_shape.w;
             }
 
         }
 
-        unsigned int output_idx = (filter*input_geometry.h + y + k_half_h)*input_geometry.w + x + k_half_w;
+        unsigned int output_idx = (filter*input_shape.h + y + k_half_h)*input_shape.w + x + k_half_w;
         output[output_idx] = sum;
     }
 }
@@ -254,35 +254,36 @@ void cuda_convolution_forward_kernel_any_size(  float *output,
 
 void convolution_layer_forward( float *output, float *input,
                                 float *weights, float *bias,
-                                sShape input_geometry,
-                                sShape kernel_geometry,
-                                sShape output_geometry )
+                                sShape input_shape,
+                                sShape kernel_shape,
+                                sShape output_shape )
 {
-    unsigned int input_size_y = input_geometry.h - kernel_geometry.h;
-    unsigned int input_size_x = input_geometry.w - kernel_geometry.w;
+    unsigned int input_size_y = input_shape.h - kernel_shape.h;
+    unsigned int input_size_x = input_shape.w - kernel_shape.w;
 
-    kernel_geometry.d = output_geometry.d;
-    unsigned int kernel_size = kernel_geometry.w;
+    kernel_shape.d = output_shape.d;
+    unsigned int kernel_size = kernel_shape.w;
 
 
     if ((kernel_size == 1) || (kernel_size == 3))
     {
-        unsigned int input_size_x = input_geometry.w - 2*((kernel_size - 1)/2);
-        unsigned int input_size_y = input_geometry.h - 2*((kernel_size - 1)/2);
+        unsigned int input_size_x = input_shape.w - 2*((kernel_size - 1)/2);
+        unsigned int input_size_y = input_shape.h - 2*((kernel_size - 1)/2);
 
         dim3 block(TILE_SIZE, TILE_SIZE, 1);
-        dim3 grid(  (input_size_x      + block.x + 1)/block.x,
-                    (input_size_y      + block.y + 1)/block.y,
-                    (output_geometry.d + block.z + 1)/block.z );
+        dim3 grid(  (input_size_x      + block.x)/block.x,
+                    (input_size_y      + block.y)/block.y,
+                    (output_shape.d + block.z)/block.z );
+
 
         if (kernel_size == 1)
             cuda_convolution_forward_kernel<1><<<grid, block>>>( output,
                                                                  input,
                                                                  weights,
                                                                  bias,
-                                                                 output_geometry,
-                                                                 input_geometry,
-                                                                 kernel_geometry,
+                                                                 output_shape,
+                                                                 input_shape,
+                                                                 kernel_shape,
                                                                  input_size_x,
                                                                  input_size_y);
         if (kernel_size == 3)
@@ -290,9 +291,9 @@ void convolution_layer_forward( float *output, float *input,
                                                                  input,
                                                                  weights,
                                                                  bias,
-                                                                 output_geometry,
-                                                                 input_geometry,
-                                                                 kernel_geometry,
+                                                                 output_shape,
+                                                                 input_shape,
+                                                                 kernel_shape,
                                                                  input_size_x,
                                                                  input_size_y);
     }
@@ -301,7 +302,7 @@ void convolution_layer_forward( float *output, float *input,
         dim3 block(8, 8, 1);
         dim3 grid(  (input_size_x      + block.x + 1)/block.x,
                     (input_size_y      + block.y + 1)/block.y,
-                    (kernel_geometry.d + block.z + 1)/block.z );
+                    (kernel_shape.d + block.z + 1)/block.z );
 
         cuda_convolution_forward_kernel_any_size<<<grid, block>>>(
                                                                   output,
@@ -309,9 +310,9 @@ void convolution_layer_forward( float *output, float *input,
                                                                   weights,
                                                                   bias,
 
-                                                                  output_geometry,
-                                                                  input_geometry,
-                                                                  kernel_geometry);
+                                                                  output_shape,
+                                                                  input_shape,
+                                                                  kernel_shape);
     }
 
 

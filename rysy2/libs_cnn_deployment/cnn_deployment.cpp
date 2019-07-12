@@ -136,7 +136,7 @@ void CNNDeployment::init(std::string json_file_name, sShape input_shape)
             buffer_size = layers[i]->get_output_size();
     }
 
-    std::cout << "requested buffer size " << (buffer_size*2*sizeof(float))/1000000 << "MB\n";
+    std::cout << "requested GPU buffer size " << (buffer_size*2*sizeof(float))/1000000 << "MB\n";
 
     buffer_a = cuda_float_allocator.malloc(buffer_size);
     buffer_b = cuda_float_allocator.malloc(buffer_size);

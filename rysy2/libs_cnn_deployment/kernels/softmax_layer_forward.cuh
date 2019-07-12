@@ -4,7 +4,7 @@
 #include <nn_struct.h>
 
 void softmax_layer_forward( float *output, float *input,
-                            sShape input_geometry);
+                            sShape input_shape);
 
 
 #endif

@@ -5,6 +5,6 @@
 
 void max_pooling_layer_forward( float *output,
                                 float *input,
-                                sShape input_geometry);
+                                sShape input_shape);
 
 #endif

@@ -5,9 +5,9 @@
 
 void convolution_layer_forward( float *output, float *input,
                                 float *weights, float *bias,
-                                sShape input_geometry,
-                                sShape kernel_geometry,
-                                sShape output_geometry );
+                                sShape input_shape,
+                                sShape kernel_shape,
+                                sShape output_shape );
 
 
 #endif
