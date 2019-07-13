@@ -26,8 +26,10 @@ class DQN
 
     public:
         std::vector<float>& forward(std::vector<float> &state);
+        std::vector<float>& forward(float *state);
         std::vector<float>& get_q_values();
         bool add(std::vector<float>& state, std::vector<float>& q_values, unsigned int action, float reward, bool terminal = false);
+        bool add(float *state, std::vector<float>& q_values, unsigned int action, float reward, bool terminal = false);
 
         bool is_full();
         void train();
@@ -48,6 +50,7 @@ class DQN
         ExperienceReplayBuffer experience_replay_buffer;
 
         std::vector<float> q_values;
+        std::vector<float> v_state;
 
 };
 

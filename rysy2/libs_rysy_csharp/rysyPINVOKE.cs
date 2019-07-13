@@ -931,8 +931,11 @@ class rysyPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQN_add_layer__SWIG_1")]
   public static extern void DQN_add_layer__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQN_forward")]
-  public static extern global::System.IntPtr DQN_forward(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQN_forward__SWIG_0")]
+  public static extern global::System.IntPtr DQN_forward__SWIG_0(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQN_forward__SWIG_1")]
+  public static extern global::System.IntPtr DQN_forward__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQN_get_q_values")]
   public static extern global::System.IntPtr DQN_get_q_values(global::System.Runtime.InteropServices.HandleRef jarg1);
@@ -942,6 +945,12 @@ class rysyPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQN_add__SWIG_1")]
   public static extern bool DQN_add__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, uint jarg4, float jarg5);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQN_add__SWIG_2")]
+  public static extern bool DQN_add__SWIG_2(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, uint jarg4, float jarg5, bool jarg6);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQN_add__SWIG_3")]
+  public static extern bool DQN_add__SWIG_3(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, uint jarg4, float jarg5);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQN_is_full")]
   public static extern bool DQN_is_full(global::System.Runtime.InteropServices.HandleRef jarg1);

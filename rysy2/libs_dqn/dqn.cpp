@@ -75,6 +75,8 @@ void DQN::init(Shape state_shape, unsigned int actions_count, float gamma, unsig
 
     this->experience_replay_buffer.init(replay_buffer_size, this->state_shape.size(), this->actions_count);
 
+    v_state.resize(state_shape.size());
+
     Shape output_shape(1, 1, this->actions_count);
 
     if (cnn != nullptr)
@@ -105,6 +107,15 @@ std::vector<float>& DQN::forward(std::vector<float> &state)
     return q_values;
 }
 
+std::vector<float>& DQN::forward(float *state)
+{
+    for (unsigned int i = 0; i < v_state.size(); i++)
+        v_state[i] = state[i];
+
+    cnn->forward(q_values, v_state);
+    return q_values;
+}
+
 std::vector<float>& DQN::get_q_values()
 {
     return q_values;
@@ -113,6 +124,14 @@ std::vector<float>& DQN::get_q_values()
 bool DQN::add(std::vector<float>& state, std::vector<float>& q_values, unsigned int action, float reward, bool terminal)
 {
     return experience_replay_buffer.add(state, q_values, action, reward, terminal);
+}
+
+bool DQN::add(float *state, std::vector<float>& q_values, unsigned int action, float reward, bool terminal)
+{
+    for (unsigned int i = 0; i < v_state.size(); i++)
+        v_state[i] = state[i];
+
+    return experience_replay_buffer.add(v_state, q_values, action, reward, terminal);
 }
 
 bool DQN::is_full()

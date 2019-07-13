@@ -2137,14 +2137,14 @@ class DQN(_object):
     def add_layer(self, *args):
         return _rysy.DQN_add_layer(self, *args)
 
-    def forward(self, state):
-        return _rysy.DQN_forward(self, state)
+    def forward(self, *args):
+        return _rysy.DQN_forward(self, *args)
 
     def get_q_values(self):
         return _rysy.DQN_get_q_values(self)
 
-    def add(self, state, q_values, action, reward, terminal=False):
-        return _rysy.DQN_add(self, state, q_values, action, reward, terminal)
+    def add(self, *args):
+        return _rysy.DQN_add(self, *args)
 
     def is_full(self):
         return _rysy.DQN_is_full(self)

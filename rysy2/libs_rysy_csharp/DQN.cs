@@ -93,8 +93,13 @@ public class DQN : global::System.IDisposable {
   }
 
   public SWIGTYPE_p_std__vectorT_float_t forward(SWIGTYPE_p_std__vectorT_float_t state) {
-    SWIGTYPE_p_std__vectorT_float_t ret = new SWIGTYPE_p_std__vectorT_float_t(rysyPINVOKE.DQN_forward(swigCPtr, SWIGTYPE_p_std__vectorT_float_t.getCPtr(state)), false);
+    SWIGTYPE_p_std__vectorT_float_t ret = new SWIGTYPE_p_std__vectorT_float_t(rysyPINVOKE.DQN_forward__SWIG_0(swigCPtr, SWIGTYPE_p_std__vectorT_float_t.getCPtr(state)), false);
     if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
+    return ret;
+  }
+
+  public SWIGTYPE_p_std__vectorT_float_t forward(SWIGTYPE_p_float state) {
+    SWIGTYPE_p_std__vectorT_float_t ret = new SWIGTYPE_p_std__vectorT_float_t(rysyPINVOKE.DQN_forward__SWIG_1(swigCPtr, SWIGTYPE_p_float.getCPtr(state)), false);
     return ret;
   }
 
@@ -111,6 +116,18 @@ public class DQN : global::System.IDisposable {
 
   public bool add(SWIGTYPE_p_std__vectorT_float_t state, SWIGTYPE_p_std__vectorT_float_t q_values, uint action, float reward) {
     bool ret = rysyPINVOKE.DQN_add__SWIG_1(swigCPtr, SWIGTYPE_p_std__vectorT_float_t.getCPtr(state), SWIGTYPE_p_std__vectorT_float_t.getCPtr(q_values), action, reward);
+    if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
+    return ret;
+  }
+
+  public bool add(SWIGTYPE_p_float state, SWIGTYPE_p_std__vectorT_float_t q_values, uint action, float reward, bool terminal) {
+    bool ret = rysyPINVOKE.DQN_add__SWIG_2(swigCPtr, SWIGTYPE_p_float.getCPtr(state), SWIGTYPE_p_std__vectorT_float_t.getCPtr(q_values), action, reward, terminal);
+    if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
+    return ret;
+  }
+
+  public bool add(SWIGTYPE_p_float state, SWIGTYPE_p_std__vectorT_float_t q_values, uint action, float reward) {
+    bool ret = rysyPINVOKE.DQN_add__SWIG_3(swigCPtr, SWIGTYPE_p_float.getCPtr(state), SWIGTYPE_p_std__vectorT_float_t.getCPtr(q_values), action, reward);
     if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
     return ret;
   }
