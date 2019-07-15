@@ -5,12 +5,11 @@ INC+= -I$(LIBS_PATH)/libs_common
 INC+= -I$(LIBS_PATH)/libs_experiment
 INC+= -I$(LIBS_PATH)/libs_dqn
 
-
+LIBS+= $(LIBS_PATH)/libs_dqn/libs_dqn.a
 LIBS+= $(LIBS_PATH)/libs_experiment/libs_experiment.a
 LIBS+= $(LIBS_PATH)/libs_dataset/libs_dataset.a
 LIBS+= $(LIBS_PATH)/libs_nn/libs_nn.a
 LIBS+= $(LIBS_PATH)/libs_common/libs_common.a
-LIBS+= $(LIBS_PATH)/libs_dqn/libs_dqn.a
 
 CC = g++
 CU = nvcc

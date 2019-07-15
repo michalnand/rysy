@@ -108,7 +108,7 @@ void dropout_test()
 
 void convolution_test()
 {
-    Shape input_shape(8, 8, 3);
+    Shape input_shape(8, 8, 24);
 
     Json::Value parameters;
 
@@ -119,7 +119,7 @@ void convolution_test()
 
     parameters["shape"][0] = 3;
     parameters["shape"][1] = 3;
-    parameters["shape"][2] = 16;
+    parameters["shape"][2] = 64;
 
 
     Tensor input(input_shape);
@@ -191,8 +191,8 @@ int main()
     //relu_test();
     //elu_test();
     //dropout_test();
-    //convolution_test();
-    pooling_test();
+    convolution_test();
+    //pooling_test();
 
 
     std::cout << "program done\n";
