@@ -115,7 +115,7 @@ void cuda_convolution_forward_kernel(   float *output,
         }
 
         unsigned int output_idx = (filter*input_shape.h + y + k_half)*input_shape.w + x + k_half;
-        atomicAdd(&output[output_idx], sum);
+        output[output_idx] = sum;
     }
 }
 
@@ -173,7 +173,7 @@ void cuda_convolution_forward_kernel_1d(    float *output,
         }
 
         unsigned int output_idx = x + k_half + filter*input_shape.w;
-        output[output_idx]+= sum;
+        output[output_idx] = sum;
     }
 }
 
@@ -258,11 +258,6 @@ void convolution_layer_forward(   Tensor &output, Tensor &input,
 
 
     #ifdef NETWORK_USE_CUDA
-        output.clear();
-
-
-
-
 
         if ((kernel_shape.w == 1)&&(kernel_shape.h == 1))
         {
