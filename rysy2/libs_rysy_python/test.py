@@ -1,4 +1,5 @@
 from rysy import *
+import time
 
 #load dataset
 dataset_path = "/home/michal/dataset/mnist/"
@@ -19,19 +20,23 @@ output_shape = dataset.get_output_shape()
 
 cnn = CNN(input_shape, output_shape, 0.0025)
 
-cnn.add_layer("convolution", Shape(3, 3, 16))
-cnn.add_layer("elu")
-cnn.add_layer("max_pooling", Shape(2, 2))
 cnn.add_layer("convolution", Shape(3, 3, 32))
 cnn.add_layer("elu")
 cnn.add_layer("max_pooling", Shape(2, 2))
+
 cnn.add_layer("convolution", Shape(3, 3, 32))
 cnn.add_layer("elu")
+cnn.add_layer("max_pooling", Shape(2, 2))
+
+cnn.add_layer("convolution", Shape(3, 3, 32))
+cnn.add_layer("elu")
+
 cnn.add_layer("dropout")
 cnn.add_layer("output")
 
 cnn._print()
 
+time_start = int(round(time.time() * 1000))
 #train network - set epoch count
 epoch_count = 1
 cnn.train(dataset.get_training_output_all(), dataset.get_training_input_all(), epoch_count)
@@ -56,4 +61,8 @@ for item_idx in range(0, dataset.get_testing_count()):
 
 #process computing and print results
 compare.compute()
+
+time_stop = int(round(time.time() * 1000))
+
 print(compare.asString())
+print("computing time = ", (time_stop - time_start)/1000.0, "[s]")

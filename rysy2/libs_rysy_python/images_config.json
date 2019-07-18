@@ -1,0 +1,96 @@
+{
+    "grayscale" : true,
+    "width"     : 9,
+    "height"    : 9,
+    "max items per folder" : 10000,
+    "testing ratio"        : 0.0,
+    "classes count"        : 10,
+
+    "dataset" :
+    [
+        {
+            "path" : "/home/michal/dataset/mnist_9_9/training/0/",
+            "class" : 0
+        },
+        {
+            "path" : "/home/michal/dataset/mnist_9_9/training/1/",
+            "class" : 1
+        },
+        {
+            "path" : "/home/michal/dataset/mnist_9_9/training/2/",
+            "class" : 2
+        },
+        {
+            "path" : "/home/michal/dataset/mnist_9_9/training/3/",
+            "class" : 3
+        },
+        {
+            "path" : "/home/michal/dataset/mnist_9_9/training/4/",
+            "class" : 4
+        },
+        {
+            "path" : "/home/michal/dataset/mnist_9_9/training/5/",
+            "class" : 5
+        },
+        {
+            "path" : "/home/michal/dataset/mnist_9_9/training/6/",
+            "class" : 6
+        },
+        {
+            "path" : "/home/michal/dataset/mnist_9_9/training/7/",
+            "class" : 7
+        },
+        {
+            "path" : "/home/michal/dataset/mnist_9_9/training/8/",
+            "class" : 8
+        },
+        {
+            "path" : "/home/michal/dataset/mnist_9_9/training/9/",
+            "class" : 9
+        }
+    ],
+
+    "dataset testing" :
+    [
+        {
+            "path" : "/home/michal/dataset/mnist_9_9/testing/0/",
+            "class" : 0
+        },
+        {
+            "path" : "/home/michal/dataset/mnist_9_9/testing/1/",
+            "class" : 1
+        },
+        {
+            "path" : "/home/michal/dataset/mnist_9_9/testing/2/",
+            "class" : 2
+        },
+        {
+            "path" : "/home/michal/dataset/mnist_9_9/testing/3/",
+            "class" : 3
+        },
+        {
+            "path" : "/home/michal/dataset/mnist_9_9/testing/4/",
+            "class" : 4
+        },
+        {
+            "path" : "/home/michal/dataset/mnist_9_9/testing/5/",
+            "class" : 5
+        },
+        {
+            "path" : "/home/michal/dataset/mnist_9_9/testing/6/",
+            "class" : 6
+        },
+        {
+            "path" : "/home/michal/dataset/mnist_9_9/testing/7/",
+            "class" : 7
+        },
+        {
+            "path" : "/home/michal/dataset/mnist_9_9/testing/8/",
+            "class" : 8
+        },
+        {
+            "path" : "/home/michal/dataset/mnist_9_9/testing/9/",
+            "class" : 9
+        }
+    ]
+}

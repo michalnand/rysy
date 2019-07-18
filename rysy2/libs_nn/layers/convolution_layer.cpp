@@ -209,14 +209,15 @@ void ConvolutionLayer::init_convolution()
     m_output_shape.set(m_input_shape.w(), m_input_shape.h(), kd);
 
     w.init(kw, kh, kd*m_input_shape.d());
-    w.set_random(sqrt(2.0/m_input_shape.size()));
+    //w.set_random(sqrt(2.0/m_input_shape.size()));
+    w.set_random(sqrt(2.0/w.size()));
 
     w_grad.init(w.shape());
     m.init(w.shape());
     v.init(w.shape());
 
     bias.init(1, 1, kd);
-    bias.clear();
+    bias.set_random(0.000001);
 
     this->m_trainable_parameters    = w.size() + bias.size();
     this->m_flops                   = m_input_shape.w()*m_input_shape.h()*m_input_shape.d()*kw*kh*kd;
