@@ -1,3 +1,6 @@
+import sys
+sys.path.append("../libs_rysy_python")
+
 from rysy import *
 import time
 
