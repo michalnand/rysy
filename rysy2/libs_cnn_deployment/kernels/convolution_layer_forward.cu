@@ -95,7 +95,7 @@ __hmul(a, b)
 */
 
 
-#define get_input_idx(ch, y, x) ((ch*input_shape.h + y)*input_shape.w + x)
+#define get_input_idx(ch, y, x) ( __mul24((__mul24(ch, input_shape.h) + y), input_shape.w) + x)
 
 template<unsigned int kernel_size>
 __global__
@@ -112,9 +112,9 @@ void cuda_convolution_forward_kernel(   float *output,
                                         const unsigned int input_size_y
                                     )
 {
-    unsigned int x      = threadIdx.x + blockIdx.x*blockDim.x;
-    unsigned int y      = threadIdx.y + blockIdx.y*blockDim.y;
-    unsigned int filter = threadIdx.z + blockIdx.z*blockDim.z;
+    unsigned int x      = threadIdx.x + __mul24(blockIdx.x, blockDim.x);
+    unsigned int y      = threadIdx.y + __mul24(blockIdx.y, blockDim.y);
+    unsigned int filter = threadIdx.z + __mul24(blockIdx.z, blockDim.z);
 
     unsigned int k_half = (kernel_size - 1)/2;
 
@@ -124,15 +124,15 @@ void cuda_convolution_forward_kernel(   float *output,
     {
         __shared__ float w_shared[kernel_size][kernel_size];
         __shared__ float input_shared[SHARED_SIZE][SHARED_SIZE];
-
+ 
         float activation = bias[filter];
 
         for (unsigned int ch = 0; ch < input_shape.d; ch++)
         {
-            unsigned int offset = filter*kernel_size*kernel_size*input_shape.d;
+            unsigned int offset = __mul24(__mul24(filter, kernel_size*kernel_size), input_shape.d);
             if ( (threadIdx.x < kernel_size) && (threadIdx.y < kernel_size) )
             {
-                unsigned int w_ofs = kernel_size*kernel_size*ch + offset;
+                unsigned int w_ofs = __mul24(kernel_size*kernel_size, ch) + offset;
                 w_shared[threadIdx.y][threadIdx.x] = w[w_ofs + threadIdx.y*kernel_size + threadIdx.x];
             }
 
