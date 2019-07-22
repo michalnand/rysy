@@ -41,7 +41,7 @@ void cpu_convolution_layer_weights_gradient(  float *w_grad,
 }
 
 
-/*
+
 __global__
 void cuda_convolution_layer_weights_gradient(   float *w_grad,
                                                 float *error,
@@ -87,9 +87,9 @@ void cuda_convolution_layer_weights_gradient(   float *w_grad,
           w_grad[w_ofs]+= w_dif;
       }
 }
-*/
 
 
+/*
 __global__
 void cuda_convolution_layer_weights_gradient(   float *w_grad,
                                                 float *error,
@@ -134,7 +134,7 @@ void cuda_convolution_layer_weights_gradient(   float *w_grad,
           w_grad[w_ofs]+= w_dif;
     }
 }
-
+*/
 
 void convolution_layer_gradient(Tensor &w_grad, Tensor &input, Tensor &error)
 {
@@ -158,7 +158,6 @@ void convolution_layer_gradient(Tensor &w_grad, Tensor &input, Tensor &error)
 
     #ifdef NETWORK_USE_CUDA
 
-        /*
         dim3 block(4, 4, 8);
         dim3 grid( (weights_shape.w  + block.x + 1)/block.x,
                    (weights_shape.h  + block.y + 1)/block.y,
@@ -173,9 +172,9 @@ void convolution_layer_gradient(Tensor &w_grad, Tensor &input, Tensor &error)
                                                                     weights_shape);
 
         cudaDeviceSynchronize();
-        */
 
 
+        /*
         unsigned int input_size_y = input_shape.h;
         unsigned int input_size_x = input_shape.w;
 
@@ -236,7 +235,7 @@ void convolution_layer_gradient(Tensor &w_grad, Tensor &input, Tensor &error)
             x_min = x_max;
             x_max+= step_x;
         }
-
+        */
 
 
   #else

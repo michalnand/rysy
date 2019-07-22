@@ -23,19 +23,18 @@ output_shape = dataset.get_output_shape()
 
 cnn = CNN(input_shape, output_shape, 0.0025)
 
-cnn.add_layer("convolution", Shape(3, 3, 32))
+cnn.add_layer("convolution", Shape(3, 3, 16))
 cnn.add_layer("elu")
 cnn.add_layer("max_pooling", Shape(2, 2))
 
 cnn.add_layer("convolution", Shape(3, 3, 32))
 cnn.add_layer("elu")
 cnn.add_layer("max_pooling", Shape(2, 2))
+cnn.add_layer("crop")
 
 cnn.add_layer("convolution", Shape(3, 3, 32))
 cnn.add_layer("elu")
-
-cnn.add_layer("convolution", Shape(1, 1, 32))
-cnn.add_layer("elu")
+cnn.add_layer("crop")
 
 cnn.add_layer("dropout")
 cnn.add_layer("output")
