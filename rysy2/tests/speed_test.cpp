@@ -17,7 +17,7 @@ int main()
     cnn.add_layer("max pooling", Shape(2, 2, 1));
 
     cnn.add_layer("convolution", Shape(3, 3, 64));
-    cnn.add_layer("elu");
+    cnn.add_layer("elu");  
     cnn.add_layer("max pooling", Shape(2, 2, 1));
 
     cnn.add_layer("convolution", Shape(3, 3, 64));
@@ -45,7 +45,7 @@ int main()
     }
     */
 
-
+    cnn.set_training_mode();
     for (unsigned int i = 0; i < 1000; i++)
     {
         input.set_random(1.0);

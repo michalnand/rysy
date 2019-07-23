@@ -18,6 +18,9 @@
 #include <layers/dropout_layer.h>
 #include <layers/crop_layer.h>
 
+#include <layers/highway_block_layer.h>
+
+
 #include <svg_visualiser.h>
 
 CNN::CNN()
@@ -509,6 +512,11 @@ Shape CNN::add_layer(std::string layer_type, Shape shape, std::string weights_fi
     if (layer_type == "crop")
     {
         layer = new CropLayer(m_current_input_shape, parameters);
+    }
+    else
+    if (layer_type == "highway")
+    {
+        layer = new HighwayBlockLayer(m_current_input_shape, parameters);
     }
     else
     {

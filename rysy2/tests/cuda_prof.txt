@@ -1,0 +1,37 @@
+==9581== NVPROF is profiling process 9581, command: ./speed_test.elf
+==9581== Profiling application: ./speed_test.elf
+==9581== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   47.56%  4.92643s      4000  1.2316ms  210.14us  3.0625ms  cuda_convolution_layer_weights_gradient(float*, float*, float*, sShape, sShape, sShape)
+                   24.30%  2.51761s      4000  629.40us  123.74us  1.1587ms  cuda_convolution_back_kernel_3(float*, float*, float*, int, int, unsigned int, unsigned int)
+                   17.32%  1.79379s      4000  448.45us  196.13us  698.91us  void cuda_convolution_forward_kernel<unsigned int=3>(float*, float*, float*, float*, sShape, sShape, sShape)
+                    1.99%  205.67ms      5000  41.134us  1.8560us  146.85us  cuda_activation_elu_backward_kernel(float*, float*, float*, unsigned int)
+                    1.72%  178.65ms      5000  35.730us  1.8240us  117.60us  cuda_activation_elu_forward_kernel(float*, float*, unsigned int)
+                    1.26%  130.66ms      3011  43.394us  1.7600us  674.85us  cuda_tensor_random_kernel(float*, unsigned int, float, unsigned int)
+                    1.13%  116.85ms      2000  58.425us  3.1040us  124.86us  cuda_fc_forward_kernel(float*, float*, float*, unsigned int, unsigned int, unsigned int, unsigned int)
+                    0.91%  94.769ms      4000  23.692us  20.544us  49.024us  cuda_convolution_learn_bias_kernel(float*, float*, sShape, float, unsigned int)
+                    0.76%  78.786ms      4000  19.696us  8.2880us  50.625us  cuda_max_pooling_backward_kernel(float*, float*, float*, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)
+                    0.70%  72.589ms      2000  36.294us  4.0640us  74.400us  cuda_fc_layer_back_kernel(float*, float*, float*, unsigned int, unsigned int)
+                    0.64%  66.215ms      2000  33.107us  1.5360us  84.417us  cuda_fc_layer_weights_gradient(float*, float*, float*, unsigned int, unsigned int)
+                    0.62%  63.819ms      4000  15.954us  5.2800us  46.528us  cuda_max_pooling_forward_kernel(float*, float*, float*, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)
+                    0.48%  49.756ms       186  267.50us  10.688us  1.9675ms  cuda_solver_adam_kernel(float*, float*, unsigned int, float*, float*, float, float, float, float, float)
+                    0.27%  28.299ms     10530  2.6870us     864ns  14.272us  [CUDA memset]
+                    0.20%  20.646ms      7096  2.9090us     864ns  26.336us  [CUDA memcpy DtoD]
+                    0.06%  5.7313ms       186  30.813us  2.1760us  138.27us  cuda_regularization_kernel(float*, unsigned int, float, float)
+                    0.03%  3.4653ms      2000  1.7320us  1.5360us  5.2480us  cuda_fc_layer_back_bias_kernel(float*, float*, float, unsigned int)
+                    0.02%  2.1373ms      1000  2.1370us  2.0800us  5.1200us  cuda_dropout_backward_kernel(float*, float*, float*, unsigned int)
+                    0.02%  1.7090ms      1000  1.7090us  1.6320us  5.3120us  cuda_dropout_forward_kernel(float*, float*, float*, float, unsigned int)
+                    0.01%  1.5416ms      1000  1.5410us  1.4080us  5.0880us  cuda_tensor_sub_kernel(float*, float*, unsigned int)
+      API calls:   86.92%  11.0566s     48383  228.52us  6.4210us  4.8799ms  cudaDeviceSynchronize
+                   10.44%  1.32795s     48383  27.446us  20.710us  1.9568ms  cudaLaunch
+                    0.92%  117.63ms       171  687.91us  3.6100us  113.28ms  cudaMalloc
+                    0.67%  85.333ms      7096  12.025us  8.7510us  388.02us  cudaMemcpy
+                    0.60%  76.857ms     10530  7.2980us  3.1490us  97.599us  cudaMemset
+                    0.32%  40.188ms    267648     150ns     107ns  391.71us  cudaSetupArgument
+                    0.08%  10.639ms     48383     219ns     151ns  376.63us  cudaConfigureCall
+                    0.03%  4.4447ms       171  25.992us  3.7920us  159.68us  cudaFree
+                    0.01%  832.74us        94  8.8580us     702ns  352.86us  cuDeviceGetAttribute
+                    0.00%  107.71us         1  107.71us  107.71us  107.71us  cuDeviceGetName
+                    0.00%  97.079us         1  97.079us  97.079us  97.079us  cuDeviceTotalMem
+                    0.00%  7.2750us         3  2.4250us     894ns  4.4190us  cuDeviceGetCount
+                    0.00%  3.8260us         2  1.9130us  1.0780us  2.7480us  cuDeviceGet

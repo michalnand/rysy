@@ -178,7 +178,7 @@ void DenseConvolutionLayer::backward(Tensor &error_back, Tensor &error, Tensor &
         w_grad.clear();
     }
 
-    convolution_layer_backward(error_back, input, m_error_convolution, w);
+    convolution_layer_backward(error_back, m_error_convolution, w);
 
     error_back.add(m_error_direct);
 }

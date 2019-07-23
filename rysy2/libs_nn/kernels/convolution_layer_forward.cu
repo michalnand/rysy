@@ -143,53 +143,53 @@ void cuda_convolution_forward_kernel(   float *output,
     unsigned int k_half = (kernel_size - 1)/2;
     unsigned int input_size_y = input_shape.h - 2*k_half;
     unsigned int input_size_x = input_shape.w - 2*k_half;
- 
+
+
+
+    __shared__ float w_shared[MAX_FEATURE_MAP_COUNT][kernel_size][kernel_size];
+
+    if ((threadIdx.x < kernel_size) && (threadIdx.y < kernel_size))
+        for (unsigned int ch = 0; ch < input_shape.d; ch++)
+            {
+                unsigned int w_ofs = kernel_size*kernel_size*ch + filter*kernel_size*kernel_size*input_shape.d;
+                w_shared[ch][threadIdx.y][threadIdx.x] = w[w_ofs + threadIdx.y*kernel_size + threadIdx.x];
+            }
+
+    __syncthreads();
+
+
     if (filter < output_shape.d)
-    if (y <= input_size_y)
-    if (x <= input_size_x)
-    {
+    if (y < input_size_y)
+    if (x < input_size_x)
+    { 
         float sum = bias[filter];
-        __shared__ float w_shared[kernel_size][kernel_size];
 
         for (unsigned int ch = 0; ch < input_shape.d; ch++)
         {
-            if ((threadIdx.x < kernel_size) && (threadIdx.y < kernel_size))
+            unsigned int input_idx  = (ch*input_shape.h + y)*input_shape.w + x;
+
+            if (kernel_size == 1)
             {
-                unsigned int w_ofs = kernel_size*kernel_size*ch + filter*kernel_size*kernel_size*input_shape.d;
-                w_shared[threadIdx.y][threadIdx.x] = w[w_ofs + threadIdx.y*kernel_size + threadIdx.x];
+                sum+= w_shared[ch][0][0]*input[input_idx];
             }
 
-            __syncthreads();
-
-            if ((y <input_size_y) && (x < input_size_x))
+            if (kernel_size == 3)
             {
-                unsigned int input_idx  = (ch*input_shape.h + y)*input_shape.w + x;
+                sum+= w_shared[ch][0][0]*input[input_idx]; input_idx++;
+                sum+= w_shared[ch][0][1]*input[input_idx]; input_idx++;
+                sum+= w_shared[ch][0][2]*input[input_idx]; input_idx++;
+                input_idx+= input_shape.w - kernel_size;
 
-                if (kernel_size == 1)
-                {
-                    sum+= w_shared[0][0]*input[input_idx];
-                }
+                sum+= w_shared[ch][1][0]*input[input_idx]; input_idx++;
+                sum+= w_shared[ch][1][1]*input[input_idx]; input_idx++;
+                sum+= w_shared[ch][1][2]*input[input_idx]; input_idx++;
+                input_idx+= input_shape.w - kernel_size;
 
-                if (kernel_size == 3)
-                {
-                    sum+= w_shared[0][0]*input[input_idx]; input_idx++;
-                    sum+= w_shared[0][1]*input[input_idx]; input_idx++;
-                    sum+= w_shared[0][2]*input[input_idx]; input_idx++;
-                    input_idx+= input_shape.w - kernel_size;
-
-                    sum+= w_shared[1][0]*input[input_idx]; input_idx++;
-                    sum+= w_shared[1][1]*input[input_idx]; input_idx++;
-                    sum+= w_shared[1][2]*input[input_idx]; input_idx++;
-                    input_idx+= input_shape.w - kernel_size;
-
-                    sum+= w_shared[2][0]*input[input_idx]; input_idx++;
-                    sum+= w_shared[2][1]*input[input_idx]; input_idx++;
-                    sum+= w_shared[2][2]*input[input_idx]; input_idx++;
-                    input_idx+= input_shape.w - kernel_size;
-                }
+                sum+= w_shared[ch][2][0]*input[input_idx]; input_idx++;
+                sum+= w_shared[ch][2][1]*input[input_idx]; input_idx++;
+                sum+= w_shared[ch][2][2]*input[input_idx]; input_idx++;
+                input_idx+= input_shape.w - kernel_size;
             }
-
-            __syncthreads();
         }
 
         unsigned int output_idx = (filter*input_shape.h + y + k_half)*input_shape.w + x + k_half;

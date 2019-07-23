@@ -164,7 +164,7 @@ void ConvolutionLayer::backward(Tensor &error_back, Tensor &error, Tensor &input
         w_grad.clear();
      }
 
-     convolution_layer_backward(error_back, input, error, w);
+     convolution_layer_backward(error_back, error, w);
 }
 
 void ConvolutionLayer::save(std::string file_name_prefix)

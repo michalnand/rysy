@@ -41,15 +41,14 @@ void cpu_convolution_layer_weights_gradient(  float *w_grad,
 }
 
 
-
 __global__
-void cuda_convolution_layer_weights_gradient(   float *w_grad,
-                                                float *error,
-                                                float *input,
+void cuda_convolution_layer_weights_gradient_any_size(      float *w_grad,
+                                                            float *error,
+                                                            float *input,
 
-                                                sShape error_shape,
-                                                sShape input_shape,
-                                                sShape kernel_shape )
+                                                            sShape error_shape,
+                                                            sShape input_shape,
+                                                            sShape kernel_shape )
 {
     unsigned int kx  = threadIdx.x + blockIdx.x*blockDim.x;
     unsigned int ky  = threadIdx.y + blockIdx.y*blockDim.y;
@@ -61,8 +60,8 @@ void cuda_convolution_layer_weights_gradient(   float *w_grad,
     {
           unsigned int kw_half      = (kernel_shape.w - 1)/2;
           unsigned int kh_half      = (kernel_shape.h - 1)/2;
-          unsigned int input_size_y = input_shape.h - kh_half;
           unsigned int input_size_x = input_shape.w - kw_half;
+          unsigned int input_size_y = input_shape.h - kh_half;
 
           unsigned int filter = kd/input_shape.d;
           unsigned int ch     = kd%input_shape.d;
@@ -72,8 +71,8 @@ void cuda_convolution_layer_weights_gradient(   float *w_grad,
 
           for (unsigned int y = 0; y < input_size_y; y++)
           {
-              unsigned int input_idx  = (ch*input_shape.h + y + ky)*input_shape.w + kx;
-              unsigned int error_idx  = (filter*error_shape.h + y + kh_half)*error_shape.w + kw_half;
+             unsigned int input_idx  = (ch*input_shape.h + y + ky)*input_shape.w + kx;
+             unsigned int error_idx  = (filter*error_shape.h + y + kh_half)*error_shape.w + kw_half;
 
               for (unsigned int x = 0; x < input_size_x; x++)
               {
@@ -81,7 +80,6 @@ void cuda_convolution_layer_weights_gradient(   float *w_grad,
                   error_idx++;
                   input_idx++;
               }
-
           }
 
           w_grad[w_ofs]+= w_dif;
@@ -89,41 +87,41 @@ void cuda_convolution_layer_weights_gradient(   float *w_grad,
 }
 
 
-/*
+template<unsigned int kernel_size>
 __global__
 void cuda_convolution_layer_weights_gradient(   float *w_grad,
-                                                float *error,
-                                                float *input,
+                                                const float *error,
+                                                const float *input,
 
-                                                sShape error_shape,
-                                                sShape input_shape,
-                                                sShape kernel_shape,
-                                                unsigned int y_min, unsigned int y_max,
-                                                unsigned int x_min, unsigned int x_max)
+                                                const unsigned int width,
+                                                const unsigned int height,
+                                                const unsigned int channels,
+                                                const unsigned int filters)
 {
-    unsigned int kx  = threadIdx.x + blockIdx.x*blockDim.x;
-    unsigned int ky  = threadIdx.y + blockIdx.y*blockDim.y;
-    unsigned int kd  = threadIdx.z + blockIdx.z*blockDim.z;
+    unsigned int k_idx  = threadIdx.x + blockIdx.x*blockDim.x;
+    unsigned int ch     = threadIdx.y + blockIdx.y*blockDim.y;
+    unsigned int filter = threadIdx.z + blockIdx.z*blockDim.z;
 
-    if (kd < kernel_shape.d)
-    if (ky < kernel_shape.h)
-    if (kx < kernel_shape.w)
+    if ((k_idx < kernel_size*kernel_size) && (ch < channels) && (filter <  filters))
     {
-          unsigned int kw_half      = (kernel_shape.w - 1)/2;
-          unsigned int kh_half      = (kernel_shape.h - 1)/2;
+          unsigned int kw_half      = (kernel_size - 1)/2;
+          unsigned int kh_half      = (kernel_size - 1)/2;
+          unsigned int input_size_x = width - kw_half;
+          unsigned int input_size_y = height - kh_half;
 
-          unsigned int filter = kd/input_shape.d;
-          unsigned int ch     = kd%input_shape.d;
-          unsigned int w_ofs  = (kd*kernel_shape.h + ky)*kernel_shape.w + kx;
+          unsigned int kx     = k_idx%kernel_size;
+          unsigned int ky     = k_idx/kernel_size;
+
+          unsigned int input_offset = ch*height*width;
+          unsigned int error_offset = filter*height*width;
 
           float w_dif = 0.0;
-
-          for (unsigned int y = y_min; y < y_max; y++)
+          for (unsigned int y = 0; y <= input_size_y; y++)
           {
-              unsigned int input_idx  = (ch*input_shape.h + y + ky)*input_shape.w + kx + x_min;
-              unsigned int error_idx  = (filter*error_shape.h + y + kh_half)*error_shape.w + kw_half + x_min;
+             unsigned int input_idx  = input_offset + (y + ky)*width + kx;
+             unsigned int error_idx  = error_offset + (y + kh_half)*width + kw_half;
 
-              for (unsigned int x = x_min; x < x_max; x++)
+              for (unsigned int x = 0; x <= input_size_x; x++)
               {
                   w_dif+= error[error_idx]*input[input_idx];
                   error_idx++;
@@ -131,10 +129,12 @@ void cuda_convolution_layer_weights_gradient(   float *w_grad,
               }
           }
 
+          unsigned int w_ofs  = ((filter*channels + ch)*kernel_size + ky)*kernel_size + kx;
           w_grad[w_ofs]+= w_dif;
-    }
+      }
 }
-*/
+
+
 
 void convolution_layer_gradient(Tensor &w_grad, Tensor &input, Tensor &error)
 {
@@ -158,86 +158,41 @@ void convolution_layer_gradient(Tensor &w_grad, Tensor &input, Tensor &error)
 
     #ifdef NETWORK_USE_CUDA
 
-        dim3 block(4, 4, 8);
-        dim3 grid( (weights_shape.w  + block.x + 1)/block.x,
-                   (weights_shape.h  + block.y + 1)/block.y,
-                   (weights_shape.d  + block.z + 1)/block.z);
+            if (false)
+            { //TODO - not working
+                dim3 block(1, 4, 4);
+                dim3 grid( 9,
+                           (input_shape.h + block.y + 1)/block.y,
+                           (error_shape.d + block.z + 1)/block.z);
 
-        cuda_convolution_layer_weights_gradient<<<grid, block>>>(   w_grad.v,
-                                                                    error.v,
-                                                                    input.v,
+                cuda_convolution_layer_weights_gradient<3><<<grid, block>>>(  w_grad.v,
+                                                                              error.v,
+                                                                              input.v,
 
-                                                                    error_shape,
-                                                                    input_shape,
-                                                                    weights_shape);
+                                                                              input_shape.w,
+                                                                              input_shape.h,
+                                                                              input_shape.d,
+                                                                              error_shape.d);
 
-        cudaDeviceSynchronize();
+                cudaDeviceSynchronize();
+            }
+            else
+            {
+                dim3 block(4, 4, 8);
+                dim3 grid( (weights_shape.w  + block.x + 1)/block.x,
+                           (weights_shape.h  + block.y + 1)/block.y,
+                           (weights_shape.d  + block.z + 1)/block.z);
 
+                cuda_convolution_layer_weights_gradient_any_size<<<grid, block>>>(   w_grad.v,
+                                                                            error.v,
+                                                                            input.v,
 
-        /*
-        unsigned int input_size_y = input_shape.h;
-        unsigned int input_size_x = input_shape.w;
+                                                                            error_shape,
+                                                                            input_shape,
+                                                                            weights_shape);
 
-        unsigned int kw_half      = (weights_shape.w - 1)/2;
-        unsigned int kh_half      = (weights_shape.h - 1)/2;
-
-        unsigned int step_y = input_size_y;
-        unsigned int step_x = input_size_x;
-
-
-
-        if ((input_size_y%4) == 0)
-            step_y = input_size_y/4;
-        else if ((input_size_y%2) == 0)
-            step_y = input_size_y/2;
-
-        if ((input_size_x%4) == 0)
-            step_x = input_size_x/4;
-        else if ((input_size_x%2) == 0)
-            step_x = input_size_x/2;
-
-        unsigned int y_min = 0;
-        unsigned int y_max = step_y;
-        unsigned int x_min = 0;
-        unsigned int x_max = step_x;
-
-        while ((y_max <= input_size_y) && (x_max <= input_size_x))
-        {
-            unsigned int y_max_ = y_max;
-            unsigned int x_max_ = x_max;
-
-            if (y_max_ > input_size_y - kh_half)
-                y_max_ = input_size_y - kh_half;
-
-            if (x_max_ > input_size_x - kw_half)
-                x_max_ = input_size_x - kw_half;
-
-            dim3 block(4, 4, 8);
-            dim3 grid( (weights_shape.w  + block.x + 1)/block.x,
-                       (weights_shape.h  + block.y + 1)/block.y,
-                       (weights_shape.d  + block.z + 1)/block.z);
-
-            cuda_convolution_layer_weights_gradient<<<grid, block>>>(   w_grad.v,
-                                                                        error.v,
-                                                                        input.v,
-
-                                                                        error_shape,
-                                                                        input_shape,
-                                                                        weights_shape,
-                                                                        y_min, y_max_,
-                                                                        x_min, x_max_);
-
-            cudaDeviceSynchronize();
-
-            y_min = y_max;
-            y_max+= step_y;
-
-            x_min = x_max;
-            x_max+= step_x;
-        }
-        */
-
-
+                cudaDeviceSynchronize();
+            }
   #else
 
     cpu_convolution_layer_weights_gradient( w_grad.v,
@@ -618,7 +573,7 @@ void cuda_convolution_back_kernel_any_size(   float *error,
 
 
 
-void convolution_layer_backward( Tensor &error_back, Tensor &input, Tensor &error, Tensor &w)
+void convolution_layer_backward( Tensor &error_back, Tensor &error, Tensor &w)
 {
     unsigned int kernel_width = w.w();
     unsigned int kernel_height = w.h();

@@ -69,7 +69,6 @@ void DropoutLayer::copy_dropout(const DropoutLayer &other)
     this->noise = other.noise;
 }
 
-
 void DropoutLayer::forward(Tensor &output, Tensor &input)
 {
     if (m_training_mode)
