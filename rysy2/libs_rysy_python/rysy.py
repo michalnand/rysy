@@ -1889,6 +1889,9 @@ class Tensor(_object):
 
     def split_time_sequence(self, dest):
         return _rysy.Tensor_split_time_sequence(self, dest)
+
+    def norm_l2(self):
+        return _rysy.Tensor_norm_l2(self)
     __swig_setmethods__["v"] = _rysy.Tensor_v_set
     __swig_getmethods__["v"] = _rysy.Tensor_v_get
     if _newclass:

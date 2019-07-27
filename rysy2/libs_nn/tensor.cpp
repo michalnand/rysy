@@ -546,6 +546,21 @@ void Tensor::split_time_sequence(std::vector<Tensor> &dest)
     }
 }
 
+float Tensor::norm_l2()
+{
+    std::vector<float> v_tmp(size());
+    set_to_host(v_tmp);
+
+    float result = 0.0;
+
+    for (unsigned int i = 0; i < size(); i++)
+    {
+        float tmp = v_tmp[i];
+        result+= tmp*tmp;
+    }
+
+    return result;
+}
 
 void Tensor::init_size(Shape shape)
 {

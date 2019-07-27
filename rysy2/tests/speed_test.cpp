@@ -1,5 +1,6 @@
 #include <iostream>
 #include <dqn.h>
+#include <thread>
 
 int main()
 {
@@ -25,7 +26,7 @@ int main()
     cnn.add_layer("max pooling", Shape(2, 2, 1));
 
     cnn.add_layer("convolution", Shape(3, 3, 64));
-    cnn.add_layer("elu");  
+    cnn.add_layer("elu");
     cnn.add_layer("max pooling", Shape(2, 2, 1));
 
     cnn.add_layer("fc", Shape(1, 1, 256));
@@ -52,8 +53,7 @@ int main()
         output.set_random(1.0);
         cnn.train(output, input);
     }
-
-
+ 
     std::cout << "program done\n";
     return 0;
 }

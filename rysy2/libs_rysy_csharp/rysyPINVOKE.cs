@@ -685,6 +685,9 @@ class rysyPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_Tensor_split_time_sequence")]
   public static extern void Tensor_split_time_sequence(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
 
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_Tensor_norm_l2")]
+  public static extern float Tensor_norm_l2(global::System.Runtime.InteropServices.HandleRef jarg1);
+
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_Tensor_v_set")]
   public static extern void Tensor_v_set(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
 

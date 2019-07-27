@@ -77,6 +77,7 @@ class Tensor
         void concatenate_time_sequence(std::vector<Tensor> &source, unsigned max_time_steps = 0);
         void split_time_sequence(std::vector<Tensor> &dest);
 
+        float norm_l2();
 
     private:
         void init_size(Shape shape);

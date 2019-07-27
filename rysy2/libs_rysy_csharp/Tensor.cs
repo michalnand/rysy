@@ -201,6 +201,11 @@ public class Tensor : global::System.IDisposable {
     if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
   }
 
+  public float norm_l2() {
+    float ret = rysyPINVOKE.Tensor_norm_l2(swigCPtr);
+    return ret;
+  }
+
   public SWIGTYPE_p_float v {
     set {
       rysyPINVOKE.Tensor_v_set(swigCPtr, SWIGTYPE_p_float.getCPtr(value));
