@@ -17,6 +17,7 @@
 
 #include <layers/dropout_layer.h>
 #include <layers/crop_layer.h>
+#include <layers/flatten_layer.h>
 
 #include <layers/highway_block_layer.h>
 
@@ -512,6 +513,11 @@ Shape CNN::add_layer(std::string layer_type, Shape shape, std::string weights_fi
     if (layer_type == "crop")
     {
         layer = new CropLayer(m_current_input_shape, parameters);
+    }
+    else
+    if (layer_type == "flatten")
+    {
+        layer = new FlattenLayer(m_current_input_shape, parameters);
     }
     else
     if (layer_type == "highway")

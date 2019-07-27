@@ -1,14 +1,14 @@
 #include <icm.h>
-
+#include <iostream>
 
 ICM::ICM()
 {
 
 }
 
-ICM::ICM(Shape state_shape, unsigned int actions_count, unsigned int features_count, std::string network_config_dir)
+ICM::ICM(Shape state_shape, unsigned int actions_count, std::string network_config_dir)
 {
-    init(state_shape, actions_count, features_count, network_config_dir);
+    init(state_shape, actions_count, network_config_dir);
 }
 
 ICM::ICM(ICM& other)
@@ -46,7 +46,6 @@ void ICM::copy(ICM& other)
 {
     state_shape     = other.state_shape;
     actions_count   = other.actions_count;
-    features_count  = other.features_count;
 
     t_state_now     = other.t_state_now;
     t_state_next    = other.t_state_next;
@@ -81,7 +80,6 @@ void ICM::copy(const ICM& other)
 {
     state_shape     = other.state_shape;
     actions_count   = other.actions_count;
-    features_count  = other.features_count;
 
     t_state_now     = other.t_state_now;
     t_state_next    = other.t_state_next;
@@ -112,19 +110,24 @@ void ICM::copy(const ICM& other)
     t_features_error_next           = other.t_features_error_next;
 }
 
-void ICM::init(Shape state_shape, unsigned int actions_count, unsigned int features_count, std::string network_config_path)
+void ICM::init(Shape state_shape, unsigned int actions_count, std::string network_config_path)
 {
     this->state_shape       = state_shape;
     this->actions_count     = actions_count;
-    this->features_count    = features_count;
 
-    Shape features_output_shape(1, 1, this->features_count);
+    features_network = new CNN(network_config_path + "features_network/network_config.json", state_shape);
+
+    Shape features_output_shape = features_network->get_output_shape();
+
+    Shape inverse_input_shape(1, 1, features_output_shape.size()*2);
     Shape inverse_output_shape(1, 1, this->actions_count);
-    Shape forward_input_shape(1, 1, this->features_count + this->actions_count);
 
-    features_network = new CNN(network_config_path + "features_network.json", state_shape, features_output_shape);
-    inverse_network  = new CNN(network_config_path + "inverse_network.json", features_output_shape, inverse_output_shape);
-    forward_network  = new CNN(network_config_path + "forward_network.json", forward_input_shape, features_output_shape);
+    Shape forward_input_shape(1, 1, features_output_shape.size() + this->actions_count);
+    Shape forward_output_shape(1, 1, features_output_shape.size());
+
+
+    inverse_network  = new CNN(network_config_path + "inverse_network/network_config.json", inverse_input_shape, inverse_output_shape);
+    forward_network  = new CNN(network_config_path + "forward_network/network_config.json", forward_input_shape, forward_output_shape);
 
 
     t_state_now.init(state_shape);
@@ -134,14 +137,14 @@ void ICM::init(Shape state_shape, unsigned int actions_count, unsigned int featu
     t_features_now.init(features_output_shape);
     t_features_next.init(features_output_shape);
 
-    t_inverse_input.init(1, 1, t_features_now.size() + t_features_next.size());
-    t_inverse_output.init(1, 1, actions_count);
-    t_inverse_error.init(features_output_shape);
-    t_inverse_error_back.init(1, 1, t_features_now.size() + t_features_next.size());
+    t_inverse_input.init(inverse_input_shape);
+    t_inverse_output.init(inverse_output_shape);
+    t_inverse_error.init(inverse_output_shape);
+    t_inverse_error_back.init(inverse_input_shape);
 
     t_forward_input.init(forward_input_shape);
-    t_forward_output.init(features_output_shape);
-    t_forward_error.init(features_output_shape);
+    t_forward_output.init(forward_output_shape);
+    t_forward_error.init(forward_output_shape);
     t_forward_error_back.init(forward_input_shape);
 
     t_features_now_error_inverse.init(features_output_shape);
@@ -179,6 +182,9 @@ void ICM::train(ExperienceReplayBuffer &replay_buffer)
     {
         unsigned int idx = rand()%(replay_buffer.size()-1);
         train(replay_buffer.get_state()[idx], replay_buffer.get_state()[idx + 1], replay_buffer.get_action()[idx]);
+
+        //TODO - uncomment this !!!!!!!!!!!!!!!
+        //replay_buffer.set_curiosity(idx, get_curiosity());
 
         icm_result.inverse_loss+= t_inverse_error.norm_l2();
         icm_result.forward_loss+= t_forward_error.norm_l2();
@@ -233,6 +239,33 @@ sICMResult ICM::get_icm_result()
     return icm_result;
 }
 
+void ICM::print()
+{
+    std::cout << "\n\n\nFEATURES NETWORK :\n";
+    features_network->print();
+
+    std::cout << "\n\n\nINVERSE NETWORK :\n";
+    inverse_network->print();
+
+    std::cout << "\n\n\nFORWARD NETWORK :\n";
+    forward_network->print();
+}
+
+
+void ICM::save(std::string path)
+{
+    features_network->save(path + "features_network/trained/");
+    inverse_network->save(path + "inverse_network/trained/");
+    forward_network->save(path + "forward_network/trained/");
+}
+
+void ICM::load(std::string path)
+{
+    features_network->load_weights(path + "features_network/trained/");
+    inverse_network->load_weights(path + "inverse_network/trained/");
+    forward_network->load_weights(path + "forward_network/trained/");
+}
+
 
 
 void ICM::train(std::vector<float> &state_now, std::vector<float> &state_next, unsigned int action)
@@ -264,7 +297,6 @@ void ICM::train(std::vector<float> &state_now, std::vector<float> &state_next, u
     //compute forward model error
     t_forward_error = t_features_next;
     t_forward_error.sub(t_forward_output);
-
 
 
     //training -> TODO this hell path

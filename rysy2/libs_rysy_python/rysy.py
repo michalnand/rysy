@@ -2095,6 +2095,9 @@ class ExperienceReplayBuffer(_object):
     def compute(self, gamma=0.99, clamp_value=10.0):
         return _rysy.ExperienceReplayBuffer_compute(self, gamma, clamp_value)
 
+    def set_curiosity(self, idx, curiosity):
+        return _rysy.ExperienceReplayBuffer_set_curiosity(self, idx, curiosity)
+
     def size(self):
         return _rysy.ExperienceReplayBuffer_size(self)
 
@@ -2112,6 +2115,9 @@ class ExperienceReplayBuffer(_object):
 
     def get_reward(self):
         return _rysy.ExperienceReplayBuffer_get_reward(self)
+
+    def get_curiosity(self):
+        return _rysy.ExperienceReplayBuffer_get_curiosity(self)
 
     def get_terminal(self):
         return _rysy.ExperienceReplayBuffer_get_terminal(self)
@@ -2216,6 +2222,134 @@ class DQNA(_object):
         return _rysy.DQNA_load_weights(self, file_name_prefix)
 DQNA_swigregister = _rysy.DQNA_swigregister
 DQNA_swigregister(DQNA)
+
+class sICMResult(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, sICMResult, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, sICMResult, name)
+    __repr__ = _swig_repr
+    __swig_setmethods__["inverse_loss"] = _rysy.sICMResult_inverse_loss_set
+    __swig_getmethods__["inverse_loss"] = _rysy.sICMResult_inverse_loss_get
+    if _newclass:
+        inverse_loss = _swig_property(_rysy.sICMResult_inverse_loss_get, _rysy.sICMResult_inverse_loss_set)
+    __swig_setmethods__["forward_loss"] = _rysy.sICMResult_forward_loss_set
+    __swig_getmethods__["forward_loss"] = _rysy.sICMResult_forward_loss_get
+    if _newclass:
+        forward_loss = _swig_property(_rysy.sICMResult_forward_loss_get, _rysy.sICMResult_forward_loss_set)
+    __swig_setmethods__["inverse_clasification_hit"] = _rysy.sICMResult_inverse_clasification_hit_set
+    __swig_getmethods__["inverse_clasification_hit"] = _rysy.sICMResult_inverse_clasification_hit_get
+    if _newclass:
+        inverse_clasification_hit = _swig_property(_rysy.sICMResult_inverse_clasification_hit_get, _rysy.sICMResult_inverse_clasification_hit_set)
+    __swig_setmethods__["inverse_clasification_miss"] = _rysy.sICMResult_inverse_clasification_miss_set
+    __swig_getmethods__["inverse_clasification_miss"] = _rysy.sICMResult_inverse_clasification_miss_get
+    if _newclass:
+        inverse_clasification_miss = _swig_property(_rysy.sICMResult_inverse_clasification_miss_get, _rysy.sICMResult_inverse_clasification_miss_set)
+    __swig_setmethods__["inverse_classification_success"] = _rysy.sICMResult_inverse_classification_success_set
+    __swig_getmethods__["inverse_classification_success"] = _rysy.sICMResult_inverse_classification_success_get
+    if _newclass:
+        inverse_classification_success = _swig_property(_rysy.sICMResult_inverse_classification_success_get, _rysy.sICMResult_inverse_classification_success_set)
+
+    def __init__(self):
+        this = _rysy.new_sICMResult()
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _rysy.delete_sICMResult
+    __del__ = lambda self: None
+sICMResult_swigregister = _rysy.sICMResult_swigregister
+sICMResult_swigregister(sICMResult)
+
+class ICM(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, ICM, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, ICM, name)
+    __repr__ = _swig_repr
+
+    def __init__(self, *args):
+        this = _rysy.new_ICM(*args)
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _rysy.delete_ICM
+    __del__ = lambda self: None
+
+    def init(self, state_shape, actions_count, network_config_path):
+        return _rysy.ICM_init(self, state_shape, actions_count, network_config_path)
+
+    def train(self, replay_buffer):
+        return _rysy.ICM_train(self, replay_buffer)
+
+    def forward(self, state_now, state_next, action):
+        return _rysy.ICM_forward(self, state_now, state_next, action)
+
+    def get_curiosity(self):
+        return _rysy.ICM_get_curiosity(self)
+
+    def get_icm_result(self):
+        return _rysy.ICM_get_icm_result(self)
+
+    def _print(self):
+        return _rysy.ICM__print(self)
+
+    def save(self, path):
+        return _rysy.ICM_save(self, path)
+
+    def load(self, path):
+        return _rysy.ICM_load(self, path)
+ICM_swigregister = _rysy.ICM_swigregister
+ICM_swigregister(ICM)
+
+class DQNCuriosity(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, DQNCuriosity, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, DQNCuriosity, name)
+    __repr__ = _swig_repr
+
+    def __init__(self, *args):
+        this = _rysy.new_DQNCuriosity(*args)
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _rysy.delete_DQNCuriosity
+    __del__ = lambda self: None
+
+    def init(self, state_shape, actions_count, config_path):
+        return _rysy.DQNCuriosity_init(self, state_shape, actions_count, config_path)
+
+    def forward(self, *args):
+        return _rysy.DQNCuriosity_forward(self, *args)
+
+    def get_q_values(self):
+        return _rysy.DQNCuriosity_get_q_values(self)
+
+    def add(self, *args):
+        return _rysy.DQNCuriosity_add(self, *args)
+
+    def is_full(self):
+        return _rysy.DQNCuriosity_is_full(self)
+
+    def train(self):
+        return _rysy.DQNCuriosity_train(self)
+
+    def _print(self):
+        return _rysy.DQNCuriosity__print(self)
+
+    def print_buffer(self):
+        return _rysy.DQNCuriosity_print_buffer(self)
+
+    def save(self, path):
+        return _rysy.DQNCuriosity_save(self, path)
+
+    def load_weights(self, file_name_prefix):
+        return _rysy.DQNCuriosity_load_weights(self, file_name_prefix)
+DQNCuriosity_swigregister = _rysy.DQNCuriosity_swigregister
+DQNCuriosity_swigregister(DQNCuriosity)
 
 class StackedState(_object):
     __swig_setmethods__ = {}

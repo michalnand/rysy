@@ -72,6 +72,7 @@ void ExperienceReplayBuffer::init(unsigned int buffer_size, unsigned int state_s
     this->q_values.resize(buffer_size);
     this->action.resize(buffer_size);
     this->reward.resize(buffer_size);
+    this->curiosity.resize(buffer_size);
     this->terminal.resize(buffer_size);
 
 
@@ -94,6 +95,10 @@ void ExperienceReplayBuffer::init(unsigned int buffer_size, unsigned int state_s
 
     for (unsigned int j = 0; j < this->buffer_size; j++)
         this->reward[j] = 0.0;
+
+    for (unsigned int j = 0; j < this->buffer_size; j++)
+        this->curiosity[j] = 0.0;
+
 
     for (unsigned int j = 0; j < this->buffer_size; j++)
         this->terminal[j] = false;
@@ -138,9 +143,9 @@ void ExperienceReplayBuffer::compute(float gamma, float clamp_value)
         float q_new;
 
         if (terminal[move_idx])
-            q_new = reward[move_idx];
+            q_new = reward[move_idx] + curiosity[move_idx];
         else
-            q_new = reward[move_idx] + gamma*max(q_values[move_idx + 1]);
+            q_new = reward[move_idx] + curiosity[move_idx] + gamma*max(q_values[move_idx + 1]);
 
         q_new = clamp(q_new, -clamp_value, clamp_value);
 
@@ -154,6 +159,11 @@ void ExperienceReplayBuffer::compute(float gamma, float clamp_value)
     }
 
     current_ptr = 0;
+}
+
+void ExperienceReplayBuffer::set_curiosity(unsigned int idx, float curiosity)
+{
+    this->curiosity[idx] = curiosity;
 }
 
 unsigned int ExperienceReplayBuffer::size()
@@ -174,6 +184,7 @@ void ExperienceReplayBuffer::print()
 
         std::cout << "action   = " << action[j] << "\n";
         std::cout << "reward   = " << reward[j] << "\n";
+        std::cout << "curiosity= " << curiosity[j] << "\n";
         std::cout << "terminal = " << terminal[j] << "\n";
 
         std::cout << "\n\n\n\n";
@@ -220,6 +231,11 @@ std::vector<unsigned int>& ExperienceReplayBuffer::get_action()
 std::vector<float>& ExperienceReplayBuffer::get_reward()
 {
     return this->reward;
+}
+
+std::vector<float>& ExperienceReplayBuffer::get_curiosity()
+{
+    return this->curiosity;
 }
 
 std::vector<bool>& ExperienceReplayBuffer::get_terminal()

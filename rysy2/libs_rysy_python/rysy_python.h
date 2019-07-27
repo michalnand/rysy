@@ -33,6 +33,8 @@
 #include <experience_replay_buffer.h>
 #include <dqn.h>
 #include <dqna.h>
+#include <icm.h>
+#include <dqn_curiosity.h>
 #include <stacked_state.h>
 
 #include <layer_export.h>

@@ -82,6 +82,10 @@ public class ExperienceReplayBuffer : global::System.IDisposable {
     rysyPINVOKE.ExperienceReplayBuffer_compute__SWIG_2(swigCPtr);
   }
 
+  public void set_curiosity(uint idx, float curiosity) {
+    rysyPINVOKE.ExperienceReplayBuffer_set_curiosity(swigCPtr, idx, curiosity);
+  }
+
   public uint size() {
     uint ret = rysyPINVOKE.ExperienceReplayBuffer_size(swigCPtr);
     return ret;
@@ -108,6 +112,11 @@ public class ExperienceReplayBuffer : global::System.IDisposable {
 
   public SWIGTYPE_p_std__vectorT_float_t get_reward() {
     SWIGTYPE_p_std__vectorT_float_t ret = new SWIGTYPE_p_std__vectorT_float_t(rysyPINVOKE.ExperienceReplayBuffer_get_reward(swigCPtr), false);
+    return ret;
+  }
+
+  public SWIGTYPE_p_std__vectorT_float_t get_curiosity() {
+    SWIGTYPE_p_std__vectorT_float_t ret = new SWIGTYPE_p_std__vectorT_float_t(rysyPINVOKE.ExperienceReplayBuffer_get_curiosity(swigCPtr), false);
     return ret;
   }
 

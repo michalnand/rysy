@@ -874,6 +874,9 @@ class rysyPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_compute__SWIG_2")]
   public static extern void ExperienceReplayBuffer_compute__SWIG_2(global::System.Runtime.InteropServices.HandleRef jarg1);
 
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_set_curiosity")]
+  public static extern void ExperienceReplayBuffer_set_curiosity(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2, float jarg3);
+
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_size")]
   public static extern uint ExperienceReplayBuffer_size(global::System.Runtime.InteropServices.HandleRef jarg1);
 
@@ -891,6 +894,9 @@ class rysyPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_get_reward")]
   public static extern global::System.IntPtr ExperienceReplayBuffer_get_reward(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_get_curiosity")]
+  public static extern global::System.IntPtr ExperienceReplayBuffer_get_curiosity(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_get_terminal")]
   public static extern global::System.IntPtr ExperienceReplayBuffer_get_terminal(global::System.Runtime.InteropServices.HandleRef jarg1);

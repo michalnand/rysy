@@ -35,6 +35,7 @@ cnn.add_layer("crop")
 cnn.add_layer("convolution", Shape(3, 3, 32))
 cnn.add_layer("elu")
 cnn.add_layer("crop")
+cnn.add_layer("flatten")
 
 cnn.add_layer("dropout")
 cnn.add_layer("output")

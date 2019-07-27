@@ -16,7 +16,7 @@ class ICM
 {
     public:
         ICM();
-        ICM(Shape state_shape, unsigned int actions_count, unsigned int features_count, std::string network_config_file_name);
+        ICM(Shape state_shape, unsigned int actions_count, std::string network_config_path);
         ICM(ICM& other);
         ICM(const ICM& other);
 
@@ -29,7 +29,7 @@ class ICM
         void copy(const ICM& other);
 
     public:
-        void init(Shape state_shape, unsigned int actions_count, unsigned int features_count, std::string network_config_path);
+        void init(Shape state_shape, unsigned int actions_count, std::string network_config_path);
 
     public:
         void train(ExperienceReplayBuffer &replay_buffer);
@@ -38,6 +38,12 @@ class ICM
         float get_curiosity();
 
         sICMResult get_icm_result();
+
+        void print();
+
+    public:
+        void save(std::string path);
+        void load(std::string path);
 
     private:
         void train(std::vector<float> &state_now, std::vector<float> &state_next, unsigned int action);
@@ -48,7 +54,7 @@ class ICM
 
     private:
         Shape state_shape;
-        unsigned int actions_count, features_count;
+        unsigned int actions_count;
 
         Tensor t_state_now, t_state_next, t_action;
         Tensor t_features_now, t_features_next;

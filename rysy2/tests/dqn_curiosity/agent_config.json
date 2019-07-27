@@ -1,0 +1,4 @@
+{
+    "gamma" : 0.99,
+    "replay_buffer_size" : 128
+}

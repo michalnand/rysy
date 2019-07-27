@@ -30,6 +30,8 @@ class ExperienceReplayBuffer
 
         void compute(float gamma = 0.99, float clamp_value = 10.0);
 
+        void set_curiosity(unsigned int idx, float curiosity);
+
         unsigned int size();
         void print();
 
@@ -42,6 +44,7 @@ class ExperienceReplayBuffer
         std::vector<std::vector<float>>&    get_q_values();
         std::vector<unsigned int>&          get_action();
         std::vector<float>&                 get_reward();
+        std::vector<float>&                 get_curiosity();
         std::vector<bool>&                  get_terminal();
 
     protected:
@@ -50,6 +53,7 @@ class ExperienceReplayBuffer
         std::vector<std::vector<float>> q_values;
         std::vector<unsigned int>       action;
         std::vector<float>              reward;
+        std::vector<float>              curiosity;
         std::vector<bool>               terminal;
 
         unsigned int buffer_size, current_ptr;

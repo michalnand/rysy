@@ -1,6 +1,7 @@
 #include <iostream>
 #include <dqn.h>
-#include <thread>
+
+
 
 int main()
 {
@@ -38,13 +39,7 @@ int main()
 
     cnn.print();
 
-    /*
-    for (unsigned int i = 0; i < 1000; i++)
-    {
-        input.set_random(1.0);
-        cnn.forward(output, input);
-    }
-    */
+
 
     cnn.set_training_mode();
     for (unsigned int i = 0; i < 1000; i++)
@@ -53,7 +48,7 @@ int main()
         output.set_random(1.0);
         cnn.train(output, input);
     }
- 
+
     std::cout << "program done\n";
     return 0;
 }
