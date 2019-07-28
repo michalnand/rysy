@@ -30,11 +30,9 @@ cnn.add_layer("max_pooling", Shape(2, 2))
 cnn.add_layer("convolution", Shape(3, 3, 32))
 cnn.add_layer("elu")
 cnn.add_layer("max_pooling", Shape(2, 2))
-cnn.add_layer("crop")
 
 cnn.add_layer("convolution", Shape(3, 3, 32))
 cnn.add_layer("elu")
-cnn.add_layer("crop")
 cnn.add_layer("flatten")
 
 cnn.add_layer("dropout")

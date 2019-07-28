@@ -3,7 +3,7 @@
 
 
 
-int main()
+int main() 
 {
     Shape input_shape(64, 64, 12);
     Shape output_shape(1, 1, 8);
