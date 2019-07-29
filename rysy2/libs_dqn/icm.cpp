@@ -184,7 +184,7 @@ void ICM::train(ExperienceReplayBuffer &replay_buffer)
         train(replay_buffer.get_state()[idx], replay_buffer.get_state()[idx + 1], replay_buffer.get_action()[idx]);
 
         //TODO - uncomment this !!!!!!!!!!!!!!!
-        //replay_buffer.set_curiosity(idx, get_curiosity());
+        //replay_buffer.set_curiosity(idx, get_curiosity()*curiosity_ratio);
 
         icm_result.inverse_loss+= t_inverse_error.norm_l2();
         icm_result.forward_loss+= t_forward_error.norm_l2();
@@ -195,7 +195,9 @@ void ICM::train(ExperienceReplayBuffer &replay_buffer)
             icm_result.inverse_clasification_miss++;
     }
 
-    icm_result.inverse_classification_success = (100.0*icm_result.inverse_clasification_hit)/(icm_result.inverse_clasification_hit + icm_result.inverse_clasification_miss);
+    icm_result.inverse_loss/= replay_buffer.size();
+    icm_result.forward_loss/= replay_buffer.size();
+    icm_result.inverse_classification_success = (100.0*icm_result.inverse_clasification_hit)/(icm_result.inverse_clasification_hit + icm_result.inverse_clasification_miss + 0.000000001);
 
 
     features_network->unset_training_mode();
@@ -293,7 +295,6 @@ void ICM::train(std::vector<float> &state_now, std::vector<float> &state_next, u
     t_inverse_error = t_action;
     t_inverse_error.sub(t_inverse_output);
 
-
     //compute forward model error
     t_forward_error = t_features_next;
     t_forward_error.sub(t_forward_output);
@@ -306,16 +307,25 @@ void ICM::train(std::vector<float> &state_now, std::vector<float> &state_next, u
     forward_network->train_from_error(t_forward_error);
     t_forward_error_back = forward_network->get_error_back();
 
+    /*
+    //TODO -> this is learning using only inverse network
+    t_inverse_error_back.split(t_features_now_error_inverse, t_features_next_error_inverse);
 
+    features_network->forward(t_features_now, t_state_now);
+    features_network->train_from_error(t_features_now_error_inverse);
+
+    features_network->forward(t_features_next, t_state_next);
+    features_network->train_from_error(t_features_next_error_inverse);
+    */
+
+ 
     t_inverse_error_back.split(t_features_now_error_inverse, t_features_next_error_inverse);
     t_forward_error_back.split(t_features_now_error_forward, t_action_error);
-
 
     t_features_error_now = t_features_now_error_inverse;
     t_features_error_now.add(t_features_now_error_forward);
 
-    t_features_error_next = t_features_now_error_forward;
-
+    t_features_error_next = t_features_next_error_inverse;
 
     features_network->forward(t_features_now, t_state_now);
     features_network->train_from_error(t_features_error_now);

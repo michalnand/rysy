@@ -80,6 +80,8 @@ void DQNCuriosity::init(Shape state_shape, unsigned int actions_count, std::stri
     this->state_shape   = state_shape;
     this->actions_count = actions_count;
     this->gamma         = agent_config.result["gamma"].asFloat();
+    this->curiosity_ratio = agent_config.result["curiosity_ratio"].asFloat();
+
     unsigned int replay_buffer_size = agent_config.result["replay_buffer_size"].asFloat();
 
     this->q_values.resize(actions_count);
@@ -139,6 +141,7 @@ void DQNCuriosity::train()
         return;
 
     icm->train(experience_replay_buffer);
+
     std::cout << "inverse loss " << icm->get_icm_result().inverse_loss << "\n";
     std::cout << "forward loss " << icm->get_icm_result().forward_loss << "\n";
     std::cout << "forward classification " << icm->get_icm_result().inverse_classification_success << "\n";

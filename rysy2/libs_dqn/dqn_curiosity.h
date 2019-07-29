@@ -47,6 +47,7 @@ class DQNCuriosity
         Shape state_shape;
         unsigned int actions_count;
         float gamma;
+        float curiosity_ratio;
 
         ExperienceReplayBuffer experience_replay_buffer;
 
