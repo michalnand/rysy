@@ -2348,6 +2348,9 @@ class DQNCuriosity(_object):
 
     def load_weights(self, file_name_prefix):
         return _rysy.DQNCuriosity_load_weights(self, file_name_prefix)
+
+    def get_icm_result(self):
+        return _rysy.DQNCuriosity_get_icm_result(self)
 DQNCuriosity_swigregister = _rysy.DQNCuriosity_swigregister
 DQNCuriosity_swigregister(DQNCuriosity)
 

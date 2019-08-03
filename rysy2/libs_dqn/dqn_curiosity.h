@@ -39,6 +39,7 @@ class DQNCuriosity
         void print_buffer();
         void save(std::string path);
         void load_weights(std::string file_name_prefix);
+        sICMResult get_icm_result();
 
     protected:
         CNN *cnn;

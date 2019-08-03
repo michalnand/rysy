@@ -173,6 +173,11 @@ void DQNCuriosity::save(std::string path)
 
 void DQNCuriosity::load_weights(std::string path)
 {
-    cnn->load_weights(path + "features_network/trained/");
+    cnn->load_weights(path + "dqn/trained/");
     icm->load(path);
+}
+
+sICMResult DQNCuriosity::get_icm_result()
+{
+    return icm->get_icm_result();
 }
