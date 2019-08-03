@@ -866,13 +866,16 @@ class rysyPINVOKE {
   public static extern bool ExperienceReplayBuffer_is_full(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_compute__SWIG_0")]
-  public static extern void ExperienceReplayBuffer_compute__SWIG_0(global::System.Runtime.InteropServices.HandleRef jarg1, float jarg2, float jarg3);
+  public static extern void ExperienceReplayBuffer_compute__SWIG_0(global::System.Runtime.InteropServices.HandleRef jarg1, float jarg2, float jarg3, float jarg4);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_compute__SWIG_1")]
-  public static extern void ExperienceReplayBuffer_compute__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, float jarg2);
+  public static extern void ExperienceReplayBuffer_compute__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, float jarg2, float jarg3);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_compute__SWIG_2")]
-  public static extern void ExperienceReplayBuffer_compute__SWIG_2(global::System.Runtime.InteropServices.HandleRef jarg1);
+  public static extern void ExperienceReplayBuffer_compute__SWIG_2(global::System.Runtime.InteropServices.HandleRef jarg1, float jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_compute__SWIG_3")]
+  public static extern void ExperienceReplayBuffer_compute__SWIG_3(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ExperienceReplayBuffer_set_curiosity")]
   public static extern void ExperienceReplayBuffer_set_curiosity(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2, float jarg3);

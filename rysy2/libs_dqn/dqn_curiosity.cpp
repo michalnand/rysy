@@ -147,7 +147,7 @@ void DQNCuriosity::train()
     std::cout << "forward classification " << icm->get_icm_result().inverse_classification_success << "\n";
     std::cout << "\n";
 
-    experience_replay_buffer.compute(gamma);
+    experience_replay_buffer.compute(gamma, 10.0, curiosity_ratio);
 
     cnn->train(experience_replay_buffer.get_q_values(), experience_replay_buffer.get_state(), 1, false);
 }

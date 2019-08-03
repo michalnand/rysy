@@ -70,16 +70,20 @@ public class ExperienceReplayBuffer : global::System.IDisposable {
     return ret;
   }
 
+  public void compute(float gamma, float clamp_value, float curiosity_ratio) {
+    rysyPINVOKE.ExperienceReplayBuffer_compute__SWIG_0(swigCPtr, gamma, clamp_value, curiosity_ratio);
+  }
+
   public void compute(float gamma, float clamp_value) {
-    rysyPINVOKE.ExperienceReplayBuffer_compute__SWIG_0(swigCPtr, gamma, clamp_value);
+    rysyPINVOKE.ExperienceReplayBuffer_compute__SWIG_1(swigCPtr, gamma, clamp_value);
   }
 
   public void compute(float gamma) {
-    rysyPINVOKE.ExperienceReplayBuffer_compute__SWIG_1(swigCPtr, gamma);
+    rysyPINVOKE.ExperienceReplayBuffer_compute__SWIG_2(swigCPtr, gamma);
   }
 
   public void compute() {
-    rysyPINVOKE.ExperienceReplayBuffer_compute__SWIG_2(swigCPtr);
+    rysyPINVOKE.ExperienceReplayBuffer_compute__SWIG_3(swigCPtr);
   }
 
   public void set_curiosity(uint idx, float curiosity) {

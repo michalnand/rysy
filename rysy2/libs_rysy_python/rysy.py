@@ -2092,8 +2092,8 @@ class ExperienceReplayBuffer(_object):
     def is_full(self):
         return _rysy.ExperienceReplayBuffer_is_full(self)
 
-    def compute(self, gamma=0.99, clamp_value=10.0):
-        return _rysy.ExperienceReplayBuffer_compute(self, gamma, clamp_value)
+    def compute(self, gamma=0.99, clamp_value=10.0, curiosity_ratio=0.0):
+        return _rysy.ExperienceReplayBuffer_compute(self, gamma, clamp_value, curiosity_ratio)
 
     def set_curiosity(self, idx, curiosity):
         return _rysy.ExperienceReplayBuffer_set_curiosity(self, idx, curiosity)

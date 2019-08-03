@@ -183,8 +183,7 @@ void ICM::train(ExperienceReplayBuffer &replay_buffer)
         unsigned int idx = rand()%(replay_buffer.size()-1);
         train(replay_buffer.get_state()[idx], replay_buffer.get_state()[idx + 1], replay_buffer.get_action()[idx]);
 
-        //TODO - uncomment this !!!!!!!!!!!!!!!
-        //replay_buffer.set_curiosity(idx, get_curiosity()*curiosity_ratio);
+        replay_buffer.set_curiosity(idx, get_curiosity());
 
         icm_result.inverse_loss+= t_inverse_error.norm_l2();
         icm_result.forward_loss+= t_forward_error.norm_l2();
@@ -203,7 +202,7 @@ void ICM::train(ExperienceReplayBuffer &replay_buffer)
     features_network->unset_training_mode();
     inverse_network->unset_training_mode();
     forward_network->unset_training_mode();
-}
+} 
 
 
 
@@ -318,7 +317,7 @@ void ICM::train(std::vector<float> &state_now, std::vector<float> &state_next, u
     features_network->train_from_error(t_features_next_error_inverse);
     */
 
- 
+
     t_inverse_error_back.split(t_features_now_error_inverse, t_features_next_error_inverse);
     t_forward_error_back.split(t_features_now_error_forward, t_action_error);
 
