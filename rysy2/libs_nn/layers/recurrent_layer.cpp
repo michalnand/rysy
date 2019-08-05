@@ -2,7 +2,6 @@
 
 #include <kernels/rl_tanh_block_layer.cuh>
 
-#include <kernels/solver_adam.cuh>
 
 #include <iostream>
 #include <math.h>
@@ -62,14 +61,6 @@ void RecurrentLayer::copy_rl(RecurrentLayer &other)
     this->wh                = other.wh;
     this->bias              = other.bias;
 
-    this->wx_grad            = other.wx_grad;
-    this->mx                 = other.mx;
-    this->vx                 = other.vx;
-
-    this->wh_grad            = other.wh_grad;
-    this->mh                 = other.mh;
-    this->vh                 = other.vh;
-
     this->h                  = other.h;
     this->error_h            = other.error_h;
 
@@ -87,14 +78,6 @@ void RecurrentLayer::copy_rl(const RecurrentLayer &other)
     this->wx                = other.wx;
     this->wh                = other.wh;
     this->bias              = other.bias;
-
-    this->wx_grad            = other.wx_grad;
-    this->mx                 = other.mx;
-    this->vx                 = other.vx;
-
-    this->wh_grad            = other.wh_grad;
-    this->mh                 = other.mh;
-    this->vh                 = other.vh;
 
     this->h                  = other.h;
     this->error_h            = other.error_h;
@@ -144,7 +127,7 @@ void RecurrentLayer::forward(Tensor &output, Tensor &input)
 
     if (time_step_idx < time_sequence_length)
     {
-        rl_tanh_block_layer_forward(h[time_step_idx + 1], input, h[time_step_idx], wx, wh, bias);
+        rl_tanh_block_layer_forward(h[time_step_idx + 1], input, h[time_step_idx], wx.weights, wh.weights, bias);
         output = h[time_step_idx + 1];
         time_step_idx++;
     }
@@ -204,38 +187,35 @@ void RecurrentLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, 
 
     time_step_idx--;
 
-    rl_tanh_block_layer_gradient(wx_grad, wh_grad, input, h[time_step_idx], output, error, error_h[time_step_idx+1]);
-
+    rl_tanh_block_layer_gradient(wx.gradient, wh.gradient, input, h[time_step_idx], output, error, error_h[time_step_idx+1]);
     rl_tanh_block_layer_update_bias(bias, output, error, learning_rate);
 
     if (update_weights)
     {
-        solver_adam(wx, wx_grad, mx, vx, learning_rate, lambda1, lambda2, gradient_clip);
-        wx_grad.clear();
-
-        solver_adam(wh, wh_grad, mh, vh, learning_rate, lambda1, lambda2, gradient_clip);
-        wh_grad.clear();
+        wx.train(learning_rate, lambda1, lambda2, gradient_clip);
+        wh.train(learning_rate, lambda1, lambda2, gradient_clip);
     }
+
 
     rl_tanh_block_layer_backward(   error_back, error_h[time_step_idx],
                                     input, h[time_step_idx],
                                     output, error,
-                                    wx, wh);
+                                    wx.weights, wh.weights);
 
 }
 
 void RecurrentLayer::save(std::string file_name_prefix)
 {
-    wx.save(file_name_prefix + "_weights_x.bin");
-    wh.save(file_name_prefix + "_weights_h.bin");
+    wx.weights.save(file_name_prefix + "_weights_x.bin");
+    wh.weights.save(file_name_prefix + "_weights_h.bin");
 
     bias.save(file_name_prefix + "_bias.bin");
 }
 
 void RecurrentLayer::load(std::string file_name_prefix)
 {
-    wx.load(file_name_prefix + "_weights_x.bin");
-    wh.load(file_name_prefix + "_weights_h.bin");
+    wx.weights.load(file_name_prefix + "_weights_x.bin");
+    wh.weights.load(file_name_prefix + "_weights_h.bin");
 
     bias.load(file_name_prefix + "_bias.bin");
 }
@@ -275,24 +255,13 @@ void RecurrentLayer::init_rl()
 
     m_output_shape.set(1, 1, w_*h_*d_);
 
-
     wx.init(m_input_shape.size(), m_output_shape.size(), 1);
-    wx.set_random(sqrt(2.0/m_input_shape.size()));
-
-    wx_grad.init(wx.shape());
-    mx.init(wx.shape());
-    vx.init(wx.shape());
-
+    wx.weights.set_random(sqrt(2.0/m_input_shape.size()));
 
     Shape inputh_shape(m_output_shape.w(), m_output_shape.h(), m_output_shape.d());
 
     wh.init(inputh_shape.size(), m_output_shape.size(), 1);
-    wh.set_random(sqrt(2.0/inputh_shape.size()));
-
-    wh_grad.init(wh.shape());
-    mh.init(wh.shape());
-    vh.init(wh.shape());
-
+    wh.weights.set_random(sqrt(2.0/inputh_shape.size()));
 
     bias.init(1, 1, m_output_shape.size());
     bias.clear();

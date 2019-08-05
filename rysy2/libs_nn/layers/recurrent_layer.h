@@ -2,6 +2,7 @@
 #define _RECURRENT_LAYER_H_
 
 #include <layers/layer.h>
+#include <weights.h>
 
 class RecurrentLayer final: public Layer
 {
@@ -43,10 +44,11 @@ class RecurrentLayer final: public Layer
 
         unsigned int time_step_idx, time_sequence_length;
 
-        Tensor wx, wx_grad, mx, vx;
-        Tensor wh, wh_grad, mh, vh;
-        Tensor bias;
+        Weights wx;
+        Weights wh;
 
+        Tensor bias;
+        
         std::vector<Tensor> h, error_h;
 };
 

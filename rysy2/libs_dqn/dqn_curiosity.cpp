@@ -7,11 +7,11 @@ DQNCuriosity::DQNCuriosity()
     icm = nullptr;
 }
 
-DQNCuriosity::DQNCuriosity(Shape state_shape, unsigned int actions_count, std::string network_config_path)
+DQNCuriosity::DQNCuriosity(Shape state_shape, unsigned int actions_count, float gamma, float curiosity_ratio, unsigned int replay_buffer_size, std::string network_config_path)
 {
     cnn = nullptr;
     icm = nullptr;
-    init(state_shape, actions_count, network_config_path);
+    init(state_shape, actions_count, gamma, curiosity_ratio, replay_buffer_size, network_config_path);
 }
 
 DQNCuriosity::DQNCuriosity(DQNCuriosity& other)
@@ -73,16 +73,12 @@ void DQNCuriosity::copy(const DQNCuriosity& other)
     this->experience_replay_buffer = other.experience_replay_buffer;
 }
 
-void DQNCuriosity::init(Shape state_shape, unsigned int actions_count, std::string network_config_path)
+void DQNCuriosity::init(Shape state_shape, unsigned int actions_count, float gamma, float curiosity_ratio, unsigned int replay_buffer_size, std::string network_config_path)
 {
-    JsonConfig agent_config(network_config_path + "agent_config.json");
-
-    this->state_shape   = state_shape;
-    this->actions_count = actions_count;
-    this->gamma         = agent_config.result["gamma"].asFloat();
-    this->curiosity_ratio = agent_config.result["curiosity_ratio"].asFloat();
-
-    unsigned int replay_buffer_size = agent_config.result["replay_buffer_size"].asFloat();
+    this->state_shape       = state_shape;
+    this->actions_count     = actions_count;
+    this->gamma             = gamma;
+    this->curiosity_ratio   = curiosity_ratio;
 
     this->q_values.resize(actions_count);
 

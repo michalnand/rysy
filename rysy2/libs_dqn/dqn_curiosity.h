@@ -9,7 +9,7 @@ class DQNCuriosity
 {
     public:
         DQNCuriosity();
-        DQNCuriosity(Shape state_shape, unsigned int actions_count, std::string config_path);
+        DQNCuriosity(Shape state_shape, unsigned int actions_count, float gamma, float curiosity_ratio, unsigned int replay_buffer_size, std::string config_path);
         DQNCuriosity(DQNCuriosity& other);
         DQNCuriosity(const DQNCuriosity& other);
 
@@ -22,7 +22,7 @@ class DQNCuriosity
         void copy(const DQNCuriosity& other);
 
     public:
-        void init(Shape state_shape, unsigned int actions_count, std::string config_path);
+        void init(Shape state_shape, unsigned int actions_count, float gamma, float curiosity_ratio, unsigned int replay_buffer_size, std::string config_path);
 
     public:
         std::vector<float>& forward(std::vector<float> &state);

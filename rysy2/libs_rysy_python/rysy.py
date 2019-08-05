@@ -2319,8 +2319,8 @@ class DQNCuriosity(_object):
     __swig_destroy__ = _rysy.delete_DQNCuriosity
     __del__ = lambda self: None
 
-    def init(self, state_shape, actions_count, config_path):
-        return _rysy.DQNCuriosity_init(self, state_shape, actions_count, config_path)
+    def init(self, state_shape, actions_count, gamma, curiosity_ratio, replay_buffer_size, config_path):
+        return _rysy.DQNCuriosity_init(self, state_shape, actions_count, gamma, curiosity_ratio, replay_buffer_size, config_path)
 
     def forward(self, *args):
         return _rysy.DQNCuriosity_forward(self, *args)

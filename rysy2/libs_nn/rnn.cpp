@@ -10,6 +10,7 @@
 #include <layers/dense_convolution_layer.h>
 #include <layers/fc_layer.h>
 
+#include <layers/fir_layer.h>
 #include <layers/recurrent_layer.h>
 
 #include <layers/max_pooling_layer.h>
@@ -18,6 +19,7 @@
 
 #include <layers/dropout_layer.h>
 #include <layers/crop_layer.h>
+#include <layers/flatten_layer.h>
 
 #include <svg_visualiser.h>
 
@@ -257,14 +259,28 @@ void RNN::train_from_error(std::vector<Tensor> &nn_error)
         minibatch_counter   = 0;
     }
 
-    for (int t = time_sequence_length-1; t >= 0; t--)
+    if (output.t() == 1)
     {
+        unsigned int t_last = time_sequence_length-1;
         unsigned int last_idx = layers.size()-1;
-        l_error[t][last_idx + 1] = nn_error[t];
+        l_error[t_last][last_idx + 1] = nn_error[t_last];
 
         for (int l = last_idx; l>= 0; l--)
         {
-            layers[l]->backward(l_error[t][l], l_error[t][l + 1], l_output[t][l], l_output[t][l + 1], update_weights);
+            layers[l]->backward(l_error[t_last][l], l_error[t_last][l + 1], l_output[t_last][l], l_output[t_last][l + 1], update_weights);
+        }
+    }
+    else
+    {
+        for (int t = time_sequence_length-1; t >= 0; t--)
+        {
+            unsigned int last_idx = layers.size()-1;
+            l_error[t][last_idx + 1] = nn_error[t];
+
+            for (int l = last_idx; l>= 0; l--)
+            {
+                layers[l]->backward(l_error[t][l], l_error[t][l + 1], l_output[t][l], l_output[t][l + 1], update_weights);
+            }
         }
     }
 }
@@ -569,6 +585,11 @@ Shape RNN::add_layer(std::string layer_type, Shape shape, std::string weights_fi
         layer = new FCLayer(m_current_input_shape, parameters);
     }
     else
+    if (layer_type == "fir")
+    {
+        layer = new FirLayer(m_current_input_shape, parameters);
+    }
+    else
     if (layer_type == "recurrent")
     {
         layer = new RecurrentLayer(m_current_input_shape, parameters);
@@ -597,6 +618,11 @@ Shape RNN::add_layer(std::string layer_type, Shape shape, std::string weights_fi
     if (layer_type == "crop")
     {
         layer = new CropLayer(m_current_input_shape, parameters);
+    }
+    else
+    if (layer_type == "flatten")
+    {
+        layer = new FlattenLayer(m_current_input_shape, parameters);
     }
     else
     {
