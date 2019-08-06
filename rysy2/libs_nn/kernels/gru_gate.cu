@@ -1,9 +1,9 @@
 #include "gru_gate.cuh"
 
-#define CONTROL_ACTIVATION(x)    (1.0 / (1.0 + exp(-x)))
-#define UPDATE_ACTIVATION(x)    (tanh(x))
-#define CONTROL_DER_ACTIVATION(x)   (CONTROL_ACTIVATION(x)*(1.0 - CONTROL_ACTIVATION(x)))
-#define UPDATE_DER_ACTIVATION(x)    (1.0 - tanh(x)*tanh(x))
+#define SIGMOID(x)    (  1.0 / (1.0 + exp(-x)))
+#define TANH(x)        (tanh(x))
+#define D_SIGMOID(y)   (y*(1.0 - y))
+#define D_TANH(y)    (1.0 - y*y)
 
 
 __host__
@@ -18,8 +18,8 @@ void cpu_gru_gate_forward_kernel(   float *h_next,
 {
     for (unsigned int idx = 0; idx < output_size; idx++)
     {
-        float c = CONTROL_ACTIVATION(control[idx]);
-        float u = UPDATE_ACTIVATION(update[idx]);
+        float c = SIGMOID(control[idx]);
+        float u = TANH(update[idx]);
 
         //process GRU gate output
         h_next[idx] = (1.0 - c)*h[idx] + c*u;
@@ -41,8 +41,8 @@ void cuda_gru_gate_forward_kernel(  float *h_next,
 
     if (idx < output_size)
     {
-        float c = CONTROL_ACTIVATION(control[idx]);
-        float u = UPDATE_ACTIVATION(update[idx]);
+        float c = SIGMOID(control[idx]);
+        float u = TANH(update[idx]);
 
         //process GRU gate output
         h_next[idx] = (1.0 - c)*h[idx] + c*u;
@@ -71,10 +71,10 @@ void cpu_gru_gate_backward_kernel(      float *h_next,
     {
         float err = error[idx];
 
-        float c         = CONTROL_ACTIVATION(control[idx]);
-        float u         = UPDATE_ACTIVATION(update[idx]);
-        float c_der     = CONTROL_DER_ACTIVATION(control[idx]);
-        float u_der     = UPDATE_DER_ACTIVATION(update[idx]);
+        float c         = SIGMOID(control[idx]);
+        float u         = TANH(update[idx]);
+        float c_der     = D_SIGMOID(c);
+        float u_der     = D_TANH(u);
 
         h_error_back[idx]       = (1.0 - c)*err;
         update_error_back[idx]  = (err*c)*u_der;
@@ -105,10 +105,10 @@ void cuda_gru_gate_backward_kernel( float *h_next,
     {
         float err = error[idx];
 
-        float c         = CONTROL_ACTIVATION(control[idx]);
-        float u         = UPDATE_ACTIVATION(update[idx]);
-        float c_der     = CONTROL_DER_ACTIVATION(control[idx]);
-        float u_der     = UPDATE_DER_ACTIVATION(update[idx]);
+        float c         = SIGMOID(control[idx]);
+        float u         = TANH(update[idx]);
+        float c_der     = D_SIGMOID(c);
+        float u_der     = D_TANH(u);
 
         h_error_back[idx]       = (1.0 - c)*err;
         update_error_back[idx]  = (err*c)*u_der;
