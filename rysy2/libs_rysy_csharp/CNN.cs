@@ -227,6 +227,11 @@ public class CNN : global::System.IDisposable {
     if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
   }
 
+  public uint get_layers_count() {
+    uint ret = rysyPINVOKE.CNN_get_layers_count(swigCPtr);
+    return ret;
+  }
+
   public uint get_layer_output_size() {
     uint ret = rysyPINVOKE.CNN_get_layer_output_size(swigCPtr);
     return ret;

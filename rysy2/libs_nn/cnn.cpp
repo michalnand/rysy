@@ -647,6 +647,10 @@ Json::Value CNN::default_hyperparameters(float learning_rate)
     return result;
 }
 
+unsigned int CNN::get_layers_count()
+{
+    return layers.size();
+}
 
 unsigned int CNN::get_layer_output_size()
 {

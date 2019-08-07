@@ -70,6 +70,7 @@ class CNN
         Json::Value default_hyperparameters(float learning_rate = 0.001);
 
     public:
+        unsigned int get_layers_count();
         unsigned int get_layer_output_size();
         Tensor& get_layer_output(unsigned int layer_idx);
         bool get_layer_weights_flag(unsigned int layer_idx);

@@ -820,6 +820,9 @@ class rysyPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_load_weights")]
   public static extern void CNN_load_weights(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_get_layers_count")]
+  public static extern uint CNN_get_layers_count(global::System.Runtime.InteropServices.HandleRef jarg1);
+
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_get_layer_output_size")]
   public static extern uint CNN_get_layer_output_size(global::System.Runtime.InteropServices.HandleRef jarg1);
 
