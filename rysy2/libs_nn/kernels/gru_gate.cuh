@@ -5,24 +5,22 @@
 
 
 void gru_gate_forward(  Tensor &h_next,
-                        Tensor &h,
-                        Tensor &x,
 
                         Tensor &control,
+                        Tensor &h,
                         Tensor &update);
 
 void gru_gate_backward( Tensor &h_next,
-                        Tensor &h,
-                        Tensor &x,
 
                         Tensor &control,
+                        Tensor &h,
                         Tensor &update,
 
                         Tensor &error,
 
+                        Tensor &control_error_back,
                         Tensor &h_error_back,
-                        Tensor &update_error_back,
-                        Tensor &control_error_back);
+                        Tensor &update_error_back);
 
 
 #endif

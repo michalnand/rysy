@@ -3,8 +3,8 @@
 DatasetTest::DatasetTest(unsigned int mode)
 {
     unsigned int classes_count  = 8;
-    unsigned int training_count = 50000;
-    unsigned int testing_count  = 2000;
+    unsigned int training_count = classes_count*5000;
+    unsigned int testing_count  = classes_count*500;
 
     unsigned int sequence_legth  = classes_count*2;
 

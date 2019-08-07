@@ -259,6 +259,7 @@ void RNN::train_from_error(std::vector<Tensor> &nn_error)
         minibatch_counter   = 0;
     }
 
+    /*
     if (output.t() == 1)
     {
         unsigned int t_last = time_sequence_length-1;
@@ -271,6 +272,7 @@ void RNN::train_from_error(std::vector<Tensor> &nn_error)
         }
     }
     else
+    */
     {
         for (int t = time_sequence_length-1; t >= 0; t--)
         {

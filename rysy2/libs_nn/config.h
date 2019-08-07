@@ -3,7 +3,7 @@
 
 #define NETWORK_USE_CUDA
 
-//#define RYSY_DEBUG
+#define RYSY_DEBUG
 
 
 #endif

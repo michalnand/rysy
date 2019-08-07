@@ -8,10 +8,9 @@
 
 __host__
 void cpu_gru_gate_forward_kernel(   float *h_next,
-                                    float *h,
-                                    float *x,
 
                                     float *control,
+                                    float *h,
                                     float *update,
 
                                     unsigned int output_size)
@@ -29,10 +28,9 @@ void cpu_gru_gate_forward_kernel(   float *h_next,
 
 __global__
 void cuda_gru_gate_forward_kernel(  float *h_next,
-                                    float *h,
-                                    float *x,
 
                                     float *control,
+                                    float *h,
                                     float *update,
 
                                     unsigned int output_size)
@@ -53,17 +51,15 @@ void cuda_gru_gate_forward_kernel(  float *h_next,
 
 __host__
 void cpu_gru_gate_backward_kernel(      float *h_next,
-                                        float *h,
-                                        float *x,
-
                                         float *control,
+                                        float *h,
                                         float *update,
 
                                         float *error,
 
                                         float *h_error_back,
-                                        float *update_error_back,
                                         float *control_error_back,
+                                        float *update_error_back,
 
                                         unsigned int output_size)
 {
@@ -86,7 +82,6 @@ void cpu_gru_gate_backward_kernel(      float *h_next,
 __global__
 void cuda_gru_gate_backward_kernel( float *h_next,
                                     float *h,
-                                    float *x,
 
                                     float *control,
                                     float *update,
@@ -94,8 +89,8 @@ void cuda_gru_gate_backward_kernel( float *h_next,
                                     float *error,
 
                                     float *h_error_back,
-                                    float *update_error_back,
                                     float *control_error_back,
+                                    float *update_error_back,
 
                                     unsigned int output_size)
 {
@@ -121,10 +116,9 @@ void cuda_gru_gate_backward_kernel( float *h_next,
 
 
 void gru_gate_forward(  Tensor &h_next,
-                        Tensor &h,
-                        Tensor &x,
 
                         Tensor &control,
+                        Tensor &h,
                         Tensor &update)
 {
     unsigned int output_size  = h_next.size();
@@ -135,9 +129,9 @@ void gru_gate_forward(  Tensor &h_next,
         dim3 grid((output_size  + block.x + 1)/block.x);
 
         cuda_gru_gate_forward_kernel<<<grid, block>>>(  h_next.v,
-                                                        h.v,
-                                                        x.v,
+
                                                         control.v,
+                                                        h.v,
                                                         update.v,
                                                         output_size);
 
@@ -147,9 +141,9 @@ void gru_gate_forward(  Tensor &h_next,
 
 
         cpu_gru_gate_forward_kernel(    h_next.v,
-                                        h.v,
-                                        x.v,
+
                                         control.v,
+                                        h.v,
                                         update.v,
                                         output_size);
 
@@ -157,17 +151,16 @@ void gru_gate_forward(  Tensor &h_next,
 }
 
 void gru_gate_backward( Tensor &h_next,
-                        Tensor &h,
-                        Tensor &x,
 
                         Tensor &control,
+                        Tensor &h,
                         Tensor &update,
 
                         Tensor &error,
 
+                        Tensor &control_error_back,
                         Tensor &h_error_back,
-                        Tensor &update_error_back,
-                        Tensor &control_error_back)
+                        Tensor &update_error_back)
 {
     unsigned int output_size  = h_next.size();
 
@@ -177,16 +170,16 @@ void gru_gate_backward( Tensor &h_next,
         dim3 grid((output_size  + block.x + 1)/block.x);
 
         cuda_gru_gate_backward_kernel<<<grid, block>>>(     h_next.v,
-                                                            h.v,
-                                                            x.v,
+
                                                             control.v,
+                                                            h.v,
                                                             update.v,
 
                                                             error.v,
 
+                                                            control_error_back.v,
                                                             h_error_back.v,
                                                             update_error_back.v,
-                                                            control_error_back.v,
 
                                                             output_size);
 
@@ -196,16 +189,16 @@ void gru_gate_backward( Tensor &h_next,
 
 
         cpu_gru_gate_backward_kernel(   h_next.v,
-                                        h.v,
-                                        x.v,
+
                                         control.v,
+                                        h.v,
                                         update.v,
 
                                         error.v,
-
+                                        
+                                        control_error_back.v,
                                         h_error_back.v,
                                         update_error_back.v,
-                                        control_error_back.v,
 
                                         output_size);
 

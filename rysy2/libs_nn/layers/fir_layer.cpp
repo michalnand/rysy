@@ -1,4 +1,5 @@
 #include <layers/fir_layer.h>
+#include <iostream>
 
 FirLayer::FirLayer()
         :Layer()
