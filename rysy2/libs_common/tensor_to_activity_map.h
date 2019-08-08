@@ -35,13 +35,19 @@ class TensorToActivityMap
 
     private:
         void compute_result();
-        std::vector<float> scale(unsigned int output_scale);
+        std::vector<float> scale(unsigned int output_scale, bool max_color);
+        std::vector<std::vector<float>> create_color_map(unsigned int count);
+
+        std::vector<float> get_max_color(unsigned int x, unsigned int y);
+        std::vector<float> get_average_color(unsigned int x, unsigned int y);
 
     private:
         Shape m_shape;
         Tensor t_sum;
         std::vector<float> v_sum;
-        std::vector<float> result;
+        std::vector<std::vector<std::vector<float>>> result;
+
+        std::vector<std::vector<float>> m_color_map;
 };
 
 #endif

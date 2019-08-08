@@ -11,7 +11,7 @@ NetworkActivity::NetworkActivity(CNN &cnn)
         if (this->cnn->get_layer_activation_flag(i) == true)
         if (this->cnn->get_layer_output(i).shape().w() > 1)
         if (this->cnn->get_layer_output(i).shape().h() > 1)
-            layer_idx.push_back(i+1); 
+            layer_idx.push_back(i+1);
 
     for (unsigned int i = 0; i < layer_idx.size(); i++)
     {
