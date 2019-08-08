@@ -1971,6 +1971,9 @@ class CNN(_object):
 
     def get_layer_weights_flag(self, layer_idx):
         return _rysy.CNN_get_layer_weights_flag(self, layer_idx)
+
+    def get_layer_activation_flag(self, layer_idx):
+        return _rysy.CNN_get_layer_activation_flag(self, layer_idx)
 CNN_swigregister = _rysy.CNN_swigregister
 CNN_swigregister(CNN)
 
@@ -2175,6 +2178,12 @@ class DQN(_object):
 
     def load_weights(self, file_name_prefix):
         return _rysy.DQN_load_weights(self, file_name_prefix)
+
+    def add_activity_map(self):
+        return _rysy.DQN_add_activity_map(self)
+
+    def save_activity_map(self, path):
+        return _rysy.DQN_save_activity_map(self, path)
 DQN_swigregister = _rysy.DQN_swigregister
 DQN_swigregister(DQN)
 

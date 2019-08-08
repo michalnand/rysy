@@ -126,13 +126,19 @@ void TensorToActivityMap::compute_result()
         result[i] = 0.0;
 
     //fill input
-    for (unsigned int ch = 0; ch < m_shape.d(); ch++)
         for (unsigned int y = 0; y < m_shape.h(); y++)
             for (unsigned int x = 0; x < m_shape.w(); x++)
             {
-                unsigned int in_idx     = (ch*m_shape.h() + y)*m_shape.w() + x;
+                float max = -100000.0;
+                for (unsigned int ch = 0; ch < m_shape.d(); ch++)
+                {
+                    unsigned int in_idx     = (ch*m_shape.h() + y)*m_shape.w() + x;
+                    if (v_sum[in_idx] > max)
+                        max = v_sum[in_idx];
+                }
+
                 unsigned int out_idx    = y*m_shape.w() + x;
-                result[out_idx]+= v_sum[in_idx];
+                result[out_idx] = max;
             }
 
     //normalise into <0, 1> interval

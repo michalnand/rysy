@@ -247,4 +247,9 @@ public class CNN : global::System.IDisposable {
     return ret;
   }
 
+  public bool get_layer_activation_flag(uint layer_idx) {
+    bool ret = rysyPINVOKE.CNN_get_layer_activation_flag(swigCPtr, layer_idx);
+    return ret;
+  }
+
 }

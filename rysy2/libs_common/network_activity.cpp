@@ -5,11 +5,13 @@ NetworkActivity::NetworkActivity(CNN &cnn)
 {
     this->cnn = &cnn;
 
+    layer_idx.push_back(0);
+
     for (unsigned int i = 0; i < this->cnn->get_layers_count(); i++)
-        if (this->cnn->get_layer_weights_flag(i) == false)
+        if (this->cnn->get_layer_activation_flag(i) == true)
         if (this->cnn->get_layer_output(i).shape().w() > 1)
         if (this->cnn->get_layer_output(i).shape().h() > 1)
-            layer_idx.push_back(i);
+            layer_idx.push_back(i+1); 
 
     for (unsigned int i = 0; i < layer_idx.size(); i++)
     {

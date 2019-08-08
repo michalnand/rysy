@@ -19,6 +19,8 @@ class ActivationReluLayer final: public Layer
 
         std::string asString();
 
+        bool is_activation() {return true;}
+
     public:
         void forward(Tensor &output, Tensor &input);
         void backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights);

@@ -4,6 +4,8 @@
 #include <cnn.h>
 #include <experience_replay_buffer.h>
 
+#include <network_activity.h>
+
 class DQN
 {
     public:
@@ -40,8 +42,13 @@ class DQN
         void save(std::string path);
         void load_weights(std::string file_name_prefix);
 
+    public:
+        void add_activity_map();
+        void save_activity_map(std::string path);
+
     protected:
         CNN *cnn;
+        NetworkActivity *activity;
 
         Shape state_shape;
         unsigned int actions_count;

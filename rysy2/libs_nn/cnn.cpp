@@ -666,3 +666,8 @@ bool CNN::get_layer_weights_flag(unsigned int layer_idx)
 {
     return layers[layer_idx]->has_weights();
 }
+
+bool CNN::get_layer_activation_flag(unsigned int layer_idx)
+{
+    return layers[layer_idx]->is_activation();
+}

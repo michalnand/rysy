@@ -41,7 +41,8 @@ class Layer
         virtual void load(std::string file_name_prefix);
 
         virtual bool has_weights() { return false;};
-
+        virtual bool is_activation() { return false;};
+        
         virtual std::string asString();
 
         unsigned long int get_flops();

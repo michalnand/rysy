@@ -74,6 +74,7 @@ class CNN
         unsigned int get_layer_output_size();
         Tensor& get_layer_output(unsigned int layer_idx);
         bool get_layer_weights_flag(unsigned int layer_idx);
+        bool get_layer_activation_flag(unsigned int layer_idx);
 
     private:
         Shape m_input_shape, m_output_shape, m_current_input_shape;
