@@ -1,7 +1,7 @@
 #include "activation_tanh_layer.cuh"
 
 #define TANH(x)     (tanh(x))
-#define TAND_D(y)   (1.0 - y*y)
+#define TANH_D(y)   (1.0 - y*y)
 
 __host__
 void cpu_activation_tanh_forward_kernel(float *output, float *input, unsigned int size)
@@ -48,7 +48,7 @@ void cpu_activation_tanh_backward_kernel(float *error_back, float *error, float 
 {
     for (unsigned int idx = 0; idx < size; idx++)
     {
-        error_back[idx] = error[idx]*TAND_D(output[idx]);
+        error_back[idx] = error[idx]*TANH_D(output[idx]);
     }
 }
 
@@ -59,7 +59,7 @@ void cuda_activation_tanh_backward_kernel(float *error_back, float *error, float
 
     if (idx < size)
     {
-        error_back[idx] = error[idx]*TAND_D(output[idx]);
+        error_back[idx] = error[idx]*TANH_D(output[idx]);
     }
 }
 

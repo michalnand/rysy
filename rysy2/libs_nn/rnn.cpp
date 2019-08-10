@@ -5,6 +5,7 @@
 
 #include <layers/activation_elu_layer.h>
 #include <layers/activation_relu_layer.h>
+#include <layers/activation_tanh_layer.h>
 
 #include <layers/convolution_layer.h>
 #include <layers/dense_convolution_layer.h>
@@ -562,6 +563,11 @@ Shape RNN::add_layer(std::string layer_type, Shape shape, std::string weights_fi
     if (layer_type == "relu")
     {
         layer = new ActivationReluLayer(m_current_input_shape, parameters);
+    }
+    else
+    if (layer_type == "tanh")
+    {
+        layer = new ActivationTanhLayer(m_current_input_shape, parameters);
     }
     else
     if (layer_type == "convolution")
