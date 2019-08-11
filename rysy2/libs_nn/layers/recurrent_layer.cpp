@@ -177,8 +177,8 @@ void RecurrentLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, 
 
     time_step_idx--;
 
-    fc_input.concatenate(h_error[time_step_idx], input);
-
+    fc_input.concatenate(h[time_step_idx], input);
+ 
     h_error[time_step_idx+1].add(error);
 
     activation_tanh_layer_backward(fc_error, h[time_step_idx+1], h_error[time_step_idx+1]);
