@@ -188,8 +188,8 @@ void RecurrentLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, 
         w_grad.clear();
     }
 
-
-    fc_layer_backward(fc_error_back, input, fc_error, w);
+ 
+    fc_layer_backward(fc_error_back, fc_input, fc_error, w);
 
     fc_error_back.split(h_error[time_step_idx], error_back);
 }
@@ -240,9 +240,8 @@ void RecurrentLayer::init_recurrent()
 
 
     m_output_shape.set(1, 1, neurons_count);
-    m_input_shape.set(1, 1, inputs_count);
 
- 
+
     unsigned int input_size = inputs_count + neurons_count;
 
     w.init(input_size, neurons_count, 1);
