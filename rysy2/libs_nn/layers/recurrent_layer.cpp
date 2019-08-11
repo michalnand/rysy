@@ -125,8 +125,6 @@ void RecurrentLayer::forward(Tensor &output, Tensor &input)
     activation_tanh_layer_forward(h[time_step_idx + 1], fc_output);
 
     output = h[time_step_idx + 1];
-
-    time_step_idx++;
 }
 
 void RecurrentLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights)
@@ -175,10 +173,8 @@ void RecurrentLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, 
 
     #endif
 
-    time_step_idx--;
-
     fc_input.concatenate(h[time_step_idx], input);
- 
+
     h_error[time_step_idx+1].add(error);
 
     activation_tanh_layer_backward(fc_error, h[time_step_idx+1], h_error[time_step_idx+1]);
@@ -234,21 +230,20 @@ void RecurrentLayer::init_recurrent()
 
     unsigned int neurons_count = w_*h_*d_;
     unsigned int inputs_count = m_input_shape.size();
-    unsigned int input_size = neurons_count + inputs_count;
 
     learning_rate   = m_parameters["hyperparameters"]["learning_rate"].asFloat();
     lambda1         = m_parameters["hyperparameters"]["lambda1"].asFloat();
     lambda2         = m_parameters["hyperparameters"]["lambda2"].asFloat();
     gradient_clip   = m_parameters["hyperparameters"]["gradient_clip"].asFloat();
 
-    time_step_idx        = 0;
     time_sequence_length = m_parameters["hyperparameters"]["time_sequence_length"].asInt();
 
 
     m_output_shape.set(1, 1, neurons_count);
-    m_input_shape.set(1, 1, input_size);
+    m_input_shape.set(1, 1, inputs_count);
 
-
+ 
+    unsigned int input_size = inputs_count + neurons_count;
 
     w.init(input_size, neurons_count, 1);
     w.set_random(sqrt(2.0/(input_size)));
@@ -265,10 +260,10 @@ void RecurrentLayer::init_recurrent()
     h_error.resize(time_sequence_length + 1);
 
     for (unsigned int i = 0; i < h.size(); i++)
-        h[i].init(1, 1, neurons_count);
+        h[i].init(m_output_shape);
 
     for (unsigned int i = 0; i < h_error.size(); i++)
-        h_error[i].init(1, 1, neurons_count);
+        h_error[i].init(m_output_shape);
 
 
     fc_input.init(1, 1, input_size + neurons_count);
@@ -284,8 +279,6 @@ void RecurrentLayer::init_recurrent()
 
 void RecurrentLayer::reset()
 {
-    time_step_idx = 0;
-
     for (unsigned int i = 0; i < h.size(); i++)
         h[i].clear();
 

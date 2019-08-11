@@ -179,6 +179,7 @@ void RNN::forward(Tensor &output, Tensor &input)
         //forward truth all layers
         for (unsigned int l = 0; l < layers.size(); l++)
         {
+            layers[l]->set_time_step(t);
             layers[l]->forward(l_output[t][l + 1], l_output[t][l]);
         }
 
@@ -261,6 +262,7 @@ void RNN::train_from_error(std::vector<Tensor> &nn_error)
 
         for (int l = last_idx; l>= 0; l--)
         {
+            layers[l]->set_time_step(t);
             layers[l]->backward(l_error[t][l], l_error[t][l + 1], l_output[t][l], l_output[t][l + 1], update_weights);
         }
 

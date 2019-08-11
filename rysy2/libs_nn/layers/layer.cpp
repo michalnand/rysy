@@ -56,6 +56,8 @@ void Layer::copy(Layer& other)
 
     this->m_flops                   = other.m_flops;
     this->m_trainable_parameters    =  other.m_trainable_parameters;
+
+    this->time_step_idx = other.time_step_idx;
 }
 
 void Layer::copy(const Layer& other)
@@ -68,6 +70,8 @@ void Layer::copy(const Layer& other)
 
     this->m_flops           = other.m_flops;
     this->m_trainable_parameters      =  other.m_trainable_parameters;
+
+    this->time_step_idx = other.time_step_idx;
 }
 
 
@@ -141,6 +145,11 @@ unsigned long int Layer::get_trainable_parameters()
     return this->m_trainable_parameters;
 }
 
+void Layer::set_time_step(unsigned int time_step_idx)
+{
+    this->time_step_idx = time_step_idx;
+}
+
 void Layer::init(Shape input_shape, Json::Value parameters)
 {
     this->m_input_shape = input_shape;
@@ -151,4 +160,6 @@ void Layer::init(Shape input_shape, Json::Value parameters)
 
     this->m_flops = 0;
     this->m_trainable_parameters = 0;
+
+    this->time_step_idx = 0;
 }

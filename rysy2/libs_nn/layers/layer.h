@@ -42,11 +42,13 @@ class Layer
 
         virtual bool has_weights() { return false;};
         virtual bool is_activation() { return false;};
-        
+
         virtual std::string asString();
 
         unsigned long int get_flops();
         unsigned long int get_trainable_parameters();
+
+        void set_time_step(unsigned int time_step_idx);
 
     protected:
         void init(Shape input_shape, Json::Value parameters);
@@ -57,6 +59,8 @@ class Layer
         bool m_training_mode;
 
         unsigned long int m_flops, m_trainable_parameters;
+
+        unsigned int time_step_idx;
 };
 
 #endif

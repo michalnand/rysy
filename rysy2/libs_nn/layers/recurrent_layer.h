@@ -41,7 +41,7 @@ class RecurrentLayer final: public Layer
 
     protected:
         float learning_rate, lambda1, lambda2, gradient_clip;
-        unsigned int time_step_idx, time_sequence_length;
+        unsigned int time_sequence_length;
 
         Tensor w, m, v, w_grad, bias;
 
