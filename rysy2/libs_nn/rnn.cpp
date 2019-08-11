@@ -34,7 +34,6 @@ RNN::RNN()
     this->minibatch_size      = 32;
 
     this->time_sequence_length = 1;
-    this->time_step_idx = 0;
 
     this->m_total_flops = 0;
     this->m_total_trainable_parameters = 0;
@@ -119,7 +118,6 @@ void RNN::copy(RNN& other)
     this->minibatch_size    = other.minibatch_size;
 
     this->time_sequence_length  = other.time_sequence_length;
-    this->time_step_idx         = other.time_step_idx;
 
     this->m_total_flops = other.m_total_flops;
     this->m_total_trainable_parameters = other.m_total_trainable_parameters;
@@ -147,8 +145,6 @@ void RNN::copy(const RNN& other)
     this->minibatch_size    = other.minibatch_size;
 
     this->time_sequence_length  = other.time_sequence_length;
-    this->time_step_idx         = other.time_step_idx;
-
 
     this->m_total_flops = other.m_total_flops;
     this->m_total_trainable_parameters = other.m_total_trainable_parameters;
@@ -170,7 +166,6 @@ void RNN::forward(Tensor &output, Tensor &input)
     //prepare layers for forward run
     for (unsigned int i = 0; i < layers.size(); i++)
         layers[i]->reset();
-    time_step_idx = 0;
 
     //split input 4D tensor to 1D array of 3D tensors nn_input
     input.split_time_sequence(nn_input);
@@ -188,18 +183,17 @@ void RNN::forward(Tensor &output, Tensor &input)
         }
 
         nn_output[t] = l_output[t][layers.size()];
-        time_step_idx++;
     }
 
     //RNN mode many to one, save only the last one
     if (output.t() == 1)
     {
-        output = nn_output[time_step_idx-1];
+        output = nn_output[layers.size()];
     }
     //RNN mode many to many
     else
     {
-        output.concatenate_time_sequence(nn_output, time_step_idx);
+        output.concatenate_time_sequence(nn_output, layers.size());
     }
 }
 
@@ -260,31 +254,16 @@ void RNN::train_from_error(std::vector<Tensor> &nn_error)
         minibatch_counter   = 0;
     }
 
-    /*
-    if (output.t() == 1)
+    for (int t = time_sequence_length-1; t >= 0; t--)
     {
-        unsigned int t_last = time_sequence_length-1;
         unsigned int last_idx = layers.size()-1;
-        l_error[t_last][last_idx + 1] = nn_error[t_last];
+        l_error[t][last_idx + 1] = nn_error[t];
 
         for (int l = last_idx; l>= 0; l--)
         {
-            layers[l]->backward(l_error[t_last][l], l_error[t_last][l + 1], l_output[t_last][l], l_output[t_last][l + 1], update_weights);
+            layers[l]->backward(l_error[t][l], l_error[t][l + 1], l_output[t][l], l_output[t][l + 1], update_weights);
         }
-    }
-    else
-    */
-    {
-        for (int t = time_sequence_length-1; t >= 0; t--)
-        {
-            unsigned int last_idx = layers.size()-1;
-            l_error[t][last_idx + 1] = nn_error[t];
 
-            for (int l = last_idx; l>= 0; l--)
-            {
-                layers[l]->backward(l_error[t][l], l_error[t][l + 1], l_output[t][l], l_output[t][l + 1], update_weights);
-            }
-        }
     }
 }
 
@@ -385,7 +364,6 @@ void RNN::init(Json::Value json_config, Shape input_shape, Shape output_shape)
     this->training_mode       = false;
     this->minibatch_counter   = 0;
 
-    this->time_step_idx = 0;
     this->time_sequence_length = input_shape.t();
 
     this->m_total_flops = 0;
@@ -767,7 +745,7 @@ unsigned int RNN::get_layer_output_size()
 
 Tensor& RNN::get_layer_output(unsigned int layer_idx)
 {
-    return l_output[time_step_idx][layer_idx];
+    return l_output[time_sequence_length][layer_idx];
 }
 
 bool RNN::get_layer_weights_flag(unsigned int layer_idx)

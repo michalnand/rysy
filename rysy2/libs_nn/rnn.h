@@ -92,7 +92,7 @@ class RNN
 
         bool training_mode;
         unsigned int minibatch_size, minibatch_counter;
-        unsigned int time_sequence_length, time_step_idx;
+        unsigned int time_sequence_length;
 
         unsigned long int m_total_flops;
         unsigned long int m_total_trainable_parameters;

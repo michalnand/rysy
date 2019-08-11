@@ -25,7 +25,6 @@ cnn = RNN(input_shape, output_shape, 0.001)
 
 cnn.add_layer("flatten")
 cnn.add_layer("recurrent", Shape(256))
-cnn.add_layer("recurrent", Shape(256))
 cnn.add_layer("output")
 
 cnn._print()
