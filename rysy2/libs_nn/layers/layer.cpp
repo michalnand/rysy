@@ -1,5 +1,5 @@
 #include <layers/layer.h>
-
+#include <iostream>
 
 Layer::Layer()
 {
@@ -10,6 +10,7 @@ Layer::Layer()
 
     this->m_flops = 0;
     this->m_trainable_parameters = 0;
+    this->time_step_idx = 0;
 }
 
 

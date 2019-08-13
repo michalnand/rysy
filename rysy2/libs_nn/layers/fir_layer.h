@@ -34,7 +34,6 @@ class FirLayer final: public Layer
         void init_fir_layer();
 
     protected:
-        unsigned int time_step_idx;
         unsigned int time_sequence_length;
         std::vector<Tensor> h;
         std::vector<Tensor> error_h;

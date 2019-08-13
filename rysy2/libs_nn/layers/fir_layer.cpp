@@ -4,7 +4,7 @@
 FirLayer::FirLayer()
         :Layer()
 {
-    time_step_idx = 0;
+
 }
 
 FirLayer::FirLayer(FirLayer& other)
@@ -52,7 +52,6 @@ void FirLayer::copy_fir_layer(FirLayer &other)
     this->h                     = other.h;
     this->error_h               = other.error_h;
     this->time_sequence_length  = other.time_sequence_length;
-    this->time_step_idx         = other.time_step_idx;
 }
 
 void FirLayer::copy_fir_layer(const FirLayer &other)
@@ -60,7 +59,6 @@ void FirLayer::copy_fir_layer(const FirLayer &other)
     this->h                     = other.h;
     this->error_h               = other.error_h;
     this->time_sequence_length  = other.time_sequence_length;
-    this->time_step_idx         = other.time_step_idx;
 }
 
 
@@ -71,8 +69,6 @@ void FirLayer::reset()
 
     for (unsigned int i = 0; i < error_h.size(); i++)
         error_h[i].clear();
-
-    time_step_idx = 0;
 }
 
 
@@ -107,8 +103,6 @@ void FirLayer::forward(Tensor &output, Tensor &input)
         h[time_step_idx] = input;
 
         output.concatenate_time_sequence(h);
-
-        time_step_idx++;
     }
     #ifdef RYSY_DEBUG
     else
@@ -169,9 +163,6 @@ void FirLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor
     #endif
 
     error.split_time_sequence(error_h);
-
-    time_step_idx--;
-
     error_back = error_h[time_step_idx];
 }
 
@@ -180,7 +171,7 @@ std::string FirLayer::asString()
     std::string result;
 
     result+= "FIR LAYER\t";
-    result+= "[" + std::to_string(m_input_shape.w()) + " " + std::to_string(m_input_shape.h()) + " " + std::to_string(m_input_shape.d()) + "]\t";
+    result+= "[" + std::to_string(m_input_shape.w()) + " " + std::to_string(m_input_shape.h()) + " " + std::to_string(m_input_shape.d()) + " " + std::to_string(m_input_shape.t()) + "]\t";
     result+= "[" + std::to_string(m_output_shape.w()) + " " + std::to_string(m_output_shape.h()) + " " + std::to_string(m_output_shape.d()) + " " + std::to_string(m_output_shape.t()) + "]\t";
     result+= "[" + std::to_string(get_trainable_parameters()) + " " + std::to_string(get_flops()) + "]\t";
     return result;
@@ -188,7 +179,7 @@ std::string FirLayer::asString()
 
 void FirLayer::init_fir_layer()
 {
-    time_step_idx        = 0;
+    m_input_shape.set(m_input_shape.w(), m_input_shape.h(), m_input_shape.d(), 1);
     time_sequence_length = m_parameters["hyperparameters"]["time_sequence_length"].asInt();
 
     m_output_shape.set(m_input_shape.w(), m_input_shape.h(), m_input_shape.d(), time_sequence_length);

@@ -45,7 +45,7 @@ class RNN
         void train(std::vector<Tensor> &required_output, std::vector<Tensor> &input, unsigned int epoch_count = 1, bool verbose = true);
         void train(std::vector<std::vector<float>> &required_output, std::vector<std::vector<float>> &input, unsigned int epoch_count = 1, bool verbose = true);
 
-        void train_from_error(std::vector<Tensor> &nn_error);
+        void train_from_error(std::vector<Tensor> &sequence_error);
         Tensor& get_error_back();
 
     public:
@@ -70,29 +70,31 @@ class RNN
         Json::Value default_hyperparameters(float learning_rate = 0.001);
 
     public:
+        unsigned int get_layers_count();
         unsigned int get_layer_output_size();
         Tensor& get_layer_output(unsigned int layer_idx);
         bool get_layer_weights_flag(unsigned int layer_idx);
+        bool get_layer_activation_flag(unsigned int layer_idx);
 
     private:
         Shape m_input_shape, m_output_shape, m_current_input_shape;
         Json::Value m_hyperparameters;
         Json::Value m_parameters;
 
+        unsigned int m_time_sequence_length;
+
     private:
 
         Tensor output, required_output, input, error;
+
+        std::vector<Tensor> sequence_input, sequence_output, sequence_error;
 
         std::vector<Layer*> layers;
 
         std::vector<std::vector<Tensor>> l_error, l_output;
 
-        std::vector<Tensor> nn_input, nn_output, nn_error;
-
-
         bool training_mode;
         unsigned int minibatch_size, minibatch_counter;
-        unsigned int time_sequence_length;
 
         unsigned long int m_total_flops;
         unsigned long int m_total_trainable_parameters;

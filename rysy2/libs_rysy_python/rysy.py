@@ -2005,8 +2005,8 @@ class RNN(_object):
     def train(self, *args):
         return _rysy.RNN_train(self, *args)
 
-    def train_from_error(self, nn_error):
-        return _rysy.RNN_train_from_error(self, nn_error)
+    def train_from_error(self, sequence_error):
+        return _rysy.RNN_train_from_error(self, sequence_error)
 
     def get_error_back(self):
         return _rysy.RNN_get_error_back(self)
@@ -2038,6 +2038,9 @@ class RNN(_object):
     def load_weights(self, file_name_prefix):
         return _rysy.RNN_load_weights(self, file_name_prefix)
 
+    def get_layers_count(self):
+        return _rysy.RNN_get_layers_count(self)
+
     def get_layer_output_size(self):
         return _rysy.RNN_get_layer_output_size(self)
 
@@ -2046,6 +2049,9 @@ class RNN(_object):
 
     def get_layer_weights_flag(self, layer_idx):
         return _rysy.RNN_get_layer_weights_flag(self, layer_idx)
+
+    def get_layer_activation_flag(self, layer_idx):
+        return _rysy.RNN_get_layer_activation_flag(self, layer_idx)
 RNN_swigregister = _rysy.RNN_swigregister
 RNN_swigregister(RNN)
 

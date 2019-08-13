@@ -1,12 +1,13 @@
 #include <dataset_test.h>
 
 DatasetTest::DatasetTest(unsigned int mode)
+            :DatasetInterface()
 {
-    unsigned int classes_count  = 8;
+    unsigned int classes_count  = 8; 
     unsigned int training_count = classes_count*5000;
     unsigned int testing_count  = classes_count*500;
 
-    unsigned int sequence_legth  = classes_count*2;
+    unsigned int sequence_legth  = classes_count;
 
     if (mode == DATASET_TEST_MODE_NORMAL)
         set_input_shape(Shape(sequence_legth, 1, 1, 1));

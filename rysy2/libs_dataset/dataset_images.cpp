@@ -6,6 +6,7 @@
 #include <iostream>
 
 DatasetImages::DatasetImages(std::string json_config_file_name)
+              :DatasetInterface()
 {
     JsonConfig json(json_config_file_name);
 

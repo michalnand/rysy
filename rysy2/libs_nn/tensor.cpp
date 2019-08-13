@@ -469,13 +469,13 @@ void Tensor::concatenate_time_sequence(std::vector<Tensor> &source, unsigned int
 {
     #ifdef RYSY_DEBUG
 
-    if (max_time_steps == 0 && source.size() == t())
+    if (max_time_steps == 0 && source.size() != t())
     {
         std::cout << "Tensor::concatenate_time_sequence inconsistent time sequence length :";
         std::cout << source.size() << " expecting : " << t() << "\n";
         return;
     }
-
+ 
     for (unsigned int i = 0; i < source.size(); i++)
     {
         if ((source[i].w() != w()) || (source[i].h() != h()) || (source[i].d() != d()))

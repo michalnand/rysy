@@ -3,6 +3,7 @@
 
 
 DatasetAutoencoder::DatasetAutoencoder(DatasetInterface &dataset, bool clear_original_dataset)
+                   :DatasetInterface()    
 {
     std::cout << "DatasetAutoencoder initialising\n";
 

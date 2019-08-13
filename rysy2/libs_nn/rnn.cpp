@@ -5,14 +5,11 @@
 
 #include <layers/activation_elu_layer.h>
 #include <layers/activation_relu_layer.h>
-#include <layers/activation_tanh_layer.h>
 
 #include <layers/convolution_layer.h>
 #include <layers/dense_convolution_layer.h>
 #include <layers/fc_layer.h>
 
-#include <layers/fir_layer.h>
-#include <layers/recurrent_layer.h>
 
 #include <layers/max_pooling_layer.h>
 #include <layers/average_pooling_layer.h>
@@ -21,6 +18,12 @@
 #include <layers/dropout_layer.h>
 #include <layers/crop_layer.h>
 #include <layers/flatten_layer.h>
+
+#include <layers/highway_block_layer.h>
+
+#include <layers/fir_layer.h>
+#include <layers/recurrent_layer.h>
+
 
 #include <svg_visualiser.h>
 
@@ -32,8 +35,6 @@ RNN::RNN()
     this->training_mode       = false;
     this->minibatch_counter   = 0;
     this->minibatch_size      = 32;
-
-    this->time_sequence_length = 1;
 
     this->m_total_flops = 0;
     this->m_total_trainable_parameters = 0;
@@ -117,7 +118,6 @@ void RNN::copy(RNN& other)
     this->minibatch_counter = other.minibatch_counter;
     this->minibatch_size    = other.minibatch_size;
 
-    this->time_sequence_length  = other.time_sequence_length;
 
     this->m_total_flops = other.m_total_flops;
     this->m_total_trainable_parameters = other.m_total_trainable_parameters;
@@ -144,8 +144,6 @@ void RNN::copy(const RNN& other)
     this->minibatch_counter = other.minibatch_counter;
     this->minibatch_size    = other.minibatch_size;
 
-    this->time_sequence_length  = other.time_sequence_length;
-
     this->m_total_flops = other.m_total_flops;
     this->m_total_trainable_parameters = other.m_total_trainable_parameters;
 }
@@ -160,41 +158,32 @@ Shape RNN::get_output_shape()
     return this->m_output_shape;
 }
 
-
 void RNN::forward(Tensor &output, Tensor &input)
 {
-    //prepare layers for forward run
-    for (unsigned int i = 0; i < layers.size(); i++)
-        layers[i]->reset();
+    reset();
 
-    //split input 4D tensor to 1D array of 3D tensors nn_input
-    input.split_time_sequence(nn_input);
+    input.split_time_sequence(sequence_input);
 
-    //forward truth all time steps steps
-    for (unsigned int t = 0; t < input.t(); t++)
+    for (unsigned int t = 0; t < m_time_sequence_length; t++)
     {
-        //extract input
-        l_output[t][0] = nn_input[t];
+        l_output[t][0] = sequence_input[t];
 
-        //forward truth all layers
-        for (unsigned int l = 0; l < layers.size(); l++)
+        for (unsigned int i = 0; i < layers.size(); i++)
         {
-            layers[l]->set_time_step(t);
-            layers[l]->forward(l_output[t][l + 1], l_output[t][l]);
+            layers[i]->set_time_step(t);
+            layers[i]->forward(l_output[t][i+1], l_output[t][i]);
         }
 
-        nn_output[t] = l_output[t][layers.size()];
+        sequence_output[t] = l_output[t][layers.size()];
     }
 
-    //RNN mode many to one, save only the last one
     if (output.t() == 1)
     {
-        output = nn_output[layers.size()];
+        output = sequence_output[m_time_sequence_length-1];
     }
-    //RNN mode many to many
     else
     {
-        output.concatenate_time_sequence(nn_output, layers.size());
+        output.concatenate_time_sequence(sequence_output);
     }
 }
 
@@ -218,55 +207,47 @@ void RNN::train(Tensor &required_output, Tensor &input)
 {
     forward(output, input);
 
-    //RNN mode many to one, error only the last one
-    if (output.t() == 1)
-    {
-        //clear all
-        for (unsigned int t = 0; t < nn_error.size(); t++)
-            nn_error[t].clear();
+    for (unsigned int t = 0; t < m_time_sequence_length; t++)
+        sequence_error[t].clear();
 
-        //fill only last one
-        nn_error[nn_error.size()-1] = required_output;
-        nn_error[nn_error.size()-1].sub(nn_output[nn_output.size()-1]);
+    if (required_output.t() == 1)
+    {
+        sequence_error[m_time_sequence_length-1] = required_output;
+        sequence_error[m_time_sequence_length-1].sub(sequence_output[m_time_sequence_length-1]);
     }
-    //RNN mode many to many
     else
     {
-        //split required output to nn_error sequence
-        required_output.split_time_sequence(nn_error);
+        required_output.split_time_sequence(sequence_error);
 
-        //compute error from nn_output
-        for (unsigned int t = 0; t < time_sequence_length; t++)
-            nn_error[t].sub(nn_output[t]);
+        for (unsigned int t = 0; t < m_time_sequence_length; t++)
+            sequence_error[t].sub(sequence_output[t]);
     }
 
 
-    train_from_error(this->nn_error);
+    train_from_error(sequence_error);
 }
 
-void RNN::train_from_error(std::vector<Tensor> &nn_error)
+void RNN::train_from_error(std::vector<Tensor> &sequence_error)
 {
     bool update_weights = false;
     minibatch_counter++;
 
     if (minibatch_counter >= minibatch_size)
     {
-        update_weights      = true;
-        minibatch_counter   = 0;
+        update_weights = true;
+        minibatch_counter = 0;
     }
 
-    for (int t = time_sequence_length-1; t >= 0; t--)
+    for (int t = m_time_sequence_length - 1; t >= 0; t--)
     {
         unsigned int last_idx = layers.size()-1;
-        l_error[t][last_idx + 1] = nn_error[t];
 
-        for (int l = last_idx; l>= 0; l--)
-        {
-            layers[l]->set_time_step(t);
-            layers[l]->backward(l_error[t][l], l_error[t][l + 1], l_output[t][l], l_output[t][l + 1], update_weights);
-        }
+        l_error[t][last_idx+1] = sequence_error[t];
 
+        for (int i = last_idx; i>= 0; i--)
+            layers[i]->backward(l_error[t][i], l_error[t][i + 1], l_output[t][i], l_output[t][i + 1], update_weights);
     }
+
 }
 
 Tensor& RNN::get_error_back()
@@ -366,10 +347,10 @@ void RNN::init(Json::Value json_config, Shape input_shape, Shape output_shape)
     this->training_mode       = false;
     this->minibatch_counter   = 0;
 
-    this->time_sequence_length = input_shape.t();
-
     this->m_total_flops = 0;
     this->m_total_trainable_parameters = 0;
+
+    this->m_time_sequence_length = input_shape.t();
 
     if (json_config["network_log_file_name"] != Json::Value::null)
     {
@@ -384,16 +365,14 @@ void RNN::init(Json::Value json_config, Shape input_shape, Shape output_shape)
     {
         this->m_input_shape.set(    json_config["input_shape"][0].asInt(),
                                     json_config["input_shape"][1].asInt(),
-                                    json_config["input_shape"][2].asInt(),
-                                    json_config["input_shape"][3].asInt());
+                                    json_config["input_shape"][2].asInt() );
     }
 
     if (output_shape.size() == 0)
     {
         this->m_output_shape.set(   json_config["output_shape"][0].asInt(),
                                     json_config["output_shape"][1].asInt(),
-                                    json_config["output_shape"][2].asInt(),
-                                    json_config["output_shape"][3].asInt() );
+                                    json_config["output_shape"][2].asInt() );
     }
 
 
@@ -428,7 +407,8 @@ void RNN::init(Json::Value json_config, Shape input_shape, Shape output_shape)
     else
         m_hyperparameters["minibatch_size"]  = default_hyperparameters()["minibatch_size"];
 
-    m_hyperparameters["time_sequence_length"]  = this->time_sequence_length;
+
+    m_hyperparameters["time_sequence_length"]  = m_time_sequence_length;
 
     minibatch_size = m_hyperparameters["minibatch_size"].asInt();
 
@@ -437,39 +417,42 @@ void RNN::init(Json::Value json_config, Shape input_shape, Shape output_shape)
     input.init(this->m_input_shape);
     error.init(this->m_output_shape);
 
+    sequence_error.resize(m_time_sequence_length);
+    for (unsigned int t = 0; t < m_time_sequence_length; t++)
+        sequence_error[t].init(this->m_output_shape);
+
     this->m_parameters["input_shape"][0]  = this->m_input_shape.w();
     this->m_parameters["input_shape"][1]  = this->m_input_shape.h();
     this->m_parameters["input_shape"][2]  = this->m_input_shape.d();
-    this->m_parameters["input_shape"][3]  = this->m_input_shape.t();
-
     this->m_parameters["output_shape"][0] = this->m_output_shape.w();
     this->m_parameters["output_shape"][1] = this->m_output_shape.h();
     this->m_parameters["output_shape"][2] = this->m_output_shape.d();
-    this->m_parameters["output_shape"][3] = this->m_output_shape.t();
 
     this->m_parameters["hyperparameters"] = m_hyperparameters;
 
-    nn_input.resize(this->time_sequence_length);
-    nn_output.resize(this->time_sequence_length);
-    nn_error.resize(this->time_sequence_length);
+    l_error.resize(m_time_sequence_length);
+    l_output.resize(m_time_sequence_length);
 
-    for (unsigned int t = 0; t < this->time_sequence_length; t++)
+
+    for (unsigned int t = 0; t < m_time_sequence_length; t++)
     {
-        nn_input[t].init(this->m_input_shape.w(), this->m_input_shape.h(), this->m_input_shape.d());
-        nn_output[t].init(this->m_output_shape.w(), this->m_output_shape.h(), this->m_output_shape.d());
-        nn_error[t].init(this->m_output_shape.w(), this->m_output_shape.h(), this->m_output_shape.d());
+        l_error[t].push_back(Tensor(m_input_shape.w(), m_input_shape.h(), m_input_shape.d()));
+        l_output[t].push_back(Tensor(m_output_shape));
     }
 
-    l_error.resize(this->time_sequence_length);
-    l_output.resize(this->time_sequence_length);
+    sequence_input.resize(m_time_sequence_length);
+    sequence_output.resize(m_time_sequence_length);
+    sequence_error.resize(m_time_sequence_length);
 
-    for (unsigned int t = 0; t < this->time_sequence_length; t++)
+    for (unsigned int t = 0; t < m_time_sequence_length; t++)
     {
-        l_error[t].push_back(Tensor(this->m_input_shape.w(), this->m_input_shape.h(), this->m_input_shape.d()));
-        l_output[t].push_back(Tensor(this->m_input_shape.w(), this->m_input_shape.h(), this->m_input_shape.d()));
+        sequence_input.push_back(Tensor(input_shape.w(), input_shape.h(), input_shape.d()));
+        sequence_output.push_back(Tensor(input_shape.w(), input_shape.h(), input_shape.d()));
+        sequence_error.push_back(Tensor(input_shape.w(), input_shape.h(), input_shape.d()));
     }
 
-    m_current_input_shape.set(this->m_input_shape.w(), this->m_input_shape.h(), this->m_input_shape.d());
+
+    m_current_input_shape = this->m_input_shape;
 
     for (unsigned int i = 0; i < json_config["layers"].size(); i++)
     {
@@ -500,7 +483,6 @@ void RNN::init(Json::Value json_config, Shape input_shape, Shape output_shape)
         this->m_parameters["output_shape"][0] = this->m_output_shape.w();
         this->m_parameters["output_shape"][1] = this->m_output_shape.h();
         this->m_parameters["output_shape"][2] = this->m_output_shape.d();
-        this->m_parameters["output_shape"][3] = this->m_output_shape.t();
     }
 
 
@@ -511,11 +493,10 @@ void RNN::init(Json::Value json_config, Shape input_shape, Shape output_shape)
     network_log << "gradient_clip  = " << this->m_hyperparameters["gradient_clip"].asFloat() << "\n";
     network_log << "dropout        = " << this->m_hyperparameters["dropout"].asFloat() << "\n";
     network_log << "minibatch_size = " << this->m_hyperparameters["minibatch_size"].asInt() << "\n";
-    network_log << "time_sequence_length = " << this->m_hyperparameters["time_sequence_length"].asInt() << "\n";
     network_log << "\n\n";
 
-    network_log << "input_shape  = " << this->m_input_shape.w() << " " << this->m_input_shape.h() << " " << this->m_input_shape.d() << " " << this->m_input_shape.t() << "\n";
-    network_log << "output_shape = " << this->m_output_shape.w() << " " << this->m_output_shape.h() << " " << this->m_output_shape.d() << " " << this->m_output_shape.t() << "\n";
+    network_log << "input_shape  = " << this->m_input_shape.w() << " " << this->m_input_shape.h() << " " << this->m_input_shape.d() << "\n";
+    network_log << "output_shape = " << this->m_output_shape.w() << " " << this->m_output_shape.h() << " " << this->m_output_shape.d() << "\n";
     network_log << "\n\n";
 
     network_log << "\nnetwork init done\n";
@@ -545,11 +526,6 @@ Shape RNN::add_layer(std::string layer_type, Shape shape, std::string weights_fi
         layer = new ActivationReluLayer(m_current_input_shape, parameters);
     }
     else
-    if (layer_type == "tanh")
-    {
-        layer = new ActivationTanhLayer(m_current_input_shape, parameters);
-    }
-    else
     if (layer_type == "convolution")
     {
         layer = new ConvolutionLayer(m_current_input_shape, parameters);
@@ -571,16 +547,6 @@ Shape RNN::add_layer(std::string layer_type, Shape shape, std::string weights_fi
         parameters["shape"][1] = m_output_shape.h();
         parameters["shape"][2] = m_output_shape.d();
         layer = new FCLayer(m_current_input_shape, parameters);
-    }
-    else
-    if (layer_type == "fir")
-    {
-        layer = new FirLayer(m_current_input_shape, parameters);
-    }
-    else
-    if (layer_type == "recurrent")
-    {
-        layer = new RecurrentLayer(m_current_input_shape, parameters);
     }
     else
     if ((layer_type == "max_pooling")||(layer_type == "max pooling"))
@@ -613,6 +579,21 @@ Shape RNN::add_layer(std::string layer_type, Shape shape, std::string weights_fi
         layer = new FlattenLayer(m_current_input_shape, parameters);
     }
     else
+    if (layer_type == "highway")
+    {
+        layer = new HighwayBlockLayer(m_current_input_shape, parameters);
+    }
+    else
+    if (layer_type == "fir")
+    {
+        layer = new FirLayer(m_current_input_shape, parameters);
+    }
+    else
+    if (layer_type == "recurrent")
+    {
+        layer = new RecurrentLayer(m_current_input_shape, parameters);
+    }
+    else
     {
         std::cout << "ERROR : Unknow layer " << layer_type << "\n";
     }
@@ -623,7 +604,7 @@ Shape RNN::add_layer(std::string layer_type, Shape shape, std::string weights_fi
 
     output_shape = layers[layer_idx]->get_output_shape();
 
-    for (unsigned int t = 0; t < time_sequence_length; t++)
+    for (unsigned int t = 0; t < m_time_sequence_length; t++)
     {
         l_error[t].push_back(Tensor(output_shape));
         l_output[t].push_back(Tensor(output_shape));
@@ -734,11 +715,14 @@ Json::Value RNN::default_hyperparameters(float learning_rate)
     result["gradient_clip"]  = 10.0;
     result["minibatch_size"] = 32;
     result["dropout"]        = 0.5;
-    result["time_sequence_length"]        = 1;
 
     return result;
 }
 
+unsigned int RNN::get_layers_count()
+{
+    return layers.size();
+}
 
 unsigned int RNN::get_layer_output_size()
 {
@@ -747,10 +731,15 @@ unsigned int RNN::get_layer_output_size()
 
 Tensor& RNN::get_layer_output(unsigned int layer_idx)
 {
-    return l_output[time_sequence_length][layer_idx];
+    return l_output[m_time_sequence_length-1][layer_idx];
 }
 
 bool RNN::get_layer_weights_flag(unsigned int layer_idx)
 {
     return layers[layer_idx]->has_weights();
+}
+
+bool RNN::get_layer_activation_flag(unsigned int layer_idx)
+{
+    return layers[layer_idx]->is_activation();
 }

@@ -98,17 +98,19 @@ void RecurrentLayer::forward(Tensor &output, Tensor &input)
         return;
     }
 
-    if (h[time_step_idx+1].shape() != block_output[time_step_idx].shape())
+    if (h[time_step_idx+1].shape() != fc_output.shape())
     {
-        std::cout << "RecurrentLayer::forward : inconsistent h[time_step_idx+1] and block_output[time_step_idx] shape\n";
+        std::cout << "RecurrentLayer::forward : inconsistent h[time_step_idx+1] and fc_output shape\n";
         h[time_step_idx+1].shape().print();
         std::cout << " : ";
-        block_output[time_step_idx].shape().print();
+        fc_output.shape().print();
         std::cout << "\n";
         return;
     }
 
-    if (h[time_step_idx+1].shape() != output.shape())
+    if ( (h[time_step_idx+1].shape().w() != output.shape().w()) ||
+         (h[time_step_idx+1].shape().h() != output.shape().h()) ||
+         (h[time_step_idx+1].shape().d() != output.shape().d()) )
     {
         std::cout << "RecurrentLayer::forward : inconsistent h[time_step_idx+1] and output shape\n";
         h[time_step_idx+1].shape().print();
@@ -119,6 +121,7 @@ void RecurrentLayer::forward(Tensor &output, Tensor &input)
     }
 
     #endif
+
 
     fc_input.concatenate(h[time_step_idx], input);
     fc_layer_forward(fc_output, fc_input, w, bias);
@@ -175,9 +178,12 @@ void RecurrentLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, 
 
     fc_input.concatenate(h[time_step_idx], input);
 
-    h_error[time_step_idx+1].add(error);
+    h_error[time_step_idx+1] = error;
+
+
 
     activation_tanh_layer_backward(fc_error, h[time_step_idx+1], h_error[time_step_idx+1]);
+
 
     fc_layer_update_bias(bias, fc_error, learning_rate);
     fc_layer_gradient(w_grad, fc_input, fc_error);
@@ -188,9 +194,7 @@ void RecurrentLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, 
         w_grad.clear();
     }
 
- 
     fc_layer_backward(fc_error_back, fc_input, fc_error, w);
-
     fc_error_back.split(h_error[time_step_idx], error_back);
 }
 
@@ -211,8 +215,8 @@ std::string RecurrentLayer::asString()
     std::string result;
 
     result+= "RECURRENT\t\t\t";
-    result+= "[" + std::to_string(m_input_shape.w()) + " " + std::to_string(m_input_shape.h()) + " " + std::to_string(m_input_shape.d()) + "]\t";
-    result+= "[" + std::to_string(m_output_shape.w()) + " " + std::to_string(m_output_shape.h()) + " " + std::to_string(m_output_shape.d()) + "]\t";
+    result+= "[" + std::to_string(m_input_shape.w()) + " " + std::to_string(m_input_shape.h()) + " " + std::to_string(m_input_shape.d()) + " " + std::to_string(m_input_shape.t()) + "]\t";
+    result+= "[" + std::to_string(m_output_shape.w()) + " " + std::to_string(m_output_shape.h()) + " " + std::to_string(m_output_shape.d()) + " " + std::to_string(m_output_shape.t()) + "]\t";
     result+= "[" + std::to_string(get_trainable_parameters()) + " " + std::to_string(get_flops()) + "]\t";
     return result;
 }
@@ -228,6 +232,7 @@ void RecurrentLayer::init_recurrent()
     if (m_parameters["shape"].size() >= 3)
         d_ = m_parameters["shape"][2].asInt();
 
+    m_input_shape.set(m_input_shape.w(), m_input_shape.h(), m_input_shape.d());
     unsigned int neurons_count = w_*h_*d_;
     unsigned int inputs_count = m_input_shape.size();
 
@@ -238,11 +243,10 @@ void RecurrentLayer::init_recurrent()
 
     time_sequence_length = m_parameters["hyperparameters"]["time_sequence_length"].asInt();
 
-
     m_output_shape.set(1, 1, neurons_count);
 
-
     unsigned int input_size = inputs_count + neurons_count;
+
 
     w.init(input_size, neurons_count, 1);
     w.set_random(sqrt(2.0/(input_size)));
@@ -259,17 +263,19 @@ void RecurrentLayer::init_recurrent()
     h_error.resize(time_sequence_length + 1);
 
     for (unsigned int i = 0; i < h.size(); i++)
-        h[i].init(m_output_shape);
+        h[i].init(1, 1, neurons_count);
 
     for (unsigned int i = 0; i < h_error.size(); i++)
-        h_error[i].init(m_output_shape);
+        h_error[i].init(1, 1, neurons_count);
 
 
-    fc_input.init(1, 1, input_size + neurons_count);
+
+
+    fc_input.init(1, 1, input_size );
     fc_output.init(1, 1, neurons_count);
 
     fc_error.init(1, 1, neurons_count);
-    fc_error_back.init(1, 1, input_size + neurons_count);
+    fc_error_back.init(1, 1, input_size);
 
     this->m_trainable_parameters    = w.size() + bias.size();
     this->m_flops                   = time_sequence_length*(m_input_shape.size() + m_output_shape.size() + 1)*m_output_shape.size()*2;
