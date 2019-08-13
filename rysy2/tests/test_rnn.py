@@ -21,7 +21,7 @@ output_shape = dataset.get_output_shape()
 cnn = RNN(input_shape, output_shape, 0.001)
 
 
-cnn.add_layer("recurrent", Shape(256))
+cnn.add_layer("recurrent", Shape(1024))
 cnn.add_layer("output")
 
 cnn._print()
