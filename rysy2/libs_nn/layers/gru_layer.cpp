@@ -55,16 +55,74 @@ GRULayer& GRULayer::operator= (const GRULayer& other)
 
 void GRULayer::copy_gru_layer(GRULayer &other)
 {
+    this->time_sequence_length  = other.time_sequence_length;
     this->h                     = other.h;
     this->h_error               = other.h_error;
-    this->time_sequence_length  = other.time_sequence_length;
+
+    this->fc_input              = other.fc_input;
+    this->fc_output_control     = other.fc_output_control;
+    this->fc_output_update      = other.fc_output_update;
+
+    this->learning_rate         = other.learning_rate;
+    this->lambda1               = other.lambda1;
+    this->lambda2               = other.lambda2;
+    this->gradient_clip         = other.gradient_clip;
+
+    this->w_control             = other.w_control;
+    this->bias_control          = other.bias_control;
+    this->w_grad_control        = other.w_grad_control;
+    this->m_control             = other.m_control;
+    this->v_control             = other.v_control;
+
+
+    this->w_update             = other.w_update;
+    this->bias_update          = other.bias_update;
+    this->w_grad_update        = other.w_grad_update;
+    this->m_update             = other.m_update;
+    this->v_update             = other.v_update;
+
+    this->control_error_back   = other.control_error_back;
+    this->update_error_back    = other.update_error_back;
+
+    this->gate_control_error_back   = other.gate_control_error_back;
+    this->gate_h_error_back         = other.gate_h_error_back;
+    this->gate_update_error_back    = other.gate_update_error_back;
 }
 
 void GRULayer::copy_gru_layer(const GRULayer &other)
 {
+    this->time_sequence_length  = other.time_sequence_length;
     this->h                     = other.h;
     this->h_error               = other.h_error;
-    this->time_sequence_length  = other.time_sequence_length;
+
+    this->fc_input              = other.fc_input;
+    this->fc_output_control     = other.fc_output_control;
+    this->fc_output_update      = other.fc_output_update;
+
+    this->learning_rate         = other.learning_rate;
+    this->lambda1               = other.lambda1;
+    this->lambda2               = other.lambda2;
+    this->gradient_clip         = other.gradient_clip;
+
+    this->w_control             = other.w_control;
+    this->bias_control          = other.bias_control;
+    this->w_grad_control        = other.w_grad_control;
+    this->m_control             = other.m_control;
+    this->v_control             = other.v_control;
+
+
+    this->w_update             = other.w_update;
+    this->bias_update          = other.bias_update;
+    this->w_grad_update        = other.w_grad_update;
+    this->m_update             = other.m_update;
+    this->v_update             = other.v_update;
+
+    this->control_error_back   = other.control_error_back;
+    this->update_error_back    = other.update_error_back;
+
+    this->gate_control_error_back   = other.gate_control_error_back;
+    this->gate_h_error_back         = other.gate_h_error_back;
+    this->gate_update_error_back    = other.gate_update_error_back;
 }
 
 
