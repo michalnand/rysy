@@ -1,6 +1,7 @@
 #ifndef _RECURRENT_LAYER_H_
 #define _RECURRENT_LAYER_H_
 
+
 #include <layers/layer.h>
 
 class RecurrentLayer final: public Layer
@@ -18,11 +19,8 @@ class RecurrentLayer final: public Layer
         RecurrentLayer& operator= (const RecurrentLayer& other);
 
     protected:
-        void copy_recurrent_layer(RecurrentLayer &other);
-        void copy_recurrent_layer(const RecurrentLayer &other);
-
-    public:
-        void reset();
+        void copy_recurrent(RecurrentLayer &other);
+        void copy_recurrent(const RecurrentLayer &other);
 
     public:
         void forward(Tensor &output, Tensor &input);
@@ -30,26 +28,27 @@ class RecurrentLayer final: public Layer
 
         void save(std::string file_name_prefix);
         void load(std::string file_name_prefix);
-        std::string asString();
 
         bool has_weights() { return true;};
 
-    protected:
-        void init_recurrent_layer();
+        std::string asString();
+
+    public:
+        void reset();
 
     protected:
+        void init_recurrent();
+
+    protected:
+        float learning_rate, lambda1, lambda2, gradient_clip;
         unsigned int time_sequence_length;
 
+        Tensor w, m, v, w_grad, bias;
+
+    protected:
         std::vector<Tensor> h, h_error;
-        Tensor activation_error_back, fc_error_back;
         Tensor fc_input, fc_output;
-
-
-        float learning_rate, lambda1, lambda2, gradient_clip;
-        Tensor w, bias;
-        Tensor w_grad, m, v;
-
-
+        Tensor fc_error, fc_error_back;
 };
 
 #endif

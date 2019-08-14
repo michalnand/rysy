@@ -5,7 +5,7 @@ sys.path.append("../libs_rysy_python")
 from rysy import *
 
 
-#dataset = DatasetTest(1)
+# dataset = DatasetTest(1)
 
 
 dataset_path = "/home/michal/dataset/mnist/"
@@ -21,14 +21,11 @@ output_shape = dataset.get_output_shape()
 
 cnn = RNN(input_shape, output_shape, 0.001)
 
-
-#cnn.add_layer("fc", Shape(16))
-cnn.add_layer("fir")
-cnn.add_layer("fc", Shape(256))
-cnn.add_layer("elu")
+cnn.add_layer("recurrent", Shape(256))
 cnn.add_layer("output")
 
 cnn._print()
+
 
 #train network - set epoch count
 
@@ -64,7 +61,6 @@ for epoch in range(0, 10):
     log_str+= str(compare.asString())
     log_str+= "\n\n\n\n"
     rnn_log.put_string(log_str)
-
 
 
 print("program done")

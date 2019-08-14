@@ -5,9 +5,9 @@ DatasetMnistRNN::DatasetMnistRNN( std::string training_data_file_name, std::stri
                             std::string testing_data_file_name, std::string testing_labels_file_name)
                 :DatasetInterface()
 {
-    set_input_shape(Shape(28, 1, 1, 28));
+    set_input_shape(Shape(1, 1, 28, 28));
     set_output_shape(Shape(1, 1, 10));
-
+ 
     load(training_input, training_output, training_data_file_name, training_labels_file_name);
     load(testing_input, testing_output, testing_data_file_name, testing_labels_file_name);
     print();
