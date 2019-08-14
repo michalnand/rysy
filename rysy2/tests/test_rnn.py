@@ -14,6 +14,7 @@ dataset = DatasetMnistRNN(dataset_path + "train-images-idx3-ubyte",
                             dataset_path + "t10k-images-idx3-ubyte",
                             dataset_path + "t10k-labels-idx1-ubyte")
 
+
 input_shape = dataset.get_input_shape()
 output_shape = dataset.get_output_shape()
 
@@ -21,7 +22,10 @@ output_shape = dataset.get_output_shape()
 cnn = RNN(input_shape, output_shape, 0.001)
 
 
-cnn.add_layer("recurrent", Shape(1024))
+#cnn.add_layer("fc", Shape(16))
+cnn.add_layer("fir")
+cnn.add_layer("fc", Shape(256))
+cnn.add_layer("elu")
 cnn.add_layer("output")
 
 cnn._print()
