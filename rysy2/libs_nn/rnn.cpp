@@ -23,6 +23,7 @@
 
 #include <layers/fir_layer.h>
 #include <layers/recurrent_layer.h>
+#include <layers/gru_layer.h>
 
 
 #include <svg_visualiser.h>
@@ -592,6 +593,11 @@ Shape RNN::add_layer(std::string layer_type, Shape shape, std::string weights_fi
     if (layer_type == "recurrent")
     {
         layer = new RecurrentLayer(m_current_input_shape, parameters);
+    }
+    else
+    if ( (layer_type == "gru") || (layer_type == "GRU"))
+    {
+        layer = new GRULayer(m_current_input_shape, parameters);
     }
     else
     {

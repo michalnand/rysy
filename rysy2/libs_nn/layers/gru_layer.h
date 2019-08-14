@@ -2,7 +2,6 @@
 #define _GRU_LAYER_H_
 
 #include <layers/layer.h>
-#include <weights.h>
 
 class GRULayer final: public Layer
 {
@@ -27,8 +26,10 @@ class GRULayer final: public Layer
 
     public:
         void forward(Tensor &output, Tensor &input);
-        void backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights_);
+        void backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights);
 
+        void save(std::string file_name_prefix);
+        void load(std::string file_name_prefix);
         std::string asString();
 
         bool has_weights() { return true;};
@@ -37,25 +38,23 @@ class GRULayer final: public Layer
         void init_gru_layer();
 
     protected:
-        float learning_rate, lambda1, lambda2, gradient_clip;
-
-        unsigned int time_step_idx;
         unsigned int time_sequence_length;
 
+        std::vector<Tensor> h, h_error;
 
-        Weights control_weights, update_weights;
-        Tensor control_bias, update_bias;
 
-        Tensor block_input;
+        Tensor fc_input;
+        std::vector<Tensor> fc_output_control, fc_output_update;
 
-        std::vector<Tensor> h;
-        std::vector<Tensor> control_output, update_output;
-        std::vector<Tensor> h_error;
+        float learning_rate, lambda1, lambda2, gradient_clip;
 
-        Tensor control_h_error_back, update_h_error_back;
+        Tensor w_control, bias_control;
+        Tensor w_grad_control, m_control, v_control;
+        Tensor w_update, bias_update;
+        Tensor w_grad_update, m_update, v_update;
+
         Tensor control_error_back, update_error_back;
-        Tensor tmp_error, tmp_error_h;
-
+        Tensor gate_control_error_back, gate_h_error_back, gate_update_error_back;
 };
 
 #endif

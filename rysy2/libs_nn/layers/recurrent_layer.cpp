@@ -178,6 +178,7 @@ void RecurrentLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, 
 
     activation_tanh_layer_backward(activation_error_back, h[time_step_idx+1], h_error[time_step_idx + 1]);
 
+
     fc_layer_gradient(w_grad, fc_input, activation_error_back);
     fc_layer_update_bias(bias, activation_error_back, learning_rate);
 
@@ -186,6 +187,7 @@ void RecurrentLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, 
         solver_adam(w, w_grad, m, v, learning_rate, lambda1, lambda2, gradient_clip);
         w_grad.clear();
     }
+
 
     fc_layer_backward(fc_error_back, fc_input, activation_error_back, w);
 

@@ -1,15 +1,16 @@
 #include <layers/gru_layer.h>
-#include <math.h>
+#include <iostream>
 
 #include <kernels/fc_layer.cuh>
 #include <kernels/gru_gate.cuh>
+#include <kernels/solver_adam.cuh>
 
-#include <iostream>
+#include <math.h>
 
 GRULayer::GRULayer()
         :Layer()
 {
-    time_step_idx = 0;
+
 }
 
 GRULayer::GRULayer(GRULayer& other)
@@ -55,15 +56,15 @@ GRULayer& GRULayer::operator= (const GRULayer& other)
 void GRULayer::copy_gru_layer(GRULayer &other)
 {
     this->h                     = other.h;
+    this->h_error               = other.h_error;
     this->time_sequence_length  = other.time_sequence_length;
-    this->time_step_idx         = other.time_step_idx;
 }
 
 void GRULayer::copy_gru_layer(const GRULayer &other)
 {
     this->h                     = other.h;
+    this->h_error               = other.h_error;
     this->time_sequence_length  = other.time_sequence_length;
-    this->time_step_idx         = other.time_step_idx;
 }
 
 
@@ -72,26 +73,8 @@ void GRULayer::reset()
     for (unsigned int i = 0; i < h.size(); i++)
         h[i].clear();
 
-    for (unsigned int i = 0; i < control_output.size(); i++)
-        control_output[i].clear();
-
-    for (unsigned int i = 0; i < update_output.size(); i++)
-        update_output[i].clear();
-
     for (unsigned int i = 0; i < h_error.size(); i++)
         h_error[i].clear();
-
-
-    block_input.clear();
-    control_h_error_back.clear();
-    update_h_error_back.clear();
-
-    control_error_back.clear();
-    update_error_back.clear();
-    tmp_error.clear();
-    tmp_error_h.clear();
-
-    time_step_idx = 0;
 }
 
 
@@ -124,16 +107,18 @@ void GRULayer::forward(Tensor &output, Tensor &input)
 
     if (time_step_idx < time_sequence_length)
     {
-        block_input.concatenate(h[time_step_idx], input);
+        fc_input.concatenate(h[time_step_idx], input);
 
-        fc_layer_forward(control_output[time_step_idx], block_input, control_weights.weights, control_bias);
-        fc_layer_forward(update_output[time_step_idx], block_input, update_weights.weights, update_bias);
+        fc_layer_forward(fc_output_control[time_step_idx], fc_input, w_control, bias_control);
+        fc_layer_forward(fc_output_update[time_step_idx], fc_input, w_update, bias_update);
 
-        gru_gate_forward(h[time_step_idx+1], control_output[time_step_idx], h[time_step_idx], update_output[time_step_idx]);
+
+        gru_gate_forward(   h[time_step_idx+1],
+                            fc_output_control[time_step_idx],
+                            h[time_step_idx],
+                            fc_output_update[time_step_idx]);
 
         output = h[time_step_idx+1];
-
-        time_step_idx++;
     }
     #ifdef RYSY_DEBUG
     else
@@ -143,10 +128,12 @@ void GRULayer::forward(Tensor &output, Tensor &input)
     #endif
 }
 
-
-
-void GRULayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights_)
+void GRULayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights)
 {
+    (void)output;
+    (void)input;
+    (void)update_weights;
+
     #ifdef RYSY_DEBUG
 
     if (error_back.shape() != m_input_shape)
@@ -191,58 +178,70 @@ void GRULayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor
 
     #endif
 
-    time_step_idx--;
+    fc_input.concatenate(h[time_step_idx], input);
+    h_error[time_step_idx + 1].add(error);
 
-    h_error[time_step_idx+1].add(error);
 
-    gru_gate_backward(  h[time_step_idx+1],
+    gru_gate_backward(  h[time_step_idx + 1],
 
-                        control_output[time_step_idx],
+                        fc_output_control[time_step_idx],
                         h[time_step_idx],
-                        update_output[time_step_idx],
+                        fc_output_update[time_step_idx],
 
-                        h_error[time_step_idx+1],
+                        h_error[time_step_idx + 1],
 
-                        control_h_error_back,
-                        h_error[time_step_idx],
-                        update_h_error_back);
-
-    block_input.concatenate(h[time_step_idx], input);
-
-    fc_layer_gradient(control_weights.gradient, block_input, control_h_error_back);
-    fc_layer_gradient(update_weights.gradient, block_input, update_h_error_back);
-
-    fc_layer_update_bias(control_bias, update_error_back, learning_rate);
-    fc_layer_update_bias(update_bias, control_error_back, learning_rate);
+                        gate_control_error_back,
+                        gate_h_error_back,
+                        gate_update_error_back);
 
 
-    if (update_weights_)
+    fc_layer_gradient(w_grad_control, fc_input, gate_control_error_back);
+    fc_layer_update_bias(bias_control, gate_control_error_back, learning_rate);
+
+    fc_layer_gradient(w_grad_update, fc_input, gate_update_error_back);
+    fc_layer_update_bias(bias_update, gate_update_error_back, learning_rate);
+
+
+    if (update_weights)
     {
-        control_weights.train(learning_rate, lambda1, lambda2, gradient_clip);
-        update_weights.train(learning_rate, lambda1, lambda2, gradient_clip);
+        solver_adam(w_control, w_grad_control, m_control, v_control, learning_rate, lambda1, lambda2, gradient_clip);
+        w_grad_control.clear();
+
+        solver_adam(w_update, w_grad_update, m_update, v_update, learning_rate, lambda1, lambda2, gradient_clip);
+        w_grad_update.clear();
     }
 
 
-    fc_layer_backward(control_error_back, block_input, control_h_error_back, control_weights.weights);
-    fc_layer_backward(update_error_back, block_input, control_h_error_back, control_weights.weights);
+    fc_layer_backward(control_error_back, fc_input, gate_control_error_back, w_control);
+    fc_layer_backward(update_error_back, fc_input, gate_update_error_back, w_update);
 
-    tmp_error = control_error_back;
-    tmp_error.add(update_error_back);
-
-    tmp_error.split(tmp_error_h, error_back);
-
-    h_error[time_step_idx].add(tmp_error_h);
-
+    control_error_back.add(update_error_back);
+    control_error_back.split(h_error[time_step_idx], error_back);
 }
 
 
+void GRULayer::save(std::string file_name_prefix)
+{
+    w_control.save(file_name_prefix + "_weights_control.bin");
+    bias_control.save(file_name_prefix + "_bias_control.bin");
+    w_update.save(file_name_prefix + "_weights_update.bin");
+    bias_update.save(file_name_prefix + "_bias_update.bin");
+}
+
+void GRULayer::load(std::string file_name_prefix)
+{
+    w_control.load(file_name_prefix + "_weights_control.bin");
+    bias_control.load(file_name_prefix + "_bias_control.bin");
+    w_update.load(file_name_prefix + "_weights_update.bin");
+    bias_update.load(file_name_prefix + "_bias_update.bin");
+}
 
 std::string GRULayer::asString()
 {
     std::string result;
 
-    result+= "GRU LAYER\t";
-    result+= "[" + std::to_string(m_input_shape.w()) + " " + std::to_string(m_input_shape.h()) + " " + std::to_string(m_input_shape.d()) + "]\t";
+    result+= "GRU\t\t";
+    result+= "[" + std::to_string(m_input_shape.w()) + " " + std::to_string(m_input_shape.h()) + " " + std::to_string(m_input_shape.d()) + " " + std::to_string(m_input_shape.t()) + "]\t";
     result+= "[" + std::to_string(m_output_shape.w()) + " " + std::to_string(m_output_shape.h()) + " " + std::to_string(m_output_shape.d()) + " " + std::to_string(m_output_shape.t()) + "]\t";
     result+= "[" + std::to_string(get_trainable_parameters()) + " " + std::to_string(get_flops()) + "]\t";
     return result;
@@ -250,14 +249,6 @@ std::string GRULayer::asString()
 
 void GRULayer::init_gru_layer()
 {
-    time_step_idx        = 0;
-    time_sequence_length = m_parameters["hyperparameters"]["time_sequence_length"].asInt();
-
-    learning_rate   = m_parameters["hyperparameters"]["learning_rate"].asFloat();
-    lambda1         = m_parameters["hyperparameters"]["lambda1"].asFloat();
-    lambda2         = m_parameters["hyperparameters"]["lambda2"].asFloat();
-    gradient_clip   = m_parameters["hyperparameters"]["gradient_clip"].asFloat();
-
     unsigned int w_ = 1, h_ = 1, d_ = 1;
 
     if (m_parameters["shape"].size() >= 1)
@@ -269,54 +260,72 @@ void GRULayer::init_gru_layer()
     if (m_parameters["shape"].size() >= 3)
         d_ = m_parameters["shape"][2].asInt();
 
-    unsigned int input_size = m_input_shape.size();
-    unsigned int output_size = w_*h_*d_;
-
-    m_output_shape.set(1, 1, output_size);
-
-    control_weights.init(m_input_shape.size(), m_output_shape.size(), 1);
-    update_weights.init(m_input_shape.size(), m_output_shape.size(), 1);
-
-    control_bias.init(m_output_shape.size());
-    update_bias.init(m_output_shape.size());
-
-    control_weights.weights.set_random(sqrt(2.0/input_size));
-    update_weights.weights.set_random(sqrt(2.0/input_size));
-    control_bias.set_const(-1.0);
-    update_bias.set_const(0.0);
+    learning_rate   = m_parameters["hyperparameters"]["learning_rate"].asFloat();
+    lambda1         = m_parameters["hyperparameters"]["lambda1"].asFloat();
+    lambda2         = m_parameters["hyperparameters"]["lambda2"].asFloat();
+    gradient_clip   = m_parameters["hyperparameters"]["gradient_clip"].asFloat();
+    time_sequence_length = m_parameters["hyperparameters"]["time_sequence_length"].asInt();
 
 
-    //init tensors
+    unsigned int inputs_count  = m_input_shape.w()*m_input_shape.h()*m_input_shape.d();
+    unsigned int neurons_count = w_*h_*d_;
 
-    h.resize(time_sequence_length+1);
-    control_output.resize(time_sequence_length+1);
-    update_output.resize(time_sequence_length+1);
-    h_error.resize(time_sequence_length+1);
+    m_input_shape.set(1, 1, inputs_count);
+    m_output_shape.set(1, 1, neurons_count);
 
+    fc_input.init(1, 1, inputs_count + neurons_count);
+
+    fc_output_control.resize(time_sequence_length);
+    fc_output_update.resize(time_sequence_length);
+
+    for (unsigned int i = 0; i < fc_output_control.size(); i++)
+        fc_output_control[i].init(1, 1, neurons_count);
+
+    for (unsigned int i = 0; i < fc_output_update.size(); i++)
+        fc_output_update[i].init(1, 1, neurons_count);
+
+
+
+    h.resize(time_sequence_length + 1);
     for (unsigned int i = 0; i < h.size(); i++)
-        h[i].init(m_output_shape);
+        h[i].init(1, 1, neurons_count, 1);
 
-    for (unsigned int i = 0; i < control_output.size(); i++)
-        control_output[i].init(m_output_shape);
-
-    for (unsigned int i = 0; i < update_output.size(); i++)
-        update_output[i].init(m_output_shape);
-
+    h_error.resize(time_sequence_length + 1);
     for (unsigned int i = 0; i < h_error.size(); i++)
-        h_error[i].init(m_output_shape);
+        h_error[i].init(1, 1, neurons_count, 1);
 
-    block_input.init(m_input_shape.w(), m_input_shape.h(), m_input_shape.d() + m_output_shape.d());
+    gate_control_error_back.init(1, 1, neurons_count);
+    gate_update_error_back.init(1, 1, neurons_count);
+    gate_h_error_back.init(1, 1, neurons_count);
 
-    control_h_error_back.init(m_output_shape);
-    update_h_error_back.init(m_output_shape);
-
-    control_error_back.init(m_input_shape.w(), m_input_shape.h(), m_input_shape.d() + m_output_shape.d());
-    update_error_back.init(m_input_shape.w(), m_input_shape.h(), m_input_shape.d() + m_output_shape.d());
-    tmp_error.init(m_input_shape.w(), m_input_shape.h(), m_input_shape.d() + m_output_shape.d());
-    tmp_error_h.init(m_output_shape);
+    control_error_back.init(1, 1, inputs_count + neurons_count);
+    update_error_back.init(1, 1, inputs_count + neurons_count);
 
 
 
-    this->m_trainable_parameters    = control_weights.weights.size() + control_bias.size() + update_weights.weights.size() + update_bias.size();
-    this->m_flops                   = m_output_shape.size()*( 2*(block_input.size() + 1) + 4 + 10);
+    w_control.init(inputs_count + neurons_count, m_output_shape.size(), 1);
+    w_control.set_random(sqrt(2.0/(inputs_count + neurons_count)));
+
+    w_grad_control.init(w_control.shape());
+    m_control.init(w_control.shape());
+    v_control.init(w_control.shape());
+
+    bias_control.init(1, 1, neurons_count);
+    bias_control.clear();
+
+
+    w_update.init(inputs_count + neurons_count, m_output_shape.size(), 1);
+    w_update.set_random(sqrt(2.0/(inputs_count + neurons_count)));
+
+    w_grad_update.init(w_update.shape());
+    m_update.init(w_update.shape());
+    v_update.init(w_update.shape());
+
+    bias_update.init(1, 1, neurons_count);
+    bias_update.clear();
+
+
+
+    this->m_trainable_parameters    = 2*(w_control.size() + bias_control.size());
+    this->m_flops                   = (inputs_count +neurons_count)*m_output_shape.size()*4;
 }

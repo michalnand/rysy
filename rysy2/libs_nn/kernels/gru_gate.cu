@@ -1,9 +1,9 @@
 #include "gru_gate.cuh"
 
-#define SIGMOID(x)    (  1.0 / (1.0 + exp(-x)))
-#define TANH(x)        (tanh(x))
-#define D_SIGMOID(y)   (y*(1.0 - y))
-#define D_TANH(y)    (1.0 - y*y)
+#define SIGMOID(x)      (1.0 / (1.0 + exp(-x)))
+#define TANH(x)         (tanh(x))
+#define D_SIGMOID(y)    (y*(1.0 - y))
+#define D_TANH(y)       (1.0 - y*y)
 
 
 __host__
@@ -72,7 +72,7 @@ void cpu_gru_gate_backward_kernel(      float *h_next,
         float c_der     = D_SIGMOID(c);
         float u_der     = D_TANH(u);
 
-        h_error_back[idx]       = (1.0 - c)*err;
+        h_error_back[idx]       = err*(1.0 - c);
         update_error_back[idx]  = (err*c)*u_der;
         control_error_back[idx] = (err*u - err*h[idx])*c_der;
     }
@@ -105,7 +105,7 @@ void cuda_gru_gate_backward_kernel( float *h_next,
         float c_der     = D_SIGMOID(c);
         float u_der     = D_TANH(u);
 
-        h_error_back[idx]       = (1.0 - c)*err;
+        h_error_back[idx]       = err*(1.0 - c);
         update_error_back[idx]  = (err*c)*u_der;
         control_error_back[idx] = (err*u - err*h[idx])*c_der;
     }
@@ -195,7 +195,7 @@ void gru_gate_backward( Tensor &h_next,
                                         update.v,
 
                                         error.v,
-                                        
+
                                         control_error_back.v,
                                         h_error_back.v,
                                         update_error_back.v,
