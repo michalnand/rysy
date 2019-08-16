@@ -362,7 +362,7 @@ void GRULayer::init_gru_layer()
 
 
     w_control.init(inputs_count + neurons_count, m_output_shape.size(), 1);
-    w_control.set_random(sqrt(2.0/(inputs_count + neurons_count)));
+    w_control.set_random(sqrt(1.0/(inputs_count + neurons_count)));
 
     w_grad_control.init(w_control.shape());
     m_control.init(w_control.shape());
@@ -373,7 +373,7 @@ void GRULayer::init_gru_layer()
 
 
     w_update.init(inputs_count + neurons_count, m_output_shape.size(), 1);
-    w_update.set_random(sqrt(2.0/(inputs_count + neurons_count)));
+    w_update.set_random(sqrt(1.0/(inputs_count + neurons_count)));
 
     w_grad_update.init(w_update.shape());
     m_update.init(w_update.shape());
