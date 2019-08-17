@@ -74,7 +74,8 @@ void cpu_gru_gate_backward_kernel(      float *h_next,
 
         h_error_back[idx]       = err*(1.0 - c);
         update_error_back[idx]  = (err*c)*u_der;
-        control_error_back[idx] = (err*u - err*h[idx])*c_der;
+        //control_error_back[idx] = err*(u - h[idx])*c_der;
+        control_error_back[idx] = err*(u + h[idx])*c_der;
     }
 }
 
@@ -107,7 +108,8 @@ void cuda_gru_gate_backward_kernel( float *h_next,
 
         h_error_back[idx]       = err*(1.0 - c);
         update_error_back[idx]  = (err*c)*u_der;
-        control_error_back[idx] = (err*u - err*h[idx])*c_der;
+        //control_error_back[idx] = err*(u - h[idx])*c_der;
+        control_error_back[idx] = err*(u + h[idx])*c_der;
     }
 }
 
