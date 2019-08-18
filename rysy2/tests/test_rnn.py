@@ -7,7 +7,6 @@ from rysy import *
 
 #dataset = DatasetTest(1)
 
-
 dataset_path = "/home/michal/dataset/mnist/"
 
 dataset = DatasetMnistRNN(dataset_path + "train-images-idx3-ubyte",
@@ -16,23 +15,17 @@ dataset = DatasetMnistRNN(dataset_path + "train-images-idx3-ubyte",
                             dataset_path + "t10k-labels-idx1-ubyte")
 
 
-
 input_shape = dataset.get_input_shape()
 output_shape = dataset.get_output_shape()
 
 
-cnn = RNN(input_shape, output_shape, 0.001, 0.000001, 0.000001, 10.0, 0.5, 32)
+cnn = RNN(input_shape, output_shape, 0.002)
 
-
-cnn.add_layer("gru", Shape(256))
 cnn.add_layer("gru", Shape(256))
 cnn.add_layer("dropout")
 cnn.add_layer("output")
 
-
-
 cnn._print()
-
 
 #train network - set epoch count
 
