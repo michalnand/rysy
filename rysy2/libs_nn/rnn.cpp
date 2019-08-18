@@ -353,6 +353,8 @@ void RNN::init(Json::Value json_config, Shape input_shape, Shape output_shape)
 
     this->m_time_sequence_length = input_shape.t();
 
+
+
     if (json_config["network_log_file_name"] != Json::Value::null)
     {
         std::string network_log_file_name = json_config["network_log_file_name"].asString();
@@ -453,7 +455,7 @@ void RNN::init(Json::Value json_config, Shape input_shape, Shape output_shape)
     }
 
 
-    m_current_input_shape = this->m_input_shape;
+    m_current_input_shape.set(this->m_input_shape.w(), this->m_input_shape.h(), this->m_input_shape.d());
 
     for (unsigned int i = 0; i < json_config["layers"].size(); i++)
     {

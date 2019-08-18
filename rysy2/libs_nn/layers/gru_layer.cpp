@@ -322,7 +322,7 @@ void GRULayer::init_gru_layer()
     learning_rate   = m_parameters["hyperparameters"]["learning_rate"].asFloat();
     lambda1         = m_parameters["hyperparameters"]["lambda1"].asFloat();
     lambda2         = m_parameters["hyperparameters"]["lambda2"].asFloat();
-    gradient_clip   = 1.0; //m_parameters["hyperparameters"]["gradient_clip"].asFloat();
+    gradient_clip   = m_parameters["hyperparameters"]["gradient_clip"].asFloat();
     time_sequence_length = m_parameters["hyperparameters"]["time_sequence_length"].asInt();
 
 
