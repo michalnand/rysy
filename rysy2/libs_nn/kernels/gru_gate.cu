@@ -50,18 +50,19 @@ void cuda_gru_gate_forward_kernel(  float *h_next,
 
 
 __host__
-void cpu_gru_gate_backward_kernel(      float *h_next,
-                                        float *control,
-                                        float *h,
-                                        float *update,
+void cpu_gru_gate_backward_kernel(  float *h_next,
 
-                                        float *error,
+                                    float *control,
+                                    float *h,
+                                    float *update,
 
-                                        float *h_error_back,
-                                        float *control_error_back,
-                                        float *update_error_back,
+                                    float *error,
 
-                                        unsigned int output_size)
+                                    float *control_error_back,
+                                    float *h_error_back,
+                                    float *update_error_back,
+
+                                    unsigned int output_size)
 {
     for (unsigned int idx = 0; idx < output_size; idx++)
     {
@@ -74,23 +75,24 @@ void cpu_gru_gate_backward_kernel(      float *h_next,
 
         h_error_back[idx]       = err*(1.0 - c);
         update_error_back[idx]  = (err*c)*u_der;
-        //control_error_back[idx] = err*(u - h[idx])*c_der;
-        control_error_back[idx] = err*(u + h[idx])*c_der;
+        control_error_back[idx] = err*(u - h[idx])*c_der;
     }
 }
 
 
+
+
 __global__
 void cuda_gru_gate_backward_kernel( float *h_next,
-                                    float *h,
 
                                     float *control,
+                                    float *h,
                                     float *update,
 
                                     float *error,
 
-                                    float *h_error_back,
                                     float *control_error_back,
+                                    float *h_error_back,
                                     float *update_error_back,
 
                                     unsigned int output_size)
@@ -108,8 +110,7 @@ void cuda_gru_gate_backward_kernel( float *h_next,
 
         h_error_back[idx]       = err*(1.0 - c);
         update_error_back[idx]  = (err*c)*u_der;
-        //control_error_back[idx] = err*(u - h[idx])*c_der;
-        control_error_back[idx] = err*(u + h[idx])*c_der;
+        control_error_back[idx] = err*(u - h[idx])*c_der;
     }
 }
 

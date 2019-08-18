@@ -240,6 +240,7 @@ void GRULayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor
     h_error[time_step_idx + 1].add(error);
 
 
+
     gru_gate_backward(  h[time_step_idx + 1],
 
                         fc_output_control[time_step_idx],
