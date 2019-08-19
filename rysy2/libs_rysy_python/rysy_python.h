@@ -32,6 +32,7 @@
 
 #include <experience_replay_buffer.h>
 #include <dqn.h>
+#include <dqrn.h>
 #include <dqna.h>
 #include <icm.h>
 #include <dqn_curiosity.h>

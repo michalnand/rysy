@@ -2193,6 +2193,63 @@ class DQN(_object):
 DQN_swigregister = _rysy.DQN_swigregister
 DQN_swigregister(DQN)
 
+class DQRN(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, DQRN, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, DQRN, name)
+    __repr__ = _swig_repr
+
+    def __init__(self, *args):
+        this = _rysy.new_DQRN(*args)
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _rysy.delete_DQRN
+    __del__ = lambda self: None
+
+    def init(self, *args):
+        return _rysy.DQRN_init(self, *args)
+
+    def add_layer(self, *args):
+        return _rysy.DQRN_add_layer(self, *args)
+
+    def forward(self, *args):
+        return _rysy.DQRN_forward(self, *args)
+
+    def get_q_values(self):
+        return _rysy.DQRN_get_q_values(self)
+
+    def add(self, *args):
+        return _rysy.DQRN_add(self, *args)
+
+    def is_full(self):
+        return _rysy.DQRN_is_full(self)
+
+    def train(self):
+        return _rysy.DQRN_train(self)
+
+    def _print(self):
+        return _rysy.DQRN__print(self)
+
+    def print_buffer(self):
+        return _rysy.DQRN_print_buffer(self)
+
+    def save(self, path):
+        return _rysy.DQRN_save(self, path)
+
+    def load_weights(self, file_name_prefix):
+        return _rysy.DQRN_load_weights(self, file_name_prefix)
+
+    def add_activity_map(self):
+        return _rysy.DQRN_add_activity_map(self)
+
+    def save_activity_map(self, path):
+        return _rysy.DQRN_save_activity_map(self, path)
+DQRN_swigregister = _rysy.DQRN_swigregister
+DQRN_swigregister(DQRN)
+
 class DQNA(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, DQNA, name, value)
