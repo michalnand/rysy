@@ -22,7 +22,7 @@ output_shape = dataset.get_output_shape()
 
 cnn = RNN(input_shape, output_shape, 0.001)
 
-cnn.add_layer("gru", Shape(256))
+cnn.add_layer("gru", Shape(64))
 cnn.add_layer("dropout")
 cnn.add_layer("output")
 

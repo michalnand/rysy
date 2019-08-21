@@ -28,26 +28,27 @@ __global__
 void cuda_fc_forward_kernel(  float *output,
                               float *input,
                               float *w,
-                              float *bias,
 
+                              unsigned int neuron_synaptic_paralelisation,
+                              unsigned int neuron_synaptic_paralelisation_size,
                               unsigned int input_size,
                               unsigned int neurons_count)
 {
-    unsigned int neuron_idx  = threadIdx.x + blockIdx.x*blockDim.x;
+    unsigned int synapse_part_idx  = threadIdx.x + blockIdx.x*blockDim.x;
+    unsigned int neuron_idx        = threadIdx.y + blockIdx.y*blockDim.y;
 
     if (neuron_idx < neurons_count)
+    if (synapse_part_idx < neuron_synaptic_paralelisation)
     {
-        float sum = bias[neuron_idx];
+        w     = w     + neuron_synaptic_paralelisation_size*synapse_part_idx  + neuron_idx*input_size;
+        input = input + neuron_synaptic_paralelisation_size*synapse_part_idx;
 
-        unsigned int w_idx = neuron_idx*input_size;
+        float sum = 0.0;
 
-        for (unsigned int i = 0; i < input_size; i++)
-        {
-            sum+= w[w_idx]*input[i];
-            w_idx++;
-        }
+        for (unsigned int i = 0; i < neuron_synaptic_paralelisation_size; i++)
+            sum+= w[i]*input[i];
 
-        output[neuron_idx] = sum;
+        atomicAdd(&output[neuron_idx], sum);
     }
 }
 
@@ -60,17 +61,26 @@ void fc_layer_forward(  Tensor &output, Tensor &input,
     unsigned int output_size  = output.size();
 
     #ifdef NETWORK_USE_CUDA
+        unsigned int neuron_synaptic_paralelisation = sqrt(input_size);
 
+        while ((input_size%neuron_synaptic_paralelisation) != 0)
+            neuron_synaptic_paralelisation--;
 
-        dim3 block(8);
-        dim3 grid((output_size  + block.x + 1)/block.x);
+        unsigned int neuron_synaptic_paralelisation_size  = input_size/neuron_synaptic_paralelisation;
+
+        cudaMemcpy(output.v, bias.v, output_size*sizeof(float), cudaMemcpyDeviceToDevice);
+
+        dim3 block(8, 8);
+        dim3 grid((neuron_synaptic_paralelisation_size  + block.x + 1)/block.x,
+                  (output_size  + block.y + 1)/block.y);
 
 
         cuda_fc_forward_kernel<<<grid, block>>>(  output.v,
                                                   input.v,
                                                   w.v,
-                                                  bias.v,
 
+                                                  neuron_synaptic_paralelisation,
+                                                  neuron_synaptic_paralelisation_size,
                                                   input_size,
                                                   output_size
                                                  );
@@ -152,8 +162,10 @@ void fc_layer_backward( Tensor &error_back, Tensor &input, Tensor &error, Tensor
 
   #ifdef NETWORK_USE_CUDA
     {
+        cudaMemset(error_back.v, 0, error_back.size()*sizeof(float));
+
         dim3 block(16);
-        dim3 grid((input_size  + block.x + 1)/block.x);
+        dim3 grid( (input_size  + block.x + 1)/block.x);
 
         cuda_fc_layer_back_kernel<<<grid, block>>>( error.v,
                                                     error_back.v,
@@ -191,15 +203,10 @@ void cpu_fc_layer_weights_gradient( float *w_grad,
                                     unsigned int neurons_count )
 {
     for (unsigned int  neuron_idx = 0; neuron_idx < neurons_count; neuron_idx++)
+    for (unsigned int  input_idx  = 0; input_idx < input_size; input_idx++)
     {
-        unsigned int w_ptr = neuron_idx*input_size;
-        float err = error[neuron_idx];
-
-        for (unsigned int i = 0; i < input_size; i++)
-        {
-            w_grad[w_ptr]+= err*input[i];
-            w_ptr++;
-        }
+        unsigned int w_ptr = neuron_idx*input_size + input_idx;
+        w_grad[w_ptr]+= error[neuron_idx]*input[input_idx];
     }
 }
 
@@ -211,18 +218,14 @@ void cuda_fc_layer_weights_gradient(  float *w_grad,
                                       unsigned int input_size,
                                       unsigned int neurons_count )
 {
-    unsigned int neuron_idx  = threadIdx.x + blockIdx.x*blockDim.x;
+    unsigned int input_idx   = threadIdx.x + blockIdx.x*blockDim.x;
+    unsigned int neuron_idx  = threadIdx.y + blockIdx.y*blockDim.y;
 
     if (neuron_idx < neurons_count)
+    if (input_idx < input_size)
     {
-        unsigned int w_ptr = neuron_idx*input_size;
-        float err = error[neuron_idx];
-
-        for (unsigned int i = 0; i < input_size; i++)
-        {
-            w_grad[w_ptr]+= err*input[i];
-            w_ptr++;
-        }
+        unsigned int w_ptr = neuron_idx*input_size + input_idx;
+        w_grad[w_ptr]+= error[neuron_idx]*input[input_idx];
     }
 }
 
@@ -233,8 +236,9 @@ void fc_layer_gradient(Tensor &w_grad, Tensor &input, Tensor &error)
 
     #ifdef NETWORK_USE_CUDA
 
-        dim3 block(8);
-        dim3 grid((output_size  + block.x + 1)/block.x);
+        dim3 block(16, 16);
+        dim3 grid( (input_size  + block.x + 1)/block.x,
+                   (output_size  + block.y + 1)/block.y);
 
       cuda_fc_layer_weights_gradient<<<grid, block>>>(  w_grad.v,
                                                         error.v,
