@@ -122,7 +122,7 @@ void RecurrentLayer::forward(Tensor &output, Tensor &input)
     #endif
 }
 
-void RecurrentLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights)
+void RecurrentLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights, bool update_bias)
 {
     (void)output;
     (void)input;
@@ -180,7 +180,9 @@ void RecurrentLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, 
 
 
     fc_layer_gradient(w_grad, fc_input, activation_error_back);
-    fc_layer_update_bias(bias, activation_error_back, learning_rate);
+
+    if (update_bias) 
+        fc_layer_update_bias(bias, activation_error_back, learning_rate);
 
     if (update_weights)
     {

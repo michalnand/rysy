@@ -1933,6 +1933,9 @@ class CNN(_object):
     def get_error_back(self):
         return _rysy.CNN_get_error_back(self)
 
+    def kernel_visualisation(self, *args):
+        return _rysy.CNN_kernel_visualisation(self, *args)
+
     def set_training_mode(self):
         return _rysy.CNN_set_training_mode(self)
 
@@ -2184,6 +2187,9 @@ class DQN(_object):
 
     def load_weights(self, file_name_prefix):
         return _rysy.DQN_load_weights(self, file_name_prefix)
+
+    def kernel_visualisation(self, path):
+        return _rysy.DQN_kernel_visualisation(self, path)
 
     def add_activity_map(self):
         return _rysy.DQN_add_activity_map(self)

@@ -26,7 +26,7 @@ class GRULayer final: public Layer
 
     public:
         void forward(Tensor &output, Tensor &input);
-        void backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights);
+        void backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights, bool update_bias = true);
 
         void save(std::string file_name_prefix);
         void load(std::string file_name_prefix);

@@ -23,6 +23,8 @@
 
 
 #include <svg_visualiser.h>
+#include <image_save.h>
+#include <utils.h>
 
 CNN::CNN()
 {
@@ -219,6 +221,138 @@ void CNN::train_from_error(Tensor &error)
 Tensor& CNN::get_error_back()
 {
     return l_error[0];
+}
+
+std::vector<float> CNN::kernel_visualisation(unsigned int layer, unsigned int kernel)
+{
+    Shape output_shape = layers[layer]->get_output_shape();
+
+
+    Tensor t_input(m_input_shape);
+    t_input.set_random(0.001);
+
+
+
+    std::vector<float> v_target(output_shape.size());
+
+
+
+    for (unsigned int iteration = 0; iteration < 100; iteration++)
+    {
+        for (unsigned int i = 0; i < l_error.size(); i++)
+            l_error[i].clear();
+
+        for (unsigned int i = 0; i < l_output.size(); i++)
+            l_output[i].clear();
+
+        l_output[0] = t_input;
+
+        for (unsigned int i = 0; i <= layer; i++)
+        {
+            layers[i]->forward(l_output[i+1], l_output[i]);
+        }
+
+
+        l_output[layer + 1].set_to_host(v_target);
+        float mean = 0.0;
+        unsigned int cnt = 0;
+
+        for (unsigned int y = 0; y < output_shape.h(); y++)
+            for (unsigned int x = 0; x < output_shape.w(); x++)
+            {
+                unsigned int idx = (kernel*output_shape.h() + y)*output_shape.w() + x;
+                mean+= v_target[idx];
+                cnt++;
+            }
+
+        mean = mean / cnt;
+
+        for (unsigned int i = 0; i < v_target.size(); i++)
+            v_target[i] = 0.0;
+
+        for (unsigned int y = 0; y < output_shape.h(); y++)
+            for (unsigned int x = 0; x < output_shape.w(); x++)
+            {
+                unsigned int idx = (kernel*output_shape.h() + y)*output_shape.w() + x;
+                v_target[idx] = mean;
+            }
+
+
+        l_error[layer + 1].set_from_host(v_target);
+
+        for (int i = layer; i>= 0; i--)
+        {
+            layers[i]->backward(l_error[i], l_error[i + 1], l_output[i], l_output[i + 1], false, false);
+        }
+
+
+        l_error[0].mul(0.01); 
+        t_input.add(l_error[0]);
+    }
+
+
+    std::vector<float> v_result(t_input.size());
+    t_input.set_to_host(v_result);
+    normalise(v_result, 0.0, 1.0);
+
+    return v_result;
+}
+
+void CNN::kernel_visualisation(std::string image_path)
+{
+    unsigned int spacing = 4;
+    bool grayscale;
+    if (m_input_shape.d() == 1)
+        grayscale = true;
+    else
+        grayscale = false;
+
+    unsigned int channels = 0;
+    if (grayscale)
+        channels = 1;
+    else
+        channels = 3;
+
+
+    for (unsigned int layer = 0; layer < layers.size(); layer++)
+        if (layers[layer]->has_weights())
+            if (layers[layer]->get_output_shape().w() > 1 && layers[layer]->get_output_shape().h() > 1)
+            {
+                unsigned int kernels_count =  layers[layer]->get_output_shape().d();
+
+
+                auto rectangle = make_rectangle(kernels_count);
+                unsigned int input_width  = m_input_shape.w();
+                unsigned int input_height = m_input_shape.h();
+                unsigned int output_width  = rectangle.x*(input_width + spacing);
+                unsigned int output_height = rectangle.y*(input_height + spacing);
+
+                ImageSave image(output_width, output_height, grayscale);
+
+                std::vector<float> result(output_width*output_height*channels);
+                for (unsigned int i = 0; i < result.size(); i++)
+                    result[i] = 0.0;
+
+                for (unsigned int kernel = 0; kernel < kernels_count; kernel++)
+                {
+                    auto kernel_result = kernel_visualisation(layer, kernel);
+
+                    unsigned int x0 = (kernel%rectangle.x)*(input_width + spacing);
+                    unsigned int y0 = (kernel/rectangle.x)*(input_height + spacing);
+
+                    for (unsigned int ch = 0; ch < channels; ch++)
+                        for (unsigned int y = 0; y < input_height; y++)
+                            for (unsigned int x = 0; x < input_width; x++)
+                            {
+                                unsigned int input_idx  = (ch*input_height + y)*input_width + x;
+                                unsigned int output_idx = (ch*output_height + y + y0 + spacing/2)*output_width + x + x0 + spacing/2;
+                                result[output_idx] = kernel_result[input_idx];
+                            }
+                }
+
+                std::string image_file_name = image_path + std::to_string(layer) + ".png";
+                image.save(image_file_name, result);
+            }
 }
 
 void CNN::train(std::vector<float> &required_output, std::vector<float> &input)

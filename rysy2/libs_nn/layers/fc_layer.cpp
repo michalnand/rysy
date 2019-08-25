@@ -112,7 +112,7 @@ void FCLayer::forward(Tensor &output, Tensor &input)
     fc_layer_forward(output, input, w, bias);
 }
 
-void FCLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights)
+void FCLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights, bool update_bias)
 {
     (void)output;
 
@@ -161,7 +161,9 @@ void FCLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor 
     #endif
 
     fc_layer_gradient(w_grad, input, error);
-    fc_layer_update_bias(bias, error, learning_rate);
+
+    if (update_bias)
+        fc_layer_update_bias(bias, error, learning_rate);
 
     if (update_weights)
     {

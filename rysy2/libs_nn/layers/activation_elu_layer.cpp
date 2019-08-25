@@ -61,10 +61,11 @@ void ActivationEluLayer::forward(Tensor &output, Tensor &input)
     activation_elu_layer_forward(output, input);
 }
 
-void ActivationEluLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights)
+void ActivationEluLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights, bool update_bias)
 {
     (void)input;
     (void)update_weights;
+    (void)update_bias;
 
     activation_elu_layer_backward(error_back, output, error);
 }

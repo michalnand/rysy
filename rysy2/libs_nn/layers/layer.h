@@ -35,7 +35,7 @@ class Layer
         virtual void unset_training_mode();
 
         virtual void forward(Tensor &output, Tensor &input);
-        virtual void backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights);
+        virtual void backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights, bool update_bias = true);
 
         virtual void save(std::string file_name_prefix);
         virtual void load(std::string file_name_prefix);

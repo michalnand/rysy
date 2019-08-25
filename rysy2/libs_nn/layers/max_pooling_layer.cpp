@@ -87,11 +87,12 @@ void MaxPoolingLayer::forward(Tensor &output, Tensor &input)
     max_pooling_layer_forward(max_mask, output, input);
 }
 
-void MaxPoolingLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights)
+void MaxPoolingLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights, bool update_bias)
 {
     (void)input;
     (void)output;
     (void)update_weights;
+    (void)update_bias;
 
     #ifdef RYSY_DEBUG
 

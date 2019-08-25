@@ -17,11 +17,13 @@ create example network
 C3x3x16 - P2x2 - C3x3x32 - P2x2 - C3x3x32 - FC10
 '''
 
+
 input_shape = dataset.get_input_shape()
 output_shape = dataset.get_output_shape()
 
 
 cnn = CNN(input_shape, output_shape, 0.0025)
+
 
 cnn.add_layer("convolution", Shape(3, 3, 16))
 cnn.add_layer("elu")
@@ -33,15 +35,14 @@ cnn.add_layer("max_pooling", Shape(2, 2))
 
 cnn.add_layer("convolution", Shape(3, 3, 32))
 cnn.add_layer("elu")
-cnn.add_layer("convolution", Shape(1, 1, 32))
-cnn.add_layer("elu")
-cnn.add_layer("flatten")
 
+cnn.add_layer("flatten")
 cnn.add_layer("dropout")
 cnn.add_layer("output")
 
 
 cnn._print()
+
 
 time_start = int(round(time.time() * 1000))
 #train network - set epoch count
@@ -73,3 +74,6 @@ time_stop = int(round(time.time() * 1000))
 
 print(compare.asString())
 print("computing time = ", (time_stop - time_start)/1000.0, "[s]")
+
+
+cnn.kernel_visualisation("kernel_visualisation/")

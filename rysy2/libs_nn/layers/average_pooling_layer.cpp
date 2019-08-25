@@ -87,11 +87,13 @@ void AveragePoolingLayer::forward(Tensor &output, Tensor &input)
     average_pooling_layer_forward(output, input);
 }
 
-void AveragePoolingLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights)
+void AveragePoolingLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights, bool update_bias)
 {
     (void)input;
     (void)output;
     (void)update_weights;
+    (void)update_bias;
+
 
     #ifdef RYSY_DEBUG
 

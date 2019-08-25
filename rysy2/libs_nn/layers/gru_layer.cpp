@@ -186,7 +186,7 @@ void GRULayer::forward(Tensor &output, Tensor &input)
     #endif
 }
 
-void GRULayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights)
+void GRULayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights, bool update_bias)
 {
     (void)output;
     (void)input;
@@ -255,10 +255,13 @@ void GRULayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor
 
 
     fc_layer_gradient(w_grad_control, fc_input, gate_control_error_back);
-    fc_layer_update_bias(bias_control, gate_control_error_back, learning_rate);
+    if (update_bias)
+        fc_layer_update_bias(bias_control, gate_control_error_back, learning_rate);
 
     fc_layer_gradient(w_grad_update, fc_input, gate_update_error_back);
-    fc_layer_update_bias(bias_update, gate_update_error_back, learning_rate);
+
+    if (update_bias)
+        fc_layer_update_bias(bias_update, gate_update_error_back, learning_rate);
 
 
     if (update_weights)

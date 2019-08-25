@@ -540,24 +540,6 @@ void convolution_layer_backward( Tensor &error_back, Tensor &error, Tensor &w)
                                                             error.h(),
                                                             error_back.d(),
                                                             error.d() );
-
-/*
-        error_back.clear();
-
-      dim3 block(4, 4, 16);
-      dim3 grid( (error_back.w()      + block.x + 1)/block.x,
-                 (error_back.h()      + block.y + 1)/block.y,
-                 (error_back.d()      + block.z + 1)/block.z );
-
-      cuda_convolution_back_kernel<3><<<grid, block>>>( error.v,
-                                                        error_back.v,
-                                                        w.v,
-
-                                                        error.w(),
-                                                        error.h(),
-                                                        error_back.d(),
-                                                        error.d() );
-*/
     }
     else
     {

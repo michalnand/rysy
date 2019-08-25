@@ -77,7 +77,7 @@ void HighwayBlockLayer::forward(Tensor &output, Tensor &input)
     highway_layer_forward(output, input);
 }
 
-void HighwayBlockLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights)
+void HighwayBlockLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights, bool update_bias)
 {
     #ifdef RYSY_DEBUG
 
@@ -125,6 +125,8 @@ void HighwayBlockLayer::backward(Tensor &error_back, Tensor &error, Tensor &inpu
 
     (void)output;
     (void)update_weights;
+    (void)update_bias;
+
     highway_layer_backward(error_back,input, error);
 }
 

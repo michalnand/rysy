@@ -87,12 +87,12 @@ void UnPoolingLayer::forward(Tensor &output, Tensor &input)
     unpooling_layer_forward(output, input);
 }
 
-void UnPoolingLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights)
+void UnPoolingLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights, bool update_bias)
 {
     (void)input;
     (void)output;
     (void)update_weights;
-
+    (void)update_bias;
 
     #ifdef RYSY_DEBUG
 

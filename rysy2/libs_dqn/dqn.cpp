@@ -180,6 +180,11 @@ void DQN::load_weights(std::string file_name_prefix)
     cnn->load_weights(file_name_prefix);
 }
 
+void DQN::kernel_visualisation(std::string path)
+{
+    cnn->kernel_visualisation(path);
+}
+
 void DQN::add_activity_map()
 {
     activity->add();

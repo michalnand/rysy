@@ -83,10 +83,11 @@ void DropoutLayer::forward(Tensor &output, Tensor &input)
     }
 }
 
-void DropoutLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights)
+void DropoutLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights, bool update_bias)
 {
     (void)input;
     (void)update_weights;
+    (void)update_bias;
 
     dropout_layer_backward(error_back, output, error);
 }

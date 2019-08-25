@@ -107,7 +107,7 @@ void ConvolutionLayer::forward(Tensor &output, Tensor &input)
     convolution_layer_forward(output, input, w, bias);
 }
 
-void ConvolutionLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights)
+void ConvolutionLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights, bool update_bias)
 {
     #ifdef RYSY_DEBUG
 
@@ -155,16 +155,20 @@ void ConvolutionLayer::backward(Tensor &error_back, Tensor &error, Tensor &input
 
     (void)output;
 
+
     convolution_layer_gradient(w_grad, input, error);
-    convolution_layer_update_bias(bias, error, learning_rate);
+
+    if (update_bias)
+        convolution_layer_update_bias(bias, error, learning_rate);
 
     if (update_weights)
     {
         solver_adam(w, w_grad, m, v, learning_rate, lambda1, lambda2, gradient_clip);
         w_grad.clear();
-     }
+    }
 
-     convolution_layer_backward(error_back, error, w);
+
+    convolution_layer_backward(error_back, error, w);
 }
 
 void ConvolutionLayer::save(std::string file_name_prefix)
@@ -209,7 +213,6 @@ void ConvolutionLayer::init_convolution()
     m_output_shape.set(m_input_shape.w(), m_input_shape.h(), kd);
 
     w.init(kw, kh, kd*m_input_shape.d());
-    //w.set_random(sqrt(2.0/m_input_shape.size()));
     w.set_random(sqrt(2.0/w.size()));
 
     w_grad.init(w.shape());

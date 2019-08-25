@@ -173,6 +173,16 @@ public class CNN : global::System.IDisposable {
     return ret;
   }
 
+  public SWIGTYPE_p_std__vectorT_float_t kernel_visualisation(uint layer, uint kernel) {
+    SWIGTYPE_p_std__vectorT_float_t ret = new SWIGTYPE_p_std__vectorT_float_t(rysyPINVOKE.CNN_kernel_visualisation__SWIG_0(swigCPtr, layer, kernel), true);
+    return ret;
+  }
+
+  public void kernel_visualisation(string image_path) {
+    rysyPINVOKE.CNN_kernel_visualisation__SWIG_1(swigCPtr, image_path);
+    if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
+  }
+
   public void set_training_mode() {
     rysyPINVOKE.CNN_set_training_mode(swigCPtr);
   }

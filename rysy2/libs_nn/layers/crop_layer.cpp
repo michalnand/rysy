@@ -61,11 +61,12 @@ void CropLayer::forward(Tensor &output, Tensor &input)
     crop_layer_forward(output, input);
 }
 
-void CropLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights)
+void CropLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights, bool update_bias)
 {
     (void)input;
     (void)update_weights;
     (void)output;
+    (void)update_bias;
 
     crop_layer_backward(error_back, error);
 }

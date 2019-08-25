@@ -61,11 +61,12 @@ void FlattenLayer::forward(Tensor &output, Tensor &input)
     cuda_float_allocator.device_to_device(output.v, input.v, input.size());
 }
 
-void FlattenLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights)
+void FlattenLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights, bool update_bias)
 {
     (void)input;
     (void)update_weights;
     (void)output;
+    (void)update_bias;
 
     cuda_float_allocator.device_to_device(error_back.v, error.v, error.size());
 }

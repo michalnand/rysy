@@ -43,6 +43,8 @@ class DQN
         void load_weights(std::string file_name_prefix);
 
     public:
+        void kernel_visualisation(std::string path);
+
         void add_activity_map();
         void save_activity_map(std::string path);
 

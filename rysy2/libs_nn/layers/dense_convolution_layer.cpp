@@ -118,7 +118,7 @@ void DenseConvolutionLayer::forward(Tensor &output, Tensor &input)
     output.concatenate(m_conv_output, input);
 }
 
-void DenseConvolutionLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights)
+void DenseConvolutionLayer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights, bool update_bias)
 {
     (void)output;
 
@@ -170,7 +170,9 @@ void DenseConvolutionLayer::backward(Tensor &error_back, Tensor &error, Tensor &
 
 
     convolution_layer_gradient(w_grad, input, m_error_convolution);
-    convolution_layer_update_bias(bias, m_error_convolution, learning_rate);
+
+    if (update_bias)
+        convolution_layer_update_bias(bias, m_error_convolution, learning_rate);
 
     if (update_weights)
     {

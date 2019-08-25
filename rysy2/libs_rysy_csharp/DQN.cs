@@ -159,6 +159,11 @@ public class DQN : global::System.IDisposable {
     if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
   }
 
+  public void kernel_visualisation(string path) {
+    rysyPINVOKE.DQN_kernel_visualisation(swigCPtr, path);
+    if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
+  }
+
   public void add_activity_map() {
     rysyPINVOKE.DQN_add_activity_map(swigCPtr);
   }

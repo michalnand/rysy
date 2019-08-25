@@ -23,7 +23,7 @@ class ActivationEluLayer final: public Layer
 
     public:
         void forward(Tensor &output, Tensor &input);
-        void backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights);
+        void backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights, bool update_bias = true);
 
 
     protected:

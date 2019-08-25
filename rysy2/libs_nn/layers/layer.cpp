@@ -108,13 +108,14 @@ void Layer::forward(Tensor &output, Tensor &input)
     (void)input;
 }
 
-void Layer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights)
+void Layer::backward(Tensor &error_back, Tensor &error, Tensor &input, Tensor &output, bool update_weights, bool update_bias)
 {
     (void)error_back;
     (void)error;
     (void)input;
     (void)output;
     (void)update_weights;
+    (void)update_bias;
 }
 
 void Layer::save(std::string file_name_prefix)
