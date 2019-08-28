@@ -244,7 +244,7 @@ std::vector<float> CNN::kernel_visualisation(unsigned int layer, unsigned int ke
 
 
 
-    for (unsigned int iteration = 0; iteration < 500; iteration++)
+    for (unsigned int iteration = 0; iteration < 100; iteration++)
     {
         for (unsigned int i = 0; i < l_error.size(); i++)
             l_error[i].clear();
@@ -288,7 +288,7 @@ std::vector<float> CNN::kernel_visualisation(unsigned int layer, unsigned int ke
         }
 
         Tensor tmp = t_result;
-        tmp.mul(0.01);
+        tmp.mul(0.1);
         t_result.add(l_error[0]);
         t_result.sub(tmp);
     }
@@ -336,26 +336,122 @@ void CNN::kernel_visualisation(std::string image_path)
                 for (unsigned int i = 0; i < result.size(); i++)
                     result[i] = 0.0;
 
+                JsonConfig json;
+
+                json.result["shape"][0] = input_width;
+                json.result["shape"][1] = input_height;
+                json.result["shape"][2] = channels;
+                json.result["kernels_count"] = kernels_count;
+
                 for (unsigned int kernel = 0; kernel < kernels_count; kernel++)
                 {
                     auto kernel_result = kernel_visualisation(layer, kernel);
 
-                    unsigned int x0 = (kernel%rectangle.x)*(input_width + spacing);
-                    unsigned int y0 = (kernel/rectangle.x)*(input_height + spacing);
+                    unsigned int x0 = (kernel%rectangle.x)*(input_width + spacing) + spacing/2;
+                    unsigned int y0 = (kernel/rectangle.x)*(input_height + spacing) + spacing/2;
 
                     for (unsigned int ch = 0; ch < channels; ch++)
                         for (unsigned int y = 0; y < input_height; y++)
                             for (unsigned int x = 0; x < input_width; x++)
                             {
                                 unsigned int input_idx  = (ch*input_height + y)*input_width + x;
-                                unsigned int output_idx = (ch*output_height + y + y0 + spacing/2)*output_width + x + x0 + spacing/2;
+                                unsigned int output_idx = (ch*output_height + y + y0)*output_width + x + x0;
                                 result[output_idx] = kernel_result[input_idx];
+                            }
+
+                    for (unsigned int ch = 0; ch < channels; ch++)
+                        for (unsigned int y = 0; y < input_height; y++)
+                            for (unsigned int x = 0; x < input_width; x++)
+                            {
+                                unsigned int input_idx  = (ch*input_height + y)*input_width + x;
+                                json.result["result"][kernel][ch][y][x] = kernel_result[input_idx];
                             }
                 }
 
                 std::string image_file_name = image_path + std::to_string(layer) + ".png";
                 image.save(image_file_name, result);
+
+                std::string json_file_name = image_path + std::to_string(layer) + ".json";
+                json.save(json_file_name);
             }
+}
+
+void CNN::activity_visualisation(std::string image_path, std::vector<float> &input_)
+{
+    input.set_from_host(input_);
+    forward(output, input);
+
+    std::vector<unsigned int> layer_output_list;
+
+    layer_output_list.push_back(0);
+    for (unsigned int layer = 0; layer < layers.size(); layer++)
+        if (layers[layer]->is_activation() == true)
+            if (layers[layer]->get_output_shape().w() > 1 && layers[layer]->get_output_shape().h() > 1)
+                layer_output_list.push_back(layer + 1);
+
+    unsigned int spacing = 4;
+
+    for (unsigned int i = 0; i < layer_output_list.size(); i++)
+    {
+        unsigned int layer = layer_output_list[i];
+
+        unsigned int width         = l_output[layer].shape().w();
+        unsigned int height        = l_output[layer].shape().h();
+        unsigned int kernels_count = l_output[layer].shape().d();
+
+        auto rectangle = make_rectangle(kernels_count);
+
+
+        unsigned int output_width  = rectangle.x*(width  + spacing);
+        unsigned int output_height = rectangle.y*(height + spacing);
+
+
+
+        std::vector<float> layer_output(l_output[layer].size());
+        l_output[layer].set_to_host(layer_output);
+        normalise(layer_output, 0.0, 1.0);
+
+        for (unsigned int i = 0; i < layer_output.size(); i++)
+        { 
+            float y = 3.0*log(1.0 + layer_output[i]);
+            layer_output[i] = saturate(y, 0.0, 1.0);
+        }
+
+        normalise(layer_output, 0.0, 1.0);
+
+
+
+        std::vector<float> result(output_width*output_height);
+        for (unsigned int i = 0; i < result.size(); i++)
+            result[i] = 0.0;
+
+
+        for (unsigned int kernel = 0; kernel < kernels_count; kernel++)
+        {
+            unsigned int x0 = (kernel%rectangle.x)*(width  + spacing) + spacing/2;
+            unsigned int y0 = (kernel/rectangle.x)*(height + spacing) + spacing/2;
+
+            for (unsigned int y = 0; y < height; y++)
+                for (unsigned int x = 0; x < width; x++)
+                {
+                    unsigned int input_idx  = (kernel*height + y)*width + x;
+                    unsigned int output_idx = (y + y0)*output_width + x + x0;
+                    result[output_idx] = layer_output[input_idx];
+                }
+        }
+
+
+        std::string image_file_name;
+
+        if (layer == 0)
+            image_file_name = image_path + "0_input" + ".png";
+        else
+            image_file_name = image_path + std::to_string(layer-2) + ".png";
+
+
+        ImageSave image(output_width, output_height, true);
+        image.save(image_file_name, result);
+    }
 }
 
 void CNN::train(std::vector<float> &required_output, std::vector<float> &input)

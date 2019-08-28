@@ -183,6 +183,11 @@ public class CNN : global::System.IDisposable {
     if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
   }
 
+  public void activity_visualisation(string image_path, SWIGTYPE_p_std__vectorT_float_t input_) {
+    rysyPINVOKE.CNN_activity_visualisation(swigCPtr, image_path, SWIGTYPE_p_std__vectorT_float_t.getCPtr(input_));
+    if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
+  }
+
   public void set_training_mode() {
     rysyPINVOKE.CNN_set_training_mode(swigCPtr);
   }

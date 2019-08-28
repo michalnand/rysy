@@ -18,26 +18,38 @@ sPoint2D make_rectangle(unsigned int count)
 
 void normalise(std::vector<float> &v, float min, float max)
 {
-    float v_max = v[0];
-    float v_min = v[0];
+    float max_v = v[0];
+    float min_v = v[0];
     for (unsigned int i = 0; i < v.size(); i++)
     {
-        if (v[i] > v_max)
-            v_max = v[i];
+      if (v[i] > max_v)
+        max_v = v[i];
 
-        if (v[i] < v_min)
-            v_min = v[i];
+      if (v[i] < min_v)
+        min_v = v[i];
     }
 
     float k = 0.0;
     float q = 0.0;
 
-    if (v_max > v_min)
+    if (max_v > min_v)
     {
-        k = (max - min)/(v_max - v_min);
-        q = max - k*v_max;
-    } 
+      k = (max - min)/(max_v - min_v);
+      q = max - k*max_v;
+    }
 
     for (unsigned int i = 0; i < v.size(); i++)
-        v[i] = k*v[i] + q;
+    {
+      v[i] = k*v[i] + q;
+    }
+}
+
+float saturate(float value, float min, float max)
+{
+    if (value < min)
+        value = min;
+    if (value > max)
+        value = max;
+
+    return value;
 }

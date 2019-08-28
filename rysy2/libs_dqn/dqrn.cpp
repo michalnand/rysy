@@ -4,13 +4,11 @@
 DQRN::DQRN()
 {
     rnn = nullptr;
-    activity = nullptr;
 }
 
 DQRN::DQRN(Shape state_shape, unsigned int actions_count, float gamma, unsigned int replay_buffer_size, std::string network_config_file_name)
 {
     rnn = nullptr;
-    activity = nullptr;
     init(state_shape, actions_count, gamma, replay_buffer_size, network_config_file_name);
 }
 
@@ -30,12 +28,6 @@ DQRN::~DQRN()
     {
         delete rnn;
         rnn = nullptr;
-    }
-
-    if (activity != nullptr)
-    {
-        delete activity;
-        activity = nullptr;
     }
 }
 
@@ -101,9 +93,6 @@ void DQRN::init(Shape state_shape, unsigned int actions_count, float gamma, unsi
     {
         rnn = new RNN(this->state_shape, output_shape);
     }
-
-    //TODO
-    //activity = new NetworkActivity(*rnn);
 }
 
 void DQRN::add_layer(std::string layer_type, Shape shape)
@@ -179,14 +168,4 @@ void DQRN::save(std::string path)
 void DQRN::load_weights(std::string file_name_prefix)
 {
     rnn->load_weights(file_name_prefix);
-}
-
-void DQRN::add_activity_map()
-{
-    activity->add();
-}
-
-void DQRN::save_activity_map(std::string path)
-{
-    activity->save(path);
 }

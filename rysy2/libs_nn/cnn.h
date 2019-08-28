@@ -50,6 +50,9 @@ class CNN
 
         std::vector<float> kernel_visualisation(unsigned int layer, unsigned int kernel);
         void kernel_visualisation(std::string image_path);
+
+        void activity_visualisation(std::string image_path, std::vector<float> &input_);
+
     public:
         void set_training_mode();
         void unset_training_mode();

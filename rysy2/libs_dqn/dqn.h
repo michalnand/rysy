@@ -4,8 +4,6 @@
 #include <cnn.h>
 #include <experience_replay_buffer.h>
 
-#include <network_activity.h>
-
 class DQN
 {
     public:
@@ -44,13 +42,12 @@ class DQN
 
     public:
         void kernel_visualisation(std::string path);
+        void activity_visualisation(std::string path, std::vector<float> &state);
 
-        void add_activity_map();
-        void save_activity_map(std::string path);
+
 
     protected:
         CNN *cnn;
-        NetworkActivity *activity;
 
         Shape state_shape;
         unsigned int actions_count;

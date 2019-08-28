@@ -1936,6 +1936,9 @@ class CNN(_object):
     def kernel_visualisation(self, *args):
         return _rysy.CNN_kernel_visualisation(self, *args)
 
+    def activity_visualisation(self, image_path, input_):
+        return _rysy.CNN_activity_visualisation(self, image_path, input_)
+
     def set_training_mode(self):
         return _rysy.CNN_set_training_mode(self)
 
@@ -2191,11 +2194,8 @@ class DQN(_object):
     def kernel_visualisation(self, path):
         return _rysy.DQN_kernel_visualisation(self, path)
 
-    def add_activity_map(self):
-        return _rysy.DQN_add_activity_map(self)
-
-    def save_activity_map(self, path):
-        return _rysy.DQN_save_activity_map(self, path)
+    def activity_visualisation(self, path, state):
+        return _rysy.DQN_activity_visualisation(self, path, state)
 DQN_swigregister = _rysy.DQN_swigregister
 DQN_swigregister(DQN)
 
@@ -2247,12 +2247,6 @@ class DQRN(_object):
 
     def load_weights(self, file_name_prefix):
         return _rysy.DQRN_load_weights(self, file_name_prefix)
-
-    def add_activity_map(self):
-        return _rysy.DQRN_add_activity_map(self)
-
-    def save_activity_map(self, path):
-        return _rysy.DQRN_save_activity_map(self, path)
 DQRN_swigregister = _rysy.DQRN_swigregister
 DQRN_swigregister(DQRN)
 
@@ -2542,30 +2536,6 @@ class EmbeddedNetworkExport(_object):
         return _rysy.EmbeddedNetworkExport_process(self, export_path, network_prefix)
 EmbeddedNetworkExport_swigregister = _rysy.EmbeddedNetworkExport_swigregister
 EmbeddedNetworkExport_swigregister(EmbeddedNetworkExport)
-
-class NetworkActivity(_object):
-    __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(self, NetworkActivity, name, value)
-    __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, NetworkActivity, name)
-    __repr__ = _swig_repr
-
-    def __init__(self, cnn):
-        this = _rysy.new_NetworkActivity(cnn)
-        try:
-            self.this.append(this)
-        except __builtin__.Exception:
-            self.this = this
-    __swig_destroy__ = _rysy.delete_NetworkActivity
-    __del__ = lambda self: None
-
-    def add(self):
-        return _rysy.NetworkActivity_add(self)
-
-    def save(self, output_path):
-        return _rysy.NetworkActivity_save(self, output_path)
-NetworkActivity_swigregister = _rysy.NetworkActivity_swigregister
-NetworkActivity_swigregister(NetworkActivity)
 
 # This file is compatible with both classic and new-style classes.
 

@@ -793,6 +793,9 @@ class rysyPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_kernel_visualisation__SWIG_1")]
   public static extern void CNN_kernel_visualisation__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_activity_visualisation")]
+  public static extern void CNN_activity_visualisation(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
+
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_set_training_mode")]
   public static extern void CNN_set_training_mode(global::System.Runtime.InteropServices.HandleRef jarg1);
 
@@ -997,11 +1000,8 @@ class rysyPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQN_kernel_visualisation")]
   public static extern void DQN_kernel_visualisation(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQN_add_activity_map")]
-  public static extern void DQN_add_activity_map(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQN_save_activity_map")]
-  public static extern void DQN_save_activity_map(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQN_activity_visualisation")]
+  public static extern void DQN_activity_visualisation(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_DQNA__SWIG_0")]
   public static extern global::System.IntPtr new_DQNA__SWIG_0();

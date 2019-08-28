@@ -60,7 +60,6 @@
 #include <embedded_network_test.h>
 #include <embedded_network_export.h>
 
-#include <network_activity.h>
 %}
 
 
@@ -99,5 +98,3 @@
 %include <layer_export.h>
 %include <embedded_network_test.h>
 %include <embedded_network_export.h>
-
-%include <network_activity.h>
