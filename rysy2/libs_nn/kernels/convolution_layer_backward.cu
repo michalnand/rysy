@@ -468,8 +468,8 @@ void cuda_convolution_back_kernel_any_size(   float *error,
   unsigned int kw_half = (kw - 1)/2;
   unsigned int kh_half = (kh - 1)/2;
 
-  unsigned int height_  = height - 2*kh_half;
-  unsigned int width_   = width  - 2*kw_half;
+  unsigned int height_  = height - kh_half;
+  unsigned int width_   = width  - kw_half;
 
   if (  (ch < channels_count) &&
         (y <  height_) &&

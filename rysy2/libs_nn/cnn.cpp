@@ -26,6 +26,10 @@
 #include <image_save.h>
 #include <utils.h>
 
+
+#include <kernels/solver_adam.cuh>
+
+
 CNN::CNN()
 {
     this->m_hyperparameters = default_hyperparameters();
@@ -223,76 +227,75 @@ Tensor& CNN::get_error_back()
     return l_error[0];
 }
 
+
 std::vector<float> CNN::kernel_visualisation(unsigned int layer, unsigned int kernel)
 {
     Shape output_shape = layers[layer]->get_output_shape();
+    Shape input_shape  = m_input_shape;
 
+    Tensor t_result(input_shape);
+    t_result.set_random(0.01);
 
-    Tensor t_input(m_input_shape);
-    t_input.set_random(0.001);
-
-
-
+    std::vector<float> v_output(output_shape.size());
     std::vector<float> v_target(output_shape.size());
 
+    std::vector<float> v_error(output_shape.size());
 
 
-    for (unsigned int iteration = 0; iteration < 100; iteration++)
+
+
+    for (unsigned int iteration = 0; iteration < 500; iteration++)
     {
         for (unsigned int i = 0; i < l_error.size(); i++)
             l_error[i].clear();
-
         for (unsigned int i = 0; i < l_output.size(); i++)
             l_output[i].clear();
 
-        l_output[0] = t_input;
+        l_output[0] = t_result;
 
         for (unsigned int i = 0; i <= layer; i++)
         {
-            layers[i]->forward(l_output[i+1], l_output[i]);
+            layers[i]->forward(l_output[i + 1], l_output[i]);
         }
 
+        l_output[layer + 1].set_to_host(v_output);
 
-        l_output[layer + 1].set_to_host(v_target);
-        float mean = 0.0;
-        unsigned int cnt = 0;
-
-        for (unsigned int y = 0; y < output_shape.h(); y++)
-            for (unsigned int x = 0; x < output_shape.w(); x++)
-            {
-                unsigned int idx = (kernel*output_shape.h() + y)*output_shape.w() + x;
-                mean+= v_target[idx];
-                cnt++;
-            }
-
-        mean = mean / cnt;
-
-        for (unsigned int i = 0; i < v_target.size(); i++)
-            v_target[i] = 0.0;
+        for (unsigned int i = 0; i < v_error.size(); i++)
+            v_error[i] = 0.0;
 
         for (unsigned int y = 0; y < output_shape.h(); y++)
             for (unsigned int x = 0; x < output_shape.w(); x++)
             {
                 unsigned int idx = (kernel*output_shape.h() + y)*output_shape.w() + x;
-                v_target[idx] = mean;
+                v_error[idx] = v_output[idx];
             }
 
+        float length = 0.0;
+        for (unsigned int i = 0; i < v_error.size(); i++)
+                length+= v_error[i]*v_error[i];
+        length = sqrt(length);
 
-        l_error[layer + 1].set_from_host(v_target);
+        for (unsigned int i = 0; i < v_error.size(); i++)
+            v_error[i] = v_error[i]/(length + 0.0001);
+
+
+
+        l_error[layer + 1].set_from_host(v_error);
 
         for (int i = layer; i>= 0; i--)
         {
             layers[i]->backward(l_error[i], l_error[i + 1], l_output[i], l_output[i + 1], false, false);
         }
 
-
-        l_error[0].mul(0.01); 
-        t_input.add(l_error[0]);
+        Tensor tmp = t_result;
+        tmp.mul(0.01);
+        t_result.add(l_error[0]);
+        t_result.sub(tmp);
     }
 
 
-    std::vector<float> v_result(t_input.size());
-    t_input.set_to_host(v_result);
+    std::vector<float> v_result(t_result.size());
+    t_result.set_to_host(v_result);
     normalise(v_result, 0.0, 1.0);
 
     return v_result;

@@ -224,4 +224,5 @@ void ConvolutionLayer::init_convolution()
 
     this->m_trainable_parameters    = w.size() + bias.size();
     this->m_flops                   = m_input_shape.w()*m_input_shape.h()*m_input_shape.d()*kw*kh*kd;
+
 }

@@ -17,12 +17,12 @@ create example network
 C3x3x16 - P2x2 - C3x3x32 - P2x2 - C3x3x32 - FC10
 '''
 
-
 input_shape = dataset.get_input_shape()
 output_shape = dataset.get_output_shape()
 
 
 cnn = CNN(input_shape, output_shape, 0.0025)
+
 
 
 cnn.add_layer("convolution", Shape(3, 3, 16))

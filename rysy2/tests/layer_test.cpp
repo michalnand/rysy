@@ -11,6 +11,8 @@
 #include <layers/convolution_layer.h>
 #include <layers/max_pooling_layer.h>
 
+#include <kernels/convolution_layer_backward.cuh>
+
 
 void relu_test()
 {
@@ -146,6 +148,27 @@ void convolution_test()
 }
 
 
+void convolution_test_backward()
+{
+    unsigned int input_size = 9;
+
+    Tensor w(3, 3, 1);
+    Tensor error(input_size, input_size, 1);
+    Tensor error_back(input_size, input_size, 1);
+
+    w.set(1, 0, 0, 0, 1.0);
+    w.set(1, 1, 0, 0, -2.0);
+    w.set(1, 2, 0, 0, 1.0);
+    w.print();
+
+    error.set_const(1.0);
+    convolution_layer_backward(error_back, error, w);
+    error_back.print();
+
+
+}
+
+
 
 
 void pooling_test()
@@ -191,9 +214,9 @@ int main()
     //relu_test();
     //elu_test();
     //dropout_test();
-    convolution_test();
+    //convolution_test();
     //pooling_test();
-
+    convolution_test_backward();
 
     std::cout << "program done\n";
     return 0;
