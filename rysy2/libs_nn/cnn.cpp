@@ -234,17 +234,15 @@ std::vector<float> CNN::kernel_visualisation(unsigned int layer, unsigned int ke
     Shape input_shape  = m_input_shape;
 
     Tensor t_result(input_shape);
-    t_result.set_random(0.01);
+    t_result.set_random(0.001);
+
 
     std::vector<float> v_output(output_shape.size());
     std::vector<float> v_target(output_shape.size());
-
     std::vector<float> v_error(output_shape.size());
 
 
-
-
-    for (unsigned int iteration = 0; iteration < 100; iteration++)
+    for (unsigned int iteration = 0; iteration < 256; iteration++)
     {
         for (unsigned int i = 0; i < l_error.size(); i++)
             l_error[i].clear();
@@ -282,15 +280,21 @@ std::vector<float> CNN::kernel_visualisation(unsigned int layer, unsigned int ke
 
         l_error[layer + 1].set_from_host(v_error);
 
+
         for (int i = layer; i>= 0; i--)
         {
             layers[i]->backward(l_error[i], l_error[i + 1], l_output[i], l_output[i + 1], false, false);
         }
 
+
         Tensor tmp = t_result;
-        tmp.mul(0.1);
+        tmp.mul(0.01);
         t_result.add(l_error[0]);
         t_result.sub(tmp);
+ 
+        Tensor t_noise(t_result.shape());
+        t_noise.set_random(0.001);
+        t_result.add(t_noise);
     }
 
 
@@ -319,7 +323,7 @@ void CNN::kernel_visualisation(std::string image_path)
 
     for (unsigned int layer = 0; layer < layers.size(); layer++)
         if (layers[layer]->has_weights())
-            if (layers[layer]->get_output_shape().w() > 1 && layers[layer]->get_output_shape().h() > 1)
+            //if (layers[layer]->get_output_shape().w() > 1 && layers[layer]->get_output_shape().h() > 1)
             {
                 unsigned int kernels_count =  layers[layer]->get_output_shape().d();
 
@@ -340,7 +344,7 @@ void CNN::kernel_visualisation(std::string image_path)
 
                 json.result["shape"][0] = input_width;
                 json.result["shape"][1] = input_height;
-                json.result["shape"][2] = channels;
+                json.result["shape"][2] = m_input_shape.d();
                 json.result["kernels_count"] = kernels_count;
 
                 for (unsigned int kernel = 0; kernel < kernels_count; kernel++)
@@ -359,7 +363,7 @@ void CNN::kernel_visualisation(std::string image_path)
                                 result[output_idx] = kernel_result[input_idx];
                             }
 
-                    for (unsigned int ch = 0; ch < channels; ch++)
+                    for (unsigned int ch = 0; ch < m_input_shape.d(); ch++)
                         for (unsigned int y = 0; y < input_height; y++)
                             for (unsigned int x = 0; x < input_width; x++)
                             {
@@ -412,7 +416,7 @@ void CNN::activity_visualisation(std::string image_path, std::vector<float> &inp
         normalise(layer_output, 0.0, 1.0);
 
         for (unsigned int i = 0; i < layer_output.size(); i++)
-        { 
+        {
             float y = 3.0*log(1.0 + layer_output[i]);
             layer_output[i] = saturate(y, 0.0, 1.0);
         }

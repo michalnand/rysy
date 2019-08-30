@@ -38,12 +38,13 @@ cnn.add_layer("elu")
 
 cnn.add_layer("flatten")
 cnn.add_layer("dropout")
+
 cnn.add_layer("output")
 
 
 cnn._print()
 
-'''
+
 time_start = int(round(time.time() * 1000))
 #train network - set epoch count
 epoch_count = 1
@@ -74,7 +75,7 @@ time_stop = int(round(time.time() * 1000))
 
 print(compare.asString())
 print("computing time = ", (time_stop - time_start)/1000.0, "[s]")
-'''
 
-#cnn.kernel_visualisation("kernel_visualisation/")
-cnn.activity_visualisation("activity_visualisation/", dataset.get_testing_input(0))
+
+cnn.kernel_visualisation("kernel_visualisation/")
+#cnn.activity_visualisation("activity_visualisation/", dataset.get_testing_input(0))
