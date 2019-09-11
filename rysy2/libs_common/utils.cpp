@@ -59,7 +59,7 @@ void normalise(std::vector<std::vector<float>> &v, float min, float max)
       if (v[y][x] < min_v)
         min_v = v[y][x];
     }
- 
+
     float k = 0.0;
     float q = 0.0;
 
@@ -86,7 +86,7 @@ float saturate(float value, float min, float max)
 
     return value;
 }
-
+#include <iostream>
 
 std::vector<std::vector<float>> upscale(std::vector<std::vector<float>> &source, unsigned int scaling_y, unsigned int scaling_x)
 {
@@ -103,16 +103,18 @@ std::vector<std::vector<float>> upscale(std::vector<std::vector<float>> &source,
     {
         result[y].resize(output_width);
         for (unsigned int x = 0; x < output_width; x++)
-            result[y][x] = 0.0;
+            result[y][x] = (rand()%1000)/1000.0;
     }
 
-    for (unsigned int y = 0; y < input_height - 1; y++)
-        for (unsigned int x = 0; x < input_width - 1; x++)
+
+
+    for (unsigned int y = 0; y < input_height; y++)
+        for (unsigned int x = 0; x < input_width; x++)
         {
-            float x00 = source[y + 0][x + 0];
-            float x01 = source[y + 0][x + 1];
-            float x10 = source[y + 1][x + 0];
-            float x11 = source[y + 1][x + 1];
+            float x00 = source[(y + 0)%input_height][(x + 0)%input_width];
+            float x01 = source[(y + 0)%input_height][(x + 1)%input_width];
+            float x10 = source[(y + 1)%input_height][(x + 0)%input_width];
+            float x11 = source[(y + 1)%input_height][(x + 1)%input_width];
 
             for (unsigned int ky = 0; ky < scaling_y; ky++)
                 for (unsigned int kx = 0; kx < scaling_x; kx++)
@@ -127,7 +129,7 @@ std::vector<std::vector<float>> upscale(std::vector<std::vector<float>> &source,
                     v+= (1.0 - x_)*        y_ *x10;
                     v+=        x_ *        y_ *x11;
 
-                    result[y*scaling_y + ky][x*scaling_x + kx] = v;
+                    result[(y*scaling_y + ky + scaling_y/2)%output_height][(x*scaling_x + kx + scaling_x/2)%output_width] = v;
                 }
 
         }

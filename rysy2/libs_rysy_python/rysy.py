@@ -2205,6 +2205,9 @@ class DQN(_object):
 
     def heatmap_visualisation(self, path, state):
         return _rysy.DQN_heatmap_visualisation(self, path, state)
+
+    def heatmap_compute(self, state):
+        return _rysy.DQN_heatmap_compute(self, state)
 DQN_swigregister = _rysy.DQN_swigregister
 DQN_swigregister(DQN)
 

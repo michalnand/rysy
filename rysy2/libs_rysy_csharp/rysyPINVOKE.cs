@@ -1018,6 +1018,9 @@ class rysyPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQN_heatmap_visualisation")]
   public static extern void DQN_heatmap_visualisation(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
 
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_DQN_heatmap_compute")]
+  public static extern global::System.IntPtr DQN_heatmap_compute(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
+
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_new_DQNA__SWIG_0")]
   public static extern global::System.IntPtr new_DQNA__SWIG_0();
 

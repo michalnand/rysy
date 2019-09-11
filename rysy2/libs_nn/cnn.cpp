@@ -454,17 +454,26 @@ void CNN::activity_visualisation(std::string image_path, std::vector<float> &inp
 
 std::vector<std::vector<float>> CNN::heatmap_compute(std::vector<float> &input_)
 {
-    input.set_from_host(input_);
-    forward(output, input);
-
-    error = output;
-    train_from_error(error);
-
     unsigned int layer_idx = 0;
     for (unsigned int layer = 0; layer < layers.size(); layer++)
         if (layers[layer]->is_activation() == true)
             if (layers[layer]->get_output_shape().w() > 1 && layers[layer]->get_output_shape().h() > 1)
                 layer_idx = layer;
+
+    input.set_from_host(input_);
+    forward(output, input);
+
+
+
+    unsigned int last_idx = layers.size()-1;
+    l_error[last_idx + 1] = output;
+
+    for (int i = last_idx; i>= layer_idx; i--)
+    {
+        layers[i]->backward(l_error[i], l_error[i + 1], l_output[i], l_output[i + 1], false, false);
+    }
+
+
 
 
     std::vector<float> layer_output(l_output[layer_idx].size());

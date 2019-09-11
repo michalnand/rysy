@@ -184,3 +184,8 @@ void DQN::heatmap_visualisation(std::string path, std::vector<float> &state)
 {
     cnn->heatmap_visualisation(path, state);
 }
+
+std::vector<std::vector<float>> DQN::heatmap_compute(std::vector<float> &state)
+{
+    return cnn->heatmap_compute(state);
+}
