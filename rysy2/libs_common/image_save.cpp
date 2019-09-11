@@ -36,6 +36,51 @@ void ImageSave::save(std::string file_name, std::vector<float> &v)
   output_image->save(file_name.c_str());
 }
 
+void ImageSave::save(std::string file_name, std::vector<std::vector<float>> &v)
+{
+    m_grayscale = true;
+
+    unsigned int height = v.size();
+    unsigned int width  = v[0].size();
+    unsigned int size = width*height;
+
+    std::vector<float> v_tmp(size);
+
+    unsigned int idx = 0;
+    for (unsigned int y = 0; y < height; y++)
+        for (unsigned int x = 0; x < width; x++)
+        {
+            v_tmp[idx] = v[y][x];
+            idx++;
+        }
+
+    save(file_name, v_tmp);
+}
+
+void ImageSave::save(std::string file_name, std::vector<std::vector<std::vector<float>>> &v)
+{
+    m_grayscale = false;
+
+    unsigned int channels   = 3;
+    unsigned int height     = v[0].size();
+    unsigned int width      = v[0][0].size();
+
+    unsigned int size = width*height*channels;
+
+    std::vector<float> v_tmp(size);
+
+    unsigned int idx = 0;
+    for (unsigned int ch = 0; ch < channels; ch++)
+        for (unsigned int y = 0; y < height; y++)
+            for (unsigned int x = 0; x < width; x++)
+            {
+                v_tmp[idx] = v[ch][y][x];
+                idx++;
+            }
+
+    save(file_name, v_tmp);
+}
+
 void ImageSave::show(std::vector<float> &v, std::string window_name)
 {
   vector_to_image(v);

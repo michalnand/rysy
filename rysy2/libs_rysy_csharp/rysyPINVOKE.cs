@@ -244,8 +244,14 @@ class rysyPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_delete_ImageSave")]
   public static extern void delete_ImageSave(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ImageSave_save")]
-  public static extern void ImageSave_save(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ImageSave_save__SWIG_0")]
+  public static extern void ImageSave_save__SWIG_0(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ImageSave_save__SWIG_1")]
+  public static extern void ImageSave_save__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ImageSave_save__SWIG_2")]
+  public static extern void ImageSave_save__SWIG_2(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_ImageSave_show__SWIG_0")]
   public static extern void ImageSave_show__SWIG_0(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, string jarg3);
@@ -795,6 +801,9 @@ class rysyPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_activity_visualisation")]
   public static extern void CNN_activity_visualisation(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_heatmap_visualisation")]
+  public static extern void CNN_heatmap_visualisation(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_set_training_mode")]
   public static extern void CNN_set_training_mode(global::System.Runtime.InteropServices.HandleRef jarg1);

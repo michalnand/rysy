@@ -1344,8 +1344,8 @@ class ImageSave(_object):
     __swig_destroy__ = _rysy.delete_ImageSave
     __del__ = lambda self: None
 
-    def save(self, file_name, v):
-        return _rysy.ImageSave_save(self, file_name, v)
+    def save(self, *args):
+        return _rysy.ImageSave_save(self, *args)
 
     def show(self, *args):
         return _rysy.ImageSave_show(self, *args)
@@ -1938,6 +1938,9 @@ class CNN(_object):
 
     def activity_visualisation(self, image_path, input_):
         return _rysy.CNN_activity_visualisation(self, image_path, input_)
+
+    def heatmap_visualisation(self, image_path, input_):
+        return _rysy.CNN_heatmap_visualisation(self, image_path, input_)
 
     def set_training_mode(self):
         return _rysy.CNN_set_training_mode(self)

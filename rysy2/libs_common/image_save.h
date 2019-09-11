@@ -20,6 +20,9 @@ class ImageSave
         virtual ~ImageSave();
 
         void save(std::string file_name, std::vector<float> &v);
+        void save(std::string file_name, std::vector<std::vector<float>> &v);
+        void save(std::string file_name, std::vector<std::vector<std::vector<float>>> &v);
+
         void show(std::vector<float> &v, std::string window_name = "");
 
     private:

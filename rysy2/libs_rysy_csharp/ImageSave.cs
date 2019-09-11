@@ -46,7 +46,17 @@ public class ImageSave : global::System.IDisposable {
   }
 
   public void save(string file_name, SWIGTYPE_p_std__vectorT_float_t v) {
-    rysyPINVOKE.ImageSave_save(swigCPtr, file_name, SWIGTYPE_p_std__vectorT_float_t.getCPtr(v));
+    rysyPINVOKE.ImageSave_save__SWIG_0(swigCPtr, file_name, SWIGTYPE_p_std__vectorT_float_t.getCPtr(v));
+    if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
+  }
+
+  public void save(string file_name, SWIGTYPE_p_std__vectorT_std__vectorT_float_t_t v) {
+    rysyPINVOKE.ImageSave_save__SWIG_1(swigCPtr, file_name, SWIGTYPE_p_std__vectorT_std__vectorT_float_t_t.getCPtr(v));
+    if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
+  }
+
+  public void save(string file_name, SWIGTYPE_p_std__vectorT_std__vectorT_std__vectorT_float_t_t_t v) {
+    rysyPINVOKE.ImageSave_save__SWIG_2(swigCPtr, file_name, SWIGTYPE_p_std__vectorT_std__vectorT_std__vectorT_float_t_t_t.getCPtr(v));
     if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
   }
 
