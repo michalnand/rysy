@@ -179,3 +179,8 @@ void DQN::activity_visualisation(std::string path, std::vector<float> &state)
 {
     cnn->activity_visualisation(path, state);
 }
+
+void DQN::heatmap_visualisation(std::string path, std::vector<float> &state)
+{
+    cnn->heatmap_visualisation(path, state);
+}

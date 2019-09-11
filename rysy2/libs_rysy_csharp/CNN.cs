@@ -188,6 +188,12 @@ public class CNN : global::System.IDisposable {
     if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
   }
 
+  public SWIGTYPE_p_std__vectorT_std__vectorT_float_t_t heatmap_compute(SWIGTYPE_p_std__vectorT_float_t input_) {
+    SWIGTYPE_p_std__vectorT_std__vectorT_float_t_t ret = new SWIGTYPE_p_std__vectorT_std__vectorT_float_t_t(rysyPINVOKE.CNN_heatmap_compute(swigCPtr, SWIGTYPE_p_std__vectorT_float_t.getCPtr(input_)), true);
+    if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
+    return ret;
+  }
+
   public void heatmap_visualisation(string image_path, SWIGTYPE_p_std__vectorT_float_t input_) {
     rysyPINVOKE.CNN_heatmap_visualisation(swigCPtr, image_path, SWIGTYPE_p_std__vectorT_float_t.getCPtr(input_));
     if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();

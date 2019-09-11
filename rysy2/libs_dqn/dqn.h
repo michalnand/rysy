@@ -43,6 +43,7 @@ class DQN
     public:
         void kernel_visualisation(std::string path);
         void activity_visualisation(std::string path, std::vector<float> &state);
+        void heatmap_visualisation(std::string path, std::vector<float> &state);
 
 
 

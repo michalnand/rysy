@@ -169,4 +169,9 @@ public class DQN : global::System.IDisposable {
     if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
   }
 
+  public void heatmap_visualisation(string path, SWIGTYPE_p_std__vectorT_float_t state) {
+    rysyPINVOKE.DQN_heatmap_visualisation(swigCPtr, path, SWIGTYPE_p_std__vectorT_float_t.getCPtr(state));
+    if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
+  }
+
 }

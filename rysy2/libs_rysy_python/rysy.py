@@ -1939,6 +1939,9 @@ class CNN(_object):
     def activity_visualisation(self, image_path, input_):
         return _rysy.CNN_activity_visualisation(self, image_path, input_)
 
+    def heatmap_compute(self, input_):
+        return _rysy.CNN_heatmap_compute(self, input_)
+
     def heatmap_visualisation(self, image_path, input_):
         return _rysy.CNN_heatmap_visualisation(self, image_path, input_)
 
@@ -2199,6 +2202,9 @@ class DQN(_object):
 
     def activity_visualisation(self, path, state):
         return _rysy.DQN_activity_visualisation(self, path, state)
+
+    def heatmap_visualisation(self, path, state):
+        return _rysy.DQN_heatmap_visualisation(self, path, state)
 DQN_swigregister = _rysy.DQN_swigregister
 DQN_swigregister(DQN)
 

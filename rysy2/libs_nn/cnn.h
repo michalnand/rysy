@@ -49,9 +49,11 @@ class CNN
         Tensor& get_error_back();
 
         std::vector<float> kernel_visualisation(unsigned int layer, unsigned int kernel);
-
         void kernel_visualisation(std::string image_path);
+
         void activity_visualisation(std::string image_path, std::vector<float> &input_);
+
+        std::vector<std::vector<float>> heatmap_compute(std::vector<float> &input_);
         void heatmap_visualisation(std::string image_path, std::vector<float> &input_);
 
     public:

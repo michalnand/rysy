@@ -452,13 +452,13 @@ void CNN::activity_visualisation(std::string image_path, std::vector<float> &inp
 
 
 
-
-
-
-void CNN::heatmap_visualisation(std::string image_path, std::vector<float> &input_)
+std::vector<std::vector<float>> CNN::heatmap_compute(std::vector<float> &input_)
 {
     input.set_from_host(input_);
     forward(output, input);
+
+    error = output;
+    train_from_error(error);
 
     unsigned int layer_idx = 0;
     for (unsigned int layer = 0; layer < layers.size(); layer++)
@@ -467,16 +467,22 @@ void CNN::heatmap_visualisation(std::string image_path, std::vector<float> &inpu
                 layer_idx = layer;
 
 
-
     std::vector<float> layer_output(l_output[layer_idx].size());
     l_output[layer_idx].set_to_host(layer_output);
+
+    std::vector<float> layer_gradient(l_error[layer_idx].size());
+    l_error[layer_idx].set_to_host(layer_gradient);
+
+    for (unsigned int i = 0; i < layer_output.size(); i++)
+        layer_output[i] = layer_output[i]*layer_gradient[i];
+
 
     unsigned int layer_width  = l_output[layer_idx].shape().w();
     unsigned int layer_height = l_output[layer_idx].shape().h();
     unsigned int layer_depth  = l_output[layer_idx].shape().d();
 
-    std::vector<std::vector<float>> activity_sum;
 
+    std::vector<std::vector<float>> activity_sum;
     activity_sum.resize(layer_height);
     for (unsigned int y = 0; y < layer_height; y++)
     {
@@ -493,48 +499,58 @@ void CNN::heatmap_visualisation(std::string image_path, std::vector<float> &inpu
                 activity_sum[y][x]+= layer_output[idx];
             }
 
-    unsigned int output_width         = m_input_shape.w();
-    unsigned int output_height        = m_input_shape.h();
 
-    unsigned int scaling_y = output_height/layer_height;
-    unsigned int scaling_x = output_width/layer_width;
+    normalise(activity_sum);
 
-    std::vector<std::vector<float>> activity_sum_upscaled;
 
-    activity_sum_upscaled.resize(output_height);
-    for (unsigned int y = 0; y < output_height; y++)
+    unsigned int scaling_y = m_input_shape.h()/layer_height;
+    unsigned int scaling_x = m_input_shape.w()/layer_width;
+
+    auto activity_sum_upscaled = upscale(activity_sum, scaling_y, scaling_x);
+
+    return activity_sum_upscaled;
+}
+
+void CNN::heatmap_visualisation(std::string image_path, std::vector<float> &input_)
+{
+    auto heat_map = heatmap_compute(input_);
+
     {
-        activity_sum_upscaled[y].resize(output_width);
-        for (unsigned int x = 0; x < output_width; x++)
-            activity_sum_upscaled[y][x] = 0.0;
+        std::string image_file_name = image_path + "_heatmap.png";
+        ImageSave image(m_input_shape.w(), m_input_shape.h(), true);
+        image.save(image_file_name, heat_map);
     }
 
-    for (unsigned int y = 0; y < layer_height - 1; y++)
-        for (unsigned int x = 0; x < layer_width - 1; x++)
+    {
+        std::vector<std::vector<std::vector<float>>> heat_map_mixed;
+
+        heat_map_mixed.resize(3);
+        for (unsigned int ch = 0; ch < 3; ch++)
         {
-            float x00 = activity_sum[y + 0][x + 0];
-            float x01 = activity_sum[y + 0][x + 1];
-            float x10 = activity_sum[y + 1][x + 0];
-            float x11 = activity_sum[y + 1][x + 1];
-
-            for (unsigned int ky = 0; ky <= scaling_y; ky++)
-                for (unsigned int kx = 0; kx <= scaling_x; kx++)
+            heat_map_mixed[ch].resize(m_input_shape.h());
+            for (unsigned int y = 0; y < m_input_shape.h(); y++)
+            {
+                heat_map_mixed[ch][y].resize(m_input_shape.w());
+                for (unsigned int x = 0; x < m_input_shape.w(); x++)
                 {
-                    float v = 0.0;
-                    v+= (scaling_x - kx)*(scaling_y - ky)*x00;
-                    v+= (kx)*(scaling_y - ky)*x01;
-
-                    v+= (scaling_x - kx)*(ky)*x10;
-                    v+= (kx)*(ky)*x11;
-
-                    activity_sum_upscaled[y*scaling_y + ky][x*scaling_x + kx] = v;
+                    heat_map_mixed[ch][y][x] = 0.0 + (rand()%1000)/1000.0;
                 }
-
+            }
         }
 
-    std::string image_file_name = image_path + "_heatmap.png";
-    ImageSave image(output_width, output_height, true);
-    image.save(image_file_name, activity_sum_upscaled);
+        float a = 0.5;
+        for (unsigned int ch = 0; ch < 3; ch++)
+            for (unsigned int y = 0; y < m_input_shape.h(); y++)
+                for (unsigned int x = 0; x < m_input_shape.w(); x++)
+                {
+                    unsigned int input_idx = ((ch%m_input_shape.d()) *m_input_shape.h() + y)*m_input_shape.w() + x;
+                    heat_map_mixed[ch][y][x] = heat_map[y][x]*a + input_[input_idx]*(1.0 - a);
+                }
+
+        std::string image_file_name = image_path + "_heatmap_on_input.png";
+        ImageSave image(m_input_shape.w(), m_input_shape.h(), false);
+        image.save(image_file_name, heat_map_mixed);
+    }
 }
 
 void CNN::train(std::vector<float> &required_output, std::vector<float> &input)

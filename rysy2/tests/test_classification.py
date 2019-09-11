@@ -44,7 +44,7 @@ cnn.add_layer("output")
 
 cnn._print()
 
-'''
+
 time_start = int(round(time.time() * 1000))
 #train network - set epoch count
 epoch_count = 1
@@ -79,5 +79,5 @@ print("computing time = ", (time_stop - time_start)/1000.0, "[s]")
 
 #cnn.kernel_visualisation("kernel_visualisation/")
 #cnn.activity_visualisation("activity_visualisation/", dataset.get_testing_input(0))
-'''
+
 cnn.heatmap_visualisation("heatmap_visualisation/", dataset.get_testing_input(0))
