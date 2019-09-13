@@ -120,6 +120,14 @@ void SVGVisualiser::process(std::string image_file_name, Shape input_shape)
           b = 80;
         }
 
+
+        if ((layer_type == "s attention") || (layer_type == "spatial attention") || (layer_type == "spatial_attention"))
+        {
+          r = 120;
+          g = 80;
+          b = 190;
+        }
+
         int sr = r/2;
         int sg = g/2;
         int sb = b/2;

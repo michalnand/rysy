@@ -20,6 +20,7 @@
 #include <layers/flatten_layer.h>
 
 #include <layers/highway_block_layer.h>
+#include <layers/spatial_attention_layer.h>
 
 
 #include <svg_visualiser.h>
@@ -482,13 +483,34 @@ std::vector<std::vector<float>> CNN::heatmap_compute(std::vector<float> &input_)
     std::vector<float> layer_gradient(l_error[layer_idx].size());
     l_error[layer_idx].set_to_host(layer_gradient);
 
-    for (unsigned int i = 0; i < layer_output.size(); i++)
-        layer_output[i] = layer_output[i]*layer_gradient[i];
+
 
 
     unsigned int layer_width  = l_output[layer_idx].shape().w();
     unsigned int layer_height = l_output[layer_idx].shape().h();
     unsigned int layer_depth  = l_output[layer_idx].shape().d();
+
+
+    std::vector<float> layer_gradient_average(layer_depth);
+
+    for (unsigned int ch = 0; ch < layer_depth; ch++)
+    {
+        layer_gradient_average[ch] = 0.0;
+        for (unsigned int y = 0; y < layer_height; y++)
+            for (unsigned int x = 0; x < layer_width; x++)
+            {
+                unsigned int idx = (ch*layer_height + y)*layer_width + x;
+                layer_gradient_average[ch]+= layer_gradient[idx];
+            }
+
+        layer_gradient_average[ch]/= (layer_height*layer_width);
+    }
+
+
+    for (unsigned int i = 0; i < layer_output.size(); i++)
+        //layer_output[i] = layer_output[i]*layer_gradient[i];
+        layer_output[i] = layer_output[i]*layer_gradient_average[i/(layer_height*layer_width)];
+
 
 
     std::vector<std::vector<float>> activity_sum;
@@ -508,9 +530,7 @@ std::vector<std::vector<float>> CNN::heatmap_compute(std::vector<float> &input_)
                 activity_sum[y][x]+= layer_output[idx];
             }
 
-
     normalise(activity_sum);
-
 
     unsigned int scaling_y = m_input_shape.h()/layer_height;
     unsigned int scaling_x = m_input_shape.w()/layer_width;
@@ -864,6 +884,50 @@ Shape CNN::add_layer(std::string layer_type, Shape shape, std::string weights_fi
     if (layer_type == "highway")
     {
         layer = new HighwayBlockLayer(m_current_input_shape, parameters);
+    }
+    else
+    if ((layer_type == "spatial_attention") || (layer_type == "spatial attention") || (layer_type == "s attention"))
+    {
+        std::cout << "spatial_attention\n";
+        //layer = new SpatialAttentionLayer(layer->get_output_shape(), parameters);
+
+        parameters["shape"][0]          = shape.w();
+        parameters["shape"][1]          = shape.h();
+        parameters["shape"][2]          = m_current_input_shape.d();
+
+        layer = new DenseConvolutionLayer(m_current_input_shape, parameters);
+
+        layers.push_back(layer);
+
+        m_current_input_shape = layer->get_output_shape();
+
+        l_error.push_back(Tensor(layer->get_output_shape()));
+        l_output.push_back(Tensor(layer->get_output_shape()));
+
+
+        if (weights_file_name_prefix.size() > 0)
+        {
+            layer->load(weights_file_name_prefix);
+        }
+
+        unsigned int layer_idx = layers.size()-1;
+
+        this->m_parameters["layers"][layer_idx]["type"] = "dense_convolution";
+
+        this->m_parameters["layers"][layer_idx]["shape"][0] = shape.w();
+        this->m_parameters["layers"][layer_idx]["shape"][1] = shape.h();
+        this->m_parameters["layers"][layer_idx]["shape"][2] = shape.d();
+
+        this->m_parameters["layers"][layer_idx]["input_shape"][0]  = layers[layer_idx]->get_input_shape().w();
+        this->m_parameters["layers"][layer_idx]["input_shape"][1]  = layers[layer_idx]->get_input_shape().h();
+        this->m_parameters["layers"][layer_idx]["input_shape"][2]  = layers[layer_idx]->get_input_shape().d();
+
+        this->m_parameters["layers"][layer_idx]["output_shape"][0] = layers[layer_idx]->get_output_shape().w();
+        this->m_parameters["layers"][layer_idx]["output_shape"][1] = layers[layer_idx]->get_output_shape().h();
+        this->m_parameters["layers"][layer_idx]["output_shape"][2] = layers[layer_idx]->get_output_shape().d();
+
+ 
+        layer = new SpatialAttentionLayer(m_current_input_shape, parameters);
     }
     else
     {

@@ -74,7 +74,7 @@ void cpu_highway_backward_kernel(   float *error_back_t,
         error_back_c[idx] = error[idx]*SIGMOID_DERIVATIVE(input_c[idx])*(c*ah + (1.0 - c)*at);
     }
 }
- 
+
 
 __global__
 void cuda_highway_backward_kernel(  float *error_back_t,
@@ -122,11 +122,13 @@ void highway_layer_forward(Tensor &output, Tensor &input)
                                                         input.v + 0*step,
 
                                                         output.size() );
+
         cudaDeviceSynchronize();
 
     #else
 
         cpu_highway_forward_kernel( output.v,
+
                                     input.v + 2*step,
                                     input.v + 1*step,
                                     input.v + 0*step,
