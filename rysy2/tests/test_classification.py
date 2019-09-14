@@ -51,7 +51,10 @@ cnn._print()
 time_start = int(round(time.time() * 1000))
 #train network - set epoch count
 epoch_count = 1
+
 cnn.train(dataset.get_training_output_all(), dataset.get_training_input_all(), epoch_count)
+#cnn.save("trained/")
+#cnn.load_weights("trained/")
 
 
 #test network response on whole testing dataset items

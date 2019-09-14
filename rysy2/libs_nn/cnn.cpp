@@ -888,45 +888,6 @@ Shape CNN::add_layer(std::string layer_type, Shape shape, std::string weights_fi
     else
     if ((layer_type == "spatial_attention") || (layer_type == "spatial attention") || (layer_type == "s attention"))
     {
-        std::cout << "spatial_attention\n";
-        //layer = new SpatialAttentionLayer(layer->get_output_shape(), parameters);
-
-        parameters["shape"][0]          = shape.w();
-        parameters["shape"][1]          = shape.h();
-        parameters["shape"][2]          = m_current_input_shape.d();
-
-        layer = new DenseConvolutionLayer(m_current_input_shape, parameters);
-
-        layers.push_back(layer);
-
-        m_current_input_shape = layer->get_output_shape();
-
-        l_error.push_back(Tensor(layer->get_output_shape()));
-        l_output.push_back(Tensor(layer->get_output_shape()));
-
-
-        if (weights_file_name_prefix.size() > 0)
-        {
-            layer->load(weights_file_name_prefix);
-        }
-
-        unsigned int layer_idx = layers.size()-1;
-
-        this->m_parameters["layers"][layer_idx]["type"] = "dense_convolution";
-
-        this->m_parameters["layers"][layer_idx]["shape"][0] = shape.w();
-        this->m_parameters["layers"][layer_idx]["shape"][1] = shape.h();
-        this->m_parameters["layers"][layer_idx]["shape"][2] = shape.d();
-
-        this->m_parameters["layers"][layer_idx]["input_shape"][0]  = layers[layer_idx]->get_input_shape().w();
-        this->m_parameters["layers"][layer_idx]["input_shape"][1]  = layers[layer_idx]->get_input_shape().h();
-        this->m_parameters["layers"][layer_idx]["input_shape"][2]  = layers[layer_idx]->get_input_shape().d();
-
-        this->m_parameters["layers"][layer_idx]["output_shape"][0] = layers[layer_idx]->get_output_shape().w();
-        this->m_parameters["layers"][layer_idx]["output_shape"][1] = layers[layer_idx]->get_output_shape().h();
-        this->m_parameters["layers"][layer_idx]["output_shape"][2] = layers[layer_idx]->get_output_shape().d();
-
- 
         layer = new SpatialAttentionLayer(m_current_input_shape, parameters);
     }
     else
