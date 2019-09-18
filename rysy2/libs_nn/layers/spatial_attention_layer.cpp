@@ -184,7 +184,6 @@ void SpatialAttentionLayer::backward(Tensor &error_back, Tensor &error, Tensor &
                                 input_attention,
                                 error);
 
-
     convolution_layer_gradient(w_grad, input, error_back_attention);
 
     if (update_bias)
@@ -217,9 +216,9 @@ void SpatialAttentionLayer::load(std::string file_name_prefix)
 
 void SpatialAttentionLayer::init_spatial_attention_layer()
 {
-    unsigned int kw = m_parameters["shape"][0].asInt();
-    unsigned int kh = m_parameters["shape"][1].asInt();
-    unsigned int kd = m_input_shape.d();
+    unsigned int kw = 1;
+    unsigned int kh = 1;
+    unsigned int kd = 1;
 
     m_kernel_shape.set(kw, kh, kd);
 
@@ -228,7 +227,7 @@ void SpatialAttentionLayer::init_spatial_attention_layer()
     lambda2         = m_parameters["hyperparameters"]["lambda2"].asFloat();
     gradient_clip   = m_parameters["hyperparameters"]["gradient_clip"].asFloat();
 
-    m_output_shape.set(m_input_shape.w(), m_input_shape.h(), kd);
+    m_output_shape.set(m_input_shape.w(), m_input_shape.h(), m_input_shape.d());
 
     w.init(kw, kh, kd*m_input_shape.d());
     w.set_random(sqrt(2.0/w.size()));
@@ -241,7 +240,7 @@ void SpatialAttentionLayer::init_spatial_attention_layer()
     bias.set_random(0.000001);
 
     input_attention.init(m_output_shape);
-    error_back_attention.init(m_output_shape);
+    error_back_attention.init(m_input_shape.w(), m_input_shape.h(), kd);
     error_back_conv.init(m_input_shape);
 
     this->m_trainable_parameters    = w.size() + bias.size();
