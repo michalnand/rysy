@@ -540,14 +540,28 @@ std::vector<std::vector<float>> CNN::heatmap_compute(std::vector<float> &input_)
     return activity_sum_upscaled;
 }
 
-void CNN::heatmap_visualisation(std::string image_path, std::vector<float> &input_)
+void CNN::heatmap_visualisation(std::string result_path, std::vector<float> &input_)
 {
     auto heat_map = heatmap_compute(input_);
 
     {
-        std::string image_file_name = image_path + "_heatmap.png";
+        std::string image_file_name = result_path + "_heatmap.png";
         ImageSave image(m_input_shape.w(), m_input_shape.h(), true);
         image.save(image_file_name, heat_map);
+    }
+
+    {
+        std::string json_file_name = result_path + "_heatmap.json";
+        JsonConfig json;
+
+        json.result["width"] = m_input_shape.w();
+        json.result["height"] = m_input_shape.h();
+
+        for (unsigned int y = 0; y < m_input_shape.h(); y++)
+            for (unsigned int x = 0; x < m_input_shape.w(); x++)
+                json.result["heat_map"][y][x] = heat_map[y][x];
+
+        json.save(json_file_name);
     }
 
     {
@@ -562,7 +576,7 @@ void CNN::heatmap_visualisation(std::string image_path, std::vector<float> &inpu
                 heat_map_mixed[ch][y].resize(m_input_shape.w());
                 for (unsigned int x = 0; x < m_input_shape.w(); x++)
                 {
-                    heat_map_mixed[ch][y][x] = 0.0 + (rand()%1000)/1000.0;
+                    heat_map_mixed[ch][y][x] = 0.0;
                 }
             }
         }
@@ -576,7 +590,7 @@ void CNN::heatmap_visualisation(std::string image_path, std::vector<float> &inpu
                     heat_map_mixed[ch][y][x] = heat_map[y][x]*a + input_[input_idx]*(1.0 - a);
                 }
 
-        std::string image_file_name = image_path + "_heatmap_on_input.png";
+        std::string image_file_name = result_path + "_heatmap_on_input.png";
         ImageSave image(m_input_shape.w(), m_input_shape.h(), false);
         image.save(image_file_name, heat_map_mixed);
     }

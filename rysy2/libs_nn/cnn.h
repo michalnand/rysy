@@ -54,7 +54,7 @@ class CNN
         void activity_visualisation(std::string image_path, std::vector<float> &input_);
 
         std::vector<std::vector<float>> heatmap_compute(std::vector<float> &input_);
-        void heatmap_visualisation(std::string image_path, std::vector<float> &input_);
+        void heatmap_visualisation(std::string result_path, std::vector<float> &input_);
 
     public:
         void set_training_mode();
