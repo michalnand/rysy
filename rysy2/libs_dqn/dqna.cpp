@@ -206,24 +206,24 @@ void DQNA::train()
         t_q_values_error.sub(t_q_values);
 
         //train reconstruction network
-        reconstruction_network->train_from_error(t_reconstruction_error);
+        reconstruction_network->train_from_gradient(t_reconstruction_error);
 
         //train q_network
-        q_network->train_from_error(t_q_values_error);
+        q_network->train_from_gradient(t_q_values_error);
 
 
         //train features network
         //use summed error from q_network and reconstruction_network
         /*
-        t_features_error = q_network->get_error_back();
-        t_features_error.add(reconstruction_network->get_error_back());
-        features_network->train_from_error(t_features_error);
+        t_features_error = q_network->get_gradient_back();
+        t_features_error.add(reconstruction_network->get_gradient_back());
+        features_network->train_from_gradient(t_features_error);
         */
 
-        t_features_error = reconstruction_network->get_error_back();
+        t_features_error = reconstruction_network->get_gradient_back();
         t_features_error.mul(0.1);
-        t_features_error.add(q_network->get_error_back());
-        features_network->train_from_error(t_features_error);
+        t_features_error.add(q_network->get_gradient_back());
+        features_network->train_from_gradient(t_features_error);
     }
 
 

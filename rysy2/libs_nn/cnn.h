@@ -45,8 +45,9 @@ class CNN
         void train(std::vector<Tensor> &required_output, std::vector<Tensor> &input, unsigned int epoch_count = 1, bool verbose = true);
         void train(std::vector<std::vector<float>> &required_output, std::vector<std::vector<float>> &input, unsigned int epoch_count = 1, bool verbose = true);
 
-        void train_from_error(Tensor &error);
-        Tensor& get_error_back();
+        void train_from_gradient(std::vector<float> &gradient);
+        void train_from_gradient(Tensor &gradient);
+        Tensor& get_gradient_back();
 
         std::vector<float> kernel_visualisation(unsigned int layer, unsigned int kernel);
         void kernel_visualisation(std::string image_path);
@@ -91,11 +92,11 @@ class CNN
 
     private:
 
-        Tensor output, required_output, input, error;
+        Tensor output, required_output, input, gradient;
 
         std::vector<Layer*> layers;
 
-        std::vector<Tensor> l_error, l_output;
+        std::vector<Tensor> l_gradient, l_output;
 
         bool training_mode;
         unsigned int minibatch_size, minibatch_counter;

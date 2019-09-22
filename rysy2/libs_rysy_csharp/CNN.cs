@@ -163,13 +163,18 @@ public class CNN : global::System.IDisposable {
     if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
   }
 
-  public void train_from_error(Tensor error) {
-    rysyPINVOKE.CNN_train_from_error(swigCPtr, Tensor.getCPtr(error));
+  public void train_from_gradient(SWIGTYPE_p_std__vectorT_float_t gradient) {
+    rysyPINVOKE.CNN_train_from_gradient__SWIG_0(swigCPtr, SWIGTYPE_p_std__vectorT_float_t.getCPtr(gradient));
     if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
   }
 
-  public Tensor get_error_back() {
-    Tensor ret = new Tensor(rysyPINVOKE.CNN_get_error_back(swigCPtr), false);
+  public void train_from_gradient(Tensor gradient) {
+    rysyPINVOKE.CNN_train_from_gradient__SWIG_1(swigCPtr, Tensor.getCPtr(gradient));
+    if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
+  }
+
+  public Tensor get_gradient_back() {
+    Tensor ret = new Tensor(rysyPINVOKE.CNN_get_gradient_back(swigCPtr), false);
     return ret;
   }
 
@@ -194,8 +199,8 @@ public class CNN : global::System.IDisposable {
     return ret;
   }
 
-  public void heatmap_visualisation(string image_path, SWIGTYPE_p_std__vectorT_float_t input_) {
-    rysyPINVOKE.CNN_heatmap_visualisation(swigCPtr, image_path, SWIGTYPE_p_std__vectorT_float_t.getCPtr(input_));
+  public void heatmap_visualisation(string result_path, SWIGTYPE_p_std__vectorT_float_t input_) {
+    rysyPINVOKE.CNN_heatmap_visualisation(swigCPtr, result_path, SWIGTYPE_p_std__vectorT_float_t.getCPtr(input_));
     if (rysyPINVOKE.SWIGPendingException.Pending) throw rysyPINVOKE.SWIGPendingException.Retrieve();
   }
 

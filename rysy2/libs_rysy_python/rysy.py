@@ -1927,11 +1927,11 @@ class CNN(_object):
     def train(self, *args):
         return _rysy.CNN_train(self, *args)
 
-    def train_from_error(self, error):
-        return _rysy.CNN_train_from_error(self, error)
+    def train_from_gradient(self, *args):
+        return _rysy.CNN_train_from_gradient(self, *args)
 
-    def get_error_back(self):
-        return _rysy.CNN_get_error_back(self)
+    def get_gradient_back(self):
+        return _rysy.CNN_get_gradient_back(self)
 
     def kernel_visualisation(self, *args):
         return _rysy.CNN_kernel_visualisation(self, *args)
@@ -1942,8 +1942,8 @@ class CNN(_object):
     def heatmap_compute(self, input_):
         return _rysy.CNN_heatmap_compute(self, input_)
 
-    def heatmap_visualisation(self, image_path, input_):
-        return _rysy.CNN_heatmap_visualisation(self, image_path, input_)
+    def heatmap_visualisation(self, result_path, input_):
+        return _rysy.CNN_heatmap_visualisation(self, result_path, input_)
 
     def set_training_mode(self):
         return _rysy.CNN_set_training_mode(self)

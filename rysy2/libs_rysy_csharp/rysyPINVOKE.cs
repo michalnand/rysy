@@ -787,11 +787,14 @@ class rysyPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_train__SWIG_7")]
   public static extern void CNN_train__SWIG_7(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_train_from_error")]
-  public static extern void CNN_train_from_error(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_train_from_gradient__SWIG_0")]
+  public static extern void CNN_train_from_gradient__SWIG_0(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_get_error_back")]
-  public static extern global::System.IntPtr CNN_get_error_back(global::System.Runtime.InteropServices.HandleRef jarg1);
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_train_from_gradient__SWIG_1")]
+  public static extern void CNN_train_from_gradient__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_get_gradient_back")]
+  public static extern global::System.IntPtr CNN_get_gradient_back(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("rysy", EntryPoint="CSharp_CNN_kernel_visualisation__SWIG_0")]
   public static extern global::System.IntPtr CNN_kernel_visualisation__SWIG_0(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2, uint jarg3);

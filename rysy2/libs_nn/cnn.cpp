@@ -5,6 +5,7 @@
 
 #include <layers/activation_elu_layer.h>
 #include <layers/activation_relu_layer.h>
+#include <layers/softmax_layer.h>
 
 #include <layers/convolution_layer.h>
 #include <layers/dense_convolution_layer.h>
@@ -115,7 +116,7 @@ void CNN::copy(CNN& other)
 
     this->layers            = other.layers;
 
-    this->l_error           = other.l_error;
+    this->l_gradient        = other.l_gradient;
     this->l_output          = other.l_output;
 
     this->training_mode     = other.training_mode;
@@ -141,7 +142,7 @@ void CNN::copy(const CNN& other)
 
     this->layers            = other.layers;
 
-    this->l_error           = other.l_error;
+    this->l_gradient        = other.l_gradient;
     this->l_output          = other.l_output;
 
     this->training_mode     = other.training_mode;
@@ -197,13 +198,19 @@ void CNN::train(Tensor &required_output, Tensor &input)
 
     forward(l_output[last_idx], l_output[0]);
 
-    this->error = required_output;
-    this->error.sub(l_output[last_idx]);
+    this->gradient = required_output;
+    this->gradient.sub(l_output[last_idx]);
 
-    train_from_error(this->error);
+    train_from_gradient(this->gradient);
 }
 
-void CNN::train_from_error(Tensor &error)
+void CNN::train_from_gradient(std::vector<float> &gradient)
+{
+    this->gradient.set_from_host(gradient);
+    train_from_gradient(this->gradient);
+}
+
+void CNN::train_from_gradient(Tensor &gradient)
 {
     bool update_weights = false;
     minibatch_counter++;
@@ -215,17 +222,17 @@ void CNN::train_from_error(Tensor &error)
     }
 
     unsigned int last_idx = layers.size()-1;
-    l_error[last_idx + 1] = error;
+    l_gradient[last_idx + 1] = gradient;
 
     for (int i = last_idx; i>= 0; i--)
     {
-        layers[i]->backward(l_error[i], l_error[i + 1], l_output[i], l_output[i + 1], update_weights);
+        layers[i]->backward(l_gradient[i], l_gradient[i + 1], l_output[i], l_output[i + 1], update_weights);
     }
 }
 
-Tensor& CNN::get_error_back()
+Tensor& CNN::get_gradient_back()
 {
-    return l_error[0];
+    return l_gradient[0];
 }
 
 
@@ -245,8 +252,8 @@ std::vector<float> CNN::kernel_visualisation(unsigned int layer, unsigned int ke
 
     for (unsigned int iteration = 0; iteration < 256; iteration++)
     {
-        for (unsigned int i = 0; i < l_error.size(); i++)
-            l_error[i].clear();
+        for (unsigned int i = 0; i < l_gradient.size(); i++)
+            l_gradient[i].clear();
         for (unsigned int i = 0; i < l_output.size(); i++)
             l_output[i].clear();
 
@@ -279,18 +286,18 @@ std::vector<float> CNN::kernel_visualisation(unsigned int layer, unsigned int ke
 
 
 
-        l_error[layer + 1].set_from_host(v_error);
+        l_gradient[layer + 1].set_from_host(v_error);
 
 
         for (int i = layer; i>= 0; i--)
         {
-            layers[i]->backward(l_error[i], l_error[i + 1], l_output[i], l_output[i + 1], false, false);
+            layers[i]->backward(l_gradient[i], l_gradient[i + 1], l_output[i], l_output[i + 1], false, false);
         }
 
 
         Tensor tmp = t_result;
         tmp.mul(0.01);
-        t_result.add(l_error[0]);
+        t_result.add(l_gradient[0]);
         t_result.sub(tmp);
 
         Tensor t_noise(t_result.shape());
@@ -467,11 +474,11 @@ std::vector<std::vector<float>> CNN::heatmap_compute(std::vector<float> &input_)
 
 
     unsigned int last_idx = layers.size()-1;
-    l_error[last_idx + 1] = output;
+    l_gradient[last_idx + 1] = output;
 
     for (int i = last_idx; i>= layer_idx; i--)
     {
-        layers[i]->backward(l_error[i], l_error[i + 1], l_output[i], l_output[i + 1], false, false);
+        layers[i]->backward(l_gradient[i], l_gradient[i + 1], l_output[i], l_output[i + 1], false, false);
     }
 
 
@@ -480,8 +487,8 @@ std::vector<std::vector<float>> CNN::heatmap_compute(std::vector<float> &input_)
     std::vector<float> layer_output(l_output[layer_idx].size());
     l_output[layer_idx].set_to_host(layer_output);
 
-    std::vector<float> layer_gradient(l_error[layer_idx].size());
-    l_error[layer_idx].set_to_host(layer_gradient);
+    std::vector<float> layer_gradient(l_gradient[layer_idx].size());
+    l_gradient[layer_idx].set_to_host(layer_gradient);
 
 
 
@@ -754,7 +761,7 @@ void CNN::init(Json::Value json_config, Shape input_shape, Shape output_shape)
     output.init(this->m_output_shape);
     required_output.init(this->m_output_shape);
     input.init(this->m_input_shape);
-    error.init(this->m_output_shape);
+    gradient.init(this->m_output_shape);
 
     this->m_parameters["input_shape"][0]  = this->m_input_shape.w();
     this->m_parameters["input_shape"][1]  = this->m_input_shape.h();
@@ -765,7 +772,7 @@ void CNN::init(Json::Value json_config, Shape input_shape, Shape output_shape)
 
     this->m_parameters["hyperparameters"] = m_hyperparameters;
 
-    l_error.push_back(Tensor(this->m_input_shape));
+    l_gradient.push_back(Tensor(this->m_input_shape));
     l_output.push_back(Tensor(this->m_input_shape));
 
     m_current_input_shape = this->m_input_shape;
@@ -794,7 +801,7 @@ void CNN::init(Json::Value json_config, Shape input_shape, Shape output_shape)
         output.init(this->m_output_shape);
         required_output.init(this->m_output_shape);
         input.init(this->m_input_shape);
-        error.init(this->m_output_shape);
+        gradient.init(this->m_output_shape);
 
         this->m_parameters["output_shape"][0] = this->m_output_shape.w();
         this->m_parameters["output_shape"][1] = this->m_output_shape.h();
@@ -840,6 +847,11 @@ Shape CNN::add_layer(std::string layer_type, Shape shape, std::string weights_fi
     if (layer_type == "relu")
     {
         layer = new ActivationReluLayer(m_current_input_shape, parameters);
+    }
+    else
+    if (layer_type == "softmax")
+    {
+        layer = new SoftmaxLayer(m_current_input_shape, parameters);
     }
     else
     if (layer_type == "convolution")
@@ -915,7 +927,7 @@ Shape CNN::add_layer(std::string layer_type, Shape shape, std::string weights_fi
 
     output_shape = layers[layer_idx]->get_output_shape();
 
-    l_error.push_back(Tensor(output_shape));
+    l_gradient.push_back(Tensor(output_shape));
     l_output.push_back(Tensor(output_shape));
 
     m_current_input_shape = output_shape;

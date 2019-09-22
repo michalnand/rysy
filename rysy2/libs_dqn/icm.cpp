@@ -202,7 +202,7 @@ void ICM::train(ExperienceReplayBuffer &replay_buffer)
     features_network->unset_training_mode();
     inverse_network->unset_training_mode();
     forward_network->unset_training_mode();
-} 
+}
 
 
 
@@ -300,21 +300,21 @@ void ICM::train(std::vector<float> &state_now, std::vector<float> &state_next, u
 
 
     //training -> TODO this hell path
-    inverse_network->train_from_error(t_inverse_error);
-    t_inverse_error_back = inverse_network->get_error_back();
+    inverse_network->train_from_gradient(t_inverse_error);
+    t_inverse_error_back = inverse_network->get_gradient_back();
 
-    forward_network->train_from_error(t_forward_error);
-    t_forward_error_back = forward_network->get_error_back();
+    forward_network->train_from_gradient(t_forward_error);
+    t_forward_error_back = forward_network->get_gradient_back();
 
     /*
     //TODO -> this is learning using only inverse network
     t_inverse_error_back.split(t_features_now_error_inverse, t_features_next_error_inverse);
 
     features_network->forward(t_features_now, t_state_now);
-    features_network->train_from_error(t_features_now_error_inverse);
+    features_network->train_from_gradient(t_features_now_error_inverse);
 
     features_network->forward(t_features_next, t_state_next);
-    features_network->train_from_error(t_features_next_error_inverse);
+    features_network->train_from_gradient(t_features_next_error_inverse);
     */
 
 
@@ -327,10 +327,10 @@ void ICM::train(std::vector<float> &state_now, std::vector<float> &state_next, u
     t_features_error_next = t_features_next_error_inverse;
 
     features_network->forward(t_features_now, t_state_now);
-    features_network->train_from_error(t_features_error_now);
+    features_network->train_from_gradient(t_features_error_now);
 
     features_network->forward(t_features_next, t_state_next);
-    features_network->train_from_error(t_features_error_next);
+    features_network->train_from_gradient(t_features_error_next);
 }
 
 

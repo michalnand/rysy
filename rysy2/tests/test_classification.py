@@ -24,7 +24,7 @@ output_shape = dataset.get_output_shape()
 cnn = CNN(input_shape, output_shape, 0.0025)
 
 
-
+'''
 cnn.add_layer("convolution", Shape(3, 3, 16))
 cnn.add_layer("elu")
 cnn.add_layer("spatial attention")
@@ -43,41 +43,62 @@ cnn.add_layer("flatten")
 cnn.add_layer("dropout")
 
 cnn.add_layer("output")
+'''
 
+
+cnn.add_layer("convolution", Shape(3, 3, 16))
+cnn.add_layer("elu")
+cnn.add_layer("max_pooling", Shape(2, 2))
+
+cnn.add_layer("convolution", Shape(3, 3, 32))
+cnn.add_layer("elu")
+cnn.add_layer("max_pooling", Shape(2, 2))
+
+cnn.add_layer("convolution", Shape(3, 3, 64))
+cnn.add_layer("elu")
+
+cnn.add_layer("flatten")
+cnn.add_layer("dropout")
+
+cnn.add_layer("output")
+cnn.add_layer("softmax")
 
 cnn._print()
 
 
-time_start = int(round(time.time() * 1000))
 #train network - set epoch count
-epoch_count = 1
-
-cnn.train(dataset.get_training_output_all(), dataset.get_training_input_all(), epoch_count)
-#cnn.save("trained/")
-#cnn.load_weights("trained/")
+epoch_count = 5
 
 
-#test network response on whole testing dataset items
+for epoch in range(0, epoch_count):
+    time_start = int(round(time.time() * 1000))
 
-compare = ClassificationCompare(dataset.get_classes_count())
+    cnn.train(dataset.get_training_output_all(), dataset.get_training_input_all(), 1)
+    #cnn.save("trained/")
+    #cnn.load_weights("trained/")
 
-nn_output = VectorFloat(dataset.get_classes_count())
 
-#for all testing items
-for item_idx in range(0, dataset.get_testing_count()):
-    #get network response
-    cnn.forward(nn_output, dataset.get_testing_input(item_idx))
+    #test network response on whole testing dataset items
 
-    #compare with testing dataset
-    compare.add(dataset.get_testing_output(item_idx), nn_output)
+    compare = ClassificationCompare(dataset.get_classes_count())
 
-    if compare.is_nan_error():
-        print("NaN error")
+    nn_output = VectorFloat(dataset.get_classes_count())
 
-#process computing and print results
-compare.compute()
+    #for all testing items
+    for item_idx in range(0, dataset.get_testing_count()):
+        #get network response
+        cnn.forward(nn_output, dataset.get_testing_input(item_idx))
 
-time_stop = int(round(time.time() * 1000))
+        #compare with testing dataset
+        compare.add(dataset.get_testing_output(item_idx), nn_output)
 
-print(compare.asString())
-print("computing time = ", (time_stop - time_start)/1000.0, "[s]")
+        if compare.is_nan_error():
+            print("NaN error")
+
+    #process computing and print results
+    compare.compute()
+
+    time_stop = int(round(time.time() * 1000))
+
+    print(compare.asString())
+    print("computing time = ", (time_stop - time_start)/1000.0, "[s]")
