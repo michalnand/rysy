@@ -14,7 +14,7 @@ class RegressionExperiment
         void run();
 
     protected:
-        void process_best(CNN &cnn);
+        virtual void process_best(CNN &cnn);
 
     private:
         std::string delimiter();

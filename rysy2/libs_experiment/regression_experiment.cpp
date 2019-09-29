@@ -141,7 +141,7 @@ void RegressionExperiment::run()
             experiment_log << "testing error_average_euclidean " << compare_testing.get_error_average_euclidean() << "\n";
             experiment_log << "testing error_std " << compare_testing.get_error_std() << "\n";
 
-            progress_log << epoch << " " << batch_id << " " << training_done << " " <<  compare_testing.get_error_average_euclidean() << " " << compare_testing.get_error_std() << compare_training.get_error_average_euclidean() << " " << compare_training.get_error_std() << "\n";
+            progress_log << epoch << " " << batch_id << " " << training_done << " " <<  compare_testing.get_error_average_euclidean() << " " << compare_testing.get_error_std() << " " << compare_training.get_error_average_euclidean() << " " << compare_training.get_error_std() << "\n";
 
 
             if (compare_testing.get_error_average_euclidean() < rms_best_result)
@@ -176,6 +176,7 @@ std::string RegressionExperiment::delimiter()
 
 void RegressionExperiment::process_best(CNN &cnn)
 {
+    /*
     std::vector<float> nn_output(dataset->get_output_shape().size());
 
     for (unsigned int i = 0; i < 32; i++)
@@ -194,4 +195,5 @@ void RegressionExperiment::process_best(CNN &cnn)
         v_target.save(dataset->get_testing_output(item_idx), experiment_dir + "output/" + std::to_string(item_idx) + "_1_target.png");
         v_computed.save(nn_output,experiment_dir + "output/" + std::to_string(item_idx) + "_2_computed.png");
     }
+    */
 }
